@@ -10,6 +10,8 @@ class ComputerVerificationForm(forms.Form):
     token values.
     """
     token = forms.CharField(label=_("Token"), max_length=6)
+    remember = forms.BooleanField(label=_("Remember this computer for 30 days"),
+        required=False)
 
     error_messages = {
         'invalid_token': _("Please enter a valid token."),

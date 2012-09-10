@@ -1,4 +1,5 @@
 # coding=utf-8
+import urlparse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
@@ -8,10 +9,11 @@ from django.utils.http import urlencode
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from two_factor.forms import ComputerVerificationForm
+from two_factor.models import VerifiedComputer
 
 signer = Signer()
 
@@ -64,7 +66,19 @@ def verify_computer(request, template_name='registration/verify_computer.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           computer_verification_form=ComputerVerificationForm,
           current_app=None, extra_context=None):
+
     redirect_to = request.REQUEST.get(redirect_field_name, '')
+
+    netloc = urlparse.urlparse(redirect_to)[1]
+
+    # Use default setting if redirect_to is empty
+    if not redirect_to:
+        redirect_to = settings.LOGIN_REDIRECT_URL
+
+    # Heavier security check -- don't allow redirection to a different
+    # host.
+    elif netloc and netloc != request.get_host():
+        redirect_to = settings.LOGIN_REDIRECT_URL
 
     try:
         user = User.objects.get(pk=signer.unsign(request.GET.get('user')))
@@ -74,24 +88,38 @@ def verify_computer(request, template_name='registration/verify_computer.html',
     if request.method == 'POST':
         form = computer_verification_form(user=user, data=request.POST)
         if form.is_valid():
-            # Use default setting if redirect_to is empty
-            if not redirect_to:
-                redirect_to = settings.LOGIN_REDIRECT_URL
-
-            # Heavier security check -- don't allow redirection to a different
-            # host.
-            elif netloc and netloc != request.get_host():
-                redirect_to = settings.LOGIN_REDIRECT_URL
-
             # Okay, security checks complete. Log the user in.
             auth_login(request, user)
 
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
 
-            return HttpResponseRedirect(redirect_to)
+            response = HttpResponseRedirect(redirect_to)
+
+            # set computer verification
+            if form.cleaned_data['remember']:
+                vf = user.verifiedcomputer_set.create()
+                response.set_signed_cookie('computer', vf.id,
+                    path='/accounts/verify/', max_age=30*86400, httponly=True)
+
+            return response
     else:
         form = computer_verification_form(request, user)
+
+        try:
+            # has this computer been verified? (#todo 30 days)
+            computer_id = request.get_signed_cookie('computer', None)
+            user = authenticate(user=user, computer_id=computer_id)
+            if user and user.is_active:
+                # Okay, security checks complete. Log the user in.
+                auth_login(request, user)
+
+                if request.session.test_cookie_worked():
+                    request.session.delete_test_cookie()
+
+                return HttpResponseRedirect(redirect_to)
+        except VerifiedComputer.DoesNotExist:
+            pass
 
     current_site = get_current_site(request)
 

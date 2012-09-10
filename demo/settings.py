@@ -21,6 +21,7 @@ DATABASES = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'two_factor.auth_backends.TokenBackend',
+    'two_factor.auth_backends.VerifiedComputerBackend',
 )
 
 
