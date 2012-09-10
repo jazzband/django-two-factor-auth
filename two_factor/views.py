@@ -14,8 +14,11 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
+from django.utils.translation import ugettext
+from oath.totp import totp
 from two_factor.forms import ComputerVerificationForm
 from two_factor.models import VerifiedComputer
+from two_factor.sms_gateways import load_gateway, send
 
 signer = Signer()
 
@@ -112,6 +115,16 @@ def verify_computer(request, template_name='registration/verify_computer.html',
     else:
         form = computer_verification_form(request, user)
 
+        token = user.token
+
+        if token.method == 'phone':
+            pass
+        elif token.method == 'sms':
+            # generate token and send
+            # todo backup phone
+            generated_token = totp(token.seed)
+            send(to=token.phone,
+                 body=ugettext('Your authorization token is %s' % generated_token))
         try:
             # has this computer been verified? (#todo 30 days)
             computer_id = request.get_signed_cookie('computer', None)
