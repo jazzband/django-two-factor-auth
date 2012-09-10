@@ -125,8 +125,9 @@ def verify_computer(request, template_name='registration/verify_computer.html',
             generated_token = totp(token.seed)
             send(to=token.phone,
                  body=ugettext('Your authorization token is %s' % generated_token))
+
+        # has this computer been verified?
         try:
-            # has this computer been verified? (#todo 30 days)
             computer_id = request.get_signed_cookie('computer', None)
             user = authenticate(user=user, computer_id=computer_id)
             if user and user.is_active:
