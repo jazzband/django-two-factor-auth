@@ -98,7 +98,9 @@ def verify_computer(request, template_name='registration/verify_computer.html',
 
             # set computer verification
             if form.cleaned_data['remember']:
-                vf = user.verifiedcomputer_set.create()
+                vf = user.verifiedcomputer_set.create(
+                    verified_until=now() + timedelta(days=30),
+                )
                 response.set_signed_cookie('computer', vf.id,
                     path='/accounts/verify/', max_age=30*86400, httponly=True)
 

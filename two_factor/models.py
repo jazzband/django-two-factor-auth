@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class VerifiedComputer(models.Model):
     user = models.ForeignKey(User, verbose_name=_('verified computer'))
+    verified_until = models.DateTimeField(_('verified until'))
 
 
 class Secret(models.Model):

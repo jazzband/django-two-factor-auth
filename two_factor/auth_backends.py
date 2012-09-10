@@ -16,10 +16,11 @@ class TokenBackend(object):
 
 class VerifiedComputerBackend(object):
     def authenticate(self, user, computer_id):
-        return user if user.verifiedcomputer_set.get(pk=computer_id) else None
 
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+        verification = user.verifiedcomputer_set.get(pk=computer_id)
+        return user if verification.verified_until > now() else None
