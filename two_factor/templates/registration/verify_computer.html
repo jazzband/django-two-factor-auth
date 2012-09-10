@@ -1,0 +1,6 @@
+<h1>Verify</h1>
+<form method="post">
+    {% csrf_token %}
+    <table>{{ form }}</table>
+    <button type="submit">Login</button>
+</form>
