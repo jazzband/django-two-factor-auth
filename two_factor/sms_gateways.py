@@ -1,10 +1,7 @@
 # coding=utf8
-import logging
 from django.conf import settings
 from django.utils.importlib import import_module
 from twilio.rest import TwilioRestClient
-
-logger = logging.getLogger('django')
 
 def load_gateway(path):
     module, attr = path.rsplit('.', 1)

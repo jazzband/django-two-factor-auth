@@ -16,6 +16,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.utils.translation import ugettext
 from oath.totp import totp
+from two_factor.call_gateways import call
 from two_factor.forms import ComputerVerificationForm
 from two_factor.models import VerifiedComputer
 from two_factor.sms_gateways import load_gateway, send
@@ -116,15 +117,16 @@ def verify_computer(request, template_name='registration/verify_computer.html',
         form = computer_verification_form(request, user)
 
         token = user.token
-
-        if token.method == 'phone':
-            pass
-        elif token.method == 'sms':
-            # generate token and send
-            # todo backup phone
+        if token.method in ('call', 'sms'):
+            #todo use backup phone
+            #todo resend message + throttling
             generated_token = totp(token.seed)
-            send(to=token.phone,
-                 body=ugettext('Your authorization token is %s' % generated_token))
+            if token.method == 'call':
+                call(to=token.phone,
+                    body=ugettext('Your authorization token is %s' % generated_token))
+            elif token.method == 'sms':
+                send(to=token.phone,
+                    body=ugettext('Your authorization token is %s' % generated_token))
 
         # has this computer been verified?
         try:
