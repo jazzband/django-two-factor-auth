@@ -3,7 +3,7 @@ import random
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand, CommandError
 from django.utils.http import urlencode
-from two_factor.models import Secret
+from two_factor.models import Token
 from two_factor.util import generate_seed, get_qr_url
 
 class Command(BaseCommand):
@@ -19,16 +19,16 @@ class Command(BaseCommand):
             raise CommandError('User with username "%s" not found' % args[0])
 
         try:
-            secret = user.secret
-        except Secret.DoesNotExist:
-            secret = Secret(user=user)
+            token = user.token
+        except Token.DoesNotExist:
+            token = Token(user=user)
 
-        secret.seed = generate_seed()
-        secret.save()
+        token.seed = generate_seed()
+        token.save()
 
-        print 'Updated seed for %s to: %s (hex)' % (user.username, secret.secret)
+        print 'Updated seed for %s to: %s (hex)' % (user.username, token.seed)
         print ''
         print 'QR Code for Google Authenticator can be found here:'
         print ''
-        print get_qr_url(user.username, secret.secret)
+        print get_qr_url(user.username, token.seed)
         print ''

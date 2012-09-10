@@ -10,6 +10,6 @@ class VerifiedComputer(models.Model):
     last_used_at = models.DateTimeField(_('last used at'))
 
 
-class Secret(models.Model):
+class Token(models.Model):
     user = models.OneToOneField(User, verbose_name=_('user'))
-    seed = models.CharField(_('secret'), max_length=16)
+    seed = models.CharField(_('seed'), max_length=16)

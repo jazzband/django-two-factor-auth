@@ -6,7 +6,7 @@ from oath import accept_totp
 
 class TokenBackend(ModelBackend):
     def authenticate(self, user, token):
-        accepted, drift = accept_totp(token, user.secret.seed)
+        accepted, drift = accept_totp(token, user.token.seed)
         return user if accepted else None
 
 
