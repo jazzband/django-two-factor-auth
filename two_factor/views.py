@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import timedelta
 import urlparse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import get_current_site
@@ -6,6 +7,7 @@ from django.core.signing import Signer, BadSignature
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
@@ -100,6 +102,8 @@ def verify_computer(request, template_name='registration/verify_computer.html',
             if form.cleaned_data['remember']:
                 vf = user.verifiedcomputer_set.create(
                     verified_until=now() + timedelta(days=30),
+                    last_used_at=now(),
+                    ip=request.META['REMOTE_ADDR'],
                 )
                 response.set_signed_cookie('computer', vf.id,
                     path='/accounts/verify/', max_age=30*86400, httponly=True)
