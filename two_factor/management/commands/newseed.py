@@ -18,8 +18,12 @@ class Command(BaseCommand):
         except User.DoesNotExist:
             raise CommandError('User with username "%s" not found' % args[0])
 
-        secret = user.secret or Secret(user=user)
-        secret.secret = generate_seed()
+        try:
+            secret = user.secret
+        except Secret.DoesNotExist:
+            secret = Secret(user=user)
+
+        secret.seed = generate_seed()
         secret.save()
 
         print 'Updated seed for %s to: %s (hex)' % (user.username, secret.secret)

@@ -4,7 +4,7 @@ from oath import accept_totp
 
 class TokenBackend(object):
     def authenticate(self, user, token):
-        accepted, drift = accept_totp(token, user.secret.secret)
+        accepted, drift = accept_totp(token, user.secret.seed)
         return user if accepted else None
 
     def get_user(self, user_id):
