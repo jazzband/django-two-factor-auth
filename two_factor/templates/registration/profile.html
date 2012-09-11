@@ -1,6 +1,9 @@
 <h1>Profile</h1>
 
 <dl>
+    <dt>Logged in as</dt>
+    <dd>{{ user }} (<a href="/accounts/logout/">Logout</a>)</dd>
+
     <dt>Two-factor authentication</dt>
     <dd>
         {% if user.token %}
