@@ -20,12 +20,13 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authen
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.utils.translation import ugettext
+from django.views.generic import FormView
 from oath.totp import totp
 from two_factor.call_gateways import call
-from two_factor.forms import ComputerVerificationForm, MethodForm, TokenVerificationForm
+from two_factor.forms import ComputerVerificationForm, MethodForm, TokenVerificationForm, PhoneForm, DisableForm
 from two_factor.models import VerifiedComputer, Token
 from two_factor.sms_gateways import load_gateway, send
-from two_factor.util import generate_seed, get_qr_url
+from two_factor.util import generate_seed, get_qr_url, class_view_decorator
 
 signer = Signer()
 
@@ -226,14 +227,17 @@ class Enable(SessionWizardView):
         ('welcome', Form),
         ('method', MethodForm),
         ('generator', TokenVerificationForm),
-        ('sms', Form),
-        ('call', Form),
-        ('complete', Form),
+        ('sms', PhoneForm),
+        ('sms-verify', TokenVerificationForm),
+        ('call', PhoneForm),
+        ('call-verify', TokenVerificationForm),
     ])
     condition_dict = {
         'generator': lambda x: Enable.is_method(x, 'generator'),
         'sms': lambda x: Enable.is_method(x, 'sms'),
+        'sms-verify': lambda x: Enable.is_method(x, 'sms'),
         'call': lambda x: Enable.is_method(x, 'call'),
+        'call-verify': lambda x: Enable.is_method(x, 'call'),
     }
 
     @classmethod
@@ -243,6 +247,10 @@ class Enable(SessionWizardView):
     def is_method(self, method):
         cleaned_data = self.get_cleaned_data_for_step('method') or {}
         return cleaned_data.get('method') == method
+
+    def get_form_data(self, step, field, default=None):
+        cleaned_data = self.get_cleaned_data_for_step(step) or {}
+        return cleaned_data.get(field, default)
 
     def get_form(self, step=None, data=None, files=None):
         form = super(Enable, self).get_form(step, data, files)
@@ -271,8 +279,29 @@ class Enable(SessionWizardView):
         form_data = [f.cleaned_data for f in form_list]
         token = self.get_token()
         token.method = form_data[1]['method']
+        if token.method == 'sms':
+            token.phone = form_data[2]['phone']
+        elif token.method == 'call':
+            token.phone = form_data[4]['phone']
         token.save()
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+
+    def render_next_step(self, form, **kwargs):
+        response = super(Enable, self).render_next_step(form, **kwargs)
+        if self.steps.current in ['call-verify', 'sms-verify']:
+            method = self.get_form_data('method', 'method')
+            #todo use backup phone
+            #todo resend message + throttling
+            generated_token = totp(self.get_token().seed)
+            if method == 'call':
+                phone = self.get_form_data('call', 'phone')
+                call(to=phone,
+                     body=ugettext('Your authorization token is %s' % generated_token))
+            elif method == 'sms':
+                phone = self.get_form_data('sms', 'phone')
+                send(to=phone,
+                    body=ugettext('Your authorization token is %s' % generated_token))
+        return response
 
 
 logout = logout

@@ -42,6 +42,10 @@ class MethodForm(forms.Form):
         widget=forms.RadioSelect)
 
 
+class PhoneForm(forms.Form):
+    phone = forms.CharField(label=_("Phone Number"))
+
+
 class TokenVerificationForm(forms.Form):
     token = forms.CharField(label=_("Token"), max_length=6)
     seed = None
