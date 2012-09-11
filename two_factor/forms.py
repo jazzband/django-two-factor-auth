@@ -44,14 +44,11 @@ class MethodForm(forms.Form):
 
 class TokenVerificationForm(forms.Form):
     token = forms.CharField(label=_("Token"), max_length=6)
+    seed = None
 
     error_messages = {
         'invalid_token': _("Please enter a valid token."),
     }
-
-    def __init__(self, request=None, seed=None, **kwargs):
-        self.seed = seed
-        super(TokenVerificationForm, self).__init__(**kwargs)
 
     def clean(self):
         token = self.cleaned_data.get('token')

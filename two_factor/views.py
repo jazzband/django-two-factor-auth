@@ -214,12 +214,11 @@ class Enable(SessionWizardView):
         return super(Enable, cls).get_initkwargs(form_list, initial_dict,
             instance_dict, condition_dict, *args, **kwargs)
 
-    def get_form_kwargs(self, step=None):
+    def get_form(self, step=None, data=None, files=None):
+        form = super(Enable, self).get_form(step, data, files)
         if step == 'generator':
-            return {
-                'seed': self.get_token().seed,
-            }
-        return {}
+            form.seed = self.get_token().seed
+        return form
 
     def get_token(self):
         if not 'token' in self.storage.data:
@@ -243,5 +242,4 @@ class Enable(SessionWizardView):
         token = self.get_token()
         token.method = form_data[1]['method']
         token.save()
-
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
