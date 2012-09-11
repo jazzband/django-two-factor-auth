@@ -8,6 +8,7 @@ from django.core.signing import Signer, BadSignature
 from django.forms import Form
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
+from django.utils.datastructures import SortedDict
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.views.decorators.debug import sensitive_post_parameters
@@ -198,26 +199,24 @@ def enable(request, template_name='registration/enable.html',
 
 class Enable(SessionWizardView):
     template_name = 'registration/enable.html'
+    initial_dict = {}
+    form_list = SortedDict([
+        ('welcome', Form),
+        ('method', MethodForm),
+        ('generator', TokenVerificationForm),
+        ('sms', Form),
+        ('call', Form),
+        ('complete', Form),
+    ])
+    condition_dict = {
+        'generator': lambda x: Enable.is_method(x, 'generator'),
+        'sms': lambda x: Enable.is_method(x, 'sms'),
+        'call': lambda x: Enable.is_method(x, 'call'),
+    }
 
     @classmethod
-    def get_initkwargs(cls, form_list=None, initial_dict=None,
-                       instance_dict=None, condition_dict=None, *args,
-                       **kwargs):
-        form_list = (
-            ('welcome', Form),
-            ('method', MethodForm),
-            ('generator', TokenVerificationForm),
-            ('sms', Form),
-            ('call', Form),
-            ('complete', Form)
-        )
-        condition_dict = {
-            'generator': lambda x: Enable.is_method(x, 'generator'),
-            'sms': lambda x: Enable.is_method(x, 'sms'),
-            'call': lambda x: Enable.is_method(x, 'call'),
-        }
-        return super(Enable, cls).get_initkwargs(form_list, initial_dict,
-            instance_dict, condition_dict, *args, **kwargs)
+    def get_initkwargs(cls, *args, **kwargs):
+        return {}
 
     def is_method(self, method):
         cleaned_data = self.get_cleaned_data_for_step('method') or {}
