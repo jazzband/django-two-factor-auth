@@ -156,3 +156,6 @@ LOGGING = {
         },
     }
 }
+
+# settings that are not in git repo
+from settings_private import *
