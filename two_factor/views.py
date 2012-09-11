@@ -255,7 +255,7 @@ class Enable(SessionWizardView):
 
     def get_form(self, step=None, data=None, files=None):
         form = super(Enable, self).get_form(step, data, files)
-        if step == 'generator':
+        if isinstance(form, TokenVerificationForm):
             form.seed = self.get_token().seed
         return form
 
