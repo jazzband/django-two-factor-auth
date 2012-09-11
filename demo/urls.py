@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
     url(r'^accounts/login/$', 'two_factor.views.login'),
     url(r'^accounts/verify/$', 'two_factor.views.verify_computer'),
+    url(r'^accounts/profile/$', 'two_factor.views.profile'),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

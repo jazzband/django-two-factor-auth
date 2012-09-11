@@ -1,0 +1,13 @@
+<h1>Profile</h1>
+
+<dl>
+    <dt>Two-factor authentication</dt>
+    <dd>
+        {% if user.token %}
+            Enabled
+        {% else %}
+            Disabled (<a href="/accounts/verify/enable/">Enable two-factor
+            authorization</a>)
+        {% endif %}
+    </dd>
+</dl>
