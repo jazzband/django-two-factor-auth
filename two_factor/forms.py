@@ -56,3 +56,7 @@ class TokenVerificationForm(forms.Form):
             raise forms.ValidationError(
                 self.error_messages['invalid_token'])
         return self.cleaned_data
+
+
+class DisableForm(forms.Form):
+    understand = forms.BooleanField(label=_("Yes, I am sure"))
