@@ -25,7 +25,7 @@ from oath.totp import totp
 from two_factor.call_gateways import call
 from two_factor.forms import ComputerVerificationForm, MethodForm, TokenVerificationForm, PhoneForm, DisableForm
 from two_factor.models import VerifiedComputer, Token
-from two_factor.sms_gateways import load_gateway, send
+from two_factor.sms_gateways import send
 from two_factor.util import generate_seed, get_qr_url, class_view_decorator
 
 signer = Signer()
@@ -56,16 +56,15 @@ def login(request, template_name='registration/login.html',
         form = authentication_form(data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            try:
-                if user.token:
-                    params = {
-                        redirect_field_name: redirect_to,
-                        'user': signer.sign(user.pk),
-                    }
-                    return HttpResponseRedirect(
-                        '/accounts/verify/?' + urlencode(params)
-                    )
-            except Token.DoesNotExist:
+            if hasattr(user, 'token'):
+                params = {
+                    redirect_field_name: redirect_to,
+                    'user': signer.sign(user.pk),
+                }
+                return HttpResponseRedirect(
+                    '/accounts/verify/?' + urlencode(params)
+                )
+            else:
                 # Okay, security checks complete. Log the user in.
                 auth_login(request, user)
 
@@ -205,17 +204,13 @@ class Disable(FormView):
     form_class = DisableForm
 
     def get(self, request, *args, **kwargs):
-        try:
-            if self.request.user.token: pass
-        except Token.DoesNotExist:
+        if not hasattr(self.request.user, 'token'):
             return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         return super(Disable, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        try:
-            if self.request.user.token:
-                self.request.user.token.delete()
-        except Token.DoesNotExist: pass
+        if hasattr(self.request.user, 'token'):
+            self.request.user.token.delete()
         self.request.user.verifiedcomputer_set.all().delete()
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
@@ -270,10 +265,8 @@ class Enable(SessionWizardView):
         return self.storage.data['token']
 
     def get(self, request, *args, **kwargs):
-        try:
-            if self.request.user.token:
-                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
-        except Token.DoesNotExist: pass
+        if hasattr(self.request.user, 'token'):
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         return super(Enable, self).get(request, *args, **kwargs)
 
     def done(self, form_list, **kwargs):
