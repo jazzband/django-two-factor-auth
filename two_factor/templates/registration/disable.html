@@ -1,0 +1,8 @@
+<h1>Disable Two-factor Authentication</h1>
+<p>You are about to disable two-factor authentication. You will no longer be
+    prevented from hackers stealing your passwords. Are you sure?</p>
+<form method="post">
+    {% csrf_token %}
+    <table>{{ form }}</table>
+    <button type="submit">Insecure my account</button>
+</form>

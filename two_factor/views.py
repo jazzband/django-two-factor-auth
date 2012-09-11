@@ -178,8 +178,23 @@ def profile(request, template_name='registration/profile.html',
         current_app=current_app)
 
 
+class Disable(FormView):
+    template_name = 'registration/disable.html'
+    form_class = DisableForm
 
+    def get(self, request, *args, **kwargs):
+        try:
+            if self.request.user.token: pass
+        except Token.DoesNotExist:
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        return super(Disable, self).get(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        try:
+            if self.request.user.token:
+                self.request.user.token.delete()
+        except Token.DoesNotExist: pass
+        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 
 @class_view_decorator(login_required)

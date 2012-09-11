@@ -7,7 +7,8 @@
     <dt>Two-factor authentication</dt>
     <dd>
         {% if user.token %}
-            Enabled
+            Enabled (<a href="/accounts/verify/disable/">Disable two-factor
+            authorization</a>)
         {% else %}
             Disabled (<a href="/accounts/verify/enable/">Enable two-factor
             authorization</a>)
