@@ -79,7 +79,6 @@ def verify_computer(request, template_name='registration/verify_computer.html',
           current_app=None, extra_context=None):
 
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-
     netloc = urlparse.urlparse(redirect_to)[1]
 
     # Use default setting if redirect_to is empty
@@ -178,26 +177,9 @@ def profile(request, template_name='registration/profile.html',
     return TemplateResponse(request, template_name, context,
         current_app=current_app)
 
-@sensitive_post_parameters()
-@csrf_protect
-@never_cache
-def enable(request, template_name='registration/enable.html',
-           form=None,
-           current_app=None, extra_context=None):
-    form = form()
 
 
-    current_site = get_current_site(request)
 
-    context = {
-        'form': form,
-        'site': current_site,
-        'site_name': current_site.name,
-    }
-    if extra_context is not None:
-        context.update(extra_context)
-    return TemplateResponse(request, template_name, context,
-        current_app=current_app)
 
 
 @class_view_decorator(login_required)
