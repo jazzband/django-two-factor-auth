@@ -40,18 +40,38 @@ def login(request, template_name='registration/login.html',
     Displays the login form and handles the two factor login action.
     """
     redirect_to = request.REQUEST.get(redirect_field_name, '')
+    netloc = urlparse.urlparse(redirect_to)[1]
+
+    # Use default setting if redirect_to is empty
+    if not redirect_to:
+        redirect_to = settings.LOGIN_REDIRECT_URL
+
+    # Heavier security check -- don't allow redirection to a different
+    # host.
+    elif netloc and netloc != request.get_host():
+        redirect_to = settings.LOGIN_REDIRECT_URL
 
     if request.method == 'POST':
         form = authentication_form(data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            params = {
-                redirect_field_name: redirect_to,
-                'user': signer.sign(user.pk),
-            }
-            return HttpResponseRedirect(
-                '/accounts/verify/?' + urlencode(params)
-            )
+            try:
+                if user.token:
+                    params = {
+                        redirect_field_name: redirect_to,
+                        'user': signer.sign(user.pk),
+                    }
+                    return HttpResponseRedirect(
+                        '/accounts/verify/?' + urlencode(params)
+                    )
+            except Token.DoesNotExist:
+                # Okay, security checks complete. Log the user in.
+                auth_login(request, user)
+
+                if request.session.test_cookie_worked():
+                    request.session.delete_test_cookie()
+
+                return HttpResponseRedirect(redirect_to)
 
     else:
         form = authentication_form(request)
