@@ -2,8 +2,10 @@
 from datetime import timedelta
 import urlparse
 from django.contrib.auth.models import User
+from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
+from django.forms import Form
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import urlencode
@@ -17,9 +19,10 @@ from django.conf import settings
 from django.utils.translation import ugettext
 from oath.totp import totp
 from two_factor.call_gateways import call
-from two_factor.forms import ComputerVerificationForm
-from two_factor.models import VerifiedComputer
+from two_factor.forms import ComputerVerificationForm, MethodForm, TokenVerificationForm
+from two_factor.models import VerifiedComputer, Token
 from two_factor.sms_gateways import load_gateway, send
+from two_factor.util import generate_seed, get_qr_url
 
 signer = Signer()
 
@@ -59,7 +62,7 @@ def login(request, template_name='registration/login.html',
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        }
+    }
     if extra_context is not None:
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
@@ -150,7 +153,7 @@ def verify_computer(request, template_name='registration/verify_computer.html',
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        }
+    }
     if extra_context is not None:
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
@@ -171,3 +174,74 @@ def profile(request, template_name='registration/profile.html',
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
         current_app=current_app)
+
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
+def enable(request, template_name='registration/enable.html',
+           form=None,
+           current_app=None, extra_context=None):
+    form = form()
+
+
+    current_site = get_current_site(request)
+
+    context = {
+        'form': form,
+        'site': current_site,
+        'site_name': current_site.name,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    return TemplateResponse(request, template_name, context,
+        current_app=current_app)
+
+class Enable(SessionWizardView):
+    template_name = 'registration/enable.html'
+
+    @classmethod
+    def get_initkwargs(cls, form_list=None, initial_dict=None,
+                       instance_dict=None, condition_dict=None, *args,
+                       **kwargs):
+        form_list = (
+            ('welcome', Form),
+            ('method', MethodForm),
+            ('generator', TokenVerificationForm),
+#            ('sms', SMSForm),
+#            ('phone', PhoneForm),
+        )
+
+        return super(Enable, cls).get_initkwargs(form_list, initial_dict,
+            instance_dict, condition_dict, *args, **kwargs)
+
+    def get_form_kwargs(self, step=None):
+        if step == 'generator':
+            return {
+                'seed': self.get_token().seed,
+            }
+        return {}
+
+    def get_token(self):
+        if not 'token' in self.storage.data:
+            alias = '%s@%s' % (self.request.user.username,
+                               get_current_site(self.request).name)
+            seed = generate_seed()
+            self.storage.data['token'] = Token(
+                seed=seed, user=self.request.user)
+            self.storage.data['extra_data']['qr_url'] = get_qr_url(alias, seed)
+        return self.storage.data['token']
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if self.request.user.token:
+                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        except Token.DoesNotExist: pass
+        return super(Enable, self).get(request, *args, **kwargs)
+
+    def done(self, form_list, **kwargs):
+        form_data = [f.cleaned_data for f in form_list]
+        token = self.get_token()
+        token.method = form_data[1]['method']
+        token.save()
+
+        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
