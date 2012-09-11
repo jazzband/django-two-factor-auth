@@ -3,6 +3,7 @@ from datetime import timedelta
 import urlparse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import logout
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
@@ -252,3 +253,6 @@ class Enable(SessionWizardView):
         token.method = form_data[1]['method']
         token.save()
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+
+
+logout = logout
