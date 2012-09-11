@@ -1,7 +1,6 @@
 # coding=utf8
 from django.conf import settings
 from django.utils.importlib import import_module
-from twilio.rest import TwilioRestClient
 
 def load_gateway(path):
     module, attr = path.rsplit('.', 1)
@@ -30,6 +29,8 @@ class Twilio(object):
             token = getattr(settings, 'TWILIO_AUTH_TOKEN')
         if not sender:
             self.sender = getattr(settings, 'SMS_SENDER')
+
+        from twilio.rest import TwilioRestClient
         self.client = TwilioRestClient(account, token)
 
     def send(self, to, body):
