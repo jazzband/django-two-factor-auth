@@ -216,6 +216,7 @@ class Disable(FormView):
             if self.request.user.token:
                 self.request.user.token.delete()
         except Token.DoesNotExist: pass
+        self.request.user.verifiedcomputer_set.all().delete()
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 
