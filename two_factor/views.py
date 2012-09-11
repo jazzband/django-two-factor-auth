@@ -207,12 +207,21 @@ class Enable(SessionWizardView):
             ('welcome', Form),
             ('method', MethodForm),
             ('generator', TokenVerificationForm),
-#            ('sms', SMSForm),
-#            ('phone', PhoneForm),
+            ('sms', Form),
+            ('call', Form),
+            ('complete', Form)
         )
-
+        condition_dict = {
+            'generator': lambda x: Enable.is_method(x, 'generator'),
+            'sms': lambda x: Enable.is_method(x, 'sms'),
+            'call': lambda x: Enable.is_method(x, 'call'),
+        }
         return super(Enable, cls).get_initkwargs(form_list, initial_dict,
             instance_dict, condition_dict, *args, **kwargs)
+
+    def is_method(self, method):
+        cleaned_data = self.get_cleaned_data_for_step('method') or {}
+        return cleaned_data.get('method') == method
 
     def get_form(self, step=None, data=None, files=None):
         form = super(Enable, self).get_form(step, data, files)
