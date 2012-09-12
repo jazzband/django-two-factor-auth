@@ -38,6 +38,6 @@ class Twilio(object):
 
     def call(self, to, token, request, **kwargs):
         signer = Signer()
-        url = request.build_absolute_uri(reverse('twilio_call_app')) + \
+        url = request.build_absolute_uri(reverse('tf:twilio_call_app')) + \
                 '?' + urlencode({'token': signer.sign(token)})
         self.client.calls.create(to=to, from_=self.caller_id, url=url)
