@@ -9,6 +9,7 @@ setup(
     packages=[
         'two_factor',
     ],
+    package_data={'two_factor': ['templates/two_factor/*.html',],},
     url='http://github.com/Bouke/django-two-factor-auth',
     description='Complete Two-Factor Authentication for Django',
     license='MIT',
