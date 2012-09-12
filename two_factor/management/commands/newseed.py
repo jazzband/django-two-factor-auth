@@ -1,4 +1,3 @@
-# coding=utf8
 import random
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand, CommandError

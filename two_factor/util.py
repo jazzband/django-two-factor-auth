@@ -1,4 +1,3 @@
-# coding=utf8
 import random
 from base64 import b32encode
 from binascii import hexlify, unhexlify
