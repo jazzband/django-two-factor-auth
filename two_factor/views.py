@@ -32,7 +32,7 @@ signer = Signer()
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
-def login(request, template_name='registration/login.html',
+def login(request, template_name='two_factor/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
           current_app=None, extra_context=None):
@@ -93,7 +93,7 @@ def login(request, template_name='registration/login.html',
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
-def verify_computer(request, template_name='registration/verify_computer.html',
+def verify_computer(request, template_name='two_factor/verify_computer.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           computer_verification_form=ComputerVerificationForm,
           current_app=None, extra_context=None):
@@ -199,7 +199,7 @@ def profile(request, template_name='registration/profile.html',
 
 
 class Disable(FormView):
-    template_name = 'registration/disable.html'
+    template_name = 'two_factor/disable.html'
     form_class = DisableForm
 
     def get(self, request, *args, **kwargs):
@@ -216,7 +216,7 @@ class Disable(FormView):
 
 @class_view_decorator(login_required)
 class Enable(SessionWizardView):
-    template_name = 'registration/enable.html'
+    template_name = 'two_factor/enable.html'
     initial_dict = {}
     form_list = SortedDict([
         ('welcome', Form),
