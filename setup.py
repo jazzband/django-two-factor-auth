@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name='django-two-factor-auth',
-    version='0.1.0',
+    version='0.1.1',
     author='Bouke Haarsma',
     author_email='bouke@webatoom.nl',
     packages=find_packages(exclude='demo'),

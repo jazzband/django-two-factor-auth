@@ -140,16 +140,6 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
     else:
         form = computer_verification_form(request, user)
 
-        token = user.token
-        if token.method in ('call', 'sms'):
-            #todo use backup phone
-            #todo resend message + throttling
-            generated_token = totp(token.seed)
-            if token.method == 'call':
-                call(to=token.phone, request=request, token=generated_token)
-            elif token.method == 'sms':
-                send(to=token.phone, request=request, token=generated_token)
-
         # has this computer been verified?
         try:
             computer_id = request.get_signed_cookie('computer', None)
@@ -164,6 +154,16 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
                 return HttpResponseRedirect(redirect_to)
         except VerifiedComputer.DoesNotExist:
             pass
+
+        token = user.token
+        if token.method in ('call', 'sms'):
+            #todo use backup phone
+            #todo resend message + throttling
+            generated_token = totp(token.seed)
+            if token.method == 'call':
+                call(to=token.phone, request=request, token=generated_token)
+            elif token.method == 'sms':
+                send(to=token.phone, request=request, token=generated_token)
 
     current_site = get_current_site(request)
 
