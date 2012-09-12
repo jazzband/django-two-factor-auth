@@ -180,23 +180,6 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
     return TemplateResponse(request, template_name, context,
         current_app=current_app)
 
-@never_cache
-@login_required
-def profile(request, template_name='registration/profile.html',
-            current_app=None, extra_context=None):
-    current_site = get_current_site(request)
-
-    context = {
-        'user': request.user,
-        'site': current_site,
-        'site_name': current_site.name
-    }
-
-    if extra_context is not None:
-        context.update(extra_context)
-    return TemplateResponse(request, template_name, context,
-        current_app=current_app)
-
 
 class Disable(FormView):
     template_name = 'two_factor/disable.html'

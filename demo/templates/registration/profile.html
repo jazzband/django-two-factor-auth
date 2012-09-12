@@ -1,16 +1,18 @@
+{% load future %}
+
 <h1>Profile</h1>
 
 <dl>
     <dt>Logged in as</dt>
-    <dd>{{ user }} (<a href="/accounts/logout/">Logout</a>)</dd>
+    <dd>{{ user }} (<a href="{% url 'logout' %}">Logout</a>)</dd>
 
     <dt>Two-factor authentication</dt>
     <dd>
         {% if user.token %}
-            Enabled (<a href="/accounts/verify/disable/">Disable two-factor
+            Enabled (<a href="{% url 'tf:disable' %}">Disable two-factor
             authorization</a>)
         {% else %}
-            Disabled (<a href="/accounts/verify/enable/">Enable two-factor
+            Disabled (<a href="{% url 'tf:enable' %}">Enable two-factor
             authorization</a>)
         {% endif %}
     </dd>
