@@ -29,6 +29,7 @@ Installation with ``pip``:
     $ pip install django-two-factor-auth
 
 Add ``'two_factor'`` to the ``INSTALLED_APPS``
+::
 
     INSTALLED_APPS = (
         ...
