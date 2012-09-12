@@ -146,11 +146,9 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
             #todo resend message + throttling
             generated_token = totp(token.seed)
             if token.method == 'call':
-                call(to=token.phone,
-                    body=ugettext('Your authorization token is %s' % generated_token))
+                call(to=token.phone, request=request, token=generated_token)
             elif token.method == 'sms':
-                send(to=token.phone,
-                    body=ugettext('Your authorization token is %s' % generated_token))
+                send(to=token.phone, request=request, token=generated_token)
 
         # has this computer been verified?
         try:
@@ -271,12 +269,10 @@ class Enable(SessionWizardView):
             generated_token = totp(self.get_token().seed)
             if method == 'call':
                 phone = self.get_form_data('call', 'phone')
-                call(to=phone,
-                     body=ugettext('Your authorization token is %s' % generated_token))
+                call(to=phone, request=self.request, token=generated_token)
             elif method == 'sms':
                 phone = self.get_form_data('sms', 'phone')
-                send(to=phone,
-                    body=ugettext('Your authorization token is %s' % generated_token))
+                send(to=phone, request=self.request, token=generated_token)
         return response
 
 
