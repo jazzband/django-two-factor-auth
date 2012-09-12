@@ -14,12 +14,10 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    url(r'^accounts/login/$', 'two_factor.views.login'),
-    url(r'^accounts/logout/$', 'two_factor.views.logout'),
-    url(r'^accounts/verify/$', 'two_factor.views.verify_computer'),
-    url(r'^accounts/verify/enable/$', Enable.as_view()),
-    url(r'^accounts/verify/disable/$', Disable.as_view()),
     url(r'^accounts/profile/$', 'demo.views.profile'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+
+    url(r'^tf/', include('two_factor.urls', 'tf')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

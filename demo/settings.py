@@ -1,5 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
 import os
-import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -156,6 +156,8 @@ LOGGING = {
         },
     }
 }
+
+LOGIN_URL = reverse_lazy('tf:login')
 
 # settings that are not in git repo
 from settings_private import *

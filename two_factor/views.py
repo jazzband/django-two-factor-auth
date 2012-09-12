@@ -2,10 +2,10 @@ from datetime import timedelta
 import urlparse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth.views import logout
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
+from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -61,7 +61,7 @@ def login(request, template_name='two_factor/login.html',
                     'user': signer.sign(user.pk),
                 }
                 return HttpResponseRedirect(
-                    '/accounts/verify/?' + urlencode(params)
+                    reverse('tf:verify') + '?' + urlencode(params)
                 )
             else:
                 # Okay, security checks complete. Log the user in.
@@ -113,7 +113,7 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
     try:
         user = User.objects.get(pk=signer.unsign(request.GET.get('user')))
     except (User.DoesNotExist, BadSignature):
-        return HttpResponseRedirect('/accounts/login/')
+        return HttpResponseRedirect(settings.LOGIN_URL)
 
     if request.method == 'POST':
         form = computer_verification_form(user=user, data=request.POST)
@@ -134,7 +134,7 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
                     ip=request.META['REMOTE_ADDR'],
                 )
                 response.set_signed_cookie('computer', vf.id,
-                    path='/accounts/verify/', max_age=30*86400, httponly=True)
+                    path=reverse('tf:verify'), max_age=30*86400, httponly=True)
 
             return response
     else:
@@ -276,4 +276,3 @@ class Enable(SessionWizardView):
         return response
 
 
-logout = logout
