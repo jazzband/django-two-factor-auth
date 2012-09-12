@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from oath import accept_totp
-from two_factor.models import Token
+from two_factor.models import TOKEN_METHODS
 
 class ComputerVerificationForm(forms.Form):
     """
@@ -36,7 +36,7 @@ class ComputerVerificationForm(forms.Form):
 
 
 class MethodForm(forms.Form):
-    method = forms.ChoiceField(label=_("Method"), choices=Token.METHODS,
+    method = forms.ChoiceField(label=_("Method"), choices=TOKEN_METHODS,
         widget=forms.RadioSelect)
 
 

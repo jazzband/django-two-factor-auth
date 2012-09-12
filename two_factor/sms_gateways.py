@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils.importlib import import_module
+GATEWAY = getattr(settings, 'TF_SMS_GATEWAY', 'two_factor.sms_gateways.Fake')
 
 def load_gateway(path):
     module, attr = path.rsplit('.', 1)
@@ -8,8 +9,7 @@ def load_gateway(path):
     return cls()
 
 def get_gateway():
-    path = getattr(settings, 'TF_SMS_GATEWAY', 'two_factor.sms_gateways.Fake')
-    return load_gateway(path)
+    return GATEWAY and load_gateway(GATEWAY)
 
 def send(to, body):
     get_gateway().send(to=to, body=body)
