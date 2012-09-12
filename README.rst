@@ -13,6 +13,13 @@ project has not yet received a lot of real life experience. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests.
 
+Demo
+====
+
+The repository on GitHub includes a demo app, which can be used for testing
+purposes. If you choose to dive in deep, point your browser to  ``/tf/enable/``
+to enable two-factor authentication for your account.
+
 Installation
 ============
 
