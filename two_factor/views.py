@@ -7,7 +7,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
 from django.core.urlresolvers import reverse
 from django.forms import Form
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.datastructures import SortedDict
 from django.utils.http import urlencode
@@ -256,7 +256,7 @@ class Enable(SessionWizardView):
         if token.method == 'sms':
             token.phone = form_data[2]['phone']
         elif token.method == 'call':
-            token.phone = form_data[4]['phone']
+            token.phone = form_data[2]['phone']
         token.save()
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
@@ -276,3 +276,16 @@ class Enable(SessionWizardView):
         return response
 
 
+@never_cache
+def twilio_call_app(request):
+    template = '<?xml version="1.0" encoding="UTF-8" ?>'\
+               '<Response><Say>%(prompt)s</Say></Response>'
+    prompt = ugettext('Hi, this is example.com calling. Please enter the '
+                      'following code on your screen: %(token)s. Repeat: '
+                      '%(token)s.')
+    try:
+        token = signer.unsign(request.GET.get('token'))
+    except BadSignature:
+        raise Http404
+    template = template % {'prompt': prompt} % {'token': '. '.join(token)}
+    return HttpResponse(template, 'text/xml')
