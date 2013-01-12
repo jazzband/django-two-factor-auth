@@ -45,7 +45,7 @@ class PhoneForm(forms.Form):
 
 
 class TokenVerificationForm(forms.Form):
-    token = forms.CharField(label=_("Token"), max_length=6)
+    token = forms.CharField(label=_("Token"), min_length=6, max_length=6)
     seed = None
 
     error_messages = {
@@ -54,9 +54,11 @@ class TokenVerificationForm(forms.Form):
 
     def clean(self):
         token = self.cleaned_data.get('token')
-        if token and not accept_totp(token, self.seed)[0]:
-            raise forms.ValidationError(
-                self.error_messages['invalid_token'])
+        if token:
+            accepted, drift = accept_totp(key=self.seed, response=token)
+            if not accepted:
+                raise forms.ValidationError(
+                    self.error_messages['invalid_token'])
         return self.cleaned_data
 
 
