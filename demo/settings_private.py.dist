@@ -1,0 +1,6 @@
+TF_SMS_GATEWAY = 'two_factor.sms_gateways.Twilio'
+TF_CALL_GATEWAY = 'two_factor.call_gateways.Twilio'
+TWILIO_ACCOUNT_SID = ''
+TWILIO_AUTH_TOKEN = ''
+TWILIO_CALLER_ID = ''
+TWILIO_SMS_CALLER_ID = ''
