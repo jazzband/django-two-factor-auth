@@ -35,5 +35,5 @@ class Twilio(object):
         self.client = TwilioRestClient(account, token)
 
     def send(self, to, token, **kwargs):
-        body = ugettext('Your authorization token is %s' % token)
+        body = ugettext('Your authentication token is %s' % token)
         self.client.sms.messages.create(to=to, from_=self.caller_id, body=body)

@@ -6,10 +6,10 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Enable Two-Factor Authorization</h1>
+    <h1>Enable Two-Factor Authentication</h1>
     {% if wizard.steps.current == 'welcome' %}
         <p>You are about to take your account security to the next level. Follow
-            the steps in this wizard to enable two-factor authorization.</p>
+            the steps in this wizard to enable two-factor authentication.</p>
     {% elif wizard.steps.current == 'method' %}
         <p>Please select which authentication method you would like to use.</p>
     {% elif wizard.steps.current == 'generator' %}
@@ -21,7 +21,7 @@
         <p>Please enter the phone number you wish to receive the text messages
             on. This number will be validated in the next step.</p>
     {% elif wizard.steps.current == 'sms-verify' %}
-        <p>A text message has been sent, please enter the authorization code
+        <p>A text message has been sent, please enter the authentication code
             displayed on your phone.</p>
     {% elif wizard.steps.current == 'call' %}
         <p>Please enter the phone number you wish to be called on. This number

@@ -12,10 +12,10 @@
         <dd>
             {% if user.token %}
                 Enabled (<a href="{% url 'tf:disable' %}">Disable two-factor
-                authorization</a>)
+                authentication</a>)
             {% else %}
                 Disabled (<a href="{% url 'tf:enable' %}">Enable two-factor
-                authorization</a>)
+                authentication</a>)
             {% endif %}
         </dd>
     </dl>
