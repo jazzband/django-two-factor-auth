@@ -8,8 +8,10 @@ from demo import views
 
 urlpatterns = patterns('',
     url(r'^$', views.Home.as_view(), name='home'),
-    url(r'^accounts/profile/$', 'demo.views.profile', name='profile'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+
+    url(r'^account/register/$', 'demo.views.register', name='register'),
+    url(r'^account/profile/$', 'demo.views.profile', name='profile'),
+    url(r'^account/logout/$', 'django.contrib.auth.views.logout', name='logout'),
 
     url(r'^tf/', include('two_factor.urls', 'tf')),
 

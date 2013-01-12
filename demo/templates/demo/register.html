@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load future %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <h1>Register</h1>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table>{{ form }}</table>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+{% endblock %}
