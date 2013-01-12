@@ -1,4 +1,3 @@
-# coding=utf8
 from distutils.core import setup
 from setuptools import find_packages
 
@@ -24,6 +23,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Security',
         'Topic :: System :: Systems Administration :: Authentication/Directory',
     ],

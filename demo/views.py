@@ -1,4 +1,3 @@
-# coding=utf8
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import get_current_site
 from django.template.response import TemplateResponse

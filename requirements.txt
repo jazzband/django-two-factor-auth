@@ -1,0 +1,8 @@
+Django==1.4.3
+PyJWT==0.1.2
+South==0.7.6
+distribute==0.6.27
+httplib2==0.7.7
+oath==1.1
+twilio==3.4.2
+wsgiref==0.1.2
