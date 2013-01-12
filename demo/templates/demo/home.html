@@ -2,5 +2,19 @@
 {% load future %}
 
 {% block content %}
-    Welcome. Visit <a href="{% url 'profile' %}">your profile</a>.
+    <h1>Improve Your Security <small>your users will thank you</small></h1>
+    <p>Welcome to the demo app of <code>django-two-factor-auth</code>. Use
+        this demo to get an understanding of what the app can do for you.</p>
+
+    <h4>Please verify your settings</h4>
+    <p>Have you provided your Twilio settings in the
+        <code>settings_private.py</code> file? By doing so, the demo app will
+        be able to call and text you to verify your authorization tokens.
+        Otherwise, the tokens will be shown in the console.</p>
+
+    <h4>Next steps</h4>
+    <ol>
+        <li>Start by creating an account (unavailable at this moment).</li>
+        <li>Then proceed to <a href="{% url 'profile' %}">your profile</a>.</li>
+    </ol>
 {% endblock %}
