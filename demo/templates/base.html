@@ -16,8 +16,10 @@
             <div class="navbar-inner">
                 <a class="brand" href="{% url 'home' %}">Two Factor Demo</a>
                 <ul class="nav">
-                    <li class="active"><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'profile' %}">My Profile</a></li>
+                    <li class="{% block nav_home %}{% endblock %}">
+                        <a href="{% url 'home' %}">Home</a></li>
+                    <li class="{% block nav_profile %}{% endblock %}">
+                        <a href="{% url 'profile' %}">My Profile</a></li>
                 </ul>
             </div>
         </div>
