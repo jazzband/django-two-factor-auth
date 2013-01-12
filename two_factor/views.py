@@ -7,7 +7,8 @@ from django.contrib.sites.models import get_current_site
 from django.core.signing import Signer, BadSignature
 from django.core.urlresolvers import reverse
 from django.forms import Form
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, \
+    HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from django.utils.datastructures import SortedDict
 from django.utils.http import urlencode
@@ -15,19 +16,22 @@ from django.utils.timezone import now
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, \
+    authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.utils.translation import ugettext
 from django.views.generic import FormView
 from oath.totp import totp
 from two_factor.call_gateways import call
-from two_factor.forms import ComputerVerificationForm, MethodForm, TokenVerificationForm, PhoneForm, DisableForm
+from two_factor.forms import ComputerVerificationForm, MethodForm, \
+    TokenVerificationForm, PhoneForm, DisableForm
 from two_factor.models import VerifiedComputer, Token
 from two_factor.sms_gateways import send
 from two_factor.util import generate_seed, get_qr_url, class_view_decorator
 
 signer = Signer()
+
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -89,6 +93,7 @@ def login(request, template_name='two_factor/login.html',
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
         current_app=current_app)
+
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -239,8 +244,8 @@ class Enable(SessionWizardView):
             alias = '%s@%s' % (self.request.user.username,
                                get_current_site(self.request).name)
             seed = generate_seed()
-            self.storage.data['token'] = Token(
-                seed=seed, user=self.request.user)
+            self.storage.data['token'] = Token(seed=seed,
+                                               user=self.request.user)
             self.storage.data['extra_data']['qr_url'] = get_qr_url(alias, seed)
         return self.storage.data['token']
 
@@ -280,12 +285,23 @@ class Enable(SessionWizardView):
 def twilio_call_app(request):
     template = '<?xml version="1.0" encoding="UTF-8" ?>'\
                '<Response><Say>%(prompt)s</Say></Response>'
-    prompt = ugettext('Hi, this is example.com calling. Please enter the '
+
+    prompt = ugettext('Hi, this is %(site_name)s calling. Please enter the '
                       'following code on your screen: %(token)s. Repeat: '
                       '%(token)s.')
     try:
         token = signer.unsign(request.GET.get('token'))
     except BadSignature:
-        raise Http404
-    template = template % {'prompt': prompt} % {'token': '. '.join(token)}
-    return HttpResponse(template, 'text/xml')
+        return HttpResponseBadRequest('Bad Request')
+
+    # Build the prompt. The numbers have to be clearly pronounced, this is
+    # by creating a string like "1. 2. 3. 4. 5. 6.", this way Twilio reads the
+    # numbers one by one.
+    prompt = prompt % {
+        'token': '. '.join(token),
+        'site_name': get_current_site(request).name,
+    }
+    prompt = template % {
+        'prompt': prompt,
+    }
+    return HttpResponse(prompt, 'text/xml')
