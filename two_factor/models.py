@@ -4,15 +4,15 @@ from django.contrib.auth.models import User
 from two_factor import call_gateways, sms_gateways
 
 TOKEN_METHODS = [
-    ('generator', 'Token generator (iPhone/Android App)'),
+    ('generator', _('Token generator (iPhone/Android App)')),
 ]
 if call_gateways.GATEWAY:
     TOKEN_METHODS += [
-        ('call', 'Phone call'),
+        ('call', _('Phone call')),
     ]
 if sms_gateways.GATEWAY:
     TOKEN_METHODS += [
-        ('sms', 'Text message'),
+        ('sms', _('Text message')),
     ]
 
 

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% load future %}
+{% load future i18n %}
 
 {% block content %}
-    <h1>Disable Two-factor Authentication</h1>
-    <p>You are about to disable two-factor authentication. You will no longer be
-        prevented from hackers stealing your passwords. Are you sure?</p>
+    <h1>{% trans "Disable Two-factor Authentication" %}</h1>
+    <p>{% blocktrans %}You are about to disable two-factor authentication. This
+        compromises your account security, are you sure?{% endblocktrans %}</p>
     <form method="post">
         {% csrf_token %}
         <table>{{ form }}</table>
-        <button type="submit">Insecure my account</button>
+        <button type="submit">{% trans "Disable" %}</button>
     </form>
 {% endblock %}

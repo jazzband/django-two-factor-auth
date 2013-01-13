@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% load future %}
+{% load future i18n %}
 
 {% block content %}
-    <h1>Verify</h1>
+    <h1>{% trans "Two-Factor Verification" %}</h1>
     <form method="post">
         {% csrf_token %}
         <table>{{ form }}</table>
-        <button type="submit">Login</button>
+        <button type="submit">{% trans "Verify" %}</button>
     </form>
 {% endblock %}
