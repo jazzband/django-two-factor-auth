@@ -5,23 +5,21 @@
 {% block nav_profile %}active{% endblock %}
 
 {% block content %}
-    <h1>My Profile</h1>
+    <h1>Hi, <small>{{ user }}</small></h1>
 
-    <dl>
-        <dt>Logged in as</dt>
-        <dd>{{ user }} (<a href="{% url 'logout' %}">Logout</a>)</dd>
-
-        <dt>Two-factor authentication</dt>
-        <dd>
-            {% if user.token %}
-                Enabled (<a href="{% url 'tf:disable' %}">Disable two-factor
-                authentication</a>)
-            {% else %}
-                Disabled (<a href="{% url 'tf:enable' %}">Enable two-factor
-                authentication</a>)
-            {% endif %}
-        </dd>
-    </dl>
+    <h4>Two-Factor Authentication</h4>
+    {% if not user.token %}
+        <p>To increase your account security, please enable two-factor
+            authentication. Use the simple wizard to guide you through the steps
+            to link your phone with your account.</p>
+        <p><a href="{% url 'tf:enable' %}" class="btn btn-success">
+            Enable two-factor authentication</a></p>
+    {% else %}
+        <p>You have enabled two-factor authentication. If you have changed your
+            mind, you can disable it again.</p>
+        <p><a href="{% url 'tf:disable' %}" class="btn btn-mini btn-danger">
+            Disable two-factor authentication</a></p>
+    {% endif %}
 
     <h4>Authorized Computers</h4>
     {% if user.verifiedcomputer_set.all %}
