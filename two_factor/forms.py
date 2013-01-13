@@ -41,7 +41,13 @@ class MethodForm(forms.Form):
 
 
 class PhoneForm(forms.Form):
-    phone = forms.CharField(label=_("Phone Number"))
+    error_messages = {
+        'invalid_phone': _('Please enter a valid phone number, including your '
+                           'country code starting with + or 00.')
+    }
+
+    phone = forms.RegexField('^(\+|00)', label=_('Phone Number'),
+                             error_message=error_messages['invalid_phone'])
 
 
 class TokenVerificationForm(forms.Form):
