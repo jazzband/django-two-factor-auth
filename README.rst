@@ -17,8 +17,8 @@ Demo
 ====
 
 The repository on GitHub includes a demo app, which can be used for testing
-purposes. If you choose to dive in deep, point your browser to  ``/tf/enable/``
-to enable two-factor authentication for your account.
+purposes. Please have a look at this demo app if you are thinking about giving
+this app a spin.
 
 Installation
 ============
@@ -92,3 +92,17 @@ your Twilio account dashboard.
     TWILIO_SMS_CALLER_ID = '[verified phone number]'
 
 .. _Twilio: http://www.twilio.com/
+
+Todo / Wish List
+================
+
+* Test suite
+* More extensive documentation
+* Different security levels, only requiring two-factor authentication for very
+  sensitive parts of applications
+
+Contributing
+============
+
+* Fork the repository on GitHub and start hacking
+* Send a pull request with your changes
