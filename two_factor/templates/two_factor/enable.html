@@ -26,8 +26,6 @@
     {% elif wizard.steps.current == 'call' %}
         <p>Please enter the phone number you wish to be called on. This number
             will be validated in the next step.</p>
-    {% elif wizard.steps.current == 'sms-verify' %}
-        <p>Sorry, this is not working yet.</p>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}
@@ -47,7 +45,8 @@
         <div style="margin-left: -500px"><input type="submit" value=""/></div>
 
         {% if wizard.steps.prev %}
-            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
+            <button name="wizard_goto_step" type="submit"
+                    value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
         {% endif %}
         <button type="submit">{% trans "Next" %}</button>
     </form>
