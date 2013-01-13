@@ -11,7 +11,11 @@ urlpatterns = patterns('',
 
     url(r'^account/register/$', 'demo.views.register', name='register'),
     url(r'^account/profile/$', 'demo.views.profile', name='profile'),
-    url(r'^account/logout/$', 'django.contrib.auth.views.logout', name='logout'),
+    url(r'^account/unverify/(?P<id>\d+)/$',
+        'demo.views.remove_computer_verification', name='unverify'),
+
+    url(r'^account/logout/$', 'django.contrib.auth.views.logout',
+        name='logout'),
 
     url(r'^tf/', include('two_factor.urls', 'tf')),
 

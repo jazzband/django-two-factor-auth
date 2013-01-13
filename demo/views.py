@@ -7,6 +7,8 @@ from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from two_factor.models import VerifiedComputer
+
 
 class Home(TemplateView):
     template_name = 'demo/home.html'
@@ -42,3 +44,14 @@ def profile(request, template_name='demo/profile.html',
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
         current_app=current_app)
+
+
+@never_cache
+@login_required
+def remove_computer_verification(request, id):
+    if request.method == 'POST':
+        try:
+            request.user.verifiedcomputer_set.get(id=id).delete()
+        except VerifiedComputer.DoesNotExist:
+            pass
+    return redirect(profile)
