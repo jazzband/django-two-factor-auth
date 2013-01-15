@@ -12,4 +12,8 @@ class TokenBackend(ModelBackend):
 class VerifiedComputerBackend(ModelBackend):
     def authenticate(self, user, computer_id):
         verification = user.verifiedcomputer_set.get(pk=computer_id)
-        return user if verification.verified_until > now() else None
+        if verification.verified_until < now():
+            return None
+        verification.last_used_at=now()
+        verification.save()
+        return user
