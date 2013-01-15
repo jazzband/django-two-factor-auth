@@ -14,15 +14,17 @@ problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests.
 
 Demo
-====
-
+----
 The repository on GitHub includes a demo app, which can be used for testing
 purposes. Please have a look at this demo app if you are thinking about giving
 this app a spin.
 
+Compatibility
+-------------
+Compatible with Django 1.4 and 1.5.
+
 Installation
 ============
-
 Installation with ``pip``:
 ::
 
@@ -65,7 +67,6 @@ automatically patched to use the new login method.
 
 Settings
 ========
-
 ``TF_SMS_GATEWAY``
     Which module should be used to send text messages. It defaults to
     ``two_factor.sms_gateways.Fake``, which echoes the text messages to the
@@ -78,7 +79,6 @@ Settings
 
 Twilio
 ------
-
 Gateways for sending text message and initiating calls trough Twilio_ come
 prepackaged. All you need is your Twilio Account SID and Token, as shown in
 your Twilio account dashboard.
@@ -95,7 +95,6 @@ your Twilio account dashboard.
 
 Todo / Wish List
 ================
-
 * Test suite
 * More extensive documentation
 * Different security levels, only requiring two-factor authentication for very
@@ -103,6 +102,5 @@ Todo / Wish List
 
 Contributing
 ============
-
 * Fork the repository on GitHub and start hacking
 * Send a pull request with your changes
