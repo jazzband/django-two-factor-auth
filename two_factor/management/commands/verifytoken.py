@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.management import BaseCommand, CommandError
 from oath.totp import accept_totp
 
+
 class Command(BaseCommand):
     args = '<username token>'
     help = 'Verify a generated token'

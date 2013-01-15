@@ -43,7 +43,7 @@ def profile(request, template_name='demo/profile.html',
     if extra_context is not None:
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
-        current_app=current_app)
+                            current_app=current_app)
 
 
 @never_cache

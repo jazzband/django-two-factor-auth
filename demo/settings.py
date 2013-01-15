@@ -79,7 +79,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -89,7 +89,7 @@ SECRET_KEY = '3cjc%wa#c!v%vot_5iw0t3caoj%(#o#8tcs!871=szy)ovvy@4'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,7 +108,7 @@ ROOT_URLCONF = 'demo.urls'
 WSGI_APPLICATION = 'demo.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_PATH, 'templates'),
@@ -172,4 +172,5 @@ LOGIN_REDIRECT_URL = reverse_lazy('profile')
 # load settings that are not in git repo
 try:
     from settings_private import *
-except ImportError: pass
+except ImportError:
+    pass

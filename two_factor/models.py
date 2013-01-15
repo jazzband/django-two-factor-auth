@@ -27,9 +27,9 @@ class Token(models.Model):
     user = models.OneToOneField(User, verbose_name=_('user'))
     seed = models.CharField(_('seed'), max_length=16)
 
-    method = models.CharField(_('authentication method'), choices=TOKEN_METHODS,
-        max_length=16)
+    method = models.CharField(_('authentication method'),
+                              choices=TOKEN_METHODS, max_length=16)
 
     phone = models.CharField(_('phone number'), max_length=16)
     backup_phone = models.CharField(_('backup phone number'), max_length=16,
-        null=True, blank=True)
+                                    null=True, blank=True)

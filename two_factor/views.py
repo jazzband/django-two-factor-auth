@@ -92,16 +92,16 @@ def login(request, template_name='two_factor/login.html',
     if extra_context is not None:
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
-        current_app=current_app)
+                            current_app=current_app)
 
 
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
 def verify_computer(request, template_name='two_factor/verify_computer.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          computer_verification_form=ComputerVerificationForm,
-          current_app=None, extra_context=None):
+                    redirect_field_name=REDIRECT_FIELD_NAME,
+                    computer_verification_form=ComputerVerificationForm,
+                    current_app=None, extra_context=None):
 
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     netloc = urlparse.urlparse(redirect_to)[1]
@@ -136,10 +136,10 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
                 vf = user.verifiedcomputer_set.create(
                     verified_until=now() + timedelta(days=30),
                     last_used_at=now(),
-                    ip=request.META['REMOTE_ADDR'],
-                )
+                    ip=request.META['REMOTE_ADDR'])
                 response.set_signed_cookie('computer', vf.id,
-                    path=reverse('tf:verify'), max_age=30*86400, httponly=True)
+                                           path=reverse('tf:verify'),
+                                           max_age=30*86400, httponly=True)
 
             return response
     else:
@@ -181,7 +181,7 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
     if extra_context is not None:
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
-        current_app=current_app)
+                            current_app=current_app)
 
 
 class Disable(FormView):

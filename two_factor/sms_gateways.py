@@ -4,14 +4,17 @@ from django.utils.translation import ugettext
 
 GATEWAY = getattr(settings, 'TF_SMS_GATEWAY', 'two_factor.sms_gateways.Fake')
 
+
 def load_gateway(path):
     module, attr = path.rsplit('.', 1)
     mod = import_module(module)
     cls = getattr(mod, attr)
     return cls()
 
+
 def get_gateway():
     return GATEWAY and load_gateway(GATEWAY)
+
 
 def send(to, token, **kwargs):
     get_gateway().send(to=to, token=token, **kwargs)

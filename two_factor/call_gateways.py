@@ -6,14 +6,17 @@ from django.utils.importlib import import_module
 
 GATEWAY = getattr(settings, 'TF_CALL_GATEWAY', 'two_factor.call_gateways.Fake')
 
+
 def load_gateway(path):
     module, attr = path.rsplit('.', 1)
     mod = import_module(module)
     cls = getattr(mod, attr)
     return cls()
 
+
 def get_gateway():
     return GATEWAY and load_gateway(GATEWAY)
+
 
 def call(to, token, **kwargs):
     get_gateway().call(to=to, token=token, **kwargs)
@@ -38,6 +41,7 @@ class Twilio(object):
 
     def call(self, to, token, request, **kwargs):
         signer = Signer()
-        url = request.build_absolute_uri(reverse('tf:twilio_call_app')) + \
-                '?' + urlencode({'token': signer.sign(token)})
+        url = '?'.join([reverse('tf:twilio_call_app'),
+                        urlencode({'token': signer.sign(token)})])
+        url = request.build_absolute_uri(url)
         self.client.calls.create(to=to, from_=self.caller_id, url=url)

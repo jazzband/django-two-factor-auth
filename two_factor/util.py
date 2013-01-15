@@ -4,12 +4,16 @@ from binascii import hexlify, unhexlify
 from urllib import urlencode
 from django.utils.decorators import method_decorator
 
+
 def generate_seed(length=10):
-    return hexlify(''.join([chr(random.randint(0,255)) for i in range(length)]))
+    return hexlify(''.join([chr(random.randint(0, 255))
+                            for _ in range(length)]))
+
 
 def get_otpauth_url(alias, seed):
     seed_b32 = b32encode(unhexlify(seed))
-    return  'otpauth://totp/%s?secret=%s' % (alias, seed_b32)
+    return 'otpauth://totp/%s?secret=%s' % (alias, seed_b32)
+
 
 def get_qr_url(alias, seed):
     return "https://chart.googleapis.com/chart?" + urlencode({
@@ -18,6 +22,7 @@ def get_qr_url(alias, seed):
         "cht": "qr",
         "chl": get_otpauth_url(alias, seed)
     })
+
 
 #@from http://stackoverflow.com/a/8429311/58107
 def class_view_decorator(function_decorator):

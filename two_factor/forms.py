@@ -4,14 +4,15 @@ from django.utils.translation import ugettext_lazy as _
 from oath import accept_totp
 from two_factor.models import TOKEN_METHODS
 
+
 class ComputerVerificationForm(forms.Form):
     """
-    Base class for computer verification. Extend this to get a form that accepts
-    token values.
+    Base class for computer verification. Extend this to get a form that
+    accepts token values.
     """
     token = forms.CharField(label=_("Token"), max_length=6)
-    remember = forms.BooleanField(label=_("Remember this computer for 30 days"),
-        required=False)
+    remember = forms.BooleanField(
+        label=_("Remember this computer for 30 days"), required=False)
 
     error_messages = {
         'invalid_token': _("Please enter a valid token."),
@@ -37,7 +38,7 @@ class ComputerVerificationForm(forms.Form):
 
 class MethodForm(forms.Form):
     method = forms.ChoiceField(label=_("Method"), choices=TOKEN_METHODS,
-        widget=forms.RadioSelect)
+                               widget=forms.RadioSelect)
 
 
 class PhoneForm(forms.Form):

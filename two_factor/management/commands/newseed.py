@@ -5,6 +5,7 @@ from django.utils.http import urlencode
 from two_factor.models import Token
 from two_factor.util import generate_seed, get_qr_url
 
+
 class Command(BaseCommand):
     args = '<username>'
     help = 'Set new seed for two-factor authentication'

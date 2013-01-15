@@ -14,6 +14,6 @@ class VerifiedComputerBackend(ModelBackend):
         verification = user.verifiedcomputer_set.get(pk=computer_id)
         if verification.verified_until < now():
             return None
-        verification.last_used_at=now()
+        verification.last_used_at = now()
         verification.save()
         return user

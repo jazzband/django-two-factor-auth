@@ -6,7 +6,8 @@ admin.autodiscover()
 
 from demo import views
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$', views.Home.as_view(), name='home'),
 
     url(r'^account/register/$', 'demo.views.register', name='register'),

@@ -7,7 +7,7 @@ setup(
     author='Bouke Haarsma',
     author_email='bouke@webatoom.nl',
     packages=find_packages(exclude='demo'),
-    package_data={'two_factor': ['templates/two_factor/*.html',],},
+    package_data={'two_factor': ['templates/two_factor/*.html', ], },
     url='http://github.com/Bouke/django-two-factor-auth',
     description='Complete Two-Factor Authentication for Django',
     license='MIT',
