@@ -1,1 +1,3 @@
 demo/settings_private.py
+
+*.egg-info
