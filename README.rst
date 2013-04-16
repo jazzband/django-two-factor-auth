@@ -96,7 +96,7 @@ your Twilio account dashboard.
 Todo / Wish List
 ================
 * Test suite
-* More extensive documentation
+* Extensive documentation
 * Different security levels, only requiring two-factor authentication for very
   sensitive parts of applications
 
@@ -104,3 +104,11 @@ Contributing
 ============
 * Fork the repository on GitHub and start hacking
 * Send a pull request with your changes
+
+Testing
+-------
+To run the test suite simply run ``python demo/manage.py test``. This project
+uses ``django-discover-runner`` to discover the tests located in ``tests/``.
+
+The goals is to have a extensive test suite to validate cover all security
+aspects. When contributing, please make sure your code is properly tested.
