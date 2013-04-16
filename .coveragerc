@@ -1,0 +1,5 @@
+[run]
+source = two_factor
+
+[report]
+precision = 2
