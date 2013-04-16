@@ -169,6 +169,9 @@ LOGGING = {
 LOGIN_URL = reverse_lazy('tf:login')
 LOGIN_REDIRECT_URL = reverse_lazy('profile')
 
+# django-discover-runner
+TEST_RUNNER = 'discover_runner.DiscoverRunner'
+
 # load settings that are not in git repo
 try:
     from settings_private import *
