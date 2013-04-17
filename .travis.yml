@@ -15,6 +15,9 @@ install:
   - pip install -r requirements.txt --use-mirrors
   # run 2to3 for Python 3.3
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then 2to3 -w -n --no-diffs . 2>&1 | tail -n 2; fi"
-script: coverage run demo/manage.py test
-after_success:
+script:
+  - flake8 two_factor --exclude=migrations
+  - flake8 tests
+  - flake8 demo --exclude=settings.py
+  - coverage run demo/manage.py test
   - coverage report
