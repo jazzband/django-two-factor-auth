@@ -1,7 +1,5 @@
-import random
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand, CommandError
-from django.utils.http import urlencode
 from two_factor.models import Token
 from two_factor.util import generate_seed, get_qr_url
 

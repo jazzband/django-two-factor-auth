@@ -1,4 +1,3 @@
-from binascii import hexlify
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand, CommandError
 from oath.totp import accept_totp
