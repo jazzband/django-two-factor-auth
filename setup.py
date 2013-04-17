@@ -1,5 +1,10 @@
 from distutils.core import setup
 from setuptools import find_packages
+import sys
+
+extra = {}
+if sys.version_info >= (3,):
+    extra['use_2to3'] = True
 
 setup(
     name='django-two-factor-auth',
@@ -27,4 +32,5 @@ setup(
         'Topic :: Security',
         'Topic :: System :: Systems Administration :: Authentication/Directory',
     ],
+    **extra
 )
