@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
-from django.core.signing import Signer, BadSignature
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponseRedirect, HttpResponse, \
@@ -30,7 +30,7 @@ from two_factor.models import VerifiedComputer, Token
 from two_factor.sms_gateways import send
 from two_factor.util import generate_seed, get_qr_url, class_view_decorator
 
-signer = Signer()
+signer = TimestampSigner()
 
 
 @sensitive_post_parameters()
@@ -116,8 +116,10 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
         redirect_to = settings.LOGIN_REDIRECT_URL
 
     try:
-        user = User.objects.get(pk=signer.unsign(request.GET.get('user')))
-    except (User.DoesNotExist, BadSignature):
+        max_age = getattr(settings, 'TF_VERIFICATION_WINDOW', 60)
+        user = User.objects.get(pk=signer.unsign(request.GET.get('user'),
+                                                 max_age=max_age))
+    except (User.DoesNotExist, BadSignature, SignatureExpired):
         return HttpResponseRedirect(settings.LOGIN_URL)
 
     if request.method == 'POST':
