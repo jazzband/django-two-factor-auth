@@ -62,8 +62,8 @@ def login(request, template_name='two_factor/login.html',
             if hasattr(user, 'token'):
                 params = {
                     redirect_field_name: redirect_to,
-                    'user': signer.sign(user.pk),
                 }
+                request.session['tf_user'] = user.pk
                 return HttpResponseRedirect(
                     reverse('tf:verify') + '?' + urlencode(params)
                 )
@@ -116,8 +116,8 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
         redirect_to = settings.LOGIN_REDIRECT_URL
 
     try:
-        user = User.objects.get(pk=signer.unsign(request.GET.get('user')))
-    except (User.DoesNotExist, BadSignature):
+        user = User.objects.get(pk=request.session.get('tf_user', None))
+    except User.DoesNotExist:
         return HttpResponseRedirect(settings.LOGIN_URL)
 
     if request.method == 'POST':
