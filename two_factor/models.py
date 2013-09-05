@@ -25,7 +25,7 @@ class VerifiedComputer(models.Model):
 
 class Token(models.Model):
     user = models.OneToOneField(User, verbose_name=_('user'))
-    seed = models.CharField(_('seed'), max_length=16)
+    seed = models.CharField(_('seed'), max_length=32)
 
     method = models.CharField(_('authentication method'),
                               choices=TOKEN_METHODS, max_length=16)

@@ -81,6 +81,17 @@ Settings
     ``two_factor.call_gateways.Fake``, which echoes the call message to the
     console. A gateway for Twilio comes prepackaged, see the settings below.
 
+``TF_VERIFICATION_WINDOW``
+    Number of seconds that the signed user verification is valid for.
+    Defaults to 60.
+
+``TF_SECURE_COOKIE``
+    Mark the cookie used to verify that the user has successfully authenticated
+    with their password as secure (meaning it should only be sent over HTTPS).
+    Defaults to False if DEBUG==True, True otherwise.
+    NOTE: this must be set to False when not using a secure connection, but
+    doing so is a potential security hole.
+
 Twilio
 ------
 Gateways for sending text message and initiating calls trough Twilio_ come

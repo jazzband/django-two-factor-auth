@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
-from django.core.signing import Signer, BadSignature
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponseRedirect, HttpResponse, \
@@ -30,8 +30,11 @@ from two_factor.models import VerifiedComputer, Token
 from two_factor.sms_gateways import send
 from two_factor.util import generate_seed, get_qr_url, class_view_decorator
 
-signer = Signer()
-
+signer = TimestampSigner()
+TF_VERIFICATION_WINDOW = getattr(settings, 'TF_VERIFICATION_WINDOW', 60)
+# Default to False if DEBUG is turned on, True otherwise
+TF_SECURE_COOKIE = getattr(settings, 'TF_SECURE_COOKIE',
+                           not getattr(settings, 'DEBUG', False))
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -62,11 +65,15 @@ def login(request, template_name='two_factor/login.html',
             if hasattr(user, 'token'):
                 params = {
                     redirect_field_name: redirect_to,
-                    'user': signer.sign(user.pk),
                 }
-                return HttpResponseRedirect(
+                response = HttpResponseRedirect(
                     reverse('tf:verify') + '?' + urlencode(params)
                 )
+                response.set_signed_cookie('user',
+                                           signer.sign(user.pk),
+                                           max_age=TF_VERIFICATION_WINDOW,
+                                           secure=TF_SECURE_COOKIE)
+                return response
             else:
                 # Okay, security checks complete. Log the user in.
                 auth_login(request, user)
@@ -116,8 +123,9 @@ def verify_computer(request, template_name='two_factor/verify_computer.html',
         redirect_to = settings.LOGIN_REDIRECT_URL
 
     try:
-        user = User.objects.get(pk=signer.unsign(request.GET.get('user')))
-    except (User.DoesNotExist, BadSignature):
+        user = User.objects.get(pk=signer.unsign(request.get_signed_cookie('user'),
+                                                 max_age=TF_VERIFICATION_WINDOW))
+    except (User.DoesNotExist, BadSignature, ExpiredSignature):
         return HttpResponseRedirect(settings.LOGIN_URL)
 
     if request.method == 'POST':
