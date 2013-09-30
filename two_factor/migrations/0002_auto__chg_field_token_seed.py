@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
 
         # Changing field 'Token.seed'
-        db.alter_column(u'two_factor_token', 'seed', self.gf('django.db.models.fields.CharField')(max_length=20))
+        db.alter_column(u'two_factor_token', 'seed', self.gf('django.db.models.fields.CharField')(max_length=32))
 
     def backwards(self, orm):
 
