@@ -1,0 +1,17 @@
+# The app itself
+
+-e .
+
+# Runtime dependencies
+
+Django
+South
+twilio
+django-debug-toolbar
+django_otp
+
+# Testing
+
+coverage
+flake8
+tox

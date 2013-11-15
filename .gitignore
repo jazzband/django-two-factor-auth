@@ -1,3 +1,5 @@
-demo/settings_private.py
+example/settings_private.py
 *.egg-info
 /.coverage
+
+/.tox/

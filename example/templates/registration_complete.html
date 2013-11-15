@@ -1,0 +1,12 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block title %}Registration Complete{% endblock %}
+
+{% block content %}
+  <h1>Registration <small>Complete</small></h1>
+  <p>{% blocktrans %}Congratulations, you've successfully registered an
+    account.{% endblocktrans %}</p>
+  <p><a href="{{ login_url }}"
+        class="btn btn-block btn-default">{% trans "Login" %}</a></p>
+{% endblock %}

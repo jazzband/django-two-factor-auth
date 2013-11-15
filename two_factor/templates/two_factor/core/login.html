@@ -1,0 +1,35 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{% trans "Login" %}</h1>
+
+  {% if wizard.steps.current == 'auth' %}
+    <p>{% blocktrans %}Enter your credentials.{% endblocktrans %}</p>
+  {% elif wizard.steps.current == 'token' %}
+    <p>{{ instructions }}</p>
+  {% endif %}
+
+  <form action="" method="post">{% csrf_token %}
+    <table>
+      {{ wizard.management_form }}
+      {{ wizard.form }}
+    </table>
+
+    {# hidden submit button to enable [enter] key #}
+    <div style="margin-left: -500px"><input type="submit" value=""/></div>
+
+    {% if other_devices %}
+      <p>Or, alternatively, use one of your backup phones:</p>
+      <p>
+        {% for other in other_devices %}
+        <button name="challenge_device" type="submit"
+                value="{{ other.persistent_id }}" class="btn btn-default btn-block">
+          {{ other.get_method_display }} to {{ other.number }}
+        </button>
+      {% endfor %}</p>
+    {% endif %}
+
+    {% include "two_factor/_wizard_actions.html" %}
+  </form>
+{% endblock %}

@@ -12,20 +12,27 @@ projects. Inspired by the user experience of Google's Two-Step Authentication,
 allowing users to authenticate through call, text messages (SMS) or by using an
 app like Google Authenticator.
 
-This project is in alpha state. Although there are no known problems, the
-project has not yet received a lot of real life experience. If you run into
+The package is being prepared for version 0.3.0. This new version is a full
+rewrite, taking advantage of the one-time password framework django-otp_. This
+version is not yet released on PyPI, but is already feature-complete. It is
+fully compatible with Django 1.6, although support for older versions is
+planned.
+
+I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests.
 
-Demo
-----
-The repository on GitHub includes a demo app, which can be used for testing
-purposes. Please have a look at this demo app if you are thinking about giving
-this app a spin.
+.. _django-otp: https://pypi.python.org/pypi/django-otp
+
+Example
+-------
+The repository on GitHub includes a example app, which can be used for testing
+purposes. Please have a look at this example app if you are thinking about
+giving this app a spin.
 
 Compatibility
 -------------
-Compatible with Django 1.4 and 1.5.
+Compatible with Django 1.4, 1.5 and 1.6 on Python 2.6, 2.7, 3.2 and 3.3.
 
 Installation
 ============
@@ -34,35 +41,29 @@ Installation with ``pip``:
 
     $ pip install django-two-factor-auth
 
-Add ``'two_factor'`` to the ``INSTALLED_APPS``
+Add the following apps to the ``INSTALLED_APPS``
 ::
 
     INSTALLED_APPS = (
         ...
+        'django_otp',
+        'django_otp.plugins.otp_static',
+        'django_otp.plugins.otp_totp',
         'two_factor',
-    )
-
-Configure the authentication backends like so:
-::
-
-    AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-        'two_factor.auth_backends.TokenBackend',
-        'two_factor.auth_backends.VerifiedComputerBackend',
     )
 
 Configure the login url:
 ::
 
     from django.core.urlresolvers import reverse_lazy
-    LOGIN_URL = reverse_lazy('tf:login')
+    LOGIN_URL = reverse_lazy('two_factor:login')
 
 Add the url routes:
 ::
 
     urlpatterns = patterns('',
         ...
-        url(r'^tf/', include('two_factor.urls', 'tf')),
+        url(r'', include('two_factor.urls', 'two_factor')),
     )
 
 Be sure to remove any other login routes, otherwise the two-factor
@@ -71,48 +72,52 @@ automatically patched to use the new login method.
 
 Settings
 ========
-``TF_SMS_GATEWAY``
-    Which module should be used to send text messages. It defaults to
-    ``two_factor.sms_gateways.Fake``, which echoes the text messages to the
-    console. A gateway for Twilio comes prepackaged, see the settings below.
+``TWO_FACTOR_SMS_GATEWAY`` (default: ``two_factor.gateways.fake.Fake``)
+    Which module should be used for sending text messages.
 
-``TF_CALL_GATEWAY``
-    Which module should be used for calls. It defaults to
-    ``two_factor.call_gateways.Fake``, which echoes the call message to the
-    console. A gateway for Twilio comes prepackaged, see the settings below.
+``TWO_FACTOR_CALL_GATEWAY`` (default: ``two_factor.gateways.fake.Fake``)
+    Which module should be used for making calls.
 
-Twilio
-------
+Gateway ``two_factor.gateways.fake.Fake``
+-----------------------------------------
+Prints the tokens to the logger. You will have to set the message level of the
+``two_factor`` logger to ``INFO`` for them to appear in the console.
+::
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'two_factor': {
+                'handlers': ['console'],
+                'level': 'INFO',
+            }
+        }
+    }
+
+Gateway ``two_factor.gateways.twilio.Twilio``
+---------------------------------------------
 Gateways for sending text message and initiating calls trough Twilio_ come
 prepackaged. All you need is your Twilio Account SID and Token, as shown in
 your Twilio account dashboard.
 ::
 
-    TF_CALL_GATEWAY = 'two_factor.call_gateways.Twilio'
-    TF_SMS_GATEWAY = 'two_factor.sms_gateways.Twilio'
+    TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.Twilio'
+    TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.Twilio'
     TWILIO_ACCOUNT_SID = '***'
     TWILIO_AUTH_TOKEN = '***'
     TWILIO_CALLER_ID = '[verified phone number]'
-    TWILIO_SMS_CALLER_ID = '[verified phone number]'
 
 .. _Twilio: http://www.twilio.com/
 
-Todo / Wish List
-================
-* Test suite
-* Extensive documentation
-* Different security levels, only requiring two-factor authentication for very
-  sensitive parts of applications
-
 Contributing
 ============
-* Fork the repository on GitHub and start hacking
-* Send a pull request with your changes
-
-Testing
--------
-To run the test suite simply run ``python demo/manage.py test``. This project
-uses ``django-discover-runner`` to discover the tests located in ``tests/``.
-
-The goals is to have a extensive test suite to validate cover all security
-aspects. When contributing, please make sure your code is properly tested.
+* Fork the repository on GitHub and start hacking.
+* Run the tests.
+* Send a pull request with your changes.

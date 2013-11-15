@@ -1,73 +1,107 @@
+from binascii import unhexlify
+from time import time
 from django import forms
-from django.contrib.auth import authenticate
+from django.forms import ModelForm, Form
 from django.utils.translation import ugettext_lazy as _
-from oath import accept_totp
-from two_factor.models import TOKEN_METHODS
+from django_otp.forms import OTPAuthenticationFormMixin
+from django_otp.oath import totp
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
+from two_factor.models import PhoneDevice, PHONE_METHODS
 
 
-class ComputerVerificationForm(forms.Form):
-    """
-    Base class for computer verification. Extend this to get a form that
-    accepts token values.
-    """
-    token = forms.CharField(label=_("Token"), max_length=6)
-    remember = forms.BooleanField(
-        label=_("Remember this computer for 30 days"), required=False)
+class PhoneForm(ModelForm):
+    method = forms.ChoiceField(choices=PHONE_METHODS, widget=forms.RadioSelect)
 
-    error_messages = {
-        'invalid_token': _("Please enter a valid token."),
-        'inactive': _("This account is inactive."),
-    }
+    class Meta:
+        model = PhoneDevice
+        fields = 'number', 'method',
 
-    def __init__(self, request=None, user=None, **kwargs):
-        self.user = user
-        super(ComputerVerificationForm, self).__init__(**kwargs)
 
-    def clean(self):
-        token = self.cleaned_data.get('token')
+class DeviceValidationForm(forms.Form):
+    token = forms.IntegerField(label=_("Token"), min_value=1, max_value=999999)
 
-        if token:
-            self.user_cache = authenticate(token=token, user=self.user)
-            if self.user_cache is None:
-                raise forms.ValidationError(
-                    self.error_messages['invalid_token'])
-            elif not self.user_cache.is_active:
-                raise forms.ValidationError(self.error_messages['inactive'])
-        return self.cleaned_data
+    def __init__(self, device, **args):
+        super(DeviceValidationForm, self).__init__(**args)
+        self.device = device
+
+    def clean_token(self):
+        token = self.cleaned_data['token']
+        if not self.device.verify_token(token):
+            raise forms.ValidationError(_('Entered token is not valid'))
+        return token
 
 
 class MethodForm(forms.Form):
-    method = forms.ChoiceField(label=_("Method"), choices=TOKEN_METHODS,
+    method = forms.ChoiceField(label=_("Method"),
+                               choices=(
+                                   ('generator', _('Token generator')),
+                               ),
+                               initial='generator',
                                widget=forms.RadioSelect)
 
 
-class PhoneForm(forms.Form):
-    error_messages = {
-        'invalid_phone': _('Please enter a valid phone number, including your '
-                           'country code starting with + or 00.')
-    }
-
-    phone = forms.RegexField('^(\+|00)', label=_('Phone Number'),
-                             error_message=error_messages['invalid_phone'])
-
-
-class TokenVerificationForm(forms.Form):
-    token = forms.CharField(label=_("Token"), min_length=6, max_length=6)
-    seed = None
+class TOTPDeviceForm(forms.Form):
+    token = forms.IntegerField(label=_("Token"), min_value=1, max_value=999999)
 
     error_messages = {
         'invalid_token': _("Please enter a valid token."),
     }
 
-    def clean(self):
+    def __init__(self, key, user, metadata=None, **kwargs):
+        super(TOTPDeviceForm, self).__init__(**kwargs)
+        self.key = key
+        self.tolerance = 1
+        self.t0 = 0
+        self.step = 30
+        self.drift = 0
+        self.digits = 6
+        self.user = user
+        self.metadata = metadata or {}
+
+    @property
+    def bin_key(self):
+        """
+        The secret key as a binary string.
+        """
+        return unhexlify(self.key.encode())
+
+    def clean_token(self):
         token = self.cleaned_data.get('token')
         if token:
-            accepted, drift = accept_totp(key=self.seed, response=token)
-            if not accepted:
-                raise forms.ValidationError(
-                    self.error_messages['invalid_token'])
-        return self.cleaned_data
+            validated = False
+            t0s = [self.t0]
+            key = self.bin_key
+            if 'valid_t0' in self.metadata:
+                t0s.append(int(time()) - self.metadata['valid_t0'])
+            for t0 in t0s:
+                for offset in range(-self.tolerance, self.tolerance):
+                    if totp(key, self.step, t0, self.digits, self.drift + offset) == token:
+                        self.drift = offset
+                        self.metadata['valid_t0'] = int(time()) - t0
+                        validated = True
+            if not validated:
+                raise forms.ValidationError({'token': [self.error_messages['invalid_token']]})
+        return token
+
+    def save(self):
+        return TOTPDevice.objects.create(user=self.user, key=self.key,
+                                         tolerance=self.tolerance, t0=self.t0,
+                                         step=self.step, drift=self.drift,
+                                         name='default')
 
 
 class DisableForm(forms.Form):
     understand = forms.BooleanField(label=_("Yes, I am sure"))
+
+
+class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
+    otp_token = forms.IntegerField(label=_("Token"), min_value=1, max_value=999999)
+
+    def __init__(self, user, **kwargs):
+        super(AuthenticationTokenForm, self).__init__(**kwargs)
+        self.user = user
+
+    def clean(self):
+        self.clean_otp(self.user)
+        return self.cleaned_data

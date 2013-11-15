@@ -1,5 +1,10 @@
+from django.conf import settings
 from django.contrib import admin
-from two_factor.models import VerifiedComputer, Token
 
-admin.site.register(VerifiedComputer)
-admin.site.register(Token)
+from .models import PhoneDevice
+from .utils import patch_admin_login
+
+if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
+    patch_admin_login()
+
+admin.site.register(PhoneDevice)

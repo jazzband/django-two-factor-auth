@@ -1,0 +1,27 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{% trans "Add Backup Phone" %}</h1>
+
+  {% if wizard.steps.current == 'setup' %}
+      <p>{% blocktrans %}You'll be adding a backup phone number to your
+        account. This number will be used if your primary method of
+        registration is not available.{% endblocktrans %}</p>
+  {% elif wizard.steps.current == 'validation' %}
+      <p>{% blocktrans %}We've send a token to your phone number. Please
+        enter the token you've received.{% endblocktrans %}</p>
+  {% endif %}
+
+  <form action="" method="post">{% csrf_token %}
+    <table>
+      {{ wizard.management_form }}
+      {{ wizard.form }}
+    </table>
+
+    {# hidden submit button to enable [enter] key #}
+    <div style="margin-left: -500px"><input type="submit" value=""/></div>
+
+    {% include "two_factor/_wizard_actions.html" %}
+  </form>
+{% endblock %}

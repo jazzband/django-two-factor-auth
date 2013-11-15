@@ -1,0 +1,36 @@
+from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView, FormView
+
+from django_otp.decorators import otp_required
+
+from two_factor.views.utils import class_view_decorator
+
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+
+class RegistrationView(FormView):
+    template_name = 'registration.html'
+    form_class = UserCreationForm
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('registration_complete')
+
+
+class RegistrationCompleteView(TemplateView):
+    template_name = 'registration_complete.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs.setdefault('login_url', settings.LOGIN_URL)
+        return super().get_context_data(**kwargs)
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(otp_required)
+class exampleSecretView(TemplateView):
+    template_name = 'secret.html'
