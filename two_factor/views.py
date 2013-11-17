@@ -236,18 +236,17 @@ class Enable(SessionWizardView):
     def get_form(self, step=None, data=None, files=None):
         form = super(Enable, self).get_form(step, data, files)
         if isinstance(form, TokenVerificationForm):
-            form.seed = self.get_token().seed
+            form.seed = self.get_token_seed()
         return form
 
-    def get_token(self):
-        if not 'token' in self.storage.data:
+    def get_token_seed(self):
+        if not 'token_seed' in self.storage.data:
             alias = '%s@%s' % (self.request.user.username,
                                get_current_site(self.request).name)
             seed = generate_seed()
-            self.storage.data['token'] = Token(seed=seed,
-                                               user=self.request.user)
+            self.storage.data['token_seed'] = seed
             self.storage.data['extra_data']['qr_url'] = get_qr_url(alias, seed)
-        return self.storage.data['token']
+        return self.storage.data['token_seed']
 
     def get(self, request, *args, **kwargs):
         if hasattr(self.request.user, 'token'):
@@ -256,7 +255,7 @@ class Enable(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         form_data = [f.cleaned_data for f in form_list]
-        token = self.get_token()
+        token = Token(seed=self.get_token_seed(), user=self.request.user)
         token.method = form_data[1]['method']
         if token.method == 'sms':
             token.phone = form_data[2]['phone']
@@ -271,7 +270,7 @@ class Enable(SessionWizardView):
             method = self.get_form_data('method', 'method')
             #todo use backup phone
             #todo resend message + throttling
-            generated_token = totp(self.get_token().seed)
+            generated_token = totp(self.get_token_seed())
             if method == 'call':
                 phone = self.get_form_data('call', 'phone')
                 call(to=phone, request=self.request, token=generated_token)
