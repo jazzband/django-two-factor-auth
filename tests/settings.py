@@ -1,4 +1,6 @@
 import os
+from django.core.urlresolvers import reverse_lazy
+
 BASE_DIR = os.path.dirname(__file__)
 
 SECRET_KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -27,6 +29,10 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'tests.urls'
+
+LOGOUT_URL = reverse_lazy('logout')
+LOGIN_URL = reverse_lazy('two_factor:login')
+LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
 
 CACHES = {
     'default': {

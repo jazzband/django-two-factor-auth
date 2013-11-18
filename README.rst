@@ -72,16 +72,17 @@ automatically patched to use the new login method.
 
 Settings
 ========
-``TWO_FACTOR_SMS_GATEWAY`` (default: ``two_factor.gateways.fake.Fake``)
+``TWO_FACTOR_SMS_GATEWAY`` (default: ``None``)
     Which module should be used for sending text messages.
 
-``TWO_FACTOR_CALL_GATEWAY`` (default: ``two_factor.gateways.fake.Fake``)
+``TWO_FACTOR_CALL_GATEWAY`` (default: ``None``)
     Which module should be used for making calls.
 
 Gateway ``two_factor.gateways.fake.Fake``
 -----------------------------------------
 Prints the tokens to the logger. You will have to set the message level of the
-``two_factor`` logger to ``INFO`` for them to appear in the console.
+``two_factor`` logger to ``INFO`` for them to appear in the console. Useful for
+local development.
 ::
 
     LOGGING = {

@@ -1,7 +1,4 @@
 from base64 import b32encode
-from django.conf import settings
-from django.contrib.admin import sites
-from django.shortcuts import redirect
 from two_factor.models import PhoneDevice
 
 try:
@@ -44,9 +41,3 @@ def get_qr_url(alias, seed):
         "cht": "qr",
         "chl": get_otpauth_url(alias, seed)
     })
-
-
-def patch_admin_login():
-    def redirect_admin_login(self, request):
-        return redirect(settings.LOGIN_URL)
-    sites.AdminSite.login = redirect_admin_login

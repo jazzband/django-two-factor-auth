@@ -1,6 +1,6 @@
 [run]
 source = two_factor
-omit = */migrations/*
+omit = */migrations/*,two_factor/compat.py
 
 [report]
 precision = 2

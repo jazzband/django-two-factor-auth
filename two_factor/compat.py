@@ -35,7 +35,7 @@ else:
 
 
 if django.VERSION[:2] >= (1, 6):
-    class Django16CompatInit(object):
+    class Django16Compat(object):
         pass
 else:
     import django
@@ -46,7 +46,7 @@ else:
 
     from django.contrib.formtools.wizard.storage.exceptions import NoFileStorageConfigured
 
-    class Django16CompatInit(object):
+    class Django16Compat(object):
         @classmethod
         def get_initkwargs(cls, form_list=None, initial_dict=None,
             instance_dict=None, condition_dict=None, *args, **kwargs):
@@ -117,3 +117,14 @@ else:
             # build the kwargs for the wizardview instances
             kwargs['form_list'] = computed_form_list
             return kwargs
+
+        def render_goto_step(self, goto_step, **kwargs):
+            """
+            This method gets called when the current step has to be changed.
+            `goto_step` contains the requested step to go to.
+            """
+            self.storage.current_step = goto_step
+            form = self.get_form(
+                data=self.storage.get_step_data(self.steps.current),
+                files=self.storage.get_step_files(self.steps.current))
+            return self.render(form)

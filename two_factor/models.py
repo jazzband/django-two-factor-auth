@@ -32,7 +32,7 @@ class PhoneDevice(Device):
 
     @property
     def bin_key(self):
-        return unhexlify(self.key)
+        return unhexlify(self.key.encode())
 
     def verify_token(self, token):
         for drift in range(-5, 1):

@@ -42,7 +42,7 @@ class MethodForm(forms.Form):
 
 
 class TOTPDeviceForm(forms.Form):
-    token = forms.IntegerField(label=_("Token"), min_value=1, max_value=999999)
+    token = forms.IntegerField(label=_("Token"), min_value=0, max_value=999999)
 
     error_messages = {
         'invalid_token': _("Please enter a valid token."),
@@ -68,20 +68,19 @@ class TOTPDeviceForm(forms.Form):
 
     def clean_token(self):
         token = self.cleaned_data.get('token')
-        if token:
-            validated = False
-            t0s = [self.t0]
-            key = self.bin_key
-            if 'valid_t0' in self.metadata:
-                t0s.append(int(time()) - self.metadata['valid_t0'])
-            for t0 in t0s:
-                for offset in range(-self.tolerance, self.tolerance):
-                    if totp(key, self.step, t0, self.digits, self.drift + offset) == token:
-                        self.drift = offset
-                        self.metadata['valid_t0'] = int(time()) - t0
-                        validated = True
-            if not validated:
-                raise forms.ValidationError({'token': [self.error_messages['invalid_token']]})
+        validated = False
+        t0s = [self.t0]
+        key = self.bin_key
+        if 'valid_t0' in self.metadata:
+            t0s.append(int(time()) - self.metadata['valid_t0'])
+        for t0 in t0s:
+            for offset in range(-self.tolerance, self.tolerance):
+                if totp(key, self.step, t0, self.digits, self.drift + offset) == token:
+                    self.drift = offset
+                    self.metadata['valid_t0'] = int(time()) - t0
+                    validated = True
+        if not validated:
+            raise forms.ValidationError({'token': [self.error_messages['invalid_token']]})
         return token
 
     def save(self):
