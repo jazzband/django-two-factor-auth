@@ -2,9 +2,13 @@
 Django Two-Factor Authentication
 ================================
 
-.. image:: https://travis-ci.org/Bouke/django-two-factor-auth.png?branch=develop
+.. image:: https://travis-ci.org/Bouke/django-two-factor-auth.png?branch=master
     :alt: Build Status
     :target: https://travis-ci.org/Bouke/django-two-factor-auth
+
+.. image:: https://coveralls.io/repos/Bouke/django-two-factor-auth/badge.png?branch=master
+    :alt: Test Coverage
+    :target: https://coveralls.io/r/Bouke/django-two-factor-auth?branch=master
 
 .. image:: https://badge.fury.io/py/django-two-factor-auth.png
     :alt: PyPI

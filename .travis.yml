@@ -17,4 +17,6 @@ matrix:
 install:
   - pip install Django==$DJANGO_VERSION
   - pip install -e .
-script: make test
+  - pip install coveralls
+script: make coverage
+after_success: coveralls
