@@ -1,51 +1,27 @@
 import django
 
-if django.VERSION[:2] >= (1, 5):
-    from django.utils.module_loading import import_by_path
-else:
-    import sys
-
-    from django.core.exceptions import ImproperlyConfigured
-    from django.utils import six
-    from django.utils.importlib import import_module
-
-    def import_by_path(dotted_path, error_prefix=''):
-        """
-        Import a dotted module path and return the attribute/class designated by the
-        last name in the path. Raise ImproperlyConfigured if something goes wrong.
-        """
-        try:
-            module_path, class_name = dotted_path.rsplit('.', 1)
-        except ValueError:
-            raise ImproperlyConfigured("%s%s doesn't look like a module path" % (
-                error_prefix, dotted_path))
-        try:
-            module = import_module(module_path)
-        except ImportError as e:
-            msg = '%sError importing module %s: "%s"' % (
-                error_prefix, module_path, e)
-            six.reraise(ImproperlyConfigured, ImproperlyConfigured(msg),
-                        sys.exc_info()[2])
-        try:
-            attr = getattr(module, class_name)
-        except AttributeError:
-            raise ImproperlyConfigured('%sModule "%s" does not define a "%s" attribute/class' % (
-                error_prefix, module_path, class_name))
-        return attr
-
 
 if django.VERSION[:2] >= (1, 6):
     from django.contrib.formtools.wizard.views import WizardView
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
+    from django.utils.http import is_safe_url
+    from django.utils.module_loading import import_by_path
+
 else:
-    import django
+    import sys
+    try:
+        from urllib.parse import urlparse
+    except ImportError:
+        from urlparse import urlparse
+
     from django import forms
+    from django.core.exceptions import ImproperlyConfigured
     from django.forms import formsets
     from django.utils import six
+    from django.utils.importlib import import_module
     from django.utils.datastructures import SortedDict
 
-    from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
     from django.contrib.formtools.wizard.storage.exceptions import NoFileStorageConfigured
     from django.contrib.formtools.wizard.views import WizardView as _WizardView
 
@@ -136,16 +112,67 @@ else:
             return self.render(form)
 
 
-    # Use the fixed SessionStorage (see below)
-    class SessionWizardView(WizardView):
+    def is_safe_url(url, host=None):
         """
-        A WizardView with pre-configured SessionStorage backend.
-        """
-        storage_name = 'two_factor.compat.SessionStorage'
+        Return ``True`` if the url is a safe redirection (i.e. it doesn't point to
+        a different host and uses a safe scheme).
 
+        Always returns ``False`` on an empty url.
+        """
+        if not url:
+            return False
+        url_info = urlparse(url)
+        return (not url_info.netloc or url_info.netloc == host) and \
+               (not url_info.scheme or url_info.scheme in ['http', 'https'])
+
+
+    def import_by_path(dotted_path, error_prefix=''):
+        """
+        Import a dotted module path and return the attribute/class designated by the
+        last name in the path. Raise ImproperlyConfigured if something goes wrong.
+        """
+        try:
+            module_path, class_name = dotted_path.rsplit('.', 1)
+        except ValueError:
+            raise ImproperlyConfigured("%s%s doesn't look like a module path" % (
+                error_prefix, dotted_path))
+        try:
+            module = import_module(module_path)
+        except ImportError as e:
+            msg = '%sError importing module %s: "%s"' % (
+                error_prefix, module_path, e)
+            six.reraise(ImproperlyConfigured, ImproperlyConfigured(msg),
+                        sys.exc_info()[2])
+        try:
+            attr = getattr(module, class_name)
+        except AttributeError:
+            raise ImproperlyConfigured('%sModule "%s" does not define a "%s" attribute/class' % (
+                error_prefix, module_path, class_name))
+        return attr
+
+
+if (1, 5) <= django.VERSION[:2] < (1, 6):
+    from django.contrib.formtools.wizard.storage.session import SessionStorage
+
+    # Need to override SessionWizardView to subclass from the backported
+    # WizardView.
+    class SessionWizardView(WizardView):
+        storage_name = 'django.contrib.formtools.wizard.storage.session.SessionStorage'
+
+else:
+    from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
+    from django.core import urlresolvers
 
     # Fix for Django 1.4 -- it does `return .. or {}`, which makes working with
     # the extra_data very cumbersome
     class SessionStorage(_SessionStorage):
         def _get_extra_data(self):
             return self.data[self.extra_data_key]
+
+
+    # Use the fixed SessionStorage
+    class SessionWizardView(WizardView):
+        """
+        A WizardView with pre-configured SessionStorage backend.
+        """
+        storage_name = 'two_factor.compat.SessionStorage'

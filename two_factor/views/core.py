@@ -1,7 +1,7 @@
 from binascii import unhexlify
 
 from django.conf import settings
-from django.contrib.auth import login as login
+from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import get_current_site
@@ -14,7 +14,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
 
-from ..compat import SessionWizardView
+from ..compat import SessionWizardView, is_safe_url
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneForm,
                      DeviceValidationForm, AuthenticationTokenForm)
 from ..models import PhoneDevice
@@ -53,7 +53,11 @@ class LoginView(IdempotentSessionWizardView):
 
     def done(self, form_list, **kwargs):
         login(self.request, self.get_user())
-        return redirect(str(settings.LOGIN_REDIRECT_URL))
+
+        redirect_to = self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
+            redirect_to = str(settings.LOGIN_REDIRECT_URL)
+        return redirect(redirect_to)
 
     def get_form_kwargs(self, step=None):
         if step == 'token':

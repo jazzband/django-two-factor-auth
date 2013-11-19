@@ -1,9 +1,8 @@
 from binascii import unhexlify
-from two_factor.gateways.fake import Fake
-from two_factor.gateways.twilio import Twilio
-from two_factor.models import PhoneDevice
-from two_factor.utils import backup_phones, default_device
-
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 try:
     from unittest.mock import patch, Mock
 except ImportError:
@@ -17,6 +16,11 @@ from django.test.utils import override_settings
 from django_otp import DEVICE_ID_SESSION_KEY, devices_for_user
 from django_otp.oath import totp
 from django_otp.util import random_hex
+
+from two_factor.gateways.fake import Fake
+from two_factor.gateways.twilio import Twilio
+from two_factor.models import PhoneDevice
+from two_factor.utils import backup_phones, default_device
 
 
 class UserMixin(object):
@@ -173,7 +177,9 @@ class SetupTest(UserMixin, TestCase):
 class AdminPatchTest(TestCase):
     def test(self):
         response = self.client.get('/admin/')
-        self.assertRedirects(response, str(settings.LOGIN_URL))
+        redirect_to = '%s?%s' % (settings.LOGIN_URL,
+                                 urlencode({'next': '/admin/'}))
+        self.assertRedirects(response, redirect_to)
 
 
 class BackupTokensTest(OTPUserMixin, TestCase):
