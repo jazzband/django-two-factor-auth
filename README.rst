@@ -30,6 +30,9 @@ I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests.
 
+The package is currently translated into English and Dutch, please contribute
+your own language on Transifex_.
+
 .. _django-otp: https://pypi.python.org/pypi/django-otp
 
 Example
@@ -141,3 +144,6 @@ Contributing
 * Fork the repository on GitHub and start hacking.
 * Run the tests.
 * Send a pull request with your changes.
+* Provide a translation using Transifex_
+
+.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/

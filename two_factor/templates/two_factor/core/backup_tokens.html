@@ -10,13 +10,11 @@
         <li>{{ token.token }}</li>
       {% endfor %}
     </ul>
-    <form method="post">{% csrf_token %}{{ form }}
-      <button class="btn btn-primary" type="submit">Regenerate Codes</button>
-    </form>
   {% else %}
-    <p>You don't have any backup codes yet.</p>
-    <form method="post">{% csrf_token %}{{ form }}
-      <button class="btn btn-primary" type="submit">Generate Codes</button>
-    </form>
+    <p>{% trans "You don't have any backup codes yet." %}</p>
   {% endif %}
+
+  <form method="post">{% csrf_token %}{{ form }}
+    <button class="btn btn-primary" type="submit">{% trans "Generate Tokens" %}</button>
+  </form>
 {% endblock %}

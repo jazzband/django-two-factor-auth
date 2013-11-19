@@ -46,11 +46,15 @@ logger = logging.getLogger(__name__)
 
 
 class PhoneDevice(Device):
-    number = models.CharField(max_length=16, validators=[phone_number_validator])
-    key = models.CharField(max_length=40, validators=[hex_validator()],
+    number = models.CharField(max_length=16,
+                              validators=[phone_number_validator],
+                              verbose_name=_('number'))
+    key = models.CharField(max_length=40,
+                           validators=[hex_validator()],
                            default=lambda: random_hex(20),
                            help_text="Hex-encoded secret key")
-    method = models.CharField(max_length=4, choices=PHONE_METHODS)
+    method = models.CharField(max_length=4, choices=PHONE_METHODS,
+                              verbose_name=_('method'))
 
     @property
     def bin_key(self):

@@ -25,8 +25,6 @@
           <ul class="nav navbar-nav">
             <li class="{% block nav_home %}{% endblock %}">
                 <a href="{% url 'home' %}">Home</a></li>
-            <li class="{% block nav_profile %}{% endblock %}">
-                <a href="{% url 'two_factor:profile' %}">My Profile</a></li>
             <li class="{% block nav_secret %}{% endblock %}">
                 <a href="{% url 'secret' %}">Secret Page</a></li>
           </ul>
@@ -36,6 +34,8 @@
                 Logged as {{ user }}
                 {% if user.otp_device %}(secure){% endif %}
               </a></li>
+              <li class="{% block nav_profile %}{% endblock %}">
+                  <a href="{% url 'two_factor:profile' %}">Account</a></li>
               <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
               <li><a>Not logged in</a></li>

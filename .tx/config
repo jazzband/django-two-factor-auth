@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+type = PO
+
+[django-two-factor-auth.two_factor]
+file_filter = two_factor/locale/<lang>/LC_MESSAGES/django.po
+source_file = two_factor/locale/en/LC_MESSAGES/django.po
+source_lang = en

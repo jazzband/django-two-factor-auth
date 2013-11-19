@@ -22,7 +22,7 @@ class MethodForm(forms.Form):
 
 
 class PhoneNumberMethodForm(ModelForm):
-    method = forms.ChoiceField(widget=forms.RadioSelect)
+    method = forms.ChoiceField(widget=forms.RadioSelect, label=_('Method'))
 
     class Meta:
         model = PhoneDevice

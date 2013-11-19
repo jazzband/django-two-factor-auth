@@ -18,3 +18,12 @@ coverage:
 		`which django-admin.py` test tests
 	coverage html
 	coverage report
+
+tx-pull:
+	tx pull
+	cd two_factor; django-admin.py compilemessages
+
+tx-push:
+	tx pull
+	cd two_factor; django-admin.py makemessages -l en
+	tx push -s
