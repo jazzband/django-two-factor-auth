@@ -6,6 +6,10 @@ Django Two-Factor Authentication
     :alt: Build Status
     :target: https://travis-ci.org/Bouke/django-two-factor-auth
 
+.. image:: https://badge.fury.io/py/django-two-factor-auth.png
+    :alt: PyPI
+    :target: https://pypi.python.org/pypi/django-two-factor-auth
+
 Complete Two-Factor Authentication for Django. Built on top of
 ``django.contrib.auth`` for providing the easiest integration into most Django
 projects. Inspired by the user experience of Google's Two-Step Authentication,
