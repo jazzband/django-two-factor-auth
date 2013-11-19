@@ -354,8 +354,8 @@ class UtilsTest(TestCase):
         self.assertEqual(default_device(user).pk, default.pk)
 
     def test_backup_phones(self):
-        self.assertQuerysetEqual(backup_phones(None),
-                                 PhoneDevice.objects.none())
+        self.assertQuerysetEqual(list(backup_phones(None)),
+                                 list(PhoneDevice.objects.none()))
 
         user = User.objects.create_user('bouke')
         user.phonedevice_set.create(name='default')
