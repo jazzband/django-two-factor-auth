@@ -126,6 +126,16 @@ your Twilio account dashboard.
 
 .. _Twilio: http://www.twilio.com/
 
+Release Notes
+=============
+
+0.2.0
+-----
+This is a major upgrade, as the package has been rewritten completely. Upgrade
+to this version with care and make backups of your database before running the
+South migrations. See installation instructions for installing the new version;
+update your template customizations and run the database migrations.
+
 Contributing
 ============
 * Fork the repository on GitHub and start hacking.
