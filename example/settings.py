@@ -89,6 +89,9 @@ LOGGING = {
     }
 }
 
+TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
+TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
+
 try:
     from .settings_private import *  # noqa
 except ImportError:
