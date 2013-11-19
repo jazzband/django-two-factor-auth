@@ -4,9 +4,9 @@ try:
 except ImportError:
     from urllib import urlencode
 try:
-    from unittest.mock import patch, Mock
+    from unittest.mock import patch, Mock, ANY, call
 except ImportError:
-    from mock import patch, Mock
+    from mock import patch, Mock, ANY, call
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -167,6 +167,87 @@ class SetupTest(UserMixin, TestCase):
                   'generator-token': totp(bin_key)})
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
         self.assertEqual(1, self.user.totpdevice_set.count())
+
+    def _post(self, data):
+        return self.client.post(reverse('two_factor:setup'), data=data)
+
+    def test_no_phone(self):
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertNotContains(response, 'call')
+
+    @patch('two_factor.gateways.fake.Fake')
+    @override_settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake')
+    def test_setup_phone_call(self, fake):
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertContains(response, 'Method:')
+
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'call'})
+        self.assertContains(response, 'Number:')
+
+        response = self._post(data={'setup_view-current_step': 'call',
+                                    'call-number': '+123456789'})
+        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'please enter the digits you hear')
+
+        # assert that the token was send to the gateway
+        self.assertEqual(fake.return_value.method_calls,
+                         [call.make_call(device=ANY, token=ANY)])
+
+        # assert that tokens are verified
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': '666'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid']})
+
+        # submitting correct token should finish the setup
+        token = fake.return_value.make_call.call_args[1]['token']
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+
+        phones = self.user.phonedevice_set.all()
+        self.assertEqual(len(phones), 1)
+        self.assertEqual(phones[0].name, 'default')
+        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].method, 'call')
+
+    @patch('two_factor.gateways.fake.Fake')
+    @override_settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
+    def test_setup_phone_sms(self, fake):
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertContains(response, 'Method:')
+
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'sms'})
+        self.assertContains(response, 'Number:')
+
+        response = self._post(data={'setup_view-current_step': 'sms',
+                                    'sms-number': '+123456789'})
+        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'please enter the tokens we sent')
+
+        # assert that the token was send to the gateway
+        self.assertEqual(fake.return_value.method_calls,
+                         [call.send_sms(device=ANY, token=ANY)])
+
+        # assert that tokens are verified
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': '666'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid']})
+
+        # submitting correct token should finish the setup
+        token = fake.return_value.send_sms.call_args[1]['token']
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+
+        phones = self.user.phonedevice_set.all()
+        self.assertEqual(len(phones), 1)
+        self.assertEqual(phones[0].name, 'default')
+        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].method, 'sms')
 
     def test_already_setup(self):
         self.user.totpdevice_set.create(name='default')

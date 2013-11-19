@@ -14,9 +14,10 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
 
-from ..compat import SessionWizardView, is_safe_url
-from ..forms import (MethodForm, TOTPDeviceForm, PhoneForm,
-                     DeviceValidationForm, AuthenticationTokenForm)
+from ..compat import is_safe_url
+from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
+                     DeviceValidationForm, AuthenticationTokenForm,
+                     PhoneNumberForm)
 from ..models import PhoneDevice
 from ..utils import (get_qr_url, default_device,
                      backup_phones)
@@ -119,18 +120,27 @@ class LoginView(IdempotentSessionWizardView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
-class SetupView(SessionWizardView):
+class SetupView(IdempotentSessionWizardView):
     template_name = 'two_factor/core/setup.html'
     initial_dict = {}
     form_list = (
         ('welcome', Form),
         ('method', MethodForm),
         ('generator', TOTPDeviceForm),
-        #('sms', PhoneForm),
-        #('sms-verify', TokenVerificationForm),
-        #('call', PhoneForm),
-        #('call-verify', TokenVerificationForm),
+        ('sms', PhoneNumberForm),
+        ('call', PhoneNumberForm),
+        ('validation', DeviceValidationForm),
     )
+    condition_dict = {
+        'generator': lambda self: self.get_method() == 'generator',
+        'call': lambda self: self.get_method() == 'call',
+        'sms': lambda self: self.get_method() == 'sms',
+        'validation': lambda self: self.get_method() in ('sms', 'call'),
+    }
+
+    def get_method(self):
+        method_data = self.storage.validated_step_data.get('method', {})
+        return method_data.get('method', None)
 
     def get(self, request, *args, **kwargs):
         """
@@ -140,13 +150,29 @@ class SetupView(SessionWizardView):
             return redirect('two_factor:setup_complete')
         return super(SetupView, self).get(request, *args, **kwargs)
 
+    def render_next_step(self, form, **kwargs):
+        """
+        In the validation step, ask the device to generate a challenge.
+        """
+        next_step = self.steps.next
+        if next_step == 'validation':
+            self.get_device().generate_challenge()
+        return super(SetupView, self).render_next_step(form, **kwargs)
+
     def done(self, form_list, **kwargs):
         """
         Finish the wizard. Save all forms and redirect.
         """
-        for form in form_list:
-            if callable(getattr(form, 'save', None)):
-                form.save()
+        # TOTPDeviceForm
+        if self.get_method() == 'generator':
+            for form in form_list:
+                if callable(getattr(form, 'save', None)):
+                    form.save()
+
+        # PhoneNumberForm
+        if self.get_method() in ('call', 'sms'):
+            self.get_device(user=self.request.user, name='default').save()
+
         return redirect('two_factor:setup_complete')
 
     def get_form_kwargs(self, step=None):
@@ -156,12 +182,29 @@ class SetupView(SessionWizardView):
                 'key': self.get_key(step),
                 'user': self.request.user,
             })
+        if step == 'validation':
+            kwargs.update({
+                'device': self.get_device()
+            })
         metadata = self.get_form_metadata(step)
         if metadata:
             kwargs.update({
                 'metadata': metadata,
             })
         return kwargs
+
+    def get_device(self, **kwargs):
+        """
+        Uses the data from the setup step and generated key to recreate device.
+
+        Only used for call / sms -- generator uses other procedure.
+        """
+        method = self.get_method()
+        kwargs = kwargs or {}
+        kwargs['method'] = method
+        kwargs['number'] = self.storage.validated_step_data\
+            .get(method, {}).get('number')
+        return PhoneDevice(key=self.get_key(method), **kwargs)
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})
@@ -180,6 +223,16 @@ class SetupView(SessionWizardView):
             context.update({
                 'QR_URL': get_qr_url(alias, key)
             })
+        elif self.steps.current == 'validation':
+            device = self.get_device()
+            if device.method == 'call':
+                context['instructions'] = _(
+                    'We are calling your phone right now, please enter '
+                    'the digits you hear.')
+            else:
+                context['instructions'] = _(
+                    'We sent you a text message, please enter the tokens '
+                    'we sent.')
         context['cancel_url'] = settings.LOGIN_REDIRECT_URL
         return context
 
@@ -224,7 +277,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
     """
     template_name = 'two_factor/core/phone_register.html'
     form_list = (
-        ('setup', PhoneForm),
+        ('setup', PhoneNumberMethodForm),
         ('validation', DeviceValidationForm),
     )
     key_name = 'key'

@@ -7,15 +7,36 @@ from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from two_factor.models import PhoneDevice, PHONE_METHODS
+from .models import (PhoneDevice, get_available_phone_methods,
+                     get_available_methods)
 
 
-class PhoneForm(ModelForm):
-    method = forms.ChoiceField(choices=PHONE_METHODS, widget=forms.RadioSelect)
+class MethodForm(forms.Form):
+    method = forms.ChoiceField(label=_("Method"),
+                               initial='generator',
+                               widget=forms.RadioSelect)
+
+    def __init__(self, **kwargs):
+        super(MethodForm, self).__init__(**kwargs)
+        self.fields['method'].choices = get_available_methods()
+
+
+class PhoneNumberMethodForm(ModelForm):
+    method = forms.ChoiceField(widget=forms.RadioSelect)
 
     class Meta:
         model = PhoneDevice
         fields = 'number', 'method',
+
+    def __init__(self, **kwargs):
+        super(PhoneNumberMethodForm, self).__init__(**kwargs)
+        self.fields['method'].choices = get_available_phone_methods()
+
+
+class PhoneNumberForm(ModelForm):
+    class Meta:
+        model = PhoneDevice
+        fields = 'number',
 
 
 class DeviceValidationForm(forms.Form):
@@ -30,15 +51,6 @@ class DeviceValidationForm(forms.Form):
         if not self.device.verify_token(token):
             raise forms.ValidationError(_('Entered token is not valid'))
         return token
-
-
-class MethodForm(forms.Form):
-    method = forms.ChoiceField(label=_("Method"),
-                               choices=(
-                                   ('generator', _('Token generator')),
-                               ),
-                               initial='generator',
-                               widget=forms.RadioSelect)
 
 
 class TOTPDeviceForm(forms.Form):

@@ -1,5 +1,7 @@
 from binascii import unhexlify
 import logging
+
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.db import models
@@ -9,7 +11,9 @@ from django.utils.translation import ugettext_lazy as _
 from django_otp import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
-from two_factor.gateways import make_call, send_sms
+
+from .gateways import make_call, send_sms
+
 
 phone_number_validator = RegexValidator(
     regex='^(\+|00)',
@@ -21,6 +25,22 @@ PHONE_METHODS = (
     ('call', _('Phone Call')),
     ('sms', _('Text Message')),
 )
+
+
+def get_available_phone_methods():
+    methods = []
+    if getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None):
+        methods.append(('call', _('Phone Call')))
+    if getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None):
+        methods.append(('sms', _('Text Message')))
+    return methods
+
+
+def get_available_methods():
+    methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_phone_methods())
+    return methods
+
 
 logger = logging.getLogger(__name__)
 
