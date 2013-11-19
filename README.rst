@@ -34,9 +34,10 @@ forking the repository and sending some pull requests.
 
 Example
 -------
-The repository on GitHub includes a example app, which can be used for testing
-purposes. Please have a look at this example app if you are thinking about
-giving this app a spin.
+Test drive this app through the online `example app`_, provided by Heroku. It
+demos most features except the Twilio integration.
+
+.. _`example app`: http://example-two-factor-auth.herokuapp.com
 
 Compatibility
 -------------
