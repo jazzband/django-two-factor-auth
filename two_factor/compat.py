@@ -35,8 +35,9 @@ else:
 
 
 if django.VERSION[:2] >= (1, 6):
-    class Django16Compat(object):
-        pass
+    from django.contrib.formtools.wizard.views import WizardView
+    from django.contrib.formtools.wizard.views import SessionWizardView
+    from django.contrib.formtools.wizard.storage.session import SessionStorage
 else:
     import django
     from django import forms
@@ -44,9 +45,14 @@ else:
     from django.utils import six
     from django.utils.datastructures import SortedDict
 
+    from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
     from django.contrib.formtools.wizard.storage.exceptions import NoFileStorageConfigured
+    from django.contrib.formtools.wizard.views import WizardView as _WizardView
 
-    class Django16Compat(object):
+
+    # Fix for Django 1.4 and 1.5 which don't allow setting form_list etc on the
+    # class but require them to be passed in the urlconf.
+    class WizardView(_WizardView):
         @classmethod
         def get_initkwargs(cls, form_list=None, initial_dict=None,
             instance_dict=None, condition_dict=None, *args, **kwargs):
@@ -128,3 +134,18 @@ else:
                 data=self.storage.get_step_data(self.steps.current),
                 files=self.storage.get_step_files(self.steps.current))
             return self.render(form)
+
+
+    # Use the fixed SessionStorage (see below)
+    class SessionWizardView(WizardView):
+        """
+        A WizardView with pre-configured SessionStorage backend.
+        """
+        storage_name = 'two_factor.compat.SessionStorage'
+
+
+    # Fix for Django 1.4 -- it does `return .. or {}`, which makes working with
+    # the extra_data very cumbersome
+    class SessionStorage(_SessionStorage):
+        def _get_extra_data(self):
+            return self.data[self.extra_data_key]

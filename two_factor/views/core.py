@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth import login as login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.formtools.wizard.views import SessionWizardView
 from django.contrib.sites.models import get_current_site
 from django.forms import Form
 from django.shortcuts import redirect
@@ -15,7 +14,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
 
-from ..compat import Django16Compat
+from ..compat import SessionWizardView
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneForm,
                      DeviceValidationForm, AuthenticationTokenForm)
 from ..models import PhoneDevice
@@ -25,7 +24,7 @@ from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
 
 @class_view_decorator(never_cache)
-class LoginView(Django16Compat, IdempotentSessionWizardView):
+class LoginView(IdempotentSessionWizardView):
     template_name = 'two_factor/core/login.html'
     form_list = (
         ('auth', AuthenticationForm),
@@ -116,7 +115,7 @@ class LoginView(Django16Compat, IdempotentSessionWizardView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
-class SetupView(Django16Compat, SessionWizardView):
+class SetupView(SessionWizardView):
     template_name = 'two_factor/core/setup.html'
     initial_dict = {}
     form_list = (
@@ -187,14 +186,7 @@ class SetupView(Django16Compat, SessionWizardView):
         return super(SetupView, self).process_step(form)
 
     def get_form_metadata(self, step):
-        # Django 1.4 requires a little more work than simply using
-        # `setdefault`; `_get_extra_data` returns a new dict instance on
-        # access if it is empty, so we have to force `_set_extra_data` in this
-        # case.
-        if not self.storage.extra_data:
-            self.storage.extra_data = {'forms': {}}
-        else:
-            self.storage.extra_data.setdefault('forms', {})
+        self.storage.extra_data.setdefault('forms', {})
         return self.storage.extra_data['forms'].get(step, None)
 
 
@@ -222,7 +214,7 @@ class BackupTokensView(FormView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
-class PhoneSetupView(Django16Compat, IdempotentSessionWizardView):
+class PhoneSetupView(IdempotentSessionWizardView):
     """
     Configures and validated a `PhoneDevice` for the logged in user.
     """

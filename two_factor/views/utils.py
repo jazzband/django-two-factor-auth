@@ -1,7 +1,6 @@
-from django.contrib.formtools.wizard.storage.session import SessionStorage
-from django.contrib.formtools.wizard.views import SessionWizardView
 from django.utils.decorators import method_decorator
 from django.utils.functional import lazy_property
+from two_factor.compat import SessionStorage, SessionWizardView
 
 
 class ExtraSessionStorage(SessionStorage):
