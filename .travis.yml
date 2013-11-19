@@ -17,6 +17,6 @@ matrix:
 install:
   - pip install Django==$DJANGO_VERSION
   - pip install -e .
-  - pip install coveralls
+  - pip install coveralls twilio
 script: make coverage
 after_success: coveralls

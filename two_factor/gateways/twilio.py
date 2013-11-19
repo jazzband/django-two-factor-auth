@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext
@@ -13,9 +15,8 @@ class Twilio(object):
 
     def make_call(self, device, token):
         request = get_current_request()
-        url = reverse('twilio_inbound_call_app', kwargs={'token': token})
+        url = reverse('two_factor:twilio_call_app', kwargs={'token': token})
         uri = request.build_absolute_uri(url)
-        #raise Exception(uri)
         self.client.calls.create(to=device.number,
                                  from_=getattr(settings, 'TWILIO_CALLER_ID'),
                                  url=uri,

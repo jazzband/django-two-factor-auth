@@ -1,10 +1,12 @@
 from binascii import unhexlify
+from two_factor.gateways.fake import Fake
+from two_factor.gateways.twilio import Twilio
 from two_factor.utils import backup_phones
 
 try:
-    from unittest.mock import patch
+    from unittest.mock import patch, Mock
 except ImportError:
-    from mock import patch
+    from mock import patch, Mock
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -275,8 +277,8 @@ class DisableTest(OTPUserMixin, TestCase):
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
 
-class TwilioCallAppTest(TestCase):
-    def test(self):
+class TwilioGatewayTest(TestCase):
+    def test_call_app(self):
         response = self.client.get(reverse('two_factor:twilio_call_app',
                                            args=['123456']))
         self.assertEqual(response.content,
@@ -284,3 +286,36 @@ class TwilioCallAppTest(TestCase):
                          b'<Say>Hi, this is testserver calling. Please enter '
                          b'the following code on your screen: 1. 2. 3. 4. 5. '
                          b'6. Repeat: 1. 2. 3. 4. 5. 6.</Say></Response>')
+
+    @override_settings(
+        TWILIO_ACCOUNT_SID='SID',
+        TWILIO_AUTH_TOKEN='TOKEN',
+        TWILIO_CALLER_ID='+456',
+    )
+    @patch('two_factor.gateways.twilio.TwilioRestClient')
+    def test_gateway(self, client):
+        twilio = Twilio()
+        client.assert_called_with('SID', 'TOKEN')
+
+        twilio.make_call(device=Mock(number='+123'), token='654321')
+        client.return_value.calls.create.assert_called_with(
+            from_='+456', to='+123', method='GET',
+            url='http://testserver/twilio/inbound/two_factor/654321/')
+
+        twilio.send_sms(device=Mock(number='+123'), token='654321')
+        client.return_value.sms.messages.create.assert_called_with(
+            to='+123', body='Your authentication token is 654321', from_='+456')
+
+
+class FakeGatewayTest(TestCase):
+    @patch('two_factor.gateways.fake.logger')
+    def test_gateway(self, logger):
+        fake = Fake()
+
+        fake.make_call(device=Mock(number='+123'), token='654321')
+        logger.info.assert_called_with(
+            'Fake call to %s: "Your token is: %s"', '+123', '654321')
+
+        fake.send_sms(device=Mock(number='+123'), token='654321')
+        logger.info.assert_called_with(
+            'Fake SMS to %s: "Your token is: %s"', '+123', '654321')
