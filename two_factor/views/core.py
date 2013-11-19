@@ -274,10 +274,11 @@ class PhoneSetupView(IdempotentSessionWizardView):
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
 class PhoneDeleteView(DeleteView):
-    success_url = settings.LOGIN_REDIRECT_URL
-
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
+
+    def get_success_url(self):
+        return str(settings.LOGIN_REDIRECT_URL)
 
 
 @class_view_decorator(never_cache)

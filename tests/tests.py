@@ -1,4 +1,6 @@
 from binascii import unhexlify
+from two_factor.utils import backup_phones
+
 try:
     from unittest.mock import patch
 except ImportError:
@@ -9,9 +11,25 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django_otp import DEVICE_ID_SESSION_KEY
+from django_otp import DEVICE_ID_SESSION_KEY, devices_for_user
 from django_otp.oath import totp
 from django_otp.util import random_hex
+
+
+class UserMixin(object):
+    def setUp(self):
+        super(UserMixin, self).setUp()
+        self.user = User.objects.create_user('bouke', None, 'secret')
+        assert self.client.login(username='bouke', password='secret')
+
+
+class OTPUserMixin(UserMixin):
+    def setUp(self):
+        super(OTPUserMixin, self).setUp()
+        self.device = self.user.totpdevice_set.create(name='default')
+        session = self.client.session
+        session[DEVICE_ID_SESSION_KEY] = self.device.persistent_id
+        session.save()
 
 
 class LoginTest(TestCase):
@@ -103,13 +121,6 @@ class LoginTest(TestCase):
             device=device, token='%06d' % totp(device.bin_key))
 
 
-class UserMixin(object):
-    def setUp(self):
-        super(UserMixin, self).setUp()
-        self.user = User.objects.create_user('bouke', None, 'secret')
-        assert self.client.login(username='bouke', password='secret')
-
-
 class SetupTest(UserMixin, TestCase):
     def test_form(self):
         response = self.client.get(reverse('two_factor:setup'))
@@ -148,8 +159,7 @@ class SetupTest(UserMixin, TestCase):
             data={'setup_view-current_step': 'generator',
                   'generator-token': totp(bin_key)})
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
-
-        self.assertEqual(1, len(self.user.totpdevice_set.all()))
+        self.assertEqual(1, self.user.totpdevice_set.count())
 
     def test_already_setup(self):
         self.user.totpdevice_set.create(name='default')
@@ -163,14 +173,7 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, str(settings.LOGIN_URL))
 
 
-class BackupTokensTest(UserMixin, TestCase):
-    def setUp(self):
-        super(BackupTokensTest, self).setUp()
-        self.device = self.user.totpdevice_set.create(name='default')
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = self.device.persistent_id
-        session.save()
-
+class BackupTokensTest(OTPUserMixin, TestCase):
     def test_empty(self):
         response = self.client.get(reverse('two_factor:backup_tokens'))
         self.assertContains(response, 'You don\'t have any backup codes yet.')
@@ -194,3 +197,90 @@ class BackupTokensTest(UserMixin, TestCase):
         second_set = set([token.token for token in
                          response.context_data['device'].token_set.all()])
         self.assertNotEqual(first_set, second_set)
+
+
+class PhoneSetupTest(OTPUserMixin, TestCase):
+    def test_form(self):
+        response = self.client.get(reverse('two_factor:phone_create'))
+        self.assertContains(response, 'Number:')
+
+    def _post(self, data=None):
+        return self.client.post(reverse('two_factor:phone_create'), data=data)
+
+    @patch('two_factor.gateways.fake.Fake')
+    @override_settings(
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
+        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+    )
+    def test_setup(self, fake):
+        response = self._post({'phone_setup_view-current_step': 'setup',
+                               'setup-number': '',
+                               'setup-method': ''})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'method': ['This field is required.'],
+                          'number': ['This field is required.']})
+
+        response = self._post({'phone_setup_view-current_step': 'setup',
+                               'setup-number': '+123456789',
+                               'setup-method': 'call'})
+        self.assertContains(response, 'We\'ve send a token to your phone')
+        device = response.context_data['wizard']['form'].device
+        fake.return_value.make_call.assert_called_with(
+            device=device, token='%06d' % totp(device.bin_key))
+
+        response = self._post({'phone_setup_view-current_step': 'validation',
+                               'validation-token': totp(device.bin_key)})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        phones = self.user.phonedevice_set.all()
+        self.assertEqual(len(phones), 1)
+        self.assertEqual(phones[0].name, 'backup')
+        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].key, device.key)
+
+
+class PhoneDeleteTest(OTPUserMixin, TestCase):
+    def setUp(self):
+        super(PhoneDeleteTest, self).setUp()
+        self.backup = self.user.phonedevice_set.create(name='backup')
+        self.default = self.user.phonedevice_set.create(name='default')
+
+    def test_delete(self):
+        response = self.client.post(reverse('two_factor:phone_delete',
+                                            args=[self.backup.pk]))
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(list(backup_phones(self.user)), [])
+
+    def test_cannot_delete_default(self):
+        response = self.client.post(reverse('two_factor:phone_delete',
+                                            args=[self.default.pk]))
+        self.assertContains(response, 'was not found', status_code=404)
+
+
+class DisableTest(OTPUserMixin, TestCase):
+    def test(self):
+        response = self.client.get(reverse('two_factor:disable'))
+        self.assertContains(response, 'Yes, I am sure')
+
+        response = self.client.post(reverse('two_factor:disable'))
+        self.assertEqual(response.context_data['form'].errors,
+                         {'understand': ['This field is required.']})
+
+        response = self.client.post(reverse('two_factor:disable'),
+                                    {'understand': '1'})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(list(devices_for_user(self.user)), [])
+
+        # cannot disable twice
+        response = self.client.get(reverse('two_factor:disable'))
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
+
+class TwilioCallAppTest(TestCase):
+    def test(self):
+        response = self.client.get(reverse('two_factor:twilio_call_app',
+                                           args=['123456']))
+        self.assertEqual(response.content,
+                         b'<?xml version="1.0" encoding="UTF-8" ?><Response>'
+                         b'<Say>Hi, this is testserver calling. Please enter '
+                         b'the following code on your screen: 1. 2. 3. 4. 5. '
+                         b'6. Repeat: 1. 2. 3. 4. 5. 6.</Say></Response>')
