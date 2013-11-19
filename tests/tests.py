@@ -1,7 +1,8 @@
 from binascii import unhexlify
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio import Twilio
-from two_factor.utils import backup_phones
+from two_factor.models import PhoneDevice
+from two_factor.utils import backup_phones, default_device
 
 try:
     from unittest.mock import patch, Mock
@@ -231,6 +232,11 @@ class PhoneSetupTest(OTPUserMixin, TestCase):
             device=device, token='%06d' % totp(device.bin_key))
 
         response = self._post({'phone_setup_view-current_step': 'validation',
+                               'validation-token': '123456'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid']})
+
+        response = self._post({'phone_setup_view-current_step': 'validation',
                                'validation-token': totp(device.bin_key)})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
         phones = self.user.phonedevice_set.all()
@@ -319,3 +325,42 @@ class FakeGatewayTest(TestCase):
         fake.send_sms(device=Mock(number='+123'), token='654321')
         logger.info.assert_called_with(
             'Fake SMS to %s: "Your token is: %s"', '+123', '654321')
+
+
+class PhoneDeviceTest(TestCase):
+    def test_verify(self):
+        device = PhoneDevice(key=random_hex().decode())
+        self.assertFalse(device.verify_token(-1))
+        self.assertTrue(device.verify_token(totp(device.bin_key)))
+
+    def test_unicode(self):
+        device = PhoneDevice(name='unknown')
+        self.assertEqual(': unknown', str(device))
+
+        user = User.objects.create_user('bouke')
+        device.user = user
+        self.assertEqual('bouke: unknown', str(device))
+
+
+class UtilsTest(TestCase):
+    def test_default_device(self):
+        user = User.objects.create_user('bouke')
+        self.assertEqual(default_device(user), None)
+
+        user.phonedevice_set.create(name='backup')
+        self.assertEqual(default_device(user), None)
+
+        default = user.phonedevice_set.create(name='default')
+        self.assertEqual(default_device(user).pk, default.pk)
+
+    def test_backup_phones(self):
+        self.assertQuerysetEqual(backup_phones(None),
+                                 PhoneDevice.objects.none())
+
+        user = User.objects.create_user('bouke')
+        user.phonedevice_set.create(name='default')
+        backup = user.phonedevice_set.create(name='backup')
+        phones = backup_phones(user)
+
+        self.assertEqual(len(phones), 1)
+        self.assertEqual(phones[0].pk, backup.pk)
