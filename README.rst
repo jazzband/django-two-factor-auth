@@ -136,7 +136,7 @@ Contributing
 * Fork the repository on GitHub and start hacking.
 * Run the tests.
 * Send a pull request with your changes.
-* Provide a translation using Transifex_
+* Provide a translation using Transifex_.
 
 .. _`example app`: http://example-two-factor-auth.herokuapp.com
 .. _django-otp: https://pypi.python.org/pypi/django-otp
