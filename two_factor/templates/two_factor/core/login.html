@@ -11,10 +11,7 @@
   {% endif %}
 
   <form action="" method="post">{% csrf_token %}
-    <table>
-      {{ wizard.management_form }}
-      {{ wizard.form }}
-    </table>
+    {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -500px"><input type="submit" value=""/></div>

@@ -5,10 +5,14 @@
 # Runtime dependencies
 
 Django
-South
 twilio
-django-debug-toolbar
 django_otp
+
+# Example app
+
+South
+django-debug-toolbar
+django-bootstrap-form
 
 # Testing
 
