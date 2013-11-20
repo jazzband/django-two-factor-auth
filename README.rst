@@ -38,13 +38,11 @@ Compatible with Django 1.4, 1.5 and 1.6 on Python 2.6, 2.7, 3.2 and 3.3.
 
 Installation
 ============
-Installation with ``pip``:
-::
+Installation with ``pip``::
 
     $ pip install django-two-factor-auth
 
-Add the following apps to the ``INSTALLED_APPS``
-::
+Add the following apps to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         ...
@@ -54,14 +52,15 @@ Add the following apps to the ``INSTALLED_APPS``
         'two_factor',
     )
 
-Configure the login url:
-::
+Configure a few urls::
 
     from django.core.urlresolvers import reverse_lazy
     LOGIN_URL = reverse_lazy('two_factor:login')
 
-Add the url routes:
-::
+    # this one is optional
+    LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
+
+Add the url routes::
 
     urlpatterns = patterns('',
         ...

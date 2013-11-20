@@ -1,18 +1,21 @@
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 setup(
     name='django-two-factor-auth',
     version='0.2.0-dev',
+    description='Complete Two-Factor Authentication for Django',
+    long_description=open('README.rst').read(),
     author='Bouke Haarsma',
     author_email='bouke@webatoom.nl',
-    packages=find_packages(exclude=('example', 'tests',)),
-    package_data={'two_factor': ['templates/*.html', ], },
-    url='http://github.com/Bouke/django-two-factor-auth',
-    description='Complete Two-Factor Authentication for Django',
+    url='https://github.com/Bouke/django-two-factor-auth',
+    download_url='https://pypi.python.org/pypi/django-two-factor-auth',
     license='MIT',
-    long_description=open('README.rst').read(),
-    install_requires=['Django>=1.4,<1.7', 'django_otp>=0.2.0,<0.3.0'],
+    packages=find_packages(exclude=('example', 'tests')),
+    install_requires=[
+        'Django>=1.4,<1.7',
+        'django_otp>=0.2.0,<0.3.0',
+    ],
+    include_package_data=True,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Web Environment',

@@ -1,5 +1,5 @@
 include LICENSE.txt
 include README.rst
-recursive-include two_factor *.html
-recursive-exclude demo *
-recursive-exclude tests *
+prune two_factor/locale
+recursive-include two_factor/locale *
+recursive-include two_factor/templates *
