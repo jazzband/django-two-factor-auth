@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-20 10:51+0100\n"
-"PO-Revision-Date: 2013-11-20 09:14+0000\n"
+"POT-Creation-Date: 2013-11-20 12:55+0100\n"
+"PO-Revision-Date: 2013-11-20 11:57+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/django-two-factor-auth/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -38,29 +38,29 @@ msgstr "Voer een geldig token in."
 msgid "Yes, I am sure"
 msgstr "Ja, ik weet het zeker"
 
-#: models.py:20
+#: models.py:18
 msgid ""
 "Please enter a valid phone number, including your country code starting with"
 " + or 00."
 msgstr "Voer een geldig telefoonnummer in, inclusief landcode en begin met + of 00."
 
-#: models.py:25 models.py:33
+#: models.py:23 models.py:31
 msgid "Phone Call"
 msgstr "Telefoonoproep"
 
-#: models.py:26 models.py:35
+#: models.py:24 models.py:33
 msgid "Text Message"
 msgstr "SMS-bericht"
 
-#: models.py:40
+#: models.py:38
 msgid "Token generator"
 msgstr "Tokengenerator"
 
-#: models.py:51
+#: models.py:49
 msgid "number"
 msgstr "Telefoonnummer"
 
-#: models.py:57
+#: models.py:55
 msgid "method"
 msgstr "methode"
 
@@ -101,7 +101,7 @@ msgstr "Inloggen"
 
 #: templates/two_factor/core/login.html:8
 msgid "Enter your credentials."
-msgstr "Voer uw logingegevens in."
+msgstr "Voer je logingegevens in."
 
 #: templates/two_factor/core/login.html:20
 msgid "Or, alternatively, use one of your backup phones:"
@@ -151,6 +151,19 @@ msgid ""
 "        "
 msgstr "Om een tokengenerator te gebruiken, scan je de QR-code hieronder met een geschikte app. Gebruik bijvoorbeeld Google Authenticator. Voer vervolgens het door de app gegenereerde token in.\n        "
 
+#: templates/two_factor/core/setup.html:20
+msgid ""
+"Please enter the phone number you wish to receive the\n"
+"      text messages on. This number will be validated in the next step.\n"
+"      "
+msgstr "Voer het telefoonnummer in waarop je de SMS-berichten wilt ontvangen. In de volgende stap wordt je telefoonnummer gevalideerd."
+
+#: templates/two_factor/core/setup.html:24
+msgid ""
+"Please enter the phone number you wish to be called on.\n"
+"      This number will be validated in the next step. "
+msgstr "Voer het telefoonnummer in waarop je gebeld wilt worden. In de volgende stap wordt je telefoonnummer gevalideerd."
+
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
 "Congratulations, you've successfully enabled\n"
@@ -169,7 +182,7 @@ msgstr "Tweestapsauthenticatie uitschakelen"
 msgid ""
 "You are about to disable two-factor authentication. This\n"
 "    compromises your account security, are you sure?"
-msgstr "Je staat op het punt om tweestapsauthenticatie uit te schakelen. Dit compromitteert de veiligheid van uw account, weet je dit zeker?"
+msgstr "Je staat op het punt om tweestapsauthenticatie uit te schakelen. Dit compromitteert de veiligheid van je account, weet je dit zeker?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"

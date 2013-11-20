@@ -2,7 +2,7 @@
 {% load i18n two_factor %}
 
 {% block content %}
-  <h1>{% trans "Login" %}</h1>
+  <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
 
   {% if wizard.steps.current == 'auth' %}
     <p>{% blocktrans %}Enter your credentials.{% endblocktrans %}</p>

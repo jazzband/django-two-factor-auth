@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-  <h1>{% trans "Add Backup Phone" %}</h1>
+  <h1>{% block title %}{% trans "Add Backup Phone" %}{% endblock %}</h1>
 
   {% if wizard.steps.current == 'setup' %}
       <p>{% blocktrans %}You'll be adding a backup phone number to your
