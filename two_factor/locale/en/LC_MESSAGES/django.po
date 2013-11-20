@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-19 21:04+0100\n"
+"POT-Creation-Date: 2013-11-20 10:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Enter your credentials."
 msgstr ""
 
-#: templates/two_factor/core/login.html:23
+#: templates/two_factor/core/login.html:20
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr ""
 

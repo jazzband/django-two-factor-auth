@@ -6,3 +6,8 @@ type = PO
 file_filter = two_factor/locale/<lang>/LC_MESSAGES/django.po
 source_file = two_factor/locale/en/LC_MESSAGES/django.po
 source_lang = en
+
+[django-two-factor-auth.example]
+file_filter = example/locale/<lang>/LC_MESSAGES/django.po
+source_file = example/locale/en/LC_MESSAGES/django.po
+source_lang = en

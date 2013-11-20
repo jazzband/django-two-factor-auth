@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-19 21:04+0100\n"
-"PO-Revision-Date: 2013-11-19 20:02+0000\n"
+"POT-Creation-Date: 2013-11-20 10:51+0100\n"
+"PO-Revision-Date: 2013-11-20 09:14+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/django-two-factor-auth/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -103,7 +103,7 @@ msgstr "Inloggen"
 msgid "Enter your credentials."
 msgstr "Voer uw logingegevens in."
 
-#: templates/two_factor/core/login.html:23
+#: templates/two_factor/core/login.html:20
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "Of gebruik een alternatief telefoonnummer:"
 

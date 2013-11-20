@@ -20,10 +20,11 @@ coverage:
 	coverage report
 
 tx-pull:
-	tx pull
+	tx pull -a
 	cd two_factor; django-admin.py compilemessages
+	cd example; django-admin.py compilemessages
 
 tx-push:
-	tx pull
 	cd two_factor; django-admin.py makemessages -l en
+	cd example; django-admin.py makemessages -l en
 	tx push -s

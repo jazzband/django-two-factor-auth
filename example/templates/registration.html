@@ -1,14 +1,12 @@
 {% extends "two_factor/_base_focus.html" %}
-{% load future %}
-
-{% block title %}Registration{% endblock %}
+{% load future i18n %}
 
 {% block content %}
-  <h1>Registration</h1>
+  <h1>{% block title %}{% trans "Registration" %}{% endblock %}</h1>
 
   <form action="" method="POST">
     {% csrf_token %}
     <table>{{ form }}</table>
-    <button class="btn btn-primary" type="submit">Register</button>
+    <button class="btn btn-primary" type="submit">{% trans "Register" %}</button>
   </form>
 {% endblock %}

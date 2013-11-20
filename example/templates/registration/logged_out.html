@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
+{% load i18n %}
 
 {% block content %}
-  <h1>Logged out</h1>
-  <p>See you around!</p>
+  <h1>{% block title %}{% trans "Logged Out" %}{% endblock %}</h1>
+  <p>{% trans "See you around!" %}</p>
 {% endblock %}

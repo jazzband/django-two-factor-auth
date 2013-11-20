@@ -1,18 +1,18 @@
-{% extends "_base.html" %}
-{% load future %}
+{% extends "two_factor/_base.html" %}
+{% load future i18n %}
 
 {% block content_wrapper %}
   <nav class="navbar navbar-default" role="navigation">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="{% url 'home' %}">Brand</a>
+        <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
       </div>
     </div>
   </nav>
 
   <div class="container">
     <div class="row">
-      <div class="col-md-5 col-md-offset-3">
+      <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
         {% include "_messages.html" %}
         {% block content %}{% endblock %}
       </div>

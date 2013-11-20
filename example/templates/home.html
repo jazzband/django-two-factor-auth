@@ -1,30 +1,40 @@
 {% extends "_base.html" %}
-{% load future %}
+{% load future i18n %}
 
-{% block title %}Two Factor Example{% endblock %}
+{% block title %}{% trans "django-two-factor-auth – Demo Application" %}{% endblock %}
 {% block nav_home %}active{% endblock %}
 
 {% block content %}
-    <h1>Improve Your Security <small>your users will thank you</small></h1>
-    <p>Welcome to the example app of <code>django-two-factor-auth</code>. Use
-        this example to get an understanding of what the app can do for you.</p>
+  <h1>{% blocktrans %}Improve Your Security <small>your users will thank
+    you</small>{% endblocktrans %}</h1>
+  <p>{% blocktrans %}Welcome to the example app of
+      <code>django-two-factor-auth</code>. Use this example to get an
+    understanding of what the app can do for you.{% endblocktrans %}</p>
 
-    <h4>Please verify your settings</h4>
-    <p>Have you provided your Twilio settings in the
-        <code>settings_private.py</code> file? By doing so, the example app will
-        be able to call and text you to verify your authentication tokens.
-        Otherwise, the tokens will be shown in the console.</p>
+  <h4>{% trans "Please verify your settings" %}</h4>
+  <p>{% blocktrans %}Have you provided your Twilio settings in the
+      <code>settings_private.py</code> file? By doing so, the example app will
+      be able to call and text you to verify your authentication tokens.
+      Otherwise, the tokens will be shown on the screen.{% endblocktrans %}</p>
 
-    <h4>Next steps:</h4>
-    <ol>
-      <li>Start by <a href="{% url 'registration' %}">registering</a> an
-          account.</li>
-      <li><a href="{% url 'two_factor:login' %}">Login</a> to your account.</li>
-      <li><a href="{% url 'two_factor:setup' %}">Enable</a> two-factor authentication.</li>
-      <li>Then, <a href="{% url 'logout' %}">logout</a> and
-        <a href="{% url 'two_factor:login' %}">login</a> once more to your
-        account to see two-factor authentication at work.</li>
-      <li>At last, you've gained access to the
-        <a href="{% url 'secret' %}">secret page</a>! :-)</li>
-    </ol>
+  {% url 'registration' as reg_url %}
+  {% url 'two_factor:login' as login_url %}
+  {% url 'two_factor:setup' as setup_url %}
+  {% url 'logout' as logout_url %}
+  {% url 'secret' as secret_url %}
+
+  <h4>{% trans "Next steps:" %}</h4>
+  <ol>
+    <li>{% blocktrans %}Start by <a href="{{ reg_url }}">registering</a> an
+      account.{% endblocktrans %}</li>
+    <li>{% blocktrans %}<a href="{{ login_url }}">Login</a> to your account.
+      {% endblocktrans %}</li>
+    <li>{% blocktrans %}<a href="{{ setup_url }}">Enable</a> two-factor
+      authentication.{% endblocktrans %}</li>
+    <li>{% blocktrans %}Then, <a href="{{ logout_url }}">logout</a> and
+      <a href="{{ login_url }}">login</a> once more to your account to see
+      two-factor authentication at work.{% endblocktrans %}</li>
+    <li>{% blocktrans %}At last, you've gained access to the
+      <a href="{{ secret_url }}">secret page</a>! :-){% endblocktrans %}</li>
+  </ol>
 {% endblock %}
