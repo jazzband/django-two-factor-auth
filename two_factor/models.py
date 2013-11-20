@@ -2,10 +2,8 @@ from binascii import unhexlify
 import logging
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
 from django_otp import Device
@@ -75,13 +73,3 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
-
-    def __unicode__(self):
-        """
-        See upstream PR: http://bitbucket.org/psagers/django-otp/pull-request/1
-        """
-        try:
-            username = self.user.username
-        except ObjectDoesNotExist:
-            username = ''
-        return six.u('{0}: {1}'.format(username, self.name))

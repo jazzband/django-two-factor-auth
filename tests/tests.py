@@ -422,11 +422,11 @@ class PhoneDeviceTest(TestCase):
 
     def test_unicode(self):
         device = PhoneDevice(name='unknown')
-        self.assertEqual(': unknown', str(device))
+        self.assertEqual('unknown (None)', str(device))
 
         user = User.objects.create_user('bouke')
         device.user = user
-        self.assertEqual('bouke: unknown', str(device))
+        self.assertEqual('unknown (bouke)', str(device))
 
 
 class UtilsTest(TestCase):
