@@ -28,12 +28,12 @@ translated into English and Dutch, please contribute your own language on
 Transifex_.
 
 Example
--------
+=======
 Test drive this app through the online `example app`_, hosted by Heroku_. It
 demos most features except the Twilio integration.
 
 Compatibility
--------------
+=============
 Compatible with Django 1.4, 1.5 and 1.6 on Python 2.6, 2.7, 3.2 and 3.3.
 
 Installation
@@ -75,10 +75,15 @@ automatically patched to use the new login method.
 Settings
 ========
 ``TWO_FACTOR_SMS_GATEWAY`` (default: ``None``)
-    Which module should be used for sending text messages.
+    The module that should be used for sending text messages.
 
 ``TWO_FACTOR_CALL_GATEWAY`` (default: ``None``)
-    Which module should be used for making calls.
+    The module that should be used for making calls.
+
+``TWO_FACTOR_PATCH_ADMIN`` (default: ``True``)
+    Whether the admin should be patched to use the two-factor authentication
+    method. Disabling this setting would allow circumventing two-factor
+    authentication.
 
 Gateway ``two_factor.gateways.fake.Fake``
 -----------------------------------------
