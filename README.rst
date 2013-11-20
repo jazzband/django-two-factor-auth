@@ -14,33 +14,23 @@ Django Two-Factor Authentication
     :alt: PyPI
     :target: https://pypi.python.org/pypi/django-two-factor-auth
 
-Complete Two-Factor Authentication for Django. Built on top of
+Complete Two-Factor Authentication for Django. Built on top of the one-time
+password framework django-otp_ and Django's built-in authentication framework
 ``django.contrib.auth`` for providing the easiest integration into most Django
 projects. Inspired by the user experience of Google's Two-Step Authentication,
-allowing users to authenticate through call, text messages (SMS) or by using an
-app like Google Authenticator.
-
-The package is being prepared for version 0.3.0. This new version is a full
-rewrite, taking advantage of the one-time password framework django-otp_. This
-version is not yet released on PyPI, but is already feature-complete. It is
-fully compatible with Django 1.6, although support for older versions is
-planned.
+allowing users to authenticate through call, text messages (SMS) or by using a
+token generator app like Google Authenticator.
 
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
-forking the repository and sending some pull requests.
-
-The package is currently translated into English and Dutch, please contribute
-your own language on Transifex_.
-
-.. _django-otp: https://pypi.python.org/pypi/django-otp
+forking the repository and sending some pull requests. The package is currently
+translated into English and Dutch, please contribute your own language on
+Transifex_.
 
 Example
 -------
-Test drive this app through the online `example app`_, provided by Heroku. It
+Test drive this app through the online `example app`_, hosted by Heroku_. It
 demos most features except the Twilio integration.
-
-.. _`example app`: http://example-two-factor-auth.herokuapp.com
 
 Compatibility
 -------------
@@ -127,8 +117,6 @@ your Twilio account dashboard.
     TWILIO_AUTH_TOKEN = '***'
     TWILIO_CALLER_ID = '[verified phone number]'
 
-.. _Twilio: http://www.twilio.com/
-
 Release Notes
 =============
 
@@ -146,4 +134,8 @@ Contributing
 * Send a pull request with your changes.
 * Provide a translation using Transifex_
 
+.. _`example app`: http://example-two-factor-auth.herokuapp.com
+.. _django-otp: https://pypi.python.org/pypi/django-otp
 .. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Twilio: http://www.twilio.com/
+.. _Heroku: https://www.heroku.com
