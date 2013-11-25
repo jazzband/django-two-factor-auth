@@ -55,7 +55,9 @@ class LoginView(IdempotentSessionWizardView):
     def done(self, form_list, **kwargs):
         login(self.request, self.get_user())
 
-        redirect_to = self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        redirect_field_name = self.kwargs.get('redirect_field_name',
+                                              REDIRECT_FIELD_NAME)
+        redirect_to = self.request.GET.get(redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = str(settings.LOGIN_REDIRECT_URL)
         return redirect(redirect_to)
@@ -115,6 +117,12 @@ class LoginView(IdempotentSessionWizardView):
                 phone for phone in backup_phones(self.get_user())
                 if phone != device]
         context['cancel_url'] = settings.LOGOUT_URL
+
+        redirect_field_name = self.kwargs.get('redirect_field_name',
+                                              REDIRECT_FIELD_NAME)
+        context[redirect_field_name] = \
+            self.request.GET.get(redirect_field_name, '')
+
         return context
 
 

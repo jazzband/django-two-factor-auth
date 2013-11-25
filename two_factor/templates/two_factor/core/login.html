@@ -12,6 +12,7 @@
 
   <form action="" method="post">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
+    <input type="hidden" name="next" value="{{ next }}" />
 
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -500px"><input type="submit" value=""/></div>
