@@ -61,6 +61,30 @@ class LoginTest(TestCase):
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
+    def test_valid_login_with_custom_redirect(self):
+        redirect_url = reverse('two_factor:setup')
+
+        User.objects.create_user('bouke', None, 'secret')
+        response = self.client.post(
+            '%s?%s' % (reverse('two_factor:login'),
+                       urlencode({'next': redirect_url})),
+            {'auth-username': 'bouke',
+             'auth-password': 'secret',
+             'login_view-current_step': 'auth'})
+        self.assertRedirects(response, redirect_url)
+
+    def test_valid_login_with_redirect_field_name(self):
+        redirect_url = reverse('two_factor:setup')
+
+        User.objects.create_user('bouke', None, 'secret')
+        response = self.client.post(
+            '%s?%s' % (reverse('custom-login'),
+                       urlencode({'next_page': redirect_url})),
+            {'auth-username': 'bouke',
+             'auth-password': 'secret',
+             'login_view-current_step': 'auth'})
+        self.assertRedirects(response, redirect_url)
+
     def test_with_generator(self):
         user = User.objects.create_user('bouke', None, 'secret')
         device = user.totpdevice_set.create(name='default',

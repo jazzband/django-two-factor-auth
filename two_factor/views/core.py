@@ -37,6 +37,7 @@ class LoginView(IdempotentSessionWizardView):
     condition_dict = {
         'token': lambda self: default_device(self.get_user()),
     }
+    redirect_field_name = REDIRECT_FIELD_NAME
 
     def __init__(self, **kwargs):
         super(LoginView, self).__init__(**kwargs)
@@ -55,7 +56,7 @@ class LoginView(IdempotentSessionWizardView):
     def done(self, form_list, **kwargs):
         login(self.request, self.get_user())
 
-        redirect_to = self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        redirect_to = self.request.GET.get(self.redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = str(settings.LOGIN_REDIRECT_URL)
         return redirect(redirect_to)
