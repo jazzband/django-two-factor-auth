@@ -7,7 +7,7 @@ from ..models import PhoneDevice
 
 register = template.Library()
 
-phone_mask = re.compile('(?<=.{3}).(?=.{4})')
+phone_mask = re.compile('(?<=.{3}).(?=.{2})')
 
 
 @register.filter

@@ -123,13 +123,13 @@ class LoginTest(TestCase):
         response = self._post({'auth-username': 'bouke',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Send text message to 123**6789')
+        self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for challenge on invalid device
         response = self._post({'auth-username': 'bouke',
                                'auth-password': 'secret',
                                'challenge_device': 'MALICIOUS/INPUT/666'})
-        self.assertContains(response, 'Send text message to 123**6789')
+        self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for SMS challenge
         response = self._post({'auth-username': 'bouke',
