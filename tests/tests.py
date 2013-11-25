@@ -40,8 +40,8 @@ class OTPUserMixin(UserMixin):
 
 
 class LoginTest(TestCase):
-    def _post(self, data=None):
-        return self.client.post(reverse('two_factor:login'), data=data)
+    def _post(self, data=None, url_name='two_factor:login', querystring=''):
+        return self.client.post(reverse(url_name) + querystring, data=data)
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))
@@ -60,6 +60,27 @@ class LoginTest(TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
+    def test_valid_login_with_custom_redirect(self):
+        redirect_url = reverse('two_factor:setup')
+
+        User.objects.create_user('bouke', None, 'secret')
+        response = self._post({'auth-username': 'bouke',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'},
+                              querystring='?next=%s' % redirect_url)
+        self.assertRedirects(response, redirect_url)
+
+    def test_valid_login_with_redirect_field_name(self):
+        redirect_url = reverse('two_factor:setup')
+
+        User.objects.create_user('bouke', None, 'secret')
+        response = self._post({'auth-username': 'bouke',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'},
+                              url_name='custom-login',
+                              querystring='?next_page=%s' % redirect_url)
+        self.assertRedirects(response, redirect_url)
 
     def test_with_generator(self):
         user = User.objects.create_user('bouke', None, 'secret')
