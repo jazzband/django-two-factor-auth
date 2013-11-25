@@ -257,9 +257,13 @@ class BackupTokensView(FormView):
         return context
 
     def form_valid(self, form):
-        self.get_device().token_set.all().delete()
+        """
+        Delete existing backup codes and generate new ones.
+        """
+        device = self.get_device()
+        device.token_set.all().delete()
         for n in range(10):
-            self.get_device().token_set.create(token=StaticToken.random_token())
+            device.token_set.create(token=StaticToken.random_token())
 
         return redirect('two_factor:backup_tokens')
 
