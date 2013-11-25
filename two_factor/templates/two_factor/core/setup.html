@@ -24,7 +24,13 @@
     <p>{% blocktrans %}Please enter the phone number you wish to be called on.
       This number will be validated in the next step. {% endblocktrans %}</p>
   {% elif wizard.steps.current == 'validation' %}
-    <p>{{ instructions }}</p>
+    {% if device.method == 'call' %}
+      <p>{% blocktrans %}We are calling your phone right now, please enter the
+        digits you hear.{% endblocktrans %}</p>
+    {% elif device.method == 'sms' %}
+      <p>{% blocktrans %}We sent you a text message, please enter the tokens we
+        sent.{% endblocktrans %}</p>
+    {% endif %}
   {% endif %}
 
   <form action="" method="post">{% csrf_token %}

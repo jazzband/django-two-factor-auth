@@ -135,8 +135,7 @@ class LoginTest(TestCase):
         response = self._post({'auth-username': 'bouke',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
-        self.assertContains(response, 'We sent you a text message, please '
-                                      'enter the tokens we sent.')
+        self.assertContains(response, 'We sent you a text message')
         fake.return_value.send_sms.assert_called_with(
             device=device, token='%06d' % totp(device.bin_key))
 
@@ -146,8 +145,7 @@ class LoginTest(TestCase):
         response = self._post({'auth-username': 'bouke',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
-        self.assertContains(response, 'We are calling your phone right now, '
-                                      'please enter the digits you hear.')
+        self.assertContains(response, 'We are calling your phone right now')
         fake.return_value.make_call.assert_called_with(
             device=device, token='%06d' % totp(device.bin_key))
 
@@ -212,7 +210,7 @@ class SetupTest(UserMixin, TestCase):
         response = self._post(data={'setup_view-current_step': 'call',
                                     'call-number': '+123456789'})
         self.assertContains(response, 'Token:')
-        self.assertContains(response, 'please enter the digits you hear')
+        self.assertContains(response, 'We are calling your phone right now')
 
         # assert that the token was send to the gateway
         self.assertEqual(fake.return_value.method_calls,
@@ -249,7 +247,7 @@ class SetupTest(UserMixin, TestCase):
         response = self._post(data={'setup_view-current_step': 'sms',
                                     'sms-number': '+123456789'})
         self.assertContains(response, 'Token:')
-        self.assertContains(response, 'please enter the tokens we sent')
+        self.assertContains(response, 'We sent you a text message')
 
         # assert that the token was send to the gateway
         self.assertEqual(fake.return_value.method_calls,
