@@ -124,6 +124,16 @@ your Twilio account dashboard.
 Release Notes
 =============
 
+0.2.2
+-----
+* Allow changing Twilio call language.
+
+0.2.1
+-----
+* Allow overriding instructions in the template.
+* Allow customization of the redirect query parameter.
+* Faster backup token generating.
+
 0.2.0
 -----
 This is a major upgrade, as the package has been rewritten completely. Upgrade
