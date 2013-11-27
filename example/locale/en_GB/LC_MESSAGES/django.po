@@ -3,83 +3,82 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Bouke Haarsma <bouke@webatoom.nl>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-27 21:08+0100\n"
-"PO-Revision-Date: 2013-11-20 09:59+0000\n"
+"PO-Revision-Date: 2013-11-27 20:09+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/django-two-factor-auth/language/nl/)\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/django-two-factor-auth/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
+"Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: gateways.py:10
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
-msgstr "Fictieve oproep aan %(number)s: \"Jouw token is: %(token)s\""
+msgstr ""
 
 #: gateways.py:16
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
-msgstr "Fictief SMS-bericht aan %(number)s: \"Jouw token is: %(token)s\""
+msgstr ""
 
 #: templates/_base.html:20
 msgid "Toggle navigation"
-msgstr "Toon/verberg navigatie"
+msgstr ""
 
 #: templates/_base.html:25 templates/two_factor/_base_focus.html:8
 msgid "Demo"
-msgstr "Demo"
+msgstr ""
 
 #: templates/_base.html:32
 msgid "Home"
-msgstr "Home"
+msgstr ""
 
 #: templates/_base.html:34 templates/secret.html:7
 msgid "Secret Page"
-msgstr "Geheime pagina"
+msgstr ""
 
 #: templates/_base.html:42
 msgid "Account Security"
-msgstr "Accountbeveiliging"
+msgstr ""
 
 #: templates/_base.html:43
 msgid "Logout"
-msgstr "Uitloggen"
+msgstr ""
 
 #: templates/_base.html:45
 msgid "Not logged in"
-msgstr "Niet ingelogd"
+msgstr ""
 
 #: templates/_base.html:46 templates/registration_complete.html:9
 msgid "Login"
-msgstr "Inloggen"
+msgstr ""
 
 #: templates/home.html:4
 msgid "django-two-factor-auth – Demo Application"
-msgstr "django-two-factor-auth – Demonstratieapplicatie"
+msgstr ""
 
 #: templates/home.html:8
 msgid ""
 "Improve Your Security <small>your users will thank\n"
 "    you</small>"
-msgstr "Verbeter de beveiliging <small>je gebruikers zullen je bedanken</small>"
+msgstr ""
 
 #: templates/home.html:10
 msgid ""
 "Welcome to the example app of\n"
 "      <code>django-two-factor-auth</code>. Use this example to get an\n"
 "    understanding of what the app can do for you."
-msgstr "Welkom bij de demonstratieapplicatie van <code>django-two-factor-auth</code>. Gebruik deze demonstratie om een idee te krijgen wat deze app voor jouw project kan betekenen."
+msgstr ""
 
 #: templates/home.html:14
 msgid "Please verify your settings"
-msgstr "Controleer je instellingen"
+msgstr ""
 
 #: templates/home.html:15
 msgid ""
@@ -87,32 +86,32 @@ msgid ""
 "      <code>settings_private.py</code> file? By doing so, the example app will\n"
 "      be able to call and text you to verify your authentication tokens.\n"
 "      Otherwise, the tokens will be shown on the screen."
-msgstr "Heb je de instellingen van Twilio toegevoegd aan het bestand <code>settings_private.py</code>? Zodra je dat gedaan hebt kunnen we je telefoonnummer bellen. Mocht je dat nog niet gedaan hebben worden de tokens op je scherm getoond."
+msgstr ""
 
 #: templates/home.html:26
 msgid "Next steps:"
-msgstr "Hoe nu verder:"
+msgstr ""
 
 #: templates/home.html:28
 #, python-format
 msgid ""
 "Start by <a href=\"%(reg_url)s\">registering</a> an\n"
 "      account."
-msgstr "Begin met het <a href=\"%(reg_url)s\">registreren</a> van een account."
+msgstr ""
 
 #: templates/home.html:30
 #, python-format
 msgid ""
 "<a href=\"%(login_url)s\">Login</a> to your account.\n"
 "      "
-msgstr "<a href=\"%(login_url)s\">Log dan in</a> op je account."
+msgstr ""
 
 #: templates/home.html:32
 #, python-format
 msgid ""
 "<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
 "      authentication."
-msgstr "Schakel <a href=\"%(setup_url)s\">tweestapsauthenticatie</a> in voor je account."
+msgstr ""
 
 #: templates/home.html:34
 #, python-format
@@ -120,43 +119,43 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and\n"
 "      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
 "      two-factor authentication at work."
-msgstr "Tenslotte moet moet je nog een laatste keer <a href=\"%(logout_url)s\">uitloggen</a> en <a href=\"%(login_url)s\">inloggen</a> om tweestapsauthenticatie in werking te zien."
+msgstr ""
 
 #: templates/home.html:37
 #, python-format
 msgid ""
 "At last, you've gained access to the\n"
 "      <a href=\"%(secret_url)s\">secret page</a>! :-)"
-msgstr "Als je tot hier gekomen bent, kun je de <a href=\"%(secret_url)s\">geheime pagina</a> bekijken! :-)"
+msgstr ""
 
 #: templates/registration.html:5
 msgid "Registration"
-msgstr "Registratie"
+msgstr ""
 
 #: templates/registration.html:10
 msgid "Register"
-msgstr "Registreren"
+msgstr ""
 
 #: templates/registration_complete.html:5
 msgid "Registration Complete"
-msgstr "Registratie voltooid"
+msgstr ""
 
 #: templates/registration_complete.html:6
 msgid ""
 "Congratulations, you've successfully registered an\n"
 "    account."
-msgstr "Gefeliciteerd, je hebt een account geregistreerd."
+msgstr ""
 
 #: templates/secret.html:9
 msgid ""
 "Congratulations, you've made it. You have successfully\n"
 "    enabled two-factor authentication and logged in with your token."
-msgstr "Gefeliciteerd, je hebt met succes tweestapsauthenticatie ingeschakeld voor jouw account en bent daarna extra veilig ingelogd!"
+msgstr ""
 
 #: templates/registration/logged_out.html:5
 msgid "Logged Out"
-msgstr "Uitgelogd"
+msgstr ""
 
 #: templates/registration/logged_out.html:6
 msgid "See you around!"
-msgstr "Tot snel?"
+msgstr ""

@@ -1,4 +1,6 @@
 from binascii import unhexlify
+from django.utils import translation
+
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -394,13 +396,22 @@ class DisableTest(OTPUserMixin, TestCase):
 
 class TwilioGatewayTest(TestCase):
     def test_call_app(self):
-        response = self.client.get(reverse('two_factor:twilio_call_app',
-                                           args=['123456']))
+        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        response = self.client.get(url)
         self.assertEqual(response.content,
                          b'<?xml version="1.0" encoding="UTF-8" ?><Response>'
-                         b'<Say>Hi, this is testserver calling. Please enter '
-                         b'the following code on your screen: 1. 2. 3. 4. 5. '
-                         b'6. Repeat: 1. 2. 3. 4. 5. 6.</Say></Response>')
+                         b'<Say language="en">Hi, this is testserver calling. '
+                         b'Please enter the following code on your screen: 1. '
+                         b'2. 3. 4. 5. 6. Repeat: 1. 2. 3. 4. 5. 6.</Say>'
+                         b'</Response>')
+
+        # there is a en-gb voice
+        response = self.client.get('%s?%s' % (url, urlencode({'locale': 'en-gb'})))
+        self.assertContains(response, '<Say language="en-gb">')
+
+        # there is no nl voice
+        response = self.client.get('%s?%s' % (url, urlencode({'locale': 'nl-nl'})))
+        self.assertContains(response, '<Say language="en">')
 
     @override_settings(
         TWILIO_ACCOUNT_SID='SID',
@@ -415,11 +426,18 @@ class TwilioGatewayTest(TestCase):
         twilio.make_call(device=Mock(number='+123'), token='654321')
         client.return_value.calls.create.assert_called_with(
             from_='+456', to='+123', method='GET',
-            url='http://testserver/twilio/inbound/two_factor/654321/')
+            url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-us')
 
         twilio.send_sms(device=Mock(number='+123'), token='654321')
         client.return_value.sms.messages.create.assert_called_with(
             to='+123', body='Your authentication token is 654321', from_='+456')
+
+        client.return_value.calls.create.reset_mock()
+        with translation.override('en-gb'):
+            twilio.make_call(device=Mock(number='+123'), token='654321')
+            client.return_value.calls.create.assert_called_with(
+                from_='+456', to='+123', method='GET',
+                url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-gb')
 
 
 class FakeGatewayTest(TestCase):
