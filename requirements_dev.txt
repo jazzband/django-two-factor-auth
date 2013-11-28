@@ -13,6 +13,7 @@ django_otp
 South
 django-debug-toolbar
 django-bootstrap-form
+django-user-sessions
 
 # Testing
 

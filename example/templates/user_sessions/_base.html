@@ -1,0 +1,9 @@
+{% extends "_base.html" %}
+{% block nav_sessions %}active{% endblock %}
+
+{% block content_wrapper %}
+  <div class="alert alert-success"><p class="container">The session list is
+    powered by <code>django-user-sessions</code> to list the location,
+    browser and IP-address.</p></div>
+  {{ block.super }}
+{% endblock %}

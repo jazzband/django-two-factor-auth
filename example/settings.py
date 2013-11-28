@@ -31,7 +31,7 @@ SECRET_KEY = 'DO NOT USE THIS KEY!'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -53,7 +53,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -94,6 +94,8 @@ LOGGING = {
 
 TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
 TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
+
+SESSION_ENGINE = 'user_sessions.backends.db'
 
 try:
     from .settings_private import *  # noqa

@@ -35,5 +35,6 @@ urlpatterns = patterns(
         name='registration_complete',
     ),
     url(r'', include('two_factor.urls', 'two_factor')),
+    url(r'', include('user_sessions.urls', 'user_sessions')),
     url(r'^admin/', include(admin.site.urls)),
 )

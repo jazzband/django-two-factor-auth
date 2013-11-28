@@ -40,6 +40,8 @@
               </a></li>
               <li class="{% block nav_profile %}{% endblock %}">
                   <a href="{% url 'two_factor:profile' %}">{% trans "Account Security" %}</a></li>
+              <li class="{% block nav_sessions %}{% endblock %}">
+                  <a href="{% url 'user_sessions:session_list' %}">{% trans "Sessions" %}</a></li>
               <li><a href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
             {% else %}
               <li><a>{% trans "Not logged in" %}</a></li>

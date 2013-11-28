@@ -30,7 +30,10 @@ Transifex_.
 Example
 =======
 Test drive this app through the online `example app`_, hosted by Heroku_. It
-demos most features except the Twilio integration.
+demos most features except the Twilio integration. It also includes
+django-user-sessions_ for providing Django sessions with a foreign key to the
+user. Although the package is optional, it provides better account security
+control over ``django.contrib.sessions``.
 
 Compatibility
 =============
@@ -121,6 +124,11 @@ your Twilio account dashboard.
     TWILIO_AUTH_TOKEN = '***'
     TWILIO_CALLER_ID = '[verified phone number]'
 
+See Also
+========
+* Have a look at django-user-sessions_ for Django sessions with a foreign key
+  to the user. This package is also included in the demo app.
+
 Release Notes
 =============
 
@@ -153,3 +161,4 @@ Contributing
 .. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
 .. _Twilio: http://www.twilio.com/
 .. _Heroku: https://www.heroku.com
+.. _django-user-sessions: https://pypi.python.org/pypi/django-user-sessions
