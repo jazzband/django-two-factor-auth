@@ -1,0 +1,162 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Kunda, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-27 21:08+0100\n"
+"PO-Revision-Date: 2013-12-31 06:40+0000\n"
+"Last-Translator: Kunda\n"
+"Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/django-two-factor-auth/language/he_IL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gateways.py:10
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "שיחה מזויפת ל %(number)s: \"הטוקן שלך הוא: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "SMS מזויפת ל %(number)s: \"הטוקן שלך הוא: %(token)s\""
+
+#: templates/_base.html:20
+msgid "Toggle navigation"
+msgstr "החלף מצב ניווט"
+
+#: templates/_base.html:25 templates/two_factor/_base_focus.html:8
+msgid "Demo"
+msgstr "הדגמה"
+
+#: templates/_base.html:32
+msgid "Home"
+msgstr "דף בית"
+
+#: templates/_base.html:34 templates/secret.html:7
+msgid "Secret Page"
+msgstr "דף סודי"
+
+#: templates/_base.html:42
+msgid "Account Security"
+msgstr "אבטחת חשבון"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "התנתק"
+
+#: templates/_base.html:45
+msgid "Not logged in"
+msgstr "לא מחובר"
+
+#: templates/_base.html:46 templates/registration_complete.html:9
+msgid "Login"
+msgstr "כניסה"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – יישום הדגמה"
+
+#: templates/home.html:8
+msgid ""
+"Improve Your Security <small>your users will thank\n"
+"    you</small>"
+msgstr "שפר את האבטחה שלך <small>המשתמשים שלך יודו\nלך</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of\n"
+"      <code>django-two-factor-auth</code>. Use this example to get an\n"
+"    understanding of what the app can do for you."
+msgstr "ברוכים הבאים לאפליקצית הדוגמא של\ncode>django-two-factor-auth</code>. השתמש בדוגמה זו כדי להגיע\nלהבנה מה שהאפליקציה הזו יכולה לעשות בשבילך."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "אנא ודא את ההגדרות שלך"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the\n"
+"      <code>settings_private.py</code> file? By doing so, the example app will\n"
+"      be able to call and text you to verify your authentication tokens.\n"
+"      Otherwise, the tokens will be shown on the screen."
+msgstr "האם סיפקת את ההגדרות Twilio שלך בתוך\nקובץ <code>settings_private.py</code> ? כי, האפליקצית דוגמא תהיה\nמסוגלת לקרוא ולשלוח לך טקסטים על מנת לוודא את טוקנז האימות שלך.\nאחרת, הטוקנז יוצגו על המסך."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "השלבים הבאים:"
+
+#: templates/home.html:28
+#, python-format
+msgid ""
+"Start by <a href=\"%(reg_url)s\">registering</a> an\n"
+"      account."
+msgstr "תתחיל על ידי <a href=\"%(reg_url)s\">הרשמה</a> בשביל\nחשבון."
+
+#: templates/home.html:30
+#, python-format
+msgid ""
+"<a href=\"%(login_url)s\">Login</a> to your account.\n"
+"      "
+msgstr "<a href=\"%(login_url)s\">כניסה</a> לחשבון שלך.\n      "
+
+#: templates/home.html:32
+#, python-format
+msgid ""
+"<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
+"      authentication."
+msgstr "<a href=\"%(setup_url)s\">הפעל</a> אותנטיקציה\nדו-שלבית."
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and\n"
+"      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
+"      two-factor authentication at work."
+msgstr "אז, <a href=\"%(logout_url)s\">תתנתקת</a> ו-\n<a href=\"%(login_url)s\">תכנס</a> שוב מחדש לחשבון שלך כדי לראות\nאת האותנטיקציה דו-שלבית עובדת."
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the\n"
+"      <a href=\"%(secret_url)s\">secret page</a>! :-)"
+msgstr "סוף סוף, קיבלת גישה\n<a href=\"%(secret_url)s\">לדף סודי</a>! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "הרשמה"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "להירשם"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "רישום הושלם"
+
+#: templates/registration_complete.html:6
+msgid ""
+"Congratulations, you've successfully registered an\n"
+"    account."
+msgstr "מזל טוב, הצלחת להרשם\nלחשבון."
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully\n"
+"    enabled two-factor authentication and logged in with your token."
+msgstr "מזל טוב. הצלחת\nלאפשר אותנטיקציה דו-שלבית ואתה התחברת באמצעות הטוקן שלך."
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "מנותק"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "נתראה בסביבה!"
