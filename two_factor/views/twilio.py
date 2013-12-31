@@ -7,6 +7,7 @@ from django.utils.translation import (ugettext_lazy as _, pgettext,
 from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
+from ..gateways.twilio import validate_voice_locale
 from .utils import class_view_decorator
 
 
@@ -26,6 +27,7 @@ class TwilioCallApp(View):
         locale = request.GET.get('locale', '')
         if not check_for_language(locale):
             locale = settings.LANGUAGE_CODE
+        validate_voice_locale(locale)
         with translation.override(locale):
             # Build the prompt. The numbers have to be clearly pronounced,
             # this is by creating a string like "1. 2. 3. 4. 5. 6.", this way

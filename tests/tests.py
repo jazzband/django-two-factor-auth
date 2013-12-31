@@ -439,6 +439,28 @@ class TwilioGatewayTest(TestCase):
                 from_='+456', to='+123', method='GET',
                 url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-gb')
 
+    @override_settings(
+        TWILIO_ACCOUNT_SID='SID',
+        TWILIO_AUTH_TOKEN='TOKEN',
+        TWILIO_CALLER_ID='+456',
+    )
+    @patch('two_factor.gateways.twilio.TwilioRestClient')
+    def test_invalid_twilio_language(self, client):
+        # This test assumes an invalid twilio voice language being present in
+        # the Arabic translation. Might need to create a faux translation when
+        # the translation is fixed.
+
+        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        with self.assertRaises(NotImplementedError):
+            self.client.get('%s?%s' % (url, urlencode({'locale': 'ar'})))
+
+        # make_call doesn't use the voice_language, but it should raise early
+        # to ease debugging.
+        with self.assertRaises(NotImplementedError):
+            twilio = Twilio()
+            with translation.override('ar'):
+                twilio.make_call(device=Mock(number='+123'), token='654321')
+
 
 class FakeGatewayTest(TestCase):
     @patch('two_factor.gateways.fake.logger')

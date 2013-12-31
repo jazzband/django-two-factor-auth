@@ -7,10 +7,13 @@ except ImportError:
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import translation
-from django.utils.translation import ugettext
+from django.utils.translation import ugettext, pgettext
 from twilio.rest import TwilioRestClient
 
 from two_factor.middleware.threadlocals import get_current_request
+
+# Supported voice languages, see http://bit.ly/187I5cr
+VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de')
 
 
 class Twilio(object):
@@ -19,9 +22,12 @@ class Twilio(object):
                                        getattr(settings, 'TWILIO_AUTH_TOKEN'))
 
     def make_call(self, device, token):
+        locale = translation.get_language()
+        validate_voice_locale(locale)
+
         request = get_current_request()
         url = reverse('two_factor:twilio_call_app', kwargs={'token': token})
-        url = '%s?%s' % (url, urlencode({'locale': translation.get_language()}))
+        url = '%s?%s' % (url, urlencode({'locale': locale}))
         uri = request.build_absolute_uri(url)
         self.client.calls.create(to=device.number,
                                  from_=getattr(settings, 'TWILIO_CALLER_ID'),
@@ -34,3 +40,11 @@ class Twilio(object):
             to=device.number,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
             body=body)
+
+
+def validate_voice_locale(locale):
+    with translation.override(locale):
+        voice_locale = pgettext('twilio_locale', 'en')
+        if voice_locale not in VOICE_LANGUAGES:
+            raise NotImplementedError('The language "%s" is not '
+                                      'supported by Twilio' % voice_locale)
