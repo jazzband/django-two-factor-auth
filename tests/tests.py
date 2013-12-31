@@ -337,7 +337,7 @@ class PhoneSetupTest(OTPUserMixin, TestCase):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '+123456789',
                                'setup-method': 'call'})
-        self.assertContains(response, 'We\'ve send a token to your phone')
+        self.assertContains(response, 'We\'ve sent a token to your phone')
         device = response.context_data['wizard']['form'].device
         fake.return_value.make_call.assert_called_with(
             device=device, token='%06d' % totp(device.bin_key))
