@@ -1,6 +1,6 @@
 {% load future i18n %}
 <!DOCTYPE html>
-<html>
+<html {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <title>{% block title %}{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
