@@ -149,6 +149,26 @@ to this version with care and make backups of your database before running the
 South migrations. See installation instructions for installing the new version;
 update your template customizations and run the database migrations.
 
+Development
+===========
+This project aims for full code-coverage, this means that your code should be
+well-tested. Also test branches for hardened code.
+
+Running tests
+-------------
+You can run the full test suite with::
+
+    make test
+
+Or run a specific test with::
+
+    make test TARGET=tests.tests.TwilioGatewayTest
+
+For Python compatibility, tox_ is used. You can run the full test with::
+
+    tox
+
+
 Contributing
 ============
 * Fork the repository on GitHub and start hacking.
@@ -162,3 +182,4 @@ Contributing
 .. _Twilio: http://www.twilio.com/
 .. _Heroku: https://www.heroku.com
 .. _django-user-sessions: https://pypi.python.org/pypi/django-user-sessions
+.. _tox: https://testrun.org/tox/latest/
