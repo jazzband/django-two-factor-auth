@@ -24,8 +24,8 @@ token generator app like Google Authenticator.
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests. The package is currently
-translated into English and Dutch, please contribute your own language on
-Transifex_.
+translated into English, Dutch, Hebrew and Arabic. Please contribute your own
+language using Transifex_.
 
 Example
 =======
@@ -131,6 +131,10 @@ See Also
 
 Release Notes
 =============
+
+0.2.3
+-----
+* Two new translations: Hebrew and Arabic
 
 0.2.2
 -----
