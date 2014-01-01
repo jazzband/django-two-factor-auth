@@ -12,7 +12,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=1.4,<1.7',
+        'Django>=1.4.2,<1.7',
         'django_otp>=0.2.0,<0.3.0',
     ],
     include_package_data=True,
