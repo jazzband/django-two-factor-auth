@@ -168,7 +168,7 @@ Or run a specific test with::
 
     make test TARGET=tests.tests.TwilioGatewayTest
 
-For Python compatibility, tox_ is used. You can run the full test with::
+For Python compatibility, tox_ is used. You can run the full test suite with::
 
     tox
 
