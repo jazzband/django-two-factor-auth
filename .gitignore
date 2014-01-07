@@ -3,3 +3,4 @@ example/settings_private.py
 /.coverage
 /.tox/
 /htmlcov/
+/docs/_build/

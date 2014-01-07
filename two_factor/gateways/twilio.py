@@ -17,6 +17,24 @@ VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de')
 
 
 class Twilio(object):
+    """
+    Gateway for sending text messages and making phone calls using Twilio_.
+
+    All you need is your Twilio Account SID and Token, as shown in your Twilio
+    account dashboard.
+
+    ``TWILIO_ACCOUNT_SID``
+      Should be set to your account's SID.
+
+    ``TWILIO_AUTH_TOKEN``
+      Should be set to your account's authorization token.
+
+    ``TWILIO_CALLER_ID``
+      Should be set to a verified phone number. Twilio_ differentiates between
+      numbers verified for making phone calls and sending text messages.
+
+    .. _Twilio: http://www.twilio.com/
+    """
     def __init__(self):
         self.client = TwilioRestClient(getattr(settings, 'TWILIO_ACCOUNT_SID'),
                                        getattr(settings, 'TWILIO_AUTH_TOKEN'))

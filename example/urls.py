@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from .views import (exampleSecretView, HomeView, RegistrationView,
+from .views import (ExampleSecretView, HomeView, RegistrationView,
                     RegistrationCompleteView)
 
 
@@ -21,7 +21,7 @@ urlpatterns = patterns(
     ),
     url(
         regex=r'^secret/$',
-        view=exampleSecretView.as_view(),
+        view=ExampleSecretView.as_view(),
         name='secret',
     ),
     url(

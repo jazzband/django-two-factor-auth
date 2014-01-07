@@ -21,3 +21,8 @@ coverage
 flake8
 tox
 mock
+
+# Documentation
+
+Sphinx
+sphinx_rtd_theme
