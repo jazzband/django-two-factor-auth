@@ -1,8 +1,13 @@
-{% extends "two_factor/_base.html" %}
+{% extends "two_factor/_base_focus.html" %}
 {% load future i18n %}
 
 {% block content %}
   <h1>{% block title %}{% trans "Backup Tokens" %}{% endblock %}</h1>
+  <p>{% blocktrans %}Backup tokens can be used when your primary and backup
+      phone numbers aren't available. The backup tokens below can be used
+      for login verification. If you've used up all your backup tokens, you
+      can generate a new set of backup tokens. Only the backup tokens shown
+      below will be valid.{% endblocktrans %}</p>
 
   {% if device.token_set.count %}
     <ul>
@@ -10,6 +15,7 @@
         <li>{{ token.token }}</li>
       {% endfor %}
     </ul>
+    <p>{% blocktrans %}Print these tokens and store them somewhere save.{% endblocktrans %}</p>
   {% else %}
     <p>{% trans "You don't have any backup codes yet." %}</p>
   {% endif %}

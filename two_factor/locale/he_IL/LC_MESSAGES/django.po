@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-31 11:00+0100\n"
-"PO-Revision-Date: 2013-12-31 10:22+0000\n"
-"Last-Translator: Kunda\n"
+"POT-Creation-Date: 2014-01-11 21:30+0100\n"
+"PO-Revision-Date: 2014-01-11 20:31+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/django-two-factor-auth/language/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,22 +57,22 @@ msgstr "הודעת טקסט"
 msgid "Token generator"
 msgstr "טוקן ג'נרטור"
 
-#: models.py:49
+#: models.py:52
 msgid "number"
 msgstr "מספר"
 
-#: models.py:55
+#: models.py:58
 msgid "method"
 msgstr "שיטה"
 
-#: gateways/twilio.py:38
+#: gateways/twilio.py:56
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "טוקן האימות שלך הוא %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio.py:47 views/twilio.py:42
+#: gateways/twilio.py:65 views/twilio.py:45
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "en"
@@ -95,11 +95,28 @@ msgstr "הבא"
 msgid "Backup Tokens"
 msgstr "טוקנז גיבוי"
 
-#: templates/two_factor/core/backup_tokens.html:14
+#: templates/two_factor/core/backup_tokens.html:6
+msgid ""
+"Backup tokens can be used when your primary and backup\n"
+"      phone numbers aren't available. The backup tokens below can be used\n"
+"      for login verification. If you've used up all your backup tokens, you\n"
+"      can generate a new set of backup tokens. Only the backup tokens shown\n"
+"      below will be valid."
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:18
+msgid "Print these tokens and store them somewhere save."
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
 msgstr "עדיין אין לך קודי גיבוי."
 
-#: templates/two_factor/core/backup_tokens.html:18
+#: templates/two_factor/core/backup_tokens.html:25
+msgid "Back to Account Security"
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
 msgstr "ייצר טוקנז"
 
@@ -288,19 +305,19 @@ msgid ""
 "      security."
 msgstr "אותנטיקציה דו-שלבית אינו מופעל עבור\nהחשבון שלך. אפשר אותנטיקציה דו-שלבית לצורך הגברת אבטחת\nהחשבון."
 
-#: templatetags/two_factor.py:23
+#: templatetags/two_factor.py:38
 #, python-format
 msgid "Send text message to %s"
 msgstr "שלח הודעת טקסט ל- %s"
 
-#: templatetags/two_factor.py:25
+#: templatetags/two_factor.py:40
 #, python-format
 msgid "Call number %s"
 msgstr "התקשר למספר %s"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: views/twilio.py:22
+#: views/twilio.py:25
 #, python-format
 msgid ""
 "Hi, this is %(site_name)s calling. Please enter the following code on your "

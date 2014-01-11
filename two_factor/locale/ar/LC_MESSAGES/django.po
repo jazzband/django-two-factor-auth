@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-31 11:00+0100\n"
-"PO-Revision-Date: 2014-01-01 01:08+0000\n"
-"Last-Translator: KuwaitNET\n"
+"POT-Creation-Date: 2014-01-11 21:30+0100\n"
+"PO-Revision-Date: 2014-01-11 20:31+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/django-two-factor-auth/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,22 +57,22 @@ msgstr "رسالة نصية"
 msgid "Token generator"
 msgstr "منشئ رمز التفويض"
 
-#: models.py:49
+#: models.py:52
 msgid "number"
 msgstr "الرقم"
 
-#: models.py:55
+#: models.py:58
 msgid "method"
 msgstr "الطريقة"
 
-#: gateways/twilio.py:38
+#: gateways/twilio.py:56
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "رمز التفويض الخاص بك هو %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio.py:47 views/twilio.py:42
+#: gateways/twilio.py:65 views/twilio.py:45
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "الإنجليزية"
@@ -95,11 +95,28 @@ msgstr "التالي"
 msgid "Backup Tokens"
 msgstr "رموز تفويض إحتياطية"
 
-#: templates/two_factor/core/backup_tokens.html:14
+#: templates/two_factor/core/backup_tokens.html:6
+msgid ""
+"Backup tokens can be used when your primary and backup\n"
+"      phone numbers aren't available. The backup tokens below can be used\n"
+"      for login verification. If you've used up all your backup tokens, you\n"
+"      can generate a new set of backup tokens. Only the backup tokens shown\n"
+"      below will be valid."
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:18
+msgid "Print these tokens and store them somewhere save."
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
 msgstr "لا يتوفر لديك أي رموز تفويض إحتياطية إلى الآن."
 
-#: templates/two_factor/core/backup_tokens.html:18
+#: templates/two_factor/core/backup_tokens.html:25
+msgid "Back to Account Security"
+msgstr ""
+
+#: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
 msgstr "إنشاء رموز تفويض"
 
@@ -292,19 +309,19 @@ msgid ""
 "      security."
 msgstr "خاصية التحقق من خطوتين غير مفعلة\nلحسابك. فعّل خاصية التحقق من خطوتين لترقية أمان\nحسابك."
 
-#: templatetags/two_factor.py:23
+#: templatetags/two_factor.py:38
 #, python-format
 msgid "Send text message to %s"
 msgstr "أرسل رسالة لـ %s"
 
-#: templatetags/two_factor.py:25
+#: templatetags/two_factor.py:40
 #, python-format
 msgid "Call number %s"
 msgstr "أتصل بالرقم %s"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: views/twilio.py:22
+#: views/twilio.py:25
 #, python-format
 msgid ""
 "Hi, this is %(site_name)s calling. Please enter the following code on your "
