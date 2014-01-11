@@ -1,5 +1,6 @@
 from binascii import unhexlify
 from django.utils import translation
+from two_factor.admin import patch_admin, unpatch_admin
 
 try:
     from urllib.parse import urlencode
@@ -280,11 +281,41 @@ class SetupTest(UserMixin, TestCase):
 
 
 class AdminPatchTest(TestCase):
+    def setUp(self):
+        patch_admin()
+
+    def tearDown(self):
+        unpatch_admin()
+
     def test(self):
         response = self.client.get('/admin/')
         redirect_to = '%s?%s' % (settings.LOGIN_URL,
                                  urlencode({'next': '/admin/'}))
         self.assertRedirects(response, redirect_to)
+
+
+class AdminSiteTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
+
+    def test_default_admin(self):
+        response = self.client.get('/admin/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_otp_admin_without_otp(self):
+        response = self.client.get('/otp_admin/')
+        redirect_to = '%s?%s' % (settings.LOGIN_URL,
+                                 urlencode({'next': '/otp_admin/'}))
+        self.assertRedirects(response, redirect_to)
+
+    def test_otp_admin_with_otp(self):
+        device = self.user.totpdevice_set.create()
+        session = self.client.session
+        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
+        session.save()
+        response = self.client.get('/otp_admin/')
+        self.assertEqual(response.status_code, 200)
 
 
 class BackupTokensTest(OTPUserMixin, TestCase):

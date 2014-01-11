@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
+from two_factor.admin import AdminSiteOTPRequired
 
 from two_factor.views import LoginView
 
-
 admin.autodiscover()
+otp_admin_site = AdminSiteOTPRequired()
 
 urlpatterns = patterns(
     '',
@@ -20,4 +21,5 @@ urlpatterns = patterns(
     ),
     url(r'', include('two_factor.urls', 'two_factor')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^otp_admin/', include(otp_admin_site.urls)),
 )

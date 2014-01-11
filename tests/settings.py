@@ -7,10 +7,10 @@ SECRET_KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
 INSTALLED_APPS = [
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
@@ -49,3 +49,6 @@ DATABASES = {
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
+
+
+TWO_FACTOR_PATCH_ADMIN = False
