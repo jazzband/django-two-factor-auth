@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-0.2.4
+0.3.0
 -----
 * #18 -- Optionally enforce OTP for admin views
 
