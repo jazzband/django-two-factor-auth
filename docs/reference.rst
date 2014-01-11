@@ -22,3 +22,8 @@ Template Tags
 -------------
 .. automodule:: two_factor.templatetags.two_factor
    :members:
+
+View Mixins
+-----------
+.. automodule:: two_factor.views.mixins
+   :members:

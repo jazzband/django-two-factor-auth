@@ -1,4 +1,5 @@
 from binascii import unhexlify
+from django.core.exceptions import PermissionDenied
 from django.utils import translation
 from two_factor.admin import patch_admin, unpatch_admin
 
@@ -278,6 +279,28 @@ class SetupTest(UserMixin, TestCase):
         self.user.totpdevice_set.create(name='default')
         response = self.client.get(reverse('two_factor:setup'))
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
+
+
+class OTPRequiredMixinTest(TestCase):
+    def test_unverified(self):
+        response = self.client.get('/secure/')
+        redirect_to = '%s?next=/secure/' % settings.LOGIN_URL
+        self.assertRedirects(response, redirect_to)
+
+    def test_unverified_raise(self):
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+    def test_verified(self):
+        user = User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
+        device = user.totpdevice_set.create()
+        session = self.client.session
+        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
+        session.save()
+
+        response = self.client.get('/secure/')
+        self.assertEqual(response.status_code, 200)
 
 
 class AdminPatchTest(TestCase):

@@ -21,19 +21,13 @@ decorator to limit access to two-factor-enabled users::
     def my_view(request):
         pass
 
-Use :meth:`~two_factor.views.utils.class_view_decorator` for decorating
-class-based views (CBVs)::
-
-    from two_factor.views.utils import class_view_decorator
-
-    @class_view_decorator(otp_required)
-    class MyView(TemplateView):
-        pass
-
 Mixin
 ~~~~~
-.. note::
-  A mixin class is not (yet) available.
+The mixin :class:`~two_factor.views.mixins.OTPRequiredMixin` can be used to
+limit access to class-based views (CBVs)::
+
+    class ExampleSecretView(OTPRequiredMixin, TemplateView):
+        template_name = 'secret.html'
 
 Custom
 ~~~~~~

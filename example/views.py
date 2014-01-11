@@ -4,8 +4,7 @@ from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView, FormView
 
-from django_otp.decorators import otp_required
-
+from two_factor.views import OTPRequiredMixin
 from two_factor.views.utils import class_view_decorator
 
 
@@ -32,6 +31,5 @@ class RegistrationCompleteView(TemplateView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
-class ExampleSecretView(TemplateView):
+class ExampleSecretView(OTPRequiredMixin, TemplateView):
     template_name = 'secret.html'
