@@ -17,8 +17,8 @@ Contents:
    installation
    configuration
    usage
-   release-notes
    reference
+   release-notes
 
 I would love to hear your feedback on this application. If you run into
 problems, please file an issue on GitHub, or contribute to the project by

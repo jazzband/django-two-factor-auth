@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.2.4
+-----
+* #18 -- Optionally enforce OTP for admin views
+
 0.2.3
 -----
 * Two new translations: Hebrew and Arabic

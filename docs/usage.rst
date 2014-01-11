@@ -49,7 +49,24 @@ user was logged in using two-factor authentication::
             # user not logged in using two-factor
             pass
 
+
 Enforcing two-factor
 --------------------
 Forcing users to enable two-factor authentication is not implemented. However,
 you could create your own custom policy.
+
+
+Admin Site
+----------
+In order to only allow verified users to access the admin pages, you have to
+use a custom admin site. You can either use
+:class:`~two_factor.admin.AdminSiteOTPRequired` or
+:class:`~two_factor.admin.AdminSiteOTPRequiredMixin`. See also the Django
+documentation on `Hooking AdminSite instances into your URLconf`_.
+
+By default the admin login is patched to use the login views provided by this
+application. Patching the admin is required as users would otherwise be able
+to circumvent OTP verification. See also :data:`~two_factor.TWO_FACTOR_PATCH_ADMIN`.
+
+.. _Hooking AdminSite instances into your URLconf:
+   https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf

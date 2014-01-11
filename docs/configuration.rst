@@ -4,7 +4,7 @@ Configuration
 General Settings
 ----------------
 
-``TWO_FACTOR_PATCH_ADMIN``
+``TWO_FACTOR_PATCH_ADMIN`` (default: ``True``)
   Whether the Django admin is patched to use the default login view.
 
   .. warning::

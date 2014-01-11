@@ -52,6 +52,18 @@ Add the following apps to the ``INSTALLED_APPS``::
         'two_factor',
     )
 
+Add ``django_otp.middleware.OTPMiddleware`` to ``MIDDLEWARE_CLASSES``. It must
+be installed *after* ``AuthenticationMiddleware``::
+
+    MIDDLEWARE_CLASSES = [
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django_otp.middleware.OTPMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    ]
+
 Configure a few urls::
 
     from django.core.urlresolvers import reverse_lazy
