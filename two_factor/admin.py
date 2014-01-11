@@ -1,5 +1,3 @@
-from two_factor.utils import monkeypatch_method
-
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -11,6 +9,7 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import redirect
 
+from .utils import monkeypatch_method
 from .models import PhoneDevice
 
 

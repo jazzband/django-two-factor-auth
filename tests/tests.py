@@ -1,7 +1,4 @@
 from binascii import unhexlify
-from django.core.exceptions import PermissionDenied
-from django.utils import translation
-from two_factor.admin import patch_admin, unpatch_admin
 
 try:
     from urllib.parse import urlencode
@@ -17,10 +14,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils import translation
 from django_otp import DEVICE_ID_SESSION_KEY, devices_for_user
 from django_otp.oath import totp
 from django_otp.util import random_hex
 
+from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio import Twilio
 from two_factor.models import PhoneDevice
@@ -284,7 +283,8 @@ class SetupTest(UserMixin, TestCase):
 class OTPRequiredMixinTest(TestCase):
     def test_unverified(self):
         response = self.client.get('/secure/')
-        redirect_to = '%s?next=/secure/' % settings.LOGIN_URL
+        redirect_to = '%s?%s' % (settings.LOGIN_URL,
+                                 urlencode({'next': '/secure/'}))
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
