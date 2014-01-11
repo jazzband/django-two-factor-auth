@@ -25,6 +25,16 @@ from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
 @class_view_decorator(never_cache)
 class LoginView(IdempotentSessionWizardView):
+    """
+    View for handling the login process, including OTP verification.
+
+    The login process is composed like a wizard. The first step asks for the
+    user's credentials. If the credentials are correct, the wizard proceeds to
+    the OTP verification step. If the user has a default OTP device configured,
+    that device is asked to generate a token (send sms / call phone) and the
+    user is asked to provide the generated token. The backup devices are also
+    listed, allowing the user to select a backup device for verification.
+    """
     template_name = 'two_factor/core/login.html'
     form_list = (
         ('auth', AuthenticationForm),
@@ -124,6 +134,17 @@ class LoginView(IdempotentSessionWizardView):
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
 class SetupView(IdempotentSessionWizardView):
+    """
+    View for handling OTP setup using a wizard.
+
+    The first step of the wizard shows an introduction text, explaining how OTP
+    works and why it should be enabled. The user has to select the verification
+    method (generator / call / sms) in the second step. Depending on the method
+    selected, the third step configures the device. For the generator method, a
+    QR code is shown which can be scanned using a mobile phone app and the user
+    is asked to provide a generated token. For call and sms methods, the user
+    provides the phone number which is then validated in the final step.
+    """
     template_name = 'two_factor/core/setup.html'
     initial_dict = {}
     form_list = (
@@ -245,8 +266,17 @@ class SetupView(IdempotentSessionWizardView):
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
 class BackupTokensView(FormView):
+    """
+    View for listing and generating backup tokens.
+
+    A user can generate a number of static backup tokens. When the user loses
+    its phone, these backup tokens can be used for verification. These backup
+    tokens should be stored in a safe location; either in a safe or underneath
+    a pillow ;-).
+    """
     form_class = Form
     template_name = 'two_factor/core/backup_tokens.html'
+    number_of_tokens = 10
 
     def get_device(self):
         return self.request.user.staticdevice_set.get_or_create(name='backup')[0]
@@ -262,7 +292,7 @@ class BackupTokensView(FormView):
         """
         device = self.get_device()
         device.token_set.all().delete()
-        for n in range(10):
+        for n in range(self.number_of_tokens):
             device.token_set.create(token=StaticToken.random_token())
 
         return redirect('two_factor:backup_tokens')
@@ -272,7 +302,12 @@ class BackupTokensView(FormView):
 @class_view_decorator(otp_required)
 class PhoneSetupView(IdempotentSessionWizardView):
     """
-    Configures and validated a `PhoneDevice` for the logged in user.
+    View for configuring a phone number for receiving tokens.
+
+    A user can have multiple backup :class:`~two_factor.models.PhoneDevice`
+    for receiving OTP tokens. If the primary phone number is not available, as
+    the battery might have drained or the phone is lost, these backup phone
+    numbers can be used for verification.
     """
     template_name = 'two_factor/core/phone_register.html'
     form_list = (
@@ -330,6 +365,9 @@ class PhoneSetupView(IdempotentSessionWizardView):
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
 class PhoneDeleteView(DeleteView):
+    """
+    View for removing a phone number used for verification.
+    """
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
 
@@ -340,4 +378,7 @@ class PhoneDeleteView(DeleteView):
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
 class SetupCompleteView(TemplateView):
+    """
+    View congratulation the user when OTP setup has completed.
+    """
     template_name = 'two_factor/core/setup_complete.html'

@@ -25,7 +25,7 @@ def mask_phone_number(number):
 @register.filter
 def device_action(device):
     """
-    Generates an actionable text for a PhoneDevice.
+    Generates an actionable text for a :class:`~two_factor.models.PhoneDevice`.
 
     Examples:
 

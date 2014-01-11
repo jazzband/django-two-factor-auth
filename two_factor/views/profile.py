@@ -13,6 +13,13 @@ from .utils import class_view_decorator
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
 class ProfileView(TemplateView):
+    """
+    View used by users for managing two-factor configuration.
+
+    This view shows whether two-factor has been configured for the user's
+    account. If two-factor is enabled, it also lists the primary verification
+    method and backup verification methods.
+    """
     template_name = 'two_factor/profile/profile.html'
 
     def get_context_data(self, **kwargs):
@@ -32,6 +39,9 @@ class ProfileView(TemplateView):
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
 class DisableView(FormView):
+    """
+    View for disabling two-factor for a user's account.
+    """
     template_name = 'two_factor/profile/disable.html'
     form_class = DisableForm
 

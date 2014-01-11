@@ -13,6 +13,9 @@ from .utils import class_view_decorator
 
 @class_view_decorator(never_cache)
 class TwilioCallApp(View):
+    """
+    View used by Twilio for the interactive token verification by phone.
+    """
     template = '<?xml version="1.0" encoding="UTF-8" ?>' \
                '<Response><Say language="%(locale)s">' \
                '%(prompt)s</Say></Response>'

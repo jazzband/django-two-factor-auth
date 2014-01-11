@@ -44,6 +44,9 @@ logger = logging.getLogger(__name__)
 
 
 class PhoneDevice(Device):
+    """
+    Model with phone number and token seed linked to a user.
+    """
     number = models.CharField(max_length=16,
                               validators=[phone_number_validator],
                               verbose_name=_('number'))
