@@ -121,6 +121,6 @@ The project is licensed under the MIT license.
 .. _Heroku: https://www.heroku.com
 .. _django-user-sessions: https://pypi.python.org/pypi/django-user-sessions
 .. _tox: https://testrun.org/tox/latest/
-.. _issue tracker:: https://github.com/Bouke/django-two-factor-auth/issues
-.. _source code:: https://github.com/Bouke/django-two-factor-auth
+.. _issue tracker: https://github.com/Bouke/django-two-factor-auth/issues
+.. _source code: https://github.com/Bouke/django-two-factor-auth
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
