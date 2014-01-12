@@ -4,7 +4,7 @@ from django.contrib import admin
 from two_factor.admin import AdminSiteOTPRequired
 from two_factor.views import LoginView
 
-from .views import SecureView, SecureRaisingView
+from .views import SecureView
 
 admin.autodiscover()
 otp_admin_site = AdminSiteOTPRequired()
@@ -21,16 +21,21 @@ urlpatterns = patterns(
         view=LoginView.as_view(redirect_field_name='next_page'),
         name='custom-login',
     ),
+
     url(
         regex=r'^secure/$',
         view=SecureView.as_view(),
-        name='secure-view',
     ),
     url(
         regex=r'^secure/raises/$',
-        view=SecureRaisingView.as_view(),
-        name='secure-view',
+        view=SecureView.as_view(raise_anonymous=True, raise_unverified=True),
     ),
+    url(
+        regex=r'^secure/redirect_unverified/$',
+        view=SecureView.as_view(raise_anonymous=True,
+                                verification_url='/account/login/'),
+    ),
+
     url(r'', include('two_factor.urls', 'two_factor')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^otp_admin/', include(otp_admin_site.urls)),

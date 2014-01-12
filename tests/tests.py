@@ -11,6 +11,7 @@ except ImportError:
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -281,15 +282,42 @@ class SetupTest(UserMixin, TestCase):
 
 
 class OTPRequiredMixinTest(TestCase):
-    def test_unverified(self):
-        response = self.client.get('/secure/')
-        redirect_to = '%s?%s' % (settings.LOGIN_URL,
-                                 urlencode({'next': '/secure/'}))
+    @override_settings(LOGIN_URL=None)
+    def test_not_configured(self):
+        with self.assertRaises(ImproperlyConfigured):
+            self.client.get('/secure/')
+
+    def test_unauthenticated_redirect(self):
+        url = '/secure/'
+        response = self.client.get(url)
+        redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
+        self.assertRedirects(response, redirect_to)
+
+    def test_unauthenticated_raise(self):
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+    def test_unverified_redirect(self):
+        User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
+        url = '/secure/redirect_unverified/'
+        response = self.client.get(url)
+        redirect_to = '%s?%s' % ('/account/login/', urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
+        User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
+
+    def test_unverified_explanation(self):
+        User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
+        response = self.client.get('/secure/')
+        self.assertContains(response, 'Permission Denied', status_code=403)
+        self.assertContains(response, 'Enable Two-Factor Authentication',
+                            status_code=403)
 
     def test_verified(self):
         user = User.objects.create_superuser('bouke', None, 'secret')

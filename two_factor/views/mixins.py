@@ -1,3 +1,5 @@
+from django.template.response import TemplateResponse
+
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -55,15 +57,34 @@ class OTPRequiredMixin(object):
                 "%(cls)s.get_login_url()." % {"cls": self.__class__.__name__})
         return str(login_url)
 
+    def get_verification_url(self):
+        """
+        Returns verification url to redirect to.
+        """
+        return self.verification_url and str(self.verification_url)
+
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_verified():
-            if not request.user.is_authenticated() and self.raise_anonymous:
-                raise PermissionDenied()
-            elif not request.user.is_verified() and self.raise_unverified:
+        if not request.user.is_authenticated():
+            if self.raise_anonymous:
                 raise PermissionDenied()
             else:
                 return redirect('%s?%s' % (
                     self.get_login_url(),
                     urlencode({self.redirect_field_name: request.get_full_path()})
                 ))
+
+        if not request.user.is_verified():
+            if self.raise_unverified:
+                raise PermissionDenied()
+            elif self.get_verification_url():
+                return redirect('%s?%s' % (
+                    self.verification_url,
+                    urlencode({self.redirect_field_name: request.get_full_path()})
+                ))
+            else:
+                return TemplateResponse(
+                    request=self.request,
+                    template='two_factor/core/otp_required.html',
+                    status=403,
+                )
         return super(OTPRequiredMixin, self).dispatch(request, *args, **kwargs)
