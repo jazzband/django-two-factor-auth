@@ -16,10 +16,33 @@ class OTPRequiredMixin(object):
     .. note::
        This mixin should be the left-most base class.
     """
+    raise_anonymous = False
+    """
+    Whether to raise PermissionDenied if the user isn't logged in.
+    """
 
     login_url = None
-    raise_exception = False
+    """
+    If :attr:`raise_anonymous` is set to `False`, this defines where the user
+    will be redirected to. Defaults to ``settings.LOGIN_URL``.
+    """
+
     redirect_field_name = REDIRECT_FIELD_NAME
+    """
+    URL query name to use for providing the destination URL.
+    """
+
+    raise_unverified = False
+    """
+    Whether to raise PermissionDenied if the user isn't verified.
+    """
+
+    verification_url = None
+    """
+    If :attr:`raise_unverified` is set to `False`, this defines where the user
+    will be redirected to. If set to ``None``, an explanation will be shown to
+    the user on why access was denied.
+    """
 
     def get_login_url(self):
         """
@@ -34,7 +57,9 @@ class OTPRequiredMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_verified():
-            if self.raise_exception:
+            if not request.user.is_authenticated() and self.raise_anonymous:
+                raise PermissionDenied()
+            elif not request.user.is_verified() and self.raise_unverified:
                 raise PermissionDenied()
             else:
                 return redirect('%s?%s' % (
