@@ -83,7 +83,7 @@ class OTPRequiredMixin(object):
                 ))
             else:
                 return TemplateResponse(
-                    request=self.request,
+                    request=request,
                     template='two_factor/core/otp_required.html',
                     status=403,
                 )
