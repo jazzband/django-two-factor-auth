@@ -22,6 +22,9 @@ flake8
 tox
 mock
 
+# Translation
+transifex-client
+
 # Documentation
 
 Sphinx
