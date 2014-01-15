@@ -1,4 +1,5 @@
 from django.template.response import TemplateResponse
+from two_factor.utils import default_device
 
 try:
     from urllib.parse import urlencode
@@ -64,7 +65,14 @@ class OTPRequiredMixin(object):
         return self.verification_url and str(self.verification_url)
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated() or \
+                (not request.user.is_verified() and default_device(request.user)):
+            # If the user has not authenticated raise or redirect to the login
+            # page. Also if the user just enabled two-factor authentication and
+            # has not yet logged in since should also have the same result. If
+            # the user receives a 'you need to enable TFA' by now, he gets
+            # confuses as TFA has just been enabled. So we either raise or
+            # redirect to the login page.
             if self.raise_anonymous:
                 raise PermissionDenied()
             else:

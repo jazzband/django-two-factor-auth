@@ -319,10 +319,19 @@ class OTPRequiredMixinTest(TestCase):
         self.assertContains(response, 'Enable Two-Factor Authentication',
                             status_code=403)
 
+    def test_unverified_need_login(self):
+        user = User.objects.create_superuser('bouke', None, 'secret')
+        self.client.login(username='bouke', password='secret')
+        user.totpdevice_set.create(name='default')
+        url = '/secure/'
+        response = self.client.get(url)
+        redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
+        self.assertRedirects(response, redirect_to)
+
     def test_verified(self):
         user = User.objects.create_superuser('bouke', None, 'secret')
         self.client.login(username='bouke', password='secret')
-        device = user.totpdevice_set.create()
+        device = user.totpdevice_set.create(name='default')
         session = self.client.session
         session[DEVICE_ID_SESSION_KEY] = device.persistent_id
         session.save()
