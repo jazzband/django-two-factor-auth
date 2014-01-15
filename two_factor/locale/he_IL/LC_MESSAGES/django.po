@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Translators:
-# Kunda, 2013
+# Kunda, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-11 21:30+0100\n"
-"PO-Revision-Date: 2014-01-11 20:31+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"POT-Creation-Date: 2014-01-13 08:01+0100\n"
+"PO-Revision-Date: 2014-01-15 15:05+0000\n"
+"Last-Translator: Kunda\n"
 "Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/django-two-factor-auth/language/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,11 +102,11 @@ msgid ""
 "      for login verification. If you've used up all your backup tokens, you\n"
 "      can generate a new set of backup tokens. Only the backup tokens shown\n"
 "      below will be valid."
-msgstr ""
+msgstr "ניתן להשתמש בטוקנז גיבוי כאשר מספרי הטלפון העיקרי והגיבוי\nשלך אינם זמינים. הטוקנז גיבוי להלן יוכלו לשמש\nלאימות כניסה. אם השתמשת בכל טוקנז הגיבוי שלך, קיימת\nהאפשרות ליצור סדרה חדשה של טוקנז גיבוי. רק הטוקנז הגיבוי המוצגים\nלהלן יהיו בתוקף."
 
 #: templates/two_factor/core/backup_tokens.html:18
-msgid "Print these tokens and store them somewhere save."
-msgstr ""
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "הדפס טוקנז אלה ושמור אותם במקום בטוח."
 
 #: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
@@ -114,7 +114,7 @@ msgstr "עדיין אין לך קודי גיבוי."
 
 #: templates/two_factor/core/backup_tokens.html:25
 msgid "Back to Account Security"
-msgstr ""
+msgstr "חזור לאבטחת חשבון"
 
 #: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
@@ -152,6 +152,35 @@ msgstr "אנא הקלד את הטוקנז שנוצרו על ידי הטוקנז 
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "או, לחלופין, תשתמש בטלפון גיבוי:"
 
+#: templates/two_factor/core/otp_required.html:5
+msgid "Permission Denied"
+msgstr "הרשאה נדחתה"
+
+#: templates/two_factor/core/otp_required.html:7
+msgid ""
+"The page you requested, enforces users to verify using\n"
+"    two-factor authentication for security reasons. You need to enable these\n"
+"    security features in order to access this page."
+msgstr "הדף שביקשת, אוכף למשתמשים להיבדק באמצעות\nאותנטיקציה דו-שלבית מסיבות ביטחוניות. יש צורך לאשר תכונות אבטחה הללו\nעל מנת לגשת לדף זה."
+
+#: templates/two_factor/core/otp_required.html:11
+msgid ""
+"Two-factor authentication is not enabled for your\n"
+"    account. Enable two-factor authentication for enhanced account\n"
+"    security."
+msgstr "אותנטיקציה דו-שלבית אינו מופעל עבור\nהחשבון שלך. אפשר אותנטיקציה דו-שלבית לצורך הגברת אבטחת\nהחשבון."
+
+#: templates/two_factor/core/otp_required.html:16
+msgid "Go back"
+msgstr "חזרה"
+
+#: templates/two_factor/core/otp_required.html:18
+#: templates/two_factor/core/setup.html:5
+#: templates/two_factor/core/setup_complete.html:5
+#: templates/two_factor/profile/profile.html:56
+msgid "Enable Two-Factor Authentication"
+msgstr "אפשר אותנטיקציה דו-שלבית"
+
 #: templates/two_factor/core/phone_register.html:5
 msgid "Add Backup Phone"
 msgstr "הוסף טלפון גיבוי"
@@ -168,12 +197,6 @@ msgid ""
 "We've sent a token to your phone number. Please\n"
 "        enter the token you've received."
 msgstr "אנחנו שלחנו טוקן למספר הטלפון שלך. אנא\nהקלד את הטוקן שקיבלת."
-
-#: templates/two_factor/core/setup.html:5
-#: templates/two_factor/core/setup_complete.html:5
-#: templates/two_factor/profile/profile.html:56
-msgid "Enable Two-Factor Authentication"
-msgstr "אפשר אותנטיקציה דו-שלבית"
 
 #: templates/two_factor/core/setup.html:7
 msgid ""

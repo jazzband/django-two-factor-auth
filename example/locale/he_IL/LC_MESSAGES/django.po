@@ -4,13 +4,13 @@
 # 
 # Translators:
 # Translators:
-# Kunda, 2013
+# Kunda, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-31 11:00+0100\n"
-"PO-Revision-Date: 2013-12-31 10:20+0000\n"
+"POT-Creation-Date: 2014-01-13 08:01+0100\n"
+"PO-Revision-Date: 2014-01-09 14:30+0000\n"
 "Last-Translator: Kunda\n"
 "Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/django-two-factor-auth/language/he_IL/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "אבטחת חשבון"
 
 #: templates/_base.html:44
 msgid "Sessions"
-msgstr "סשנז"
+msgstr "אירועים"
 
 #: templates/_base.html:45
 msgid "Logout"
@@ -80,7 +80,7 @@ msgid ""
 "Welcome to the example app of\n"
 "      <code>django-two-factor-auth</code>. Use this example to get an\n"
 "    understanding of what the app can do for you."
-msgstr "ברוכים הבאים לאפליקצית הדוגמא של\ncode>django-two-factor-auth</code>. השתמש בדוגמה זו כדי להגיע\nלהבנה מה שהאפליקציה הזו יכולה לעשות בשבילך."
+msgstr "ברוכים הבאים לאפליקצית הדוגמא של\n<code>django-two-factor-auth</code>. השתמש בדוגמה זו כדי להגיע\nלהבנה מה שהאפליקציה הזו יכולה לעשות בשבילך."
 
 #: templates/home.html:14
 msgid "Please verify your settings"

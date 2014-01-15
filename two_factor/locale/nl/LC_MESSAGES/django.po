@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-11 21:30+0100\n"
-"PO-Revision-Date: 2014-01-11 20:37+0000\n"
+"POT-Creation-Date: 2014-01-13 08:01+0100\n"
+"PO-Revision-Date: 2014-01-13 07:03+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/django-two-factor-auth/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -105,8 +105,8 @@ msgid ""
 msgstr "Backuptokens kunnen gebruikt worden wanneer je geen telefoon bij de hand hebt. Je kunt dan een backuptoken gebruiken om in te loggen. Backuptokens zijn eenmalig te gebruiken, maar je kunt nieuwe aanmaken als ze bijna op zijn. Alleen onderstaande backuptokens zijn geldig."
 
 #: templates/two_factor/core/backup_tokens.html:18
-msgid "Print these tokens and store them somewhere save."
-msgstr "Print deze pagina en bewaar 'm op een veilige plek."
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "Print deze pagina en bewaar de tokens op een veilige plek."
 
 #: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
@@ -152,6 +152,35 @@ msgstr "Voer een token in van je tokengenerator."
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "Of gebruik een alternatief telefoonnummer:"
 
+#: templates/two_factor/core/otp_required.html:5
+msgid "Permission Denied"
+msgstr "Geen toegang"
+
+#: templates/two_factor/core/otp_required.html:7
+msgid ""
+"The page you requested, enforces users to verify using\n"
+"    two-factor authentication for security reasons. You need to enable these\n"
+"    security features in order to access this page."
+msgstr "Deze pagina verplicht je om tweestapsauthenticatie voor je account in te schakelen omwille van de veiligheid. Schakel tweestapsauthenticatie in om deze pagina te bekijken."
+
+#: templates/two_factor/core/otp_required.html:11
+msgid ""
+"Two-factor authentication is not enabled for your\n"
+"    account. Enable two-factor authentication for enhanced account\n"
+"    security."
+msgstr "Tweestapsauthenticatie is niet ingeschakeld voor jouw account. Verbeter je accountbeveiliging met tweestapsauthenticatie."
+
+#: templates/two_factor/core/otp_required.html:16
+msgid "Go back"
+msgstr "Ga terug"
+
+#: templates/two_factor/core/otp_required.html:18
+#: templates/two_factor/core/setup.html:5
+#: templates/two_factor/core/setup_complete.html:5
+#: templates/two_factor/profile/profile.html:56
+msgid "Enable Two-Factor Authentication"
+msgstr "Tweestapsauthenticatie inschakelen"
+
 #: templates/two_factor/core/phone_register.html:5
 msgid "Add Backup Phone"
 msgstr "Registreer alternatief telefoonnummer"
@@ -168,12 +197,6 @@ msgid ""
 "We've sent a token to your phone number. Please\n"
 "        enter the token you've received."
 msgstr "We heb een token verzonden naar jouw telefoonnummer. Voer het token dat je hebt ontvangen."
-
-#: templates/two_factor/core/setup.html:5
-#: templates/two_factor/core/setup_complete.html:5
-#: templates/two_factor/profile/profile.html:56
-msgid "Enable Two-Factor Authentication"
-msgstr "Tweestapsauthenticatie inschakelen"
 
 #: templates/two_factor/core/setup.html:7
 msgid ""

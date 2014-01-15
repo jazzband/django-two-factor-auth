@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Translators:
-# KuwaitNET, 2013
+# KuwaitNET, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-11 21:30+0100\n"
-"PO-Revision-Date: 2014-01-11 20:31+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"POT-Creation-Date: 2014-01-13 08:01+0100\n"
+"PO-Revision-Date: 2014-01-14 16:55+0000\n"
+"Last-Translator: KuwaitNET\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/django-two-factor-auth/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,11 +102,11 @@ msgid ""
 "      for login verification. If you've used up all your backup tokens, you\n"
 "      can generate a new set of backup tokens. Only the backup tokens shown\n"
 "      below will be valid."
-msgstr ""
+msgstr "رموز التفويض الإحتياطية يمكن إستخدامها عندما يكون هاتفك الإحتياطي\n      و هاتفك الرئيسي غير متوفرين معك. يمكن إستخدام رموز التفويض الإحتياطية أدناه\n      للتحقق من تسجيل الدخول. إذا استنفذت جميع رموز التفويض الإحتياطية, يمكنك\n      إنشاء مجموعة رموز إحتياطية جديدة. فقط الرموز التفويض الإحتياطية الظاهرة\n      أدناه سوف تكون صالحة."
 
 #: templates/two_factor/core/backup_tokens.html:18
-msgid "Print these tokens and store them somewhere save."
-msgstr ""
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "الرجاء طباعة رموز التفويض هذه و حفظها في مكان آمن."
 
 #: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
@@ -114,7 +114,7 @@ msgstr "لا يتوفر لديك أي رموز تفويض إحتياطية إل�
 
 #: templates/two_factor/core/backup_tokens.html:25
 msgid "Back to Account Security"
-msgstr ""
+msgstr "الرجوع لصفحة أمان الحساب"
 
 #: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
@@ -152,6 +152,35 @@ msgstr "الرجاء إدخال رمز التفويض الذي تم إنشاؤه
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "أو، بدلا من ذلك، استخدم أحد هواتفك الإحتياطية:"
 
+#: templates/two_factor/core/otp_required.html:5
+msgid "Permission Denied"
+msgstr "الإذن مرفوض"
+
+#: templates/two_factor/core/otp_required.html:7
+msgid ""
+"The page you requested, enforces users to verify using\n"
+"    two-factor authentication for security reasons. You need to enable these\n"
+"    security features in order to access this page."
+msgstr "الصفحة التي تود زيارتها ترغم المستخدمين على إستخدام\n    التحقق عن طريق خطوتين لأسباب أمنية. يجب تفعيل ميزات\n    الأمان لكي تتمكن من الولوج لهذه الصفحة."
+
+#: templates/two_factor/core/otp_required.html:11
+msgid ""
+"Two-factor authentication is not enabled for your\n"
+"    account. Enable two-factor authentication for enhanced account\n"
+"    security."
+msgstr "خاصية التحقق عن طريق خطوتين لم يتم تفعيلها \n    لحسابك. يرجى تفعيل التحقق عن طريق خطوتين لتعزيز أمان\n    الحساب."
+
+#: templates/two_factor/core/otp_required.html:16
+msgid "Go back"
+msgstr "الرجوع"
+
+#: templates/two_factor/core/otp_required.html:18
+#: templates/two_factor/core/setup.html:5
+#: templates/two_factor/core/setup_complete.html:5
+#: templates/two_factor/profile/profile.html:56
+msgid "Enable Two-Factor Authentication"
+msgstr "تفعيل خاصية التحقق من خطوتين"
+
 #: templates/two_factor/core/phone_register.html:5
 msgid "Add Backup Phone"
 msgstr "أضف رقم هاتف إحتياطي"
@@ -168,12 +197,6 @@ msgid ""
 "We've sent a token to your phone number. Please\n"
 "        enter the token you've received."
 msgstr "تم إرسال رمز تفويض لرقم هاتفكم. الرجاء\nإدخال رمز التفويض الذي وصل لكم."
-
-#: templates/two_factor/core/setup.html:5
-#: templates/two_factor/core/setup_complete.html:5
-#: templates/two_factor/profile/profile.html:56
-msgid "Enable Two-Factor Authentication"
-msgstr "تفعيل خاصية التحقق من خطوتين"
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
