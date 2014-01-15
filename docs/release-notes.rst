@@ -3,11 +3,12 @@ Release Notes
 
 0.3.0
 -----
-* #18 -- Optionally enforce OTP for admin views
+* #18 -- Optionally enforce OTP for admin views.
+* New translation: Simplified Chinese.
 
 0.2.3
 -----
-* Two new translations: Hebrew and Arabic
+* Two new translations: Hebrew and Arabic.
 
 0.2.2
 -----
