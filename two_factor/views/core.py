@@ -45,10 +45,17 @@ class LoginView(IdempotentSessionWizardView):
         'token': False,
         'backup': False,
     }
+
+    def has_token_step(self):
+        return default_device(self.get_user())
+
+    def has_backup_step(self):
+        return default_device(self.get_user()) and \
+            'token' not in self.storage.validated_step_data
+
     condition_dict = {
-        'token': lambda self: default_device(self.get_user()),
-        'backup': lambda self: default_device(self.get_user()) and
-                               'token' not in self.storage.validated_step_data,
+        'token': has_token_step,
+        'backup': has_backup_step,
     }
     redirect_field_name = REDIRECT_FIELD_NAME
 
