@@ -16,7 +16,7 @@ from django_otp.util import random_hex
 from ..compat import is_safe_url
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
-                     PhoneNumberForm)
+                     PhoneNumberForm, BackupTokenForm)
 from ..models import PhoneDevice
 from ..utils import (get_qr_url, default_device,
                      backup_phones)
@@ -39,12 +39,16 @@ class LoginView(IdempotentSessionWizardView):
     form_list = (
         ('auth', AuthenticationForm),
         ('token', AuthenticationTokenForm),
+        ('backup', BackupTokenForm),
     )
     idempotent_dict = {
         'token': False,
+        'backup': False,
     }
     condition_dict = {
         'token': lambda self: default_device(self.get_user()),
+        'backup': lambda self: default_device(self.get_user()) and
+                               'token' not in self.storage.validated_step_data,
     }
     redirect_field_name = REDIRECT_FIELD_NAME
 
@@ -77,7 +81,7 @@ class LoginView(IdempotentSessionWizardView):
         """
         AuthenticationTokenForm requires the user kwarg.
         """
-        if step == 'token':
+        if step in ('token', 'backup'):
             return {
                 'user': self.get_user(),
             }
@@ -127,6 +131,12 @@ class LoginView(IdempotentSessionWizardView):
             context['other_devices'] = [
                 phone for phone in backup_phones(self.get_user())
                 if phone != self.get_device()]
+            try:
+                context['backup_tokens'] = self.get_user().staticdevice_set\
+                    .all()[0].token_set.count()
+            except:
+                context['backup_tokens'] = 0
+
         context['cancel_url'] = settings.LOGOUT_URL
         return context
 

@@ -153,6 +153,32 @@ class LoginTest(TestCase):
         fake.return_value.make_call.assert_called_with(
             device=device, token='%06d' % totp(device.bin_key))
 
+    def test_with_backup_token(self):
+        user = User.objects.create_user('bouke', None, 'secret')
+        user.totpdevice_set.create(name='default', key=random_hex().decode())
+        device = user.staticdevice_set.create(name='backup')
+        device.token_set.create(token='abcdef123')
+
+        # Backup phones should be listed on the login form
+        response = self._post({'auth-username': 'bouke',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Backup Token')
+
+        # Should be able to go to backup tokens step in wizard
+        response = self._post({'wizard_goto_step': 'backup'})
+        self.assertContains(response, 'backup tokens')
+
+        # Wrong codes should not be accepted
+        response = self._post({'backup-otp_token': 'WRONG',
+                               'login_view-current_step': 'backup'})
+        self.assertContains(response, 'Please enter your OTP token')
+
+        # Valid code should be accepted
+        response = self._post({'backup-otp_token': 'abcdef123',
+                               'login_view-current_step': 'backup'})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
 
 class SetupTest(UserMixin, TestCase):
     def test_form(self):

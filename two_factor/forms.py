@@ -116,3 +116,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     def clean(self):
         self.clean_otp(self.user)
         return self.cleaned_data
+
+
+class BackupTokenForm(AuthenticationTokenForm):
+    otp_token = forms.CharField(label=_("Token"))

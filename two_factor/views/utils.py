@@ -96,6 +96,32 @@ class IdempotentSessionWizardView(SessionWizardView):
 
         return super(IdempotentSessionWizardView, self).process_step(form)
 
+    def render_done(self, form, **kwargs):
+        """
+        This method gets called when all forms passed. The method should also
+        re-validate all steps to prevent manipulation. If any form don't
+        validate, `render_revalidation_failure` should get called.
+        If everything is fine call `done`.
+        """
+        final_form_list = []
+        # walk through the form list and try to validate the data again.
+        for form_key in self.get_form_list():
+            form_obj = self.get_form(step=form_key,
+                                     data=self.storage.get_step_data(form_key),
+                                     files=self.storage.get_step_files(
+                                         form_key))
+            if not (form_key in self.idempotent_dict or form_obj.is_valid()):
+                return self.render_revalidation_failure(form_key, form_obj,
+                                                        **kwargs)
+            final_form_list.append(form_obj)
+
+        # render the done view and reset the wizard before returning the
+        # response. This is needed to prevent from rendering done with the
+        # same data twice.
+        done_response = self.done(final_form_list, **kwargs)
+        self.storage.reset()
+        return done_response
+
 
 def class_view_decorator(function_decorator):
     """
