@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.3.1
+-----
+* Fixed #25 -- Back-up tokens cannot be used for login
+
 0.3.0
 -----
 * #18 -- Optionally enforce OTP for admin views.
