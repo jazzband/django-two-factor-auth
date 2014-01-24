@@ -44,6 +44,10 @@ General Settings
 
 Twilio Gateway
 --------------
+To use the Twilio gateway, you need first to install the `Twilio client`_::
+
+    pip install twilio
+
 .. autoclass:: two_factor.gateways.twilio.Twilio
 
 Fake Gateway
@@ -53,3 +57,4 @@ Fake Gateway
 .. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 .. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 .. _Twilio: http://www.twilio.com/
+.. _`Twilio client`: https://pypi.python.org/pypi/twilio
