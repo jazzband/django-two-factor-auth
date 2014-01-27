@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from two_factor.views import (LoginView, TwilioCallApp,
+from two_factor.views import (LoginView,
                               PhoneDeleteView, PhoneSetupView, DisableView,
                               BackupTokensView, SetupCompleteView, SetupView,
                               ProfileView)
@@ -39,16 +39,6 @@ core = patterns(
     ),
 )
 
-twilio = patterns(
-    '',
-    url(
-        regex=r'^twilio/inbound/two_factor/(?P<token>\d+)/$',
-        view=TwilioCallApp.as_view(),
-        name='twilio_call_app',
-    ),
-
-)
-
 profile = patterns(
     '',
     url(
@@ -63,4 +53,4 @@ profile = patterns(
     ),
 )
 
-urlpatterns = core + twilio + profile
+urlpatterns = core + profile

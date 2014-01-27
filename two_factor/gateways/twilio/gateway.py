@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -9,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.utils import translation
 from django.utils.translation import ugettext, pgettext
 from twilio.rest import TwilioRestClient
-
 from two_factor.middleware.threadlocals import get_current_request
 
 # Supported voice languages, see http://bit.ly/187I5cr

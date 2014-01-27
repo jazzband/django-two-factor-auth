@@ -3,6 +3,8 @@ from django.contrib import admin
 
 from two_factor.admin import AdminSiteOTPRequired
 from two_factor.views import LoginView
+from two_factor.urls import urlpatterns as tf_urls
+from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 
 from .views import SecureView
 
@@ -36,7 +38,7 @@ urlpatterns = patterns(
                                 verification_url='/account/login/'),
     ),
 
-    url(r'', include('two_factor.urls', 'two_factor')),
+    url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^otp_admin/', include(otp_admin_site.urls)),
 )

@@ -7,8 +7,8 @@ from django.utils.translation import (ugettext_lazy as _, pgettext,
 from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
-from ..gateways.twilio import validate_voice_locale
-from .utils import class_view_decorator
+from .gateway import validate_voice_locale
+from ...views.utils import class_view_decorator
 
 
 @class_view_decorator(never_cache)

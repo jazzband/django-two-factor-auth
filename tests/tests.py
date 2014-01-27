@@ -22,7 +22,7 @@ from django_otp.util import random_hex
 
 from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
-from two_factor.gateways.twilio import Twilio
+from two_factor.gateways.twilio.gateway import Twilio
 from two_factor.models import PhoneDevice
 from two_factor.utils import backup_phones, default_device
 
@@ -535,7 +535,7 @@ class TwilioGatewayTest(TestCase):
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
     )
-    @patch('two_factor.gateways.twilio.TwilioRestClient')
+    @patch('two_factor.gateways.twilio.gateway.TwilioRestClient')
     def test_gateway(self, client):
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
@@ -561,7 +561,7 @@ class TwilioGatewayTest(TestCase):
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
     )
-    @patch('two_factor.gateways.twilio.TwilioRestClient')
+    @patch('two_factor.gateways.twilio.gateway.TwilioRestClient')
     def test_invalid_twilio_language(self, client):
         # This test assumes an invalid twilio voice language being present in
         # the Arabic translation. Might need to create a faux translation when
