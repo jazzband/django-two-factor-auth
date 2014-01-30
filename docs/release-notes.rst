@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.4.0
+-----
+* Fixed #26 -- Twilio libraries are required
+
 0.3.1
 -----
 * Fixed #25 -- Back-up tokens cannot be used for login
