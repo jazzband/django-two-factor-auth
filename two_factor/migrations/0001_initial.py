@@ -31,7 +31,7 @@ class Migration(SchemaMigration):
         # Adding model 'Token'
         db.create_table('two_factor_token', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm[user_orm_label], unique=True)),
             ('seed', self.gf('django.db.models.fields.CharField')(max_length=16)),
             ('method', self.gf('django.db.models.fields.CharField')(max_length=16)),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=16)),
