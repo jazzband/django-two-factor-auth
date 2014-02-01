@@ -84,14 +84,14 @@ class Migration(SchemaMigration):
             'method': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
             'seed': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['%s']" % user_orm_label, 'unique': 'True'})
         },
         'two_factor.verifiedcomputer': {
             'Meta': {'object_name': 'VerifiedComputer'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ip': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
             'last_used_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['%s']" % user_orm_label}),
             'verified_until': ('django.db.models.fields.DateTimeField', [], {})
         }
     }
