@@ -43,14 +43,15 @@ class DisableView(FormView):
     View for disabling two-factor for a user's account.
     """
     template_name = 'two_factor/profile/disable.html'
+    redirect_url = None
     form_class = DisableForm
 
     def get(self, request, *args, **kwargs):
         if not user_has_device(self.request.user):
-            return redirect(str(settings.LOGIN_REDIRECT_URL))
+            return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))
         return super(DisableView, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
-        return redirect(str(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))

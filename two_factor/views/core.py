@@ -162,6 +162,7 @@ class SetupView(IdempotentSessionWizardView):
     is asked to provide a generated token. For call and sms methods, the user
     provides the phone number which is then validated in the final step.
     """
+    redirect_url = 'two_factor:setup_complete'
     template_name = 'two_factor/core/setup.html'
     initial_dict = {}
     form_list = (
@@ -188,7 +189,7 @@ class SetupView(IdempotentSessionWizardView):
         Start the setup wizard. Redirect if already enabled.
         """
         if default_device(self.request.user):
-            return redirect('two_factor:setup_complete')
+            return redirect(self.redirect_url)
         return super(SetupView, self).get(request, *args, **kwargs)
 
     def render_next_step(self, form, **kwargs):
@@ -214,7 +215,7 @@ class SetupView(IdempotentSessionWizardView):
         if self.get_method() in ('call', 'sms'):
             self.get_device(user=self.request.user, name='default').save()
 
-        return redirect('two_factor:setup_complete')
+        return redirect(self.redirect_url)
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
@@ -292,6 +293,7 @@ class BackupTokensView(FormView):
     a pillow ;-).
     """
     form_class = Form
+    redirect_url = 'two_factor:backup_tokens'
     template_name = 'two_factor/core/backup_tokens.html'
     number_of_tokens = 10
 
@@ -312,7 +314,7 @@ class BackupTokensView(FormView):
         for n in range(self.number_of_tokens):
             device.token_set.create(token=StaticToken.random_token())
 
-        return redirect('two_factor:backup_tokens')
+        return redirect(self.redirect_url)
 
 
 @class_view_decorator(never_cache)
@@ -327,6 +329,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
     numbers can be used for verification.
     """
     template_name = 'two_factor/core/phone_register.html'
+    redirect_url = None
     form_list = (
         ('setup', PhoneNumberMethodForm),
         ('validation', DeviceValidationForm),
@@ -338,7 +341,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         Store the device and redirect to profile page.
         """
         self.get_device(user=self.request.user, name='backup').save()
-        return redirect(str(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))
 
     def render_next_step(self, form, **kwargs):
         """
