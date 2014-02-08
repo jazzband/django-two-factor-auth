@@ -14,6 +14,7 @@ setup(
     install_requires=[
         'Django>=1.4.2,<1.7',
         'django_otp>=0.2.0,<0.3.0',
+        'qrcode>=4.0.0,<5.0.0',
     ],
     include_package_data=True,
     classifiers=[

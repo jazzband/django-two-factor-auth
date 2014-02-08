@@ -1,14 +1,20 @@
 from binascii import unhexlify
+from base64 import b32encode
+import qrcode
+import qrcode.image.svg
 
 from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import get_current_site
+from django.core.urlresolvers import reverse
 from django.forms import Form
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, DeleteView, TemplateView
+from django.views.generic.base import View
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
@@ -18,7 +24,7 @@ from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
                      PhoneNumberForm, BackupTokenForm)
 from ..models import PhoneDevice
-from ..utils import (get_qr_url, default_device,
+from ..utils import (get_otpauth_url, default_device,
                      backup_phones)
 from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
@@ -163,6 +169,7 @@ class SetupView(IdempotentSessionWizardView):
     provides the phone number which is then validated in the final step.
     """
     redirect_url = 'two_factor:setup_complete'
+    qrcode_url = 'two_factor:qr'
     template_name = 'two_factor/core/setup.html'
     initial_dict = {}
     form_list = (
@@ -259,11 +266,11 @@ class SetupView(IdempotentSessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(form, **kwargs)
         if self.steps.current == 'generator':
-            alias = '%s@%s' % (self.request.user.username,
-                               get_current_site(self.request).name)
-            key = unhexlify(self.get_key('generator').encode('ascii'))
+            key = self.get_key('generator')
+            rawkey = unhexlify(key.encode('ascii'))
+            b32key = b32encode(rawkey)
             context.update({
-                'QR_URL': get_qr_url(alias, key)
+                'QR_URL': reverse(self.qrcode_url, args=(b32key,))
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
@@ -402,3 +409,21 @@ class SetupCompleteView(TemplateView):
     View congratulation the user when OTP setup has completed.
     """
     template_name = 'two_factor/core/setup_complete.html'
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(login_required)
+class QRGeneratorView(View):
+    """
+    View returns an SVG image with the OTP token information
+    """
+    http_method_names = ['get']
+
+    def get(self, request, key, *args, **kwargs):
+        alias = '%s@%s' % (self.request.user.username,
+                           get_current_site(self.request).name)
+        img = qrcode.make(get_otpauth_url(alias, key),
+                          image_factory=qrcode.image.svg.SvgPathImage)
+        resp = HttpResponse(content_type='image/svg+xml; charset=utf-8')
+        img.save(resp)
+        return resp
