@@ -1,10 +1,5 @@
-from base64 import b32encode
 from two_factor.models import PhoneDevice
 
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
 from django_otp import devices_for_user
 
 
@@ -23,17 +18,7 @@ def backup_phones(user):
 
 
 def get_otpauth_url(alias, key):
-    b32_key = b32encode(key)
-    return 'otpauth://totp/%s?secret=%s' % (alias, b32_key.decode('ascii'))
-
-
-def get_qr_url(alias, seed):
-    return "https://chart.googleapis.com/chart?" + urlencode({
-        "chs": "200x200",
-        "chld": "M|0",
-        "cht": "qr",
-        "chl": get_otpauth_url(alias, seed)
-    })
+    return 'otpauth://totp/%s?secret=%s' % (alias, key)
 
 
 # from http://mail.python.org/pipermail/python-dev/2008-January/076194.html
