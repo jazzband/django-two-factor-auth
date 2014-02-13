@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from two_factor.views import (LoginView,
                               PhoneDeleteView, PhoneSetupView, DisableView,
                               BackupTokensView, SetupCompleteView, SetupView,
-                              ProfileView)
+                              ProfileView, QRGeneratorView)
 
 
 core = patterns(
@@ -16,6 +16,11 @@ core = patterns(
         regex=r'^account/two_factor/setup/$',
         view=SetupView.as_view(),
         name='setup',
+    ),
+    url(
+        regex=r'^account/two_factor/qr/(?P<key>[A-Z0-9]*).svg$',
+        view=QRGeneratorView.as_view(),
+        name='qr',
     ),
     url(
         regex=r'^account/two_factor/setup/complete/$',
