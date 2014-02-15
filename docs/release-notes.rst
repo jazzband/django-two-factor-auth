@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.5.0 (development)
+-------------------
+* Fixed #29 -- Generate QR codes locally
+* Fixed #27 -- South migrations to support custom user model
+
 0.4.0
 -----
 * Fixed #26 -- Twilio libraries are required
