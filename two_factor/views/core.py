@@ -418,12 +418,13 @@ class QRGeneratorView(View):
     View returns an SVG image with the OTP token information
     """
     http_method_names = ['get']
+    image_factory = qrcode.image.svg.SvgPathImage
+    image_content_type = 'image/svg+xml; charset=utf-8'
 
     def get(self, request, key, *args, **kwargs):
         alias = '%s@%s' % (self.request.user.username,
                            get_current_site(self.request).name)
-        img = qrcode.make(get_otpauth_url(alias, key),
-                          image_factory=qrcode.image.svg.SvgPathImage)
-        resp = HttpResponse(content_type='image/svg+xml; charset=utf-8')
+        img = qrcode.make(get_otpauth_url(alias, key), image_factory=self.image_factory)
+        resp = HttpResponse(content_type=self.image_content_type)
         img.save(resp)
         return resp
