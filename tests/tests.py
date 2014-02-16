@@ -1,4 +1,5 @@
 from binascii import unhexlify
+import qrcode.image.svg
 
 try:
     from urllib.parse import urlencode
@@ -24,7 +25,7 @@ from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
 from two_factor.models import PhoneDevice
-from two_factor.utils import backup_phones, default_device
+from two_factor.utils import backup_phones, default_device, get_otpauth_url
 
 
 class UserMixin(object):
@@ -197,6 +198,8 @@ class SetupTest(UserMixin, TestCase):
             data={'setup_view-current_step': 'method',
                   'method-method': 'generator'})
         self.assertContains(response, 'Token:')
+        session = self.client.session
+        self.assertIn('django_two_factor-qr_secret_key', session.keys())
 
         response = self.client.post(
             reverse('two_factor:setup'),
@@ -490,6 +493,44 @@ class PhoneDeleteTest(OTPUserMixin, TestCase):
         response = self.client.post(reverse('two_factor:phone_delete',
                                             args=[self.default.pk]))
         self.assertContains(response, 'was not found', status_code=404)
+
+
+class QRTest(UserMixin, TestCase):
+    test_secret = 'This is a test secret for an OTP Token'
+    test_img = 'This is a test string that represents a QRCode'
+
+    def test_without_secret(self):
+        response = self.client.get(reverse('two_factor:qr'))
+        self.assertEquals(response.status_code, 404)
+
+    @patch('qrcode.make')
+    def test_with_secret(self, mockqrcode):
+        # Setup the mock data
+        def side_effect(resp):
+            resp.write(self.test_img)
+        mockimg = Mock()
+        mockimg.save.side_effect = side_effect
+        mockqrcode.return_value = mockimg
+
+        # Setup the session
+        session = self.client.session
+        session['django_two_factor-qr_secret_key'] = self.test_secret
+        session.save()
+
+        # Get default image factory
+        default_factory = qrcode.image.svg.SvgPathImage
+
+        # Get the QR code
+        response = self.client.get(reverse('two_factor:qr'))
+
+        # Check things went as expected
+        mockqrcode.assert_called_with(
+            get_otpauth_url('bouke@testserver', self.test_secret),
+            image_factory=default_factory)
+        mockimg.save.assert_called()
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.content.decode('utf-8'), self.test_img)
+        self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
 
 
 class DisableTest(OTPUserMixin, TestCase):
