@@ -18,7 +18,7 @@ core = patterns(
         name='setup',
     ),
     url(
-        regex=r'^account/two_factor/qr/(?P<key>[A-Z0-9]*).svg$',
+        regex=r'^account/two_factor/qr.svg$',
         view=QRGeneratorView.as_view(),
         name='qr',
     ),

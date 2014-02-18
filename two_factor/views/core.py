@@ -10,7 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.forms import Form
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, DeleteView, TemplateView
@@ -171,6 +171,7 @@ class SetupView(IdempotentSessionWizardView):
     redirect_url = 'two_factor:setup_complete'
     qrcode_url = 'two_factor:qr'
     template_name = 'two_factor/core/setup.html'
+    session_key_name = 'django_two_factor-qr_secret_key'
     initial_dict = {}
     form_list = (
         ('welcome', Form),
@@ -268,9 +269,10 @@ class SetupView(IdempotentSessionWizardView):
         if self.steps.current == 'generator':
             key = self.get_key('generator')
             rawkey = unhexlify(key.encode('ascii'))
-            b32key = b32encode(rawkey)
+            b32key = b32encode(rawkey).decode('utf-8')
+            self.request.session[self.session_key_name] = b32key
             context.update({
-                'QR_URL': reverse(self.qrcode_url, args=(b32key,))
+                'QR_URL': reverse(self.qrcode_url)
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
@@ -420,8 +422,15 @@ class QRGeneratorView(View):
     http_method_names = ['get']
     image_factory = qrcode.image.svg.SvgPathImage
     image_content_type = 'image/svg+xml; charset=utf-8'
+    session_key_name = 'django_two_factor-qr_secret_key'
 
-    def get(self, request, key, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        try:
+            key = self.request.session[self.session_key_name]
+        except KeyError:
+            raise Http404()
+
+        del self.request.session[self.session_key_name]
         alias = '%s@%s' % (self.request.user.username,
                            get_current_site(self.request).name)
         img = qrcode.make(get_otpauth_url(alias, key), image_factory=self.image_factory)
