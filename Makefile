@@ -3,7 +3,7 @@ TARGET?=tests
 .PHONY: flake8 example test coverage
 
 flake8:
-	flake8 two_factor example tests
+	flake8 --ignore=W999 two_factor example tests
 
 example:
 	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \
