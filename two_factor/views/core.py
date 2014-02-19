@@ -19,7 +19,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
 
-from ..compat import is_safe_url
+from ..compat import is_safe_url, import_by_path
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
                      PhoneNumberForm, BackupTokenForm)
@@ -420,20 +420,32 @@ class QRGeneratorView(View):
     View returns an SVG image with the OTP token information
     """
     http_method_names = ['get']
-    image_factory = qrcode.image.svg.SvgPathImage
-    image_content_type = 'image/svg+xml; charset=utf-8'
+    default_qr_factory = 'qrcode.image.svg.SvgPathImage'
     session_key_name = 'django_two_factor-qr_secret_key'
 
+    # The qrcode library only supports PNG and SVG for now
+    image_content_types = {
+        'PNG': 'image/png',
+        'SVG': 'image/svg+xml; charset=utf-8',
+        }
+
     def get(self, request, *args, **kwargs):
+        # Get the data from the session
         try:
             key = self.request.session[self.session_key_name]
+            del self.request.session[self.session_key_name]
         except KeyError:
             raise Http404()
 
-        del self.request.session[self.session_key_name]
+        # Get data for qrcode
+        image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
+        image_factory = import_by_path(image_factory_string)
+        content_type = self.image_content_types[image_factory.kind]
         alias = '%s@%s' % (self.request.user.username,
                            get_current_site(self.request).name)
-        img = qrcode.make(get_otpauth_url(alias, key), image_factory=self.image_factory)
-        resp = HttpResponse(content_type=self.image_content_type)
+
+        # Make and return QR code
+        img = qrcode.make(get_otpauth_url(alias, key), image_factory=image_factory)
+        resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp

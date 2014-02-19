@@ -42,6 +42,17 @@ General Settings
 
   See also LOGIN_REDIRECT_URL_.
 
+``TWO_FACTOR_QR_FACTORY``
+  The default generator for the QR code images is set to SVG. This
+  does not require any further dependencies, however it does not work
+  on IE8 and below. If you have PIL, Pillow or pyimaging installed
+  you may wish to use PNG images instead.
+
+  * ``qrcode.image.pil.PilImage`` may be used for PIL/Pillow
+  * ``qrcode.image.pure.PymagingImage`` may be used for pyimaging
+  
+  For more QR factories that are available see python-qrcode_.
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_::
@@ -70,3 +81,4 @@ Fake Gateway
 .. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 .. _Twilio: http://www.twilio.com/
 .. _`Twilio client`: https://pypi.python.org/pypi/twilio
+.. _python-qrcode: https://pypi.python.org/pypi/qrcode
