@@ -10,13 +10,14 @@ try:
 except ImportError:
     from mock import patch, Mock, ANY, call
 
+from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import translation
+from django.utils import translation, six
 from django_otp import DEVICE_ID_SESSION_KEY, devices_for_user
 from django_otp.oath import totp
 from django_otp.util import random_hex
@@ -24,7 +25,7 @@ from django_otp.util import random_hex
 from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
-from two_factor.models import PhoneDevice
+from two_factor.models import PhoneDevice, phone_number_validator
 from two_factor.utils import backup_phones, default_device, get_otpauth_url
 
 
@@ -476,6 +477,19 @@ class PhoneSetupTest(OTPUserMixin, TestCase):
         self.assertEqual(phones[0].number, '+123456789')
         self.assertEqual(phones[0].key, device.key)
 
+    @patch('two_factor.gateways.fake.Fake')
+    @override_settings(
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
+        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+    )
+    def test_number_validation(self, fake):
+        response = self._post({'phone_setup_view-current_step': 'setup',
+                               'setup-number': '123',
+                               'setup-method': 'call'})
+        self.assertEqual(
+            response.context_data['wizard']['form'].errors,
+            {'number': [six.text_type(phone_number_validator.message)]})
+
 
 class PhoneDeleteTest(OTPUserMixin, TestCase):
     def setUp(self):
@@ -671,3 +685,28 @@ class UtilsTest(TestCase):
 
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].pk, backup.pk)
+
+
+class ValidatorsTest(TestCase):
+    def test_phone_number_validator_on_form_valid(self):
+        class TestForm(forms.Form):
+            number = forms.CharField(validators=[phone_number_validator])
+
+        form = TestForm({
+            'number': '+1234567890',
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_phone_number_validator_on_form_invalid(self):
+        class TestForm(forms.Form):
+            number = forms.CharField(validators=[phone_number_validator])
+
+        form = TestForm({
+            'number': '123',
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('number', form.errors)
+        self.assertEqual(form.errors['number'],
+                         [six.text_type(phone_number_validator.message)])
