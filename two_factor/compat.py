@@ -176,3 +176,9 @@ else:
         A WizardView with pre-configured SessionStorage backend.
         """
         storage_name = 'two_factor.compat.SessionStorage'
+
+
+try:
+    from django.utils.six import text_type
+except ImportError:
+    text_type = unicode
