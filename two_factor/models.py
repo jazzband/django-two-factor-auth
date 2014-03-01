@@ -14,6 +14,7 @@ from .gateways import make_call, send_sms
 
 
 phone_number_validator = RegexValidator(
+    code='invalid-phone-number',
     regex='^(\+|00)',
     message=_('Please enter a valid phone number, including your country code '
               'starting with + or 00.'),
