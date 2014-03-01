@@ -28,9 +28,9 @@ PHONE_METHODS = (
 def get_available_phone_methods():
     methods = []
     if getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None):
-        methods.append(('call', _('Phone Call')))
+        methods.append(('call', _('Phone call')))
     if getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None):
-        methods.append(('sms', _('Text Message')))
+        methods.append(('sms', _('Text message')))
     return methods
 
 
