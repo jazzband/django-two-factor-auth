@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-13 08:01+0100\n"
-"PO-Revision-Date: 2014-01-13 07:03+0000\n"
+"POT-Creation-Date: 2014-03-01 09:33+0100\n"
+"PO-Revision-Date: 2014-03-01 08:34+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/django-two-factor-auth/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Method"
 msgstr "Methode"
 
-#: forms.py:43 forms.py:57 forms.py:110
+#: forms.py:43 forms.py:57 forms.py:110 forms.py:122
 msgid "Token"
 msgstr "Token"
 
@@ -45,12 +45,20 @@ msgid ""
 " + or 00."
 msgstr "Voer een geldig telefoonnummer in, inclusief landcode en begin met + of 00."
 
-#: models.py:23 models.py:31
+#: models.py:23
 msgid "Phone Call"
 msgstr "Telefoonoproep"
 
-#: models.py:24 models.py:33
+#: models.py:24
 msgid "Text Message"
+msgstr "SMS-bericht"
+
+#: models.py:31
+msgid "Phone call"
+msgstr "Telefoonoproep"
+
+#: models.py:33
+msgid "Text message"
 msgstr "SMS-bericht"
 
 #: models.py:38
@@ -65,17 +73,26 @@ msgstr "Telefoonnummer"
 msgid "method"
 msgstr "methode"
 
-#: gateways/twilio.py:56
+#: gateways/twilio/gateway.py:56
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "Jouw authenticatietoken is %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio.py:65 views/twilio.py:45
+#: gateways/twilio/gateway.py:65 gateways/twilio/views.py:45
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "en"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:25
+#, python-format
+msgid ""
+"Hi, this is %(site_name)s calling. Please enter the following code on your "
+"screen: %(token)s. Repeat: %(token)s."
+msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
@@ -148,9 +165,24 @@ msgid ""
 "        generator."
 msgstr "Voer een token in van je tokengenerator."
 
-#: templates/two_factor/core/login.html:29
+#: templates/two_factor/core/login.html:21
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr "Gebruik een backuptoken om in te loggen als je geen andere verificatiemogelijkheid hebt. Een backuptoken is eenmalig te gebruiken, zorg dat je tijdig nieuwe backuptokens aanmaakt."
+
+#: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "Of gebruik een alternatief telefoonnummer:"
+
+#: templates/two_factor/core/login.html:43
+msgid "As a last resort, you can use a backup token:"
+msgstr "Als laatste mogelijkheid kun je ook een backuptoken gebruiken:"
+
+#: templates/two_factor/core/login.html:46
+msgid "Use Backup Token"
+msgstr "Gebruik backuptoken"
 
 #: templates/two_factor/core/otp_required.html:5
 msgid "Permission Denied"
@@ -239,7 +271,7 @@ msgid ""
 msgstr "Gefeliciteerd, je hebt tweestapsauthenticatie ingeschakeld."
 
 #: templates/two_factor/core/setup_complete.html:11
-msgid "Back to profile"
+msgid "Back to Profile"
 msgstr "Terug naar profielpagina"
 
 #: templates/two_factor/profile/disable.html:5
@@ -337,12 +369,3 @@ msgstr "Stuur SMS naar %s"
 #, python-format
 msgid "Call number %s"
 msgstr "Bel naar %s"
-
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: views/twilio.py:25
-#, python-format
-msgid ""
-"Hi, this is %(site_name)s calling. Please enter the following code on your "
-"screen: %(token)s. Repeat: %(token)s."
-msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."

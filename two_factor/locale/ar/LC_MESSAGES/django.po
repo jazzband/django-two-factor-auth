@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-13 08:01+0100\n"
-"PO-Revision-Date: 2014-01-14 16:55+0000\n"
+"POT-Creation-Date: 2014-03-01 09:33+0100\n"
+"PO-Revision-Date: 2014-03-03 18:27+0000\n"
 "Last-Translator: KuwaitNET\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/django-two-factor-auth/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Method"
 msgstr "الطريقة"
 
-#: forms.py:43 forms.py:57 forms.py:110
+#: forms.py:43 forms.py:57 forms.py:110 forms.py:122
 msgid "Token"
 msgstr "رمز التفويض"
 
@@ -45,12 +45,20 @@ msgid ""
 " + or 00."
 msgstr "يرجى إدخال رقم هاتف صحيح، بما في ذلك رمز البلد الخاص بدءا بـ + أو 00."
 
-#: models.py:23 models.py:31
+#: models.py:23
 msgid "Phone Call"
 msgstr "مكالمة هاتفية"
 
-#: models.py:24 models.py:33
+#: models.py:24
 msgid "Text Message"
+msgstr "رسالة نصية"
+
+#: models.py:31
+msgid "Phone call"
+msgstr "مكالمة هاتفية"
+
+#: models.py:33
+msgid "Text message"
 msgstr "رسالة نصية"
 
 #: models.py:38
@@ -65,17 +73,26 @@ msgstr "الرقم"
 msgid "method"
 msgstr "الطريقة"
 
-#: gateways/twilio.py:56
+#: gateways/twilio/gateway.py:56
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "رمز التفويض الخاص بك هو %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio.py:65 views/twilio.py:45
+#: gateways/twilio/gateway.py:65 gateways/twilio/views.py:45
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "الإنجليزية"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:25
+#, python-format
+msgid ""
+"Hi, this is %(site_name)s calling. Please enter the following code on your "
+"screen: %(token)s. Repeat: %(token)s."
+msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
@@ -148,9 +165,24 @@ msgid ""
 "        generator."
 msgstr "الرجاء إدخال رمز التفويض الذي تم إنشاؤه من خلال تطبيق إنشاء رموز\n التفويض."
 
-#: templates/two_factor/core/login.html:29
+#: templates/two_factor/core/login.html:21
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr "استخدم هذه نموذج لإدخال رمز التفويض الاحتياطي لتسجيل الدخول.\n      رموز التفويض هذه تم إنشاؤها ليتم طباعتها و الاحتفاظ بها بمكان آمن. الرجاء إدخال أحد رموز التفويض الإحتياطية للدخول لحسابك."
+
+#: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "أو، بدلا من ذلك، استخدم أحد هواتفك الإحتياطية:"
+
+#: templates/two_factor/core/login.html:43
+msgid "As a last resort, you can use a backup token:"
+msgstr "كملاذ أخير، يمكنك استخدام رمز تفويض احتياطي:"
+
+#: templates/two_factor/core/login.html:46
+msgid "Use Backup Token"
+msgstr "استخدم رمز تفويض إحتياطي"
 
 #: templates/two_factor/core/otp_required.html:5
 msgid "Permission Denied"
@@ -239,7 +271,7 @@ msgid ""
 msgstr "تهانينا, تم تفعيل خاصية التحقق من\nخطوتين بنجاح."
 
 #: templates/two_factor/core/setup_complete.html:11
-msgid "Back to profile"
+msgid "Back to Profile"
 msgstr "الرجوع للملف الشخصي"
 
 #: templates/two_factor/profile/disable.html:5
@@ -341,12 +373,3 @@ msgstr "أرسل رسالة لـ %s"
 #, python-format
 msgid "Call number %s"
 msgstr "أتصل بالرقم %s"
-
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: views/twilio.py:25
-#, python-format
-msgid ""
-"Hi, this is %(site_name)s calling. Please enter the following code on your "
-"screen: %(token)s. Repeat: %(token)s."
-msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."

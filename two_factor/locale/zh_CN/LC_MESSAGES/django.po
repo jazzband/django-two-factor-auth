@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-13 08:01+0100\n"
-"PO-Revision-Date: 2014-01-14 09:02+0000\n"
+"POT-Creation-Date: 2014-03-01 09:33+0100\n"
+"PO-Revision-Date: 2014-03-08 05:06+0000\n"
 "Last-Translator: mozillazg <opensource.mozillazg@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/django-two-factor-auth/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Method"
 msgstr "方法"
 
-#: forms.py:43 forms.py:57 forms.py:110
+#: forms.py:43 forms.py:57 forms.py:110 forms.py:122
 msgid "Token"
 msgstr "验证码"
 
@@ -45,12 +45,20 @@ msgid ""
 " + or 00."
 msgstr "请输入一个有效的电话号码，包含以 + 或 00 开头的国家区号。"
 
-#: models.py:23 models.py:31
+#: models.py:23
 msgid "Phone Call"
 msgstr "电话呼叫"
 
-#: models.py:24 models.py:33
+#: models.py:24
 msgid "Text Message"
+msgstr "短信"
+
+#: models.py:31
+msgid "Phone call"
+msgstr "电话呼叫"
+
+#: models.py:33
+msgid "Text message"
 msgstr "短信"
 
 #: models.py:38
@@ -65,17 +73,26 @@ msgstr "号码"
 msgid "method"
 msgstr "方法"
 
-#: gateways/twilio.py:56
+#: gateways/twilio/gateway.py:56
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "您的授权验证码是 %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio.py:65 views/twilio.py:45
+#: gateways/twilio/gateway.py:65 gateways/twilio/views.py:45
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "en"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:25
+#, python-format
+msgid ""
+"Hi, this is %(site_name)s calling. Please enter the following code on your "
+"screen: %(token)s. Repeat: %(token)s."
+msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
@@ -148,9 +165,24 @@ msgid ""
 "        generator."
 msgstr "请输入由您的验证码生成器所生成的验证码。"
 
-#: templates/two_factor/core/login.html:29
+#: templates/two_factor/core/login.html:21
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr "使用这个用备用验证码登录的表单。\n这些验证码曾经为您生成过，并且您已经将它们保存在安全的地方了。\n请从这些验证码中随便输入一个用来登录您的账户。"
+
+#: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "或者，使用您的备用电话："
+
+#: templates/two_factor/core/login.html:43
+msgid "As a last resort, you can use a backup token:"
+msgstr "作为应急手段，您可以使用一个备用验证码："
+
+#: templates/two_factor/core/login.html:46
+msgid "Use Backup Token"
+msgstr "使用备用验证码"
 
 #: templates/two_factor/core/otp_required.html:5
 msgid "Permission Denied"
@@ -239,7 +271,7 @@ msgid ""
 msgstr "恭喜，您已成功启用两步验证。"
 
 #: templates/two_factor/core/setup_complete.html:11
-msgid "Back to profile"
+msgid "Back to Profile"
 msgstr "返回个人资料页面"
 
 #: templates/two_factor/profile/disable.html:5
@@ -336,12 +368,3 @@ msgstr "给 %s 发短信"
 #, python-format
 msgid "Call number %s"
 msgstr "呼叫号码 %s"
-
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: views/twilio.py:25
-#, python-format
-msgid ""
-"Hi, this is %(site_name)s calling. Please enter the following code on your "
-"screen: %(token)s. Repeat: %(token)s."
-msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."
