@@ -1,11 +1,13 @@
 Release Notes
 =============
 
-0.5.0 (development)
--------------------
-* Fixed #30 -- Don't transmit token seed through GET parameters
-* Fixed #29 -- Generate QR codes locally
-* Fixed #27 -- South migrations to support custom user model
+0.5.0
+-----
+* Fixed #32 -- Make the auth method label capitalization more consistent (thanks to Christian Hammond)
+* Fixed #31 -- Set an error code for phone_number_validator (thanks to Christian Hammond)
+* Fixed #30 -- Don't transmit token seed through GET parameters (thanks to Daniel Hall)
+* Fixed #29 -- Generate QR codes locally (thanks to Daniel Hall)
+* Fixed #27 -- South migrations to support custom user model (thanks to Agris Ameriks)
 
 0.4.0
 -----
