@@ -29,14 +29,116 @@ from two_factor.models import PhoneDevice, phone_number_validator
 from two_factor.utils import backup_phones, default_device, get_otpauth_url
 
 
-class UserMixin(object):
+# class UserMixin(object):
+#     def setUp(self):
+#         super(UserMixin, self).setUp()
+#         self.user = User.objects.create_user('bouke', None, 'secret')
+#         assert self.client.login(username='bouke', password='secret')
+
+from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    Permission,
+    UserManager,
+    BaseUserManager,
+    )
+from django.utils import timezone
+
+class CustomUserManager(BaseUserManager):
+    # Implementation based on:
+    # https://github.com/django/django/blob/a9093dd3763df6b2045a08b0520f248bda708723/django/contrib/auth/models.py#L162
+    # But with the 'username' field dropped ('email' is used as username field)
+
+    def _create_user(self, email, password,
+                     is_staff, **extra_fields):
+        now = timezone.now()
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                          is_staff=is_staff, is_active=True,
+                          last_login=now,
+                          date_joined=now, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False,
+                                 **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True,
+                                 **extra_fields)
+
+
+class CustomUser(AbstractBaseUser):
+    """
+    Some of this was copied from:
+    https://github.com/django/django/blob/master/django/contrib/auth/models.py#L353
+    """
+    first_name = models.CharField(max_length=255, blank=True)
+
+    last_name = models.CharField(max_length=255, blank=True)
+
+    title = models.CharField(max_length=255, blank=True)
+
+    email = models.EmailField('email address', max_length=255,
+                              blank=True, unique=True)
+
+    is_staff = models.BooleanField('staff status', default=False,
+                help_text='Designates whether the user can log into this admin '
+                          'site.')
+
+    is_active = models.BooleanField('active', default=True,
+                help_text='Designates whether this user should be treated as '
+                          'active. Unselect this instead of deleting accounts.')
+
+    date_joined = models.DateTimeField('date joined', default=timezone.now)
+
+    permissions = models.ManyToManyField(Permission,
+                                         related_name="auth_user_set",
+                                         blank=True)
+
+    is_demo = models.BooleanField(default=False, verbose_name='Demo Account?')
+
+    # timezone = models.CharField(max_length=64, null=True, blank=True,
+    #                             choices=TIMEZONES, default='America/Toronto')
+
+    phone_number = models.CharField(max_length=255, blank=True)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+
+    class Meta:
+        app_label = 'tests'
+        abstract = False
+
+
+class CustomUserMixin(object):
     def setUp(self):
-        super(UserMixin, self).setUp()
-        self.user = User.objects.create_user('bouke', None, 'secret')
-        assert self.client.login(username='bouke', password='secret')
+        from django.conf import settings
+        self.old_auth_user_model = settings.AUTH_USER_MODEL
+        settings.AUTH_USER_MODEL = "tests.CustomUser"
+
+        super(CustomUserMixin, self).setUp()
 
 
-class OTPUserMixin(UserMixin):
+        self.user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+        # import pdb; pdb.set_trace()
+        login = self.client.login(email='bouke@example.com', password='secret')
+        from django.contrib.auth import authenticate
+
+        # import pdb; pdb.set_trace()
+        assert login
+
+    def tearDown(self):
+        from django.conf import settings
+        settings.AUTH_USER_MODEL = self.old_auth_user_model
+
+
+class OTPUserMixin(CustomUserMixin):
     def setUp(self):
         super(OTPUserMixin, self).setUp()
         self.device = self.user.totpdevice_set.create(name='default')
@@ -61,8 +163,10 @@ class LoginTest(TestCase):
                                       'and password.')
 
     def test_valid_login(self):
-        User.objects.create_user('bouke', None, 'secret')
-        response = self._post({'auth-username': 'bouke',
+        # User.objects.create_user('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
+
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
@@ -70,11 +174,12 @@ class LoginTest(TestCase):
     def test_valid_login_with_custom_redirect(self):
         redirect_url = reverse('two_factor:setup')
 
-        User.objects.create_user('bouke', None, 'secret')
+        # User.objects.create_user('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
         response = self.client.post(
             '%s?%s' % (reverse('two_factor:login'),
                        urlencode({'next': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-email': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
@@ -82,21 +187,25 @@ class LoginTest(TestCase):
     def test_valid_login_with_redirect_field_name(self):
         redirect_url = reverse('two_factor:setup')
 
-        User.objects.create_user('bouke', None, 'secret')
+        # User.objects.create_user('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
+
         response = self.client.post(
             '%s?%s' % (reverse('custom-login'),
                        urlencode({'next_page': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-email': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
     def test_with_generator(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        # user = User.objects.create_user('bouke', None, 'secret')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+
         device = user.totpdevice_set.create(name='default',
                                             key=random_hex().decode())
 
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Token:')
@@ -119,26 +228,28 @@ class LoginTest(TestCase):
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
     )
     def test_with_backup_phone(self, fake):
-        user = User.objects.create_user('bouke', None, 'secret')
+        # user = User.objects.create_user('bouke', None, 'secret')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.phonedevice_set.create(name='backup', number='123456789',
                                              method='sms',
                                              key=random_hex().decode())
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for challenge on invalid device
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': 'MALICIOUS/INPUT/666'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for SMS challenge
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We sent you a text message')
@@ -148,7 +259,7 @@ class LoginTest(TestCase):
         # Ask for phone challenge
         device.method = 'call'
         device.save()
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We are calling your phone right now')
@@ -156,13 +267,15 @@ class LoginTest(TestCase):
             device=device, token='%06d' % totp(device.bin_key))
 
     def test_with_backup_token(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        # user = User.objects.create_user('bouke', None, 'secret')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.staticdevice_set.create(name='backup')
         device.token_set.create(token='abcdef123')
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-email': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Backup Token')
@@ -182,7 +295,7 @@ class LoginTest(TestCase):
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
 
-class SetupTest(UserMixin, TestCase):
+class SetupTest(CustomUserMixin, TestCase):
     def test_form(self):
         response = self.client.get(reverse('two_factor:setup'))
         self.assertContains(response, 'Follow the steps in this wizard to '
@@ -328,30 +441,37 @@ class OTPRequiredMixinTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_redirect(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        # User.objects.create_superuser('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
+
+        self.client.login(email='bouke@example.com', password='secret')
         url = '/secure/redirect_unverified/'
         response = self.client.get(url)
         redirect_to = '%s?%s' % ('/account/login/', urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        # User.objects.create_superuser('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
+
+        self.client.login(email='bouke@example.com', password='secret')
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_explanation(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        # User.objects.create_superuser('bouke', None, 'secret')
+        CustomUser.objects.create_user('bouke@example.com', 'secret')
+
+        self.client.login(email='bouke@example.com', password='secret')
         response = self.client.get('/secure/')
         self.assertContains(response, 'Permission Denied', status_code=403)
         self.assertContains(response, 'Enable Two-Factor Authentication',
                             status_code=403)
 
     def test_unverified_need_login(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        # user = User.objects.create_superuser('bouke', None, 'secret')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+        self.client.login(email='bouke@example.com', password='secret')
         user.totpdevice_set.create(name='default')
         url = '/secure/'
         response = self.client.get(url)
@@ -359,8 +479,9 @@ class OTPRequiredMixinTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
     def test_verified(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        # user = User.objects.create_superuser('bouke', None, 'secret')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
+        self.client.login(email='bouke@example.com', password='secret')
         device = user.totpdevice_set.create(name='default')
         session = self.client.session
         session[DEVICE_ID_SESSION_KEY] = device.persistent_id
@@ -384,10 +505,12 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
-class AdminSiteTest(TestCase):
+class AdminSiteTest(CustomUserMixin, TestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        super(AdminSiteTest, self).setUp()
+        pass
+        # self.user = User.objects.create_superuser('bouke', None, 'secret')
+        # self.client.login(username='bouke', password='secret')
 
     def test_default_admin(self):
         response = self.client.get('/admin/')
@@ -509,7 +632,7 @@ class PhoneDeleteTest(OTPUserMixin, TestCase):
         self.assertContains(response, 'was not found', status_code=404)
 
 
-class QRTest(UserMixin, TestCase):
+class QRTest(CustomUserMixin, TestCase):
     test_secret = 'This is a test secret for an OTP Token'
     test_img = 'This is a test string that represents a QRCode'
 
@@ -658,14 +781,16 @@ class PhoneDeviceTest(TestCase):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
 
-        user = User.objects.create_user('bouke')
+        # user = User.objects.create_user('bouke')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
         device.user = user
         self.assertEqual('unknown (bouke)', str(device))
 
 
 class UtilsTest(TestCase):
     def test_default_device(self):
-        user = User.objects.create_user('bouke')
+        # user = User.objects.create_user('bouke')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
         self.assertEqual(default_device(user), None)
 
         user.phonedevice_set.create(name='backup')
@@ -678,7 +803,8 @@ class UtilsTest(TestCase):
         self.assertQuerysetEqual(list(backup_phones(None)),
                                  list(PhoneDevice.objects.none()))
 
-        user = User.objects.create_user('bouke')
+        # user = User.objects.create_user('bouke')
+        user = CustomUser.objects.create_user('bouke@example.com', 'secret')
         user.phonedevice_set.create(name='default')
         backup = user.phonedevice_set.create(name='backup')
         phones = backup_phones(user)

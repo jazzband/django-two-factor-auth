@@ -137,3 +137,13 @@ def class_view_decorator(function_decorator):
         View.dispatch = method_decorator(function_decorator)(View.dispatch)
         return View
     return simple_decorator
+
+def get_django_username(user):
+    """
+    Accounts for USERNAME_FIELD that may be set on custom user models.
+    (https://docs.djangoproject.com/en/dev/topics/auth/customizing/#django.contrib.auth.models.CustomUser.USERNAME_FIELD)
+    """
+    if hasattr(user, 'USERNAME_FIELD'):
+        return getattr(user, user.USERNAME_FIELD)
+    else:
+        return user.username

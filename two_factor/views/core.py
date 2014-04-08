@@ -26,7 +26,8 @@ from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
 from ..models import PhoneDevice
 from ..utils import (get_otpauth_url, default_device,
                      backup_phones)
-from .utils import (IdempotentSessionWizardView, class_view_decorator)
+from .utils import (IdempotentSessionWizardView, class_view_decorator,
+                    get_django_username)
 
 
 @class_view_decorator(never_cache)
@@ -441,7 +442,7 @@ class QRGeneratorView(View):
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
         image_factory = import_by_path(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
-        alias = '%s@%s' % (self.request.user.username,
+        alias = '%s@%s' % (get_django_username(self.request.user),
                            get_current_site(self.request).name)
 
         # Make and return QR code
