@@ -260,19 +260,19 @@ class LoginTest(TestCase):
                                              key=random_hex().decode())
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for challenge on invalid device
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': 'MALICIOUS/INPUT/666'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for SMS challenge
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We sent you a text message')
@@ -282,7 +282,7 @@ class LoginTest(TestCase):
         # Ask for phone challenge
         device.method = 'call'
         device.save()
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We are calling your phone right now')
@@ -298,7 +298,7 @@ class LoginTest(TestCase):
         device.token_set.create(token='abcdef123')
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Backup Token')
