@@ -29,11 +29,11 @@ from two_factor.models import PhoneDevice, phone_number_validator
 from two_factor.utils import backup_phones, default_device, get_otpauth_url
 
 
-# class UserMixin(object):
-#     def setUp(self):
-#         super(UserMixin, self).setUp()
-#         self.user = User.objects.create_user('bouke', None, 'secret')
-#         assert self.client.login(username='bouke', password='secret')
+class UserMixin(object):
+    def setUp(self):
+        super(UserMixin, self).setUp()
+        self.user = User.objects.create_user('bouke', None, 'secret')
+        assert self.client.login(username='bouke', password='secret')
 
 from django.db import models
 from django.contrib.auth.models import (
@@ -102,9 +102,6 @@ class CustomUser(AbstractBaseUser):
 
     is_demo = models.BooleanField(default=False, verbose_name='Demo Account?')
 
-    # timezone = models.CharField(max_length=64, null=True, blank=True,
-    #                             choices=TIMEZONES, default='America/Toronto')
-
     phone_number = models.CharField(max_length=255, blank=True)
 
     objects = CustomUserManager()
@@ -115,6 +112,37 @@ class CustomUser(AbstractBaseUser):
         app_label = 'tests'
         abstract = False
 
+    def has_perm(self, perm, obj=None):
+        print "has_perm: {}, {}".format(perm, obj)
+
+        return self.is_staff
+
+    def has_module_perms(self, app_label):
+        return self.is_staff
+
+    def get_full_name(self):
+        return u"{} {}".format(self.first_name, self.last_name)
+
+    def get_short_name(self):
+        return self.get_full_name()
+
+
+class CustomAdminUserMixin(object):
+    def setUp(self):
+        from django.conf import settings
+        self.old_auth_user_model = settings.AUTH_USER_MODEL
+        settings.AUTH_USER_MODEL = "tests.CustomUser"
+
+        super(CustomAdminUserMixin, self).setUp()
+
+        self.user = CustomUser.objects.create_superuser('bouke@example.com', 'secret')
+        login = self.client.login(email='bouke@example.com', password='secret')
+        assert login
+
+    def tearDown(self):
+        from django.conf import settings
+        settings.AUTH_USER_MODEL = self.old_auth_user_model
+
 
 class CustomUserMixin(object):
     def setUp(self):
@@ -124,13 +152,8 @@ class CustomUserMixin(object):
 
         super(CustomUserMixin, self).setUp()
 
-
         self.user = CustomUser.objects.create_user('bouke@example.com', 'secret')
-        # import pdb; pdb.set_trace()
         login = self.client.login(email='bouke@example.com', password='secret')
-        from django.contrib.auth import authenticate
-
-        # import pdb; pdb.set_trace()
         assert login
 
     def tearDown(self):
@@ -166,7 +189,7 @@ class LoginTest(TestCase):
         # User.objects.create_user('bouke', None, 'secret')
         CustomUser.objects.create_user('bouke@example.com', 'secret')
 
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
@@ -179,7 +202,7 @@ class LoginTest(TestCase):
         response = self.client.post(
             '%s?%s' % (reverse('two_factor:login'),
                        urlencode({'next': redirect_url})),
-            {'auth-email': 'bouke@example.com',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
@@ -193,7 +216,7 @@ class LoginTest(TestCase):
         response = self.client.post(
             '%s?%s' % (reverse('custom-login'),
                        urlencode({'next_page': redirect_url})),
-            {'auth-email': 'bouke@example.com',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
@@ -205,7 +228,7 @@ class LoginTest(TestCase):
         device = user.totpdevice_set.create(name='default',
                                             key=random_hex().decode())
 
-        response = self._post({'auth-email': 'bouke@example.com',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Token:')
@@ -505,7 +528,7 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
-class AdminSiteTest(CustomUserMixin, TestCase):
+class AdminSiteTest(CustomAdminUserMixin, TestCase):
     def setUp(self):
         super(AdminSiteTest, self).setUp()
         pass
