@@ -92,7 +92,7 @@ class TOTPDeviceForm(forms.Form):
                     self.metadata['valid_t0'] = int(time()) - t0
                     validated = True
         if not validated:
-            raise forms.ValidationError({'token': [self.error_messages['invalid_token']]})
+            raise forms.ValidationError(self.error_messages['invalid_token'])
         return token
 
     def save(self):
