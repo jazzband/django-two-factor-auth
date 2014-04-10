@@ -381,7 +381,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         """
         The key is preserved between steps and stored as ascii in the session.
         """
-        if not self.key_name in self.storage.extra_data:
+        if self.key_name not in self.storage.extra_data:
             key = random_hex(20).decode('ascii')
             self.storage.extra_data[self.key_name] = key
         return self.storage.extra_data[self.key_name]

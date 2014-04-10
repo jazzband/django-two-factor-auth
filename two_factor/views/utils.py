@@ -90,7 +90,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         # It is assumed that earlier steps affect later steps; so even though
         # those forms might not be idempotent, we'll remove the validated data
         # to force re-entry.
-        #form_list = self.get_form_list(idempotent=False)
+        # form_list = self.get_form_list(idempotent=False)
         form_list = self.get_form_list()
         keys = list(form_list.keys())
         key = keys.index(step) + 1

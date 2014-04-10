@@ -58,6 +58,19 @@ class PhoneDevice(Device):
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))
 
+    def __repr__(self):
+        return '<PhoneDevice(number={!r}, method={!r}>'.format(
+            self.number,
+            self.method,
+        )
+
+    def __eq__(self, other):
+        if not isinstance(other, PhoneDevice):
+            return False
+        return self.number == other.number \
+            and self.method == other.method \
+            and self.key == other.key
+
     @property
     def bin_key(self):
         return unhexlify(self.key.encode())
