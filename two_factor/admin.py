@@ -33,9 +33,13 @@ class AdminSiteOTPRequiredMixin(object):
         """
         Redirects to the site login page for the given HttpRequest.
         """
+        if REDIRECT_FIELD_NAME in request.GET:
+            url = request.GET[REDIRECT_FIELD_NAME]
+        else:
+            url = request.get_full_path()
         return redirect('%s?%s' % (
             settings.LOGIN_URL,
-            urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
+            urlencode({REDIRECT_FIELD_NAME: url})
         ))
 
 
@@ -52,9 +56,13 @@ def patch_admin():
         """
         Redirects to the site login page for the given HttpRequest.
         """
+        if REDIRECT_FIELD_NAME in request.GET:
+            url = request.GET[REDIRECT_FIELD_NAME]
+        else:
+            url = request.get_full_path()
         return redirect('%s?%s' % (
             settings.LOGIN_URL,
-            urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
+            urlencode({REDIRECT_FIELD_NAME: url})
         ))
 
 
