@@ -16,6 +16,16 @@ Add the following apps to the ``INSTALLED_APPS``::
         'two_factor',
     )
 
+Add the ``django-otp`` middleware to your ``MIDDLEWARE_CLASSES``. Make sure
+it comes after ``AuthenticationMiddleware``::
+
+    MIDDLEWARE_CLASSES = (
+        ...
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django_otp.middleware.OTPMiddleware',
+        ...
+    )
+
 Point to the new login pages in your settings::
 
     from django.core.urlresolvers import reverse_lazy
