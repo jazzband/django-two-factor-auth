@@ -49,9 +49,10 @@ class IdempotentSessionWizardView(SessionWizardView):
         if step is None:
             step = self.steps.current
         form_list = self.get_form_list()
-        key = form_list.keyOrder.index(step) - 1
+        keys = list(form_list.keys())
+        key = keys.index(step) - 1
         if key >= 0:
-            for prev_step in form_list.keyOrder[key::-1]:
+            for prev_step in keys[key::-1]:
                 if self.is_step_visible(prev_step):
                     return prev_step
         return None
@@ -65,8 +66,9 @@ class IdempotentSessionWizardView(SessionWizardView):
         if step is None:
             step = self.steps.current
         form_list = self.get_form_list()
-        key = form_list.keyOrder.index(step) + 1
-        for next_step in form_list.keyOrder[key:]:
+        keys = list(form_list.keys())
+        key = keys.index(step) + 1
+        for next_step in keys[key:]:
             if self.is_step_visible(next_step):
                 return next_step
         return None
@@ -88,10 +90,11 @@ class IdempotentSessionWizardView(SessionWizardView):
         # It is assumed that earlier steps affect later steps; so even though
         # those forms might not be idempotent, we'll remove the validated data
         # to force re-entry.
-        #form_list = self.get_form_list(idempotent=False)
+        # form_list = self.get_form_list(idempotent=False)
         form_list = self.get_form_list()
-        key = form_list.keyOrder.index(step) + 1
-        for next_step in form_list.keyOrder[key:]:
+        keys = list(form_list.keys())
+        key = keys.index(step) + 1
+        for next_step in keys[key:]:
             self.storage.validated_step_data.pop(next_step, None)
 
         return super(IdempotentSessionWizardView, self).process_step(form)

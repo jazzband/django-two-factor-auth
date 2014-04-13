@@ -12,7 +12,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=1.4.2,<1.7',
+        'Django>=1.4.2,<1.8',
         'django_otp>=0.2.0,<0.3.0',
         'qrcode>=4.0.0,<5.0.0',
     ],
