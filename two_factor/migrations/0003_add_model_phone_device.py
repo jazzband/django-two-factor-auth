@@ -20,8 +20,8 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'PhoneDevice'
-        db.create_table(u'two_factor_phonedevice', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        db.create_table('two_factor_phonedevice', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[user_orm_label])),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=64)),
             ('confirmed', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -29,26 +29,26 @@ class Migration(SchemaMigration):
             ('key', self.gf('django.db.models.fields.CharField')(default='c4f6544f9fe5a7045498c99456e4abee1a3b3dca', max_length=40)),
             ('method', self.gf('django.db.models.fields.CharField')(max_length=4)),
         ))
-        db.send_create_signal(u'two_factor', ['PhoneDevice'])
+        db.send_create_signal('two_factor', ['PhoneDevice'])
 
 
     def backwards(self, orm):
         # Deleting model 'PhoneDevice'
-        db.delete_table(u'two_factor_phonedevice')
+        db.delete_table('two_factor_phonedevice')
 
 
     models = {
-        u'auth.group': {
+        'auth.group': {
             'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
+            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
         },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
+        'auth.permission': {
+            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
             'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         user_model_label: {
@@ -59,35 +59,35 @@ class Migration(SchemaMigration):
                 'db_column': "'%s'" % User._meta.pk.column}
             ),
         },
-        u'contenttypes.contenttype': {
+        'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'two_factor.phonedevice': {
+        'two_factor.phonedevice': {
             'Meta': {'object_name': 'PhoneDevice'},
             'confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'default': "'5c351effc09931c7de3b8fb6f93f55834a598580'", 'max_length': '40'}),
             'method': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'number': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['%s']" % user_orm_label})
         },
-        u'two_factor.token': {
+        'two_factor.token': {
             'Meta': {'object_name': 'Token'},
             'backup_phone': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'method': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
             'seed': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['%s']" % user_orm_label, 'unique': 'True'})
         },
-        u'two_factor.verifiedcomputer': {
+        'two_factor.verifiedcomputer': {
             'Meta': {'object_name': 'VerifiedComputer'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ip': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
             'last_used_at': ('django.db.models.fields.DateTimeField', [], {}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['%s']" % user_orm_label}),

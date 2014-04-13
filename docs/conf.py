@@ -44,8 +44,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Django Two-Factor Authentication'
-copyright = u'2013, Bouke Haarsma'
+project = 'Django Two-Factor Authentication'
+copyright = '2013, Bouke Haarsma'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -207,8 +207,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'DjangoTwo-FactorAuthentication.tex', u'Django Two-Factor Authentication Documentation',
-   u'Bouke Haarsma', 'manual'),
+  ('index', 'DjangoTwo-FactorAuthentication.tex', 'Django Two-Factor Authentication Documentation',
+   'Bouke Haarsma', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -237,8 +237,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'djangotwo-factorauthentication', u'Django Two-Factor Authentication Documentation',
-     [u'Bouke Haarsma'], 1)
+    ('index', 'djangotwo-factorauthentication', 'Django Two-Factor Authentication Documentation',
+     ['Bouke Haarsma'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -251,8 +251,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'DjangoTwo-FactorAuthentication', u'Django Two-Factor Authentication Documentation',
-   u'Bouke Haarsma', 'DjangoTwo-FactorAuthentication', 'One line description of project.',
+  ('index', 'DjangoTwo-FactorAuthentication', 'Django Two-Factor Authentication Documentation',
+   'Bouke Haarsma', 'DjangoTwo-FactorAuthentication', 'One line description of project.',
    'Miscellaneous'),
 ]
 
