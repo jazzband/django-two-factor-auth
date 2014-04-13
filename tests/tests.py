@@ -378,7 +378,7 @@ class AdminPatchTest(TestCase):
         unpatch_admin()
 
     def test(self):
-        response = self.client.get('/admin/')
+        response = self.client.get('/admin/', follow=True)
         redirect_to = '%s?%s' % (settings.LOGIN_URL,
                                  urlencode({'next': '/admin/'}))
         self.assertRedirects(response, redirect_to)
@@ -394,7 +394,7 @@ class AdminSiteTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_otp_admin_without_otp(self):
-        response = self.client.get('/otp_admin/')
+        response = self.client.get('/otp_admin/', follow=True)
         redirect_to = '%s?%s' % (settings.LOGIN_URL,
                                  urlencode({'next': '/otp_admin/'}))
         self.assertRedirects(response, redirect_to)
