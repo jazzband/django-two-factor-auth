@@ -15,7 +15,7 @@ General Settings
   Which gateway to use for making phone calls. Should be set to a module or
   object providing a ``make_call`` method. Currently two gateways are bundled:
 
-  * ``two_factor.gateways.twilio.Twilio`` for making real phone calls using
+  * ``two_factor.gateways.twilio.gateway.Twilio`` for making real phone calls using
     Twilio_.
   * ``two_factor.gateways.fake.Fake``  for development, recording tokens to the
     default logger.
@@ -24,7 +24,7 @@ General Settings
   Which gateway to use for sending text messages. Should be set to a module or
   object providing a ``send_sms`` method. Currently two gateways are bundled:
 
-  * ``two_factor.gateways.twilio.Twilio`` for sending real text messages using
+  * ``two_factor.gateways.twilio.gateway.Twilio`` for sending real text messages using
     Twilio_.
   * ``two_factor.gateways.fake.Fake``  for development, recording tokens to the
     default logger.
