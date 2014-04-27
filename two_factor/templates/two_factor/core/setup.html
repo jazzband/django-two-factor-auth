@@ -31,6 +31,10 @@
       <p>{% blocktrans %}We sent you a text message, please enter the tokens we
         sent.{% endblocktrans %}</p>
     {% endif %}
+  {% elif wizard.steps.current == 'yubikey' %}
+    <p>{% blocktrans %}To identify and verify your YubiKey, please insert a
+      token in the field below. Your YubiKey will be linked to your
+      account.{% endblocktrans %}</p>
   {% endif %}
 
   <form action="" method="post">{% csrf_token %}

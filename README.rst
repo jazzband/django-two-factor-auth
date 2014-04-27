@@ -18,8 +18,9 @@ Complete Two-Factor Authentication for Django. Built on top of the one-time
 password framework django-otp_ and Django's built-in authentication framework
 ``django.contrib.auth`` for providing the easiest integration into most Django
 projects. Inspired by the user experience of Google's Two-Step Authentication,
-allowing users to authenticate through call, text messages (SMS) or by using a
-token generator app like Google Authenticator.
+allowing users to authenticate through call, text messages (SMS), by using a
+token generator app like Google Authenticator or a YubiKey_ hardware token
+generator (optional).
 
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
@@ -80,6 +81,9 @@ Be sure to remove any other login routes, otherwise the two-factor
 authentication might be circumvented. The admin interface should be
 automatically patched to use the new login method.
 
+Support for YubiKey_ is disabled by default, but enabling is easy. Please
+refer to the documentation for instructions.
+
 Contribute
 ==========
 * Submit issues to the `issue tracker`_ on Github
@@ -124,3 +128,4 @@ The project is licensed under the MIT license.
 .. _issue tracker: https://github.com/Bouke/django-two-factor-auth/issues
 .. _source code: https://github.com/Bouke/django-two-factor-auth
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
+.. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
