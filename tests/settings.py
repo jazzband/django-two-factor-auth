@@ -1,6 +1,11 @@
 import os
 from django.core.urlresolvers import reverse_lazy
 
+try:
+    import otp_yubikey
+except ImportError:
+    otp_yubikey = None
+
 BASE_DIR = os.path.dirname(__file__)
 
 SECRET_KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -17,6 +22,9 @@ INSTALLED_APPS = [
     'two_factor',
     'tests',
 ]
+
+if otp_yubikey:
+    INSTALLED_APPS += ['otp_yubikey']
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
