@@ -441,7 +441,7 @@ class QRGeneratorView(View):
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
         image_factory = import_by_path(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
-        alias = '%s@%s' % (self.request.user.username,
+        alias = '%s@%s' % (self.request.user.get_username(),
                            get_current_site(self.request).name)
 
         # Make and return QR code

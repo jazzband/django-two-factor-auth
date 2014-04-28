@@ -97,6 +97,8 @@ TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
 
 SESSION_ENGINE = 'user_sessions.backends.db'
 
+AUTH_USER_MODEL = 'example.User'
+
 try:
     from .settings_private import *  # noqa
 except ImportError:
