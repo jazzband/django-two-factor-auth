@@ -12,7 +12,12 @@ except ImportError:
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -32,71 +37,92 @@ from two_factor.utils import backup_phones, default_device, get_otpauth_url
 class UserMixin(object):
     def setUp(self):
         super(UserMixin, self).setUp()
-        self.user = User.objects.create_user('bouke', None, 'secret')
-        assert self.client.login(username='bouke', password='secret')
+        self._passwords = {}
+
+    def create_user(self, username='bouke@example.com',
+                    password='secret', **kwargs):
+        user = User.objects.create_user(username=username, email=username,
+                                        password=password, **kwargs)
+        self._passwords[user] = password
+        return user
+
+    def create_superuser(self, username='bouke@example.com',
+                         password='secret', **kwargs):
+        user = User.objects.create_superuser(username=username, email=username,
+                                             password=password, **kwargs)
+        self._passwords[user] = password
+        return user
+
+    def login_user(self, user=None):
+        if not user:
+            user = list(self._passwords.keys())[0]
+        try:
+            username = user.get_username()
+        except AttributeError:
+            username = user.username
+        assert self.client.login(username=username,
+                                 password=self._passwords[user])
+        if default_device(user):
+            session = self.client.session
+            session[DEVICE_ID_SESSION_KEY] = default_device(user).persistent_id
+            session.save()
+
+    def enable_otp(self, user=None):
+        if not user:
+            user = list(self._passwords.keys())[0]
+        return user.totpdevice_set.create(name='default')
 
 
-class OTPUserMixin(UserMixin):
-    def setUp(self):
-        super(OTPUserMixin, self).setUp()
-        self.device = self.user.totpdevice_set.create(name='default')
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = self.device.persistent_id
-        session.save()
-
-
-class LoginTest(TestCase):
+class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))
-        self.assertContains(response, 'Username:')
+        self.assertContains(response, 'Password:')
 
     def test_invalid_login(self):
         response = self._post({'auth-username': 'unknown',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Please enter a correct username '
-                                      'and password.')
+        self.assertContains(response, 'Please enter a correct')
+        self.assertContains(response, 'and password.')
 
     def test_valid_login(self):
-        User.objects.create_user('bouke', None, 'secret')
-        response = self._post({'auth-username': 'bouke',
+        self.create_user()
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
     def test_valid_login_with_custom_redirect(self):
         redirect_url = reverse('two_factor:setup')
-
-        User.objects.create_user('bouke', None, 'secret')
+        self.create_user()
         response = self.client.post(
             '%s?%s' % (reverse('two_factor:login'),
                        urlencode({'next': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
     def test_valid_login_with_redirect_field_name(self):
         redirect_url = reverse('two_factor:setup')
-
-        User.objects.create_user('bouke', None, 'secret')
+        self.create_user()
         response = self.client.post(
             '%s?%s' % (reverse('custom-login'),
                        urlencode({'next_page': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
     def test_with_generator(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         device = user.totpdevice_set.create(name='default',
                                             key=random_hex().decode())
 
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Token:')
@@ -119,26 +145,26 @@ class LoginTest(TestCase):
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
     )
     def test_with_backup_phone(self, fake):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.phonedevice_set.create(name='backup', number='123456789',
                                              method='sms',
                                              key=random_hex().decode())
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for challenge on invalid device
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': 'MALICIOUS/INPUT/666'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for SMS challenge
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We sent you a text message')
@@ -148,7 +174,7 @@ class LoginTest(TestCase):
         # Ask for phone challenge
         device.method = 'call'
         device.save()
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We are calling your phone right now')
@@ -156,13 +182,13 @@ class LoginTest(TestCase):
             device=device, token='%06d' % totp(device.bin_key))
 
     def test_with_backup_token(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.staticdevice_set.create(name='backup')
         device.token_set.create(token='abcdef123')
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Backup Token')
@@ -183,6 +209,11 @@ class LoginTest(TestCase):
 
 
 class SetupTest(UserMixin, TestCase):
+    def setUp(self):
+        super(SetupTest, self).setUp()
+        self.user = self.create_user()
+        self.login_user()
+
     def test_form(self):
         response = self.client.get(reverse('two_factor:setup'))
         self.assertContains(response, 'Follow the steps in this wizard to '
@@ -311,7 +342,7 @@ class SetupTest(UserMixin, TestCase):
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
 
-class OTPRequiredMixinTest(TestCase):
+class OTPRequiredMixinTest(UserMixin, TestCase):
     @override_settings(LOGIN_URL=None)
     def test_not_configured(self):
         with self.assertRaises(ImproperlyConfigured):
@@ -328,44 +359,40 @@ class OTPRequiredMixinTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_redirect(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         url = '/secure/redirect_unverified/'
         response = self.client.get(url)
         redirect_to = '%s?%s' % ('/account/login/', urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_explanation(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         response = self.client.get('/secure/')
         self.assertContains(response, 'Permission Denied', status_code=403)
         self.assertContains(response, 'Enable Two-Factor Authentication',
                             status_code=403)
 
     def test_unverified_need_login(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
-        user.totpdevice_set.create(name='default')
+        self.create_user()
+        self.login_user()
+        self.enable_otp()  # create OTP after login, so not verified
         url = '/secure/'
         response = self.client.get(url)
         redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_verified(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
-        device = user.totpdevice_set.create(name='default')
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
-        session.save()
-
+        self.create_user()
+        self.enable_otp()  # create OTP before login, so verified
+        self.login_user()
         response = self.client.get('/secure/')
         self.assertEqual(response.status_code, 200)
 
@@ -384,10 +411,11 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
-class AdminSiteTest(TestCase):
+class AdminSiteTest(UserMixin, TestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        super(AdminSiteTest, self).setUp()
+        self.user = self.create_superuser()
+        self.login_user()
 
     def test_default_admin(self):
         response = self.client.get('/admin/')
@@ -400,15 +428,19 @@ class AdminSiteTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
     def test_otp_admin_with_otp(self):
-        device = self.user.totpdevice_set.create()
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
-        session.save()
+        self.enable_otp()
+        self.login_user()
         response = self.client.get('/otp_admin/')
         self.assertEqual(response.status_code, 200)
 
 
-class BackupTokensTest(OTPUserMixin, TestCase):
+class BackupTokensTest(UserMixin, TestCase):
+    def setUp(self):
+        super(BackupTokensTest, self).setUp()
+        self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test_empty(self):
         response = self.client.get(reverse('two_factor:backup_tokens'))
         self.assertContains(response, 'You don\'t have any backup codes yet.')
@@ -434,7 +466,13 @@ class BackupTokensTest(OTPUserMixin, TestCase):
         self.assertNotEqual(first_set, second_set)
 
 
-class PhoneSetupTest(OTPUserMixin, TestCase):
+class PhoneSetupTest(UserMixin, TestCase):
+    def setUp(self):
+        super(PhoneSetupTest, self).setUp()
+        self.user = self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test_form(self):
         response = self.client.get(reverse('two_factor:phone_create'))
         self.assertContains(response, 'Number:')
@@ -491,11 +529,13 @@ class PhoneSetupTest(OTPUserMixin, TestCase):
             {'number': [six.text_type(phone_number_validator.message)]})
 
 
-class PhoneDeleteTest(OTPUserMixin, TestCase):
+class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneDeleteTest, self).setUp()
-        self.backup = self.user.phonedevice_set.create(name='backup')
-        self.default = self.user.phonedevice_set.create(name='default')
+        self.user = self.create_user()
+        self.backup = self.user.phonedevice_set.create(name='backup', method='sms')
+        self.default = self.user.phonedevice_set.create(name='default', method='call')
+        self.login_user()
 
     def test_delete(self):
         response = self.client.post(reverse('two_factor:phone_delete',
@@ -512,6 +552,11 @@ class PhoneDeleteTest(OTPUserMixin, TestCase):
 class QRTest(UserMixin, TestCase):
     test_secret = 'This is a test secret for an OTP Token'
     test_img = 'This is a test string that represents a QRCode'
+
+    def setUp(self):
+        super(QRTest, self).setUp()
+        self.create_user()
+        self.login_user()
 
     def test_without_secret(self):
         response = self.client.get(reverse('two_factor:qr'))
@@ -539,7 +584,7 @@ class QRTest(UserMixin, TestCase):
 
         # Check things went as expected
         mockqrcode.assert_called_with(
-            get_otpauth_url('bouke@testserver', self.test_secret),
+            get_otpauth_url('bouke@example.com@testserver', self.test_secret),
             image_factory=default_factory)
         mockimg.save.assert_called()
         self.assertEquals(response.status_code, 200)
@@ -547,7 +592,13 @@ class QRTest(UserMixin, TestCase):
         self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
 
 
-class DisableTest(OTPUserMixin, TestCase):
+class DisableTest(UserMixin, TestCase):
+    def setUp(self):
+        super(DisableTest, self).setUp()
+        self.user = self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test(self):
         response = self.client.get(reverse('two_factor:disable'))
         self.assertContains(response, 'Yes, I am sure')
@@ -648,7 +699,7 @@ class FakeGatewayTest(TestCase):
             'Fake SMS to %s: "Your token is: %s"', '+123', '654321')
 
 
-class PhoneDeviceTest(TestCase):
+class PhoneDeviceTest(UserMixin, TestCase):
     def test_verify(self):
         device = PhoneDevice(key=random_hex().decode())
         self.assertFalse(device.verify_token(-1))
@@ -658,14 +709,13 @@ class PhoneDeviceTest(TestCase):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
 
-        user = User.objects.create_user('bouke')
-        device.user = user
-        self.assertEqual('unknown (bouke)', str(device))
+        device.user = self.create_user()
+        self.assertEqual('unknown (bouke@example.com)', str(device))
 
 
-class UtilsTest(TestCase):
+class UtilsTest(UserMixin, TestCase):
     def test_default_device(self):
-        user = User.objects.create_user('bouke')
+        user = self.create_user()
         self.assertEqual(default_device(user), None)
 
         user.phonedevice_set.create(name='backup')
@@ -677,8 +727,7 @@ class UtilsTest(TestCase):
     def test_backup_phones(self):
         self.assertQuerysetEqual(list(backup_phones(None)),
                                  list(PhoneDevice.objects.none()))
-
-        user = User.objects.create_user('bouke')
+        user = self.create_user()
         user.phonedevice_set.create(name='default')
         backup = user.phonedevice_set.create(name='backup')
         phones = backup_phones(user)
