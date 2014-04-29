@@ -54,7 +54,7 @@ class UserMixin2(object):
         if user == len(self._passwords):
             raise ValueError('Provide a user or create exactly 1 user')
         if not user:
-            user = self._passwords.values()[0]
+            user = self._passwords.keys()[0]
         self.client.login(username=user.get_username(),
                           password=self._passwords[user])
 
@@ -203,7 +203,12 @@ class LoginTest(UserMixin2, TestCase):
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
 
-class SetupTest(UserMixin, TestCase):
+class SetupTest(UserMixin2, TestCase):
+    def setUp(self):
+        super(SetupTest, self).setUp()
+        self.user = self.create_user()
+        self.login_user()
+
     def test_form(self):
         response = self.client.get(reverse('two_factor:setup'))
         self.assertContains(response, 'Follow the steps in this wizard to '
