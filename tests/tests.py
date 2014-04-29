@@ -1,4 +1,5 @@
 from binascii import unhexlify
+from django.contrib.auth import get_user_model
 import qrcode.image.svg
 
 try:
@@ -12,7 +13,10 @@ except ImportError:
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth.models import User
+try:
+    User = get_user_model()
+except ImportError:
+    from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -36,6 +40,25 @@ class UserMixin(object):
         assert self.client.login(username='bouke', password='secret')
 
 
+class UserMixin2(object):
+    def setUp(self):
+        super(UserMixin2, self).setUp()
+        self._passwords = {}
+
+    def create_user(self, username='bouke@example.com', password='secret'):
+        user = User.objects.create_user(username, password=password)
+        self._passwords[user] = password
+        return user
+
+    def login_user(self, user=None):
+        if user == len(self._passwords):
+            raise ValueError('Provide a user or create exactly 1 user')
+        if not user:
+            user = self._passwords.values()[0]
+        self.client.login(username=user.get_username(),
+                          password=self._passwords[user])
+
+
 class OTPUserMixin(UserMixin):
     def setUp(self):
         super(OTPUserMixin, self).setUp()
@@ -45,58 +68,56 @@ class OTPUserMixin(UserMixin):
         session.save()
 
 
-class LoginTest(TestCase):
+class LoginTest(UserMixin2, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))
-        self.assertContains(response, 'Username:')
+        self.assertContains(response, 'Password:')
 
     def test_invalid_login(self):
         response = self._post({'auth-username': 'unknown',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Please enter a correct username '
-                                      'and password.')
+        self.assertContains(response, 'Please enter a correct')
+        self.assertContains(response, 'and password.')
 
     def test_valid_login(self):
-        User.objects.create_user('bouke', None, 'secret')
-        response = self._post({'auth-username': 'bouke',
+        self.create_user()
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
     def test_valid_login_with_custom_redirect(self):
         redirect_url = reverse('two_factor:setup')
-
-        User.objects.create_user('bouke', None, 'secret')
+        self.create_user()
         response = self.client.post(
             '%s?%s' % (reverse('two_factor:login'),
                        urlencode({'next': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
     def test_valid_login_with_redirect_field_name(self):
         redirect_url = reverse('two_factor:setup')
-
-        User.objects.create_user('bouke', None, 'secret')
+        self.create_user()
         response = self.client.post(
             '%s?%s' % (reverse('custom-login'),
                        urlencode({'next_page': redirect_url})),
-            {'auth-username': 'bouke',
+            {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
     def test_with_generator(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         device = user.totpdevice_set.create(name='default',
                                             key=random_hex().decode())
 
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Token:')
@@ -119,26 +140,26 @@ class LoginTest(TestCase):
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
     )
     def test_with_backup_phone(self, fake):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.phonedevice_set.create(name='backup', number='123456789',
                                              method='sms',
                                              key=random_hex().decode())
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for challenge on invalid device
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': 'MALICIOUS/INPUT/666'})
         self.assertContains(response, 'Send text message to 123****89')
 
         # Ask for SMS challenge
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We sent you a text message')
@@ -148,7 +169,7 @@ class LoginTest(TestCase):
         # Ask for phone challenge
         device.method = 'call'
         device.save()
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'challenge_device': device.persistent_id})
         self.assertContains(response, 'We are calling your phone right now')
@@ -156,13 +177,13 @@ class LoginTest(TestCase):
             device=device, token='%06d' % totp(device.bin_key))
 
     def test_with_backup_token(self):
-        user = User.objects.create_user('bouke', None, 'secret')
+        user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.staticdevice_set.create(name='backup')
         device.token_set.create(token='abcdef123')
 
         # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke',
+        response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Backup Token')
