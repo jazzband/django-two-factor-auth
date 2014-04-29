@@ -348,7 +348,7 @@ class SetupTest(UserMixin2, TestCase):
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
 
-class OTPRequiredMixinTest(TestCase):
+class OTPRequiredMixinTest(UserMixin2, TestCase):
     @override_settings(LOGIN_URL=None)
     def test_not_configured(self):
         with self.assertRaises(ImproperlyConfigured):
@@ -365,44 +365,40 @@ class OTPRequiredMixinTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_redirect(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         url = '/secure/redirect_unverified/'
         response = self.client.get(url)
         redirect_to = '%s?%s' % ('/account/login/', urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
     def test_unverified_explanation(self):
-        User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        self.create_user()
+        self.login_user()
         response = self.client.get('/secure/')
         self.assertContains(response, 'Permission Denied', status_code=403)
         self.assertContains(response, 'Enable Two-Factor Authentication',
                             status_code=403)
 
     def test_unverified_need_login(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
-        user.totpdevice_set.create(name='default')
+        self.create_user()
+        self.login_user()
+        self.enable_otp()  # create OTP after login, so not verified
         url = '/secure/'
         response = self.client.get(url)
         redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
         self.assertRedirects(response, redirect_to)
 
     def test_verified(self):
-        user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
-        device = user.totpdevice_set.create(name='default')
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
-        session.save()
-
+        self.create_user()
+        self.enable_otp()  # create OTP before login, so verified
+        self.login_user()
         response = self.client.get('/secure/')
         self.assertEqual(response.status_code, 200)
 
@@ -554,9 +550,14 @@ class PhoneDeleteTest(UserMixin2, TestCase):
         self.assertContains(response, 'was not found', status_code=404)
 
 
-class QRTest(UserMixin, TestCase):
+class QRTest(UserMixin2, TestCase):
     test_secret = 'This is a test secret for an OTP Token'
     test_img = 'This is a test string that represents a QRCode'
+
+    def setUp(self):
+        super(QRTest, self).setUp()
+        self.create_user()
+        self.login_user()
 
     def test_without_secret(self):
         response = self.client.get(reverse('two_factor:qr'))
@@ -584,7 +585,7 @@ class QRTest(UserMixin, TestCase):
 
         # Check things went as expected
         mockqrcode.assert_called_with(
-            get_otpauth_url('bouke@testserver', self.test_secret),
+            get_otpauth_url('bouke@example.com@testserver', self.test_secret),
             image_factory=default_factory)
         mockimg.save.assert_called()
         self.assertEquals(response.status_code, 200)
@@ -592,7 +593,13 @@ class QRTest(UserMixin, TestCase):
         self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
 
 
-class DisableTest(OTPUserMixin, TestCase):
+class DisableTest(UserMixin2, TestCase):
+    def setUp(self):
+        super(DisableTest, self).setUp()
+        self.user = self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test(self):
         response = self.client.get(reverse('two_factor:disable'))
         self.assertContains(response, 'Yes, I am sure')
