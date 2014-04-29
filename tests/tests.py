@@ -55,8 +55,19 @@ class UserMixin2(object):
             raise ValueError('Provide a user or create exactly 1 user')
         if not user:
             user = self._passwords.keys()[0]
-        self.client.login(username=user.get_username(),
-                          password=self._passwords[user])
+        assert self.client.login(username=user.get_username(),
+                                 password=self._passwords[user])
+        if default_device(user):
+            session = self.client.session
+            session[DEVICE_ID_SESSION_KEY] = default_device(user).persistent_id
+            session.save()
+
+    def enable_otp(self, user=None):
+        if user == len(self._passwords):
+            raise ValueError('Provide a user or create exactly 1 user')
+        if not user:
+            user = self._passwords.keys()[0]
+        return user.totpdevice_set.create(name='default')
 
 
 class OTPUserMixin(UserMixin):
@@ -460,7 +471,13 @@ class BackupTokensTest(OTPUserMixin, TestCase):
         self.assertNotEqual(first_set, second_set)
 
 
-class PhoneSetupTest(OTPUserMixin, TestCase):
+class PhoneSetupTest(UserMixin2, TestCase):
+    def setUp(self):
+        super(PhoneSetupTest, self).setUp()
+        self.user = self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test_form(self):
         response = self.client.get(reverse('two_factor:phone_create'))
         self.assertContains(response, 'Number:')
@@ -517,11 +534,13 @@ class PhoneSetupTest(OTPUserMixin, TestCase):
             {'number': [six.text_type(phone_number_validator.message)]})
 
 
-class PhoneDeleteTest(OTPUserMixin, TestCase):
+class PhoneDeleteTest(UserMixin2, TestCase):
     def setUp(self):
         super(PhoneDeleteTest, self).setUp()
-        self.backup = self.user.phonedevice_set.create(name='backup')
-        self.default = self.user.phonedevice_set.create(name='default')
+        self.user = self.create_user()
+        self.backup = self.user.phonedevice_set.create(name='backup', method='sms')
+        self.default = self.user.phonedevice_set.create(name='default', method='call')
+        self.login_user()
 
     def test_delete(self):
         response = self.client.post(reverse('two_factor:phone_delete',
