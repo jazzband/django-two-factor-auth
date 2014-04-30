@@ -54,8 +54,6 @@ class UserMixin(object):
         return user
 
     def login_user(self, user=None):
-        if user == len(self._passwords):
-            raise ValueError('Provide a user or create exactly 1 user')
         if not user:
             user = list(self._passwords.keys())[0]
         try:
@@ -70,8 +68,6 @@ class UserMixin(object):
             session.save()
 
     def enable_otp(self, user=None):
-        if user == len(self._passwords):
-            raise ValueError('Provide a user or create exactly 1 user')
         if not user:
             user = list(self._passwords.keys())[0]
         return user.totpdevice_set.create(name='default')
