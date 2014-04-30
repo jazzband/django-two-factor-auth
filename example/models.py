@@ -28,3 +28,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def get_short_name(self):
+        return self.email.split('@')[0]

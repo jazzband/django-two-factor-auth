@@ -45,8 +45,8 @@ class UserMixin2(object):
         super(UserMixin2, self).setUp()
         self._passwords = {}
 
-    def create_user(self, username='bouke@example.com', password='secret'):
-        user = User.objects.create_user(username, password=password)
+    def create_user(self, username='bouke@example.com', password='secret', **kwargs):
+        user = User.objects.create_user(username, password=password, **kwargs)
         self._passwords[user] = password
         return user
 
@@ -417,10 +417,11 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
-class AdminSiteTest(TestCase):
+class AdminSiteTest(UserMixin2, TestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser('bouke', None, 'secret')
-        self.client.login(username='bouke', password='secret')
+        super(AdminSiteTest, self).setUp()
+        self.user = self.create_user(is_staff=True, is_superuser=True)
+        self.login_user()
 
     def test_default_admin(self):
         response = self.client.get('/admin/')
@@ -433,15 +434,19 @@ class AdminSiteTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
     def test_otp_admin_with_otp(self):
-        device = self.user.totpdevice_set.create()
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = device.persistent_id
-        session.save()
+        self.enable_otp()
+        self.login_user()
         response = self.client.get('/otp_admin/')
         self.assertEqual(response.status_code, 200)
 
 
-class BackupTokensTest(OTPUserMixin, TestCase):
+class BackupTokensTest(UserMixin2, TestCase):
+    def setUp(self):
+        super(BackupTokensTest, self).setUp()
+        self.create_user()
+        self.enable_otp()
+        self.login_user()
+
     def test_empty(self):
         response = self.client.get(reverse('two_factor:backup_tokens'))
         self.assertContains(response, 'You don\'t have any backup codes yet.')
