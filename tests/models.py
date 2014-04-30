@@ -1,21 +1,22 @@
 from django.conf import settings
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager as BaseUserManager
 
 
 if settings.AUTH_USER_MODEL == 'tests.User':
+    from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager as BaseUserManager
+    from django.db import models
+
     class UserManager(BaseUserManager):
-        def create_user(self, email, password=None, **extra_fields):
+        def _create_user(self, username, email, password,
+                         is_staff, is_superuser, **extra_fields):
             """
-            Creates and saves a User with the given username, email and password.
+            Creates and saves a User with the given email and password.
             """
-            extra_fields.pop('username', None)
             email = self.normalize_email(email)
-            user = self.model(email=email, **extra_fields)
+            user = self.model(email=email, is_staff=is_staff,
+                              is_superuser=is_superuser, **extra_fields)
             user.set_password(password)
             user.save(using=self._db)
             return user
-
 
     class User(AbstractBaseUser, PermissionsMixin):
         """

@@ -36,17 +36,19 @@ from two_factor.utils import backup_phones, default_device, get_otpauth_url
 class UserMixin(object):
     def setUp(self):
         super(UserMixin, self).setUp()
-        self.user = User.objects.create_user('bouke', None, 'secret')
-        assert self.client.login(username='bouke', password='secret')
-
-
-class UserMixin2(object):
-    def setUp(self):
-        super(UserMixin2, self).setUp()
         self._passwords = {}
 
-    def create_user(self, username='bouke@example.com', password='secret', **kwargs):
-        user = User.objects.create_user(username, password=password, **kwargs)
+    def create_user(self, username='bouke@example.com',
+                    password='secret', **kwargs):
+        user = User.objects.create_user(username=username, email=username,
+                                        password=password, **kwargs)
+        self._passwords[user] = password
+        return user
+
+    def create_superuser(self, username='bouke@example.com',
+                         password='secret', **kwargs):
+        user = User.objects.create_superuser(username=username, email=username,
+                                             password=password, **kwargs)
         self._passwords[user] = password
         return user
 
@@ -54,7 +56,7 @@ class UserMixin2(object):
         if user == len(self._passwords):
             raise ValueError('Provide a user or create exactly 1 user')
         if not user:
-            user = self._passwords.keys()[0]
+            user = list(self._passwords.keys())[0]
         assert self.client.login(username=user.get_username(),
                                  password=self._passwords[user])
         if default_device(user):
@@ -66,20 +68,11 @@ class UserMixin2(object):
         if user == len(self._passwords):
             raise ValueError('Provide a user or create exactly 1 user')
         if not user:
-            user = self._passwords.keys()[0]
+            user = list(self._passwords.keys())[0]
         return user.totpdevice_set.create(name='default')
 
 
-class OTPUserMixin(UserMixin):
-    def setUp(self):
-        super(OTPUserMixin, self).setUp()
-        self.device = self.user.totpdevice_set.create(name='default')
-        session = self.client.session
-        session[DEVICE_ID_SESSION_KEY] = self.device.persistent_id
-        session.save()
-
-
-class LoginTest(UserMixin2, TestCase):
+class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
@@ -214,7 +207,7 @@ class LoginTest(UserMixin2, TestCase):
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
 
-class SetupTest(UserMixin2, TestCase):
+class SetupTest(UserMixin, TestCase):
     def setUp(self):
         super(SetupTest, self).setUp()
         self.user = self.create_user()
@@ -348,7 +341,7 @@ class SetupTest(UserMixin2, TestCase):
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
 
-class OTPRequiredMixinTest(UserMixin2, TestCase):
+class OTPRequiredMixinTest(UserMixin, TestCase):
     @override_settings(LOGIN_URL=None)
     def test_not_configured(self):
         with self.assertRaises(ImproperlyConfigured):
@@ -417,10 +410,10 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
-class AdminSiteTest(UserMixin2, TestCase):
+class AdminSiteTest(UserMixin, TestCase):
     def setUp(self):
         super(AdminSiteTest, self).setUp()
-        self.user = self.create_user(is_staff=True, is_superuser=True)
+        self.user = self.create_superuser()
         self.login_user()
 
     def test_default_admin(self):
@@ -440,7 +433,7 @@ class AdminSiteTest(UserMixin2, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class BackupTokensTest(UserMixin2, TestCase):
+class BackupTokensTest(UserMixin, TestCase):
     def setUp(self):
         super(BackupTokensTest, self).setUp()
         self.create_user()
@@ -472,7 +465,7 @@ class BackupTokensTest(UserMixin2, TestCase):
         self.assertNotEqual(first_set, second_set)
 
 
-class PhoneSetupTest(UserMixin2, TestCase):
+class PhoneSetupTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneSetupTest, self).setUp()
         self.user = self.create_user()
@@ -535,7 +528,7 @@ class PhoneSetupTest(UserMixin2, TestCase):
             {'number': [six.text_type(phone_number_validator.message)]})
 
 
-class PhoneDeleteTest(UserMixin2, TestCase):
+class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneDeleteTest, self).setUp()
         self.user = self.create_user()
@@ -555,7 +548,7 @@ class PhoneDeleteTest(UserMixin2, TestCase):
         self.assertContains(response, 'was not found', status_code=404)
 
 
-class QRTest(UserMixin2, TestCase):
+class QRTest(UserMixin, TestCase):
     test_secret = 'This is a test secret for an OTP Token'
     test_img = 'This is a test string that represents a QRCode'
 
@@ -598,7 +591,7 @@ class QRTest(UserMixin2, TestCase):
         self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
 
 
-class DisableTest(UserMixin2, TestCase):
+class DisableTest(UserMixin, TestCase):
     def setUp(self):
         super(DisableTest, self).setUp()
         self.user = self.create_user()
@@ -705,7 +698,7 @@ class FakeGatewayTest(TestCase):
             'Fake SMS to %s: "Your token is: %s"', '+123', '654321')
 
 
-class PhoneDeviceTest(TestCase):
+class PhoneDeviceTest(UserMixin, TestCase):
     def test_verify(self):
         device = PhoneDevice(key=random_hex().decode())
         self.assertFalse(device.verify_token(-1))
@@ -715,9 +708,8 @@ class PhoneDeviceTest(TestCase):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
 
-        user = User.objects.create_user('bouke')
-        device.user = user
-        self.assertEqual('unknown (bouke)', str(device))
+        device.user = self.create_user()
+        self.assertEqual('unknown (bouke@example.com)', str(device))
 
 
 class UtilsTest(TestCase):
