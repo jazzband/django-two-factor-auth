@@ -1,5 +1,4 @@
 from binascii import unhexlify
-from django.contrib.auth import get_user_model
 import qrcode.image.svg
 
 try:
@@ -14,9 +13,11 @@ except ImportError:
 from django import forms
 from django.conf import settings
 try:
-    User = get_user_model()
+    from django.contrib.auth import get_user_model
 except ImportError:
     from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -57,7 +58,11 @@ class UserMixin(object):
             raise ValueError('Provide a user or create exactly 1 user')
         if not user:
             user = list(self._passwords.keys())[0]
-        assert self.client.login(username=user.get_username(),
+        try:
+            username = user.get_username()
+        except AttributeError:
+            username = user.username
+        assert self.client.login(username=username,
                                  password=self._passwords[user])
         if default_device(user):
             session = self.client.session
@@ -712,9 +717,9 @@ class PhoneDeviceTest(UserMixin, TestCase):
         self.assertEqual('unknown (bouke@example.com)', str(device))
 
 
-class UtilsTest(TestCase):
+class UtilsTest(UserMixin, TestCase):
     def test_default_device(self):
-        user = User.objects.create_user('bouke')
+        user = self.create_user()
         self.assertEqual(default_device(user), None)
 
         user.phonedevice_set.create(name='backup')
@@ -726,8 +731,7 @@ class UtilsTest(TestCase):
     def test_backup_phones(self):
         self.assertQuerysetEqual(list(backup_phones(None)),
                                  list(PhoneDevice.objects.none()))
-
-        user = User.objects.create_user('bouke')
+        user = self.create_user()
         user.phonedevice_set.create(name='default')
         backup = user.phonedevice_set.create(name='backup')
         phones = backup_phones(user)
