@@ -1,9 +1,8 @@
 from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView, FormView
-
-from .forms import UserCreationForm
 
 from two_factor.views import OTPRequiredMixin
 from two_factor.views.utils import class_view_decorator
