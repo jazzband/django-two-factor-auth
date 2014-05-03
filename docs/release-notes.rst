@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+0.6.0 (in development)
+----------------------
+* Support for Django 1.7
+* Fixed #39 -- Added support for custom user model (Django 1.5+)
+
 0.5.0
 -----
 * Fixed #32 -- Make the auth method label capitalization more consistent (thanks to Christian Hammond)

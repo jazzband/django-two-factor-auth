@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-two-factor-auth',
-    version='0.5.0',
+    version='0.6.0-dev',
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst').read(),
     author='Bouke Haarsma',
