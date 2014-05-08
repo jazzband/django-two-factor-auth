@@ -1,31 +1,45 @@
 from binascii import unhexlify
-import qrcode.image.svg
+import os
+
+try:
+    # Try StringIO first, as Python 2.7 also includes an unicode-strict
+    # io.StringIO.
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+
 try:
     from unittest.mock import patch, Mock, ANY, call
 except ImportError:
     from mock import patch, Mock, ANY, call
 
-from django import forms
-from django.conf import settings
 try:
     from django.contrib.auth import get_user_model
 except ImportError:
     from django.contrib.auth.models import User
 else:
     User = get_user_model()
+
+import django
+from django import forms
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.core.management import call_command, CommandError
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import translation, six
+
 from django_otp import DEVICE_ID_SESSION_KEY, devices_for_user
 from django_otp.oath import totp
 from django_otp.util import random_hex
+
+import qrcode.image.svg
 
 from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
@@ -759,3 +773,71 @@ class ValidatorsTest(TestCase):
         self.assertIn('number', form.errors)
         self.assertEqual(form.errors['number'],
                          [six.text_type(phone_number_validator.message)])
+
+
+class DisableCommandTest(UserMixin, TestCase):
+    def _assert_raises(self, err_type, err_message):
+        if django.VERSION >= (1, 5):
+            return self.assertRaisesMessage(err_type, err_message)
+        else:
+            return self.assertRaises(SystemExit)
+
+    def test_raises(self):
+        with self._assert_raises(CommandError, 'User "some_username" does not exist'):
+            call_command('disable', 'some_username')
+
+        with self._assert_raises(CommandError, 'User "other_username" does not exist'):
+            call_command('disable', 'other_username', 'some_username')
+
+    def test_disable_single(self):
+        user = self.create_user()
+        self.enable_otp(user)
+        call_command('disable', 'bouke@example.com')
+        self.assertEqual(list(devices_for_user(user)), [])
+
+    def test_happy_flow_multiple(self):
+        usernames = ['user%d@example.com' % i for i in range(0, 3)]
+        users = [self.create_user(username) for username in usernames]
+        [self.enable_otp(user) for user in users]
+        call_command('disable', *usernames[:2])
+        self.assertEqual(list(devices_for_user(users[0])), [])
+        self.assertEqual(list(devices_for_user(users[1])), [])
+        self.assertNotEqual(list(devices_for_user(users[2])), [])
+
+
+class StatusCommandTest(UserMixin, TestCase):
+    def _assert_raises(self, err_type, err_message):
+        if django.VERSION >= (1, 5):
+            return self.assertRaisesMessage(err_type, err_message)
+        else:
+            return self.assertRaises(SystemExit)
+
+    def setUp(self):
+        super(StatusCommandTest, self).setUp()
+        os.environ['DJANGO_COLORS'] = 'nocolor'
+
+    def test_raises(self):
+        with self._assert_raises(CommandError, 'User "some_username" does not exist'):
+            call_command('status', 'some_username')
+
+        with self._assert_raises(CommandError, 'User "other_username" does not exist'):
+            call_command('status', 'other_username', 'some_username')
+
+    def test_status_single(self):
+        user = self.create_user()
+        stdout = StringIO()
+        call_command('status', 'bouke@example.com', stdout=stdout)
+        self.assertEqual(stdout.getvalue(), 'bouke@example.com: disabled\n')
+
+        stdout = StringIO()
+        self.enable_otp(user)
+        call_command('status', 'bouke@example.com', stdout=stdout)
+        self.assertEqual(stdout.getvalue(), 'bouke@example.com: enabled\n')
+
+    def test_status_mutiple(self):
+        users = [self.create_user(n) for n in ['user0@example.com', 'user1@example.com']]
+        self.enable_otp(users[0])
+        stdout = StringIO()
+        call_command('status', 'user0@example.com', 'user1@example.com', stdout=stdout)
+        self.assertEqual(stdout.getvalue(), 'user0@example.com: enabled\n'
+                                            'user1@example.com: disabled\n')
