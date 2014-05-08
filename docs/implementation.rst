@@ -1,5 +1,5 @@
-Usage
-=====
+Implementation
+==============
 Users can opt-in to enhanced security by enabling two-factor authentication.
 There is currently no enforcement of a policy, it is entirely optional.
 However, you could override this behaviour to enforce a custom policy.

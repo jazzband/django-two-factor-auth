@@ -16,16 +16,18 @@ Contents:
    requirements
    installation
    configuration
-   usage
-   reference
+   implementation
+   management-commands
+   class-reference
    release-notes
 
 I would love to hear your feedback on this application. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests.
 
-This application is currently translated into English, Dutch, Hebrew and
-Arabic. Please contribute your own language using Transifex_.
+This application is currently translated into English, Dutch, Hebrew, Arabic,
+German, Chinese and Spanish. Please contribute your own language using
+Transifex_.
 
 Indices and tables
 ==================

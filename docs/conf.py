@@ -270,4 +270,8 @@ texinfo_documents = [
 
 # allow autodoc to import some project files, which rely on Django
 from django.conf import settings
-settings.configure(DEBUG=False)
+settings.configure(
+  DEBUG=False, 
+  INSTALLED_APPS=('django.contrib.auth',),
+  AUTH_USER_MODEL='auth.User',
+)

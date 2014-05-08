@@ -71,7 +71,7 @@ base urlpatterns, like so::
         url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     )
 
-.. autoclass:: two_factor.gateways.twilio.Twilio
+.. autoclass:: two_factor.gateways.twilio.gateway.Twilio
 
 Fake Gateway
 ------------
