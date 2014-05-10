@@ -15,14 +15,20 @@ from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, DeleteView, TemplateView
 from django.views.generic.base import View
+
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
 
+try:
+    from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
+except ImportError:
+    pass
+
 from ..compat import is_safe_url, import_by_path
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
-                     PhoneNumberForm, BackupTokenForm)
+                     PhoneNumberForm, BackupTokenForm, YubiKeyDeviceForm)
 from ..models import PhoneDevice
 from ..utils import (get_otpauth_url, default_device,
                      backup_phones)
@@ -180,12 +186,17 @@ class SetupView(IdempotentSessionWizardView):
         ('sms', PhoneNumberForm),
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
+        ('yubikey', YubiKeyDeviceForm),
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
         'call': lambda self: self.get_method() == 'call',
         'sms': lambda self: self.get_method() == 'sms',
         'validation': lambda self: self.get_method() in ('sms', 'call'),
+        'yubikey': lambda self: self.get_method() == 'yubikey',
+    }
+    idempotent_dict = {
+        'yubikey': False,
     }
 
     def get_method(self):
@@ -219,9 +230,9 @@ class SetupView(IdempotentSessionWizardView):
                 if callable(getattr(form, 'save', None)):
                     form.save()
 
-        # PhoneNumberForm
-        if self.get_method() in ('call', 'sms'):
-            self.get_device(user=self.request.user, name='default').save()
+        # PhoneNumberForm / YubiKeyDeviceForm
+        if self.get_method() in ('call', 'sms', 'yubikey'):
+            self.get_device().save()
 
         return redirect(self.redirect_url)
 
@@ -232,7 +243,7 @@ class SetupView(IdempotentSessionWizardView):
                 'key': self.get_key(step),
                 'user': self.request.user,
             })
-        if step == 'validation':
+        if step in ('validation', 'yubikey'):
             kwargs.update({
                 'device': self.get_device()
             })
@@ -251,10 +262,25 @@ class SetupView(IdempotentSessionWizardView):
         """
         method = self.get_method()
         kwargs = kwargs or {}
-        kwargs['method'] = method
-        kwargs['number'] = self.storage.validated_step_data\
-            .get(method, {}).get('number')
-        return PhoneDevice(key=self.get_key(method), **kwargs)
+        kwargs['name'] = 'default'
+        kwargs['user'] = self.request.user
+
+        if method in ('call', 'sms'):
+            kwargs['method'] = method
+            kwargs['number'] = self.storage.validated_step_data\
+                .get(method, {}).get('number')
+            return PhoneDevice(key=self.get_key(method), **kwargs)
+
+        if method == 'yubikey':
+            kwargs['public_id'] = self.storage.validated_step_data\
+                .get('yubikey', {}).get('token', '')[:-32]
+            try:
+                kwargs['service'] = ValidationService.objects.get(name='default')
+            except ValidationService.DoesNotExist:
+                raise KeyError("No ValidationService found with name 'default'")
+            except ValidationService.MultipleObjectsReturned:
+                raise KeyError("Multiple ValidationService found with name 'default'")
+            return RemoteYubikeyDevice(**kwargs)
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})

@@ -10,6 +10,11 @@ from django_otp import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 
+try:
+    import yubiotp
+except ImportError:
+    yubiotp = None
+
 from .gateways import make_call, send_sms
 
 
@@ -35,9 +40,17 @@ def get_available_phone_methods():
     return methods
 
 
+def get_available_yubikey_methods():
+    methods = []
+    if yubiotp and 'otp_yubikey' in settings.INSTALLED_APPS:
+        methods.append(('yubikey', _('YubiKey')))
+    return methods
+
+
 def get_available_methods():
     methods = [('generator', _('Token generator'))]
     methods.extend(get_available_phone_methods())
+    methods.extend(get_available_yubikey_methods())
     return methods
 
 
