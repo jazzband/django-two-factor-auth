@@ -1,32 +1,49 @@
 language: python
-python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-env:
-  - DJANGO=Django==1.4.10
-  - DJANGO=Django==1.5.5
-  - DJANGO=Django==1.5.5 AUTH_USER_MODEL=tests.User
-  - DJANGO=Django==1.6.2
-  - DJANGO=Django==1.6.2 AUTH_USER_MODEL=tests.User
-  - DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/
-  - DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/ AUTH_USER_MODEL=tests.User
+
 matrix:
-  exclude:
+  include:
     - python: "2.6"
-      env: DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/
+      env: DJANGO=1.4
     - python: "2.6"
-      env: DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/ AUTH_USER_MODEL=tests.User
+      env: DJANGO=1.4 COVERAGE=YES YUBIKEY=YES
+
+    - python: "2.7"
+      env: DJANGO=1.5 YUBIKEY=YES
+    - python: "2.7"
+      env: DJANGO=1.5 AUTH_USER_MODEL=tests.User
     - python: "3.2"
-      env: DJANGO=Django==1.4.10
+      env: DJANGO=1.5
+    - python: "3.2"
+      env: DJANGO=1.5 AUTH_USER_MODEL=tests.User YUBIKEY=YES
+
+    - python: "2.7"
+      env: DJANGO=1.6
+    - python: "2.7"
+      env: DJANGO=1.6 AUTH_USER_MODEL=tests.User
     - python: "3.3"
-      env: DJANGO=Django==1.4.10
+      env: DJANGO=1.6
+    - python: "3.3"
+      env: DJANGO=1.6 AUTH_USER_MODEL=tests.User YUBIKEY=YES
+
+    - python: "2.7"
+      env: DJANGO=1.7b3
+    - python: "2.7"
+      env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User
     - python: "3.4"
-      env: DJANGO=Django==1.4.10
+      env: DJANGO=1.7b3
+    - python: "3.4"
+      env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User YUBIKEY=YES
+
 install:
-  - pip install $DJANGO
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
+  - if [[ $DJANGO != 1.7* ]]; then pip install "django>=$DJANGO,<=$DJANGO.99"; else pip install https://www.djangoproject.com/download/$DJANGO/tarball/; fi
+  - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi
+  - if [[ $YUBIKEY == "YES" ]]; then pip install django-otp-yubikey; fi
   - pip install -e .
-  - pip install coveralls twilio qrcode
-script: make coverage
-after_success: coveralls
+  - pip install twilio qrcode
+
+script:
+  - if [[ $COVERAGE == "YES" ]]; then make coverage; else make test; fi
+
+after_success:
+  - if [[ $COVERAGE == "YES" ]]; then coveralls; fi
