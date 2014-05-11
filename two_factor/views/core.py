@@ -1,7 +1,5 @@
 from binascii import unhexlify
 from base64 import b32encode
-import qrcode
-import qrcode.image.svg
 
 from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
@@ -18,13 +16,16 @@ from django.views.generic.base import View
 
 import django_otp
 from django_otp.decorators import otp_required
-from django_otp.plugins.otp_static.models import StaticToken
+from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
 from django_otp.util import random_hex
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
 except ImportError:
-    pass
+    ValidationService = RemoteYubikeyDevice = None
+
+import qrcode
+import qrcode.image.svg
 
 from ..compat import is_safe_url, import_by_path
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
@@ -153,8 +154,8 @@ class LoginView(IdempotentSessionWizardView):
                 if phone != self.get_device()]
             try:
                 context['backup_tokens'] = self.get_user().staticdevice_set\
-                    .all()[0].token_set.count()
-            except:
+                    .get(name='backup').token_set.count()
+            except StaticDevice.DoesNotExist:
                 context['backup_tokens'] = 0
 
         context['cancel_url'] = settings.LOGOUT_URL

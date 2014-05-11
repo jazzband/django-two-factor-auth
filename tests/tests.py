@@ -283,8 +283,13 @@ class SetupTest(UserMixin, TestCase):
         return self.client.post(reverse('two_factor:setup'), data=data)
 
     def test_no_phone(self):
-        response = self._post(data={'setup_view-current_step': 'welcome'})
-        self.assertNotContains(response, 'call')
+        with self.settings(TWO_FACTOR_CALL_GATEWAY=None):
+            response = self._post(data={'setup_view-current_step': 'welcome'})
+            self.assertNotContains(response, 'call')
+
+        with self.settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake'):
+            response = self._post(data={'setup_view-current_step': 'welcome'})
+            self.assertContains(response, 'call')
 
     @patch('two_factor.gateways.fake.Fake')
     @override_settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake')
