@@ -365,6 +365,17 @@ class SetupTest(UserMixin, TestCase):
         response = self.client.get(reverse('two_factor:setup'))
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
+    def test_no_double_login(self):
+        """
+        Activating two-factor authentication for ones account, should
+        automatically mark the session as being OTP verified. Refs #44.
+        """
+        self.test_setup_generator()
+        device = self.user.totpdevice_set.all()[0]
+
+        self.assertEqual(device.persistent_id,
+                         self.client.session.get(DEVICE_ID_SESSION_KEY))
+
 
 class OTPRequiredMixinTest(UserMixin, TestCase):
     @override_settings(LOGIN_URL=None)

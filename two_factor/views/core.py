@@ -16,6 +16,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, DeleteView, TemplateView
 from django.views.generic.base import View
 
+import django_otp
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.util import random_hex
@@ -226,14 +227,18 @@ class SetupView(IdempotentSessionWizardView):
         """
         # TOTPDeviceForm
         if self.get_method() == 'generator':
-            for form in form_list:
-                if callable(getattr(form, 'save', None)):
-                    form.save()
+            form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
+            device = form.save()
 
         # PhoneNumberForm / YubiKeyDeviceForm
-        if self.get_method() in ('call', 'sms', 'yubikey'):
-            self.get_device().save()
+        elif self.get_method() in ('call', 'sms', 'yubikey'):
+            device = self.get_device()
+            device.save()
 
+        else:
+            raise NotImplementedError("Unknown method '%s'" % self.get_method())
+
+        django_otp.login(self.request, device)
         return redirect(self.redirect_url)
 
     def get_form_kwargs(self, step=None):
