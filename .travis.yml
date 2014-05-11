@@ -34,16 +34,33 @@ matrix:
     - python: "3.4"
       env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
 
+    - python: "3.4"
+      env: FLAKE8=YES
+
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
-  - if [[ $DJANGO != 1.7* ]]; then pip install "django>=$DJANGO,<=$DJANGO.99"; else pip install https://www.djangoproject.com/download/$DJANGO/tarball/; fi
-  - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi
-  - if [[ $YUBIKEY == "YES" ]]; then pip install django-otp-yubikey; fi
-  - pip install -e .
-  - pip install twilio qrcode
+  - if [[ $DJANGO ]]; then
+        pip install -e .;
+        pip install twilio qrcode;
+        if [[ $DJANGO != 1.7* ]]; then
+            pip install "django>=$DJANGO,<=$DJANGO.99";
+        else
+            pip install https://www.djangoproject.com/download/$DJANGO/tarball/;
+        fi;
+    fi;
+  - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi;
+  - if [[ $YUBIKEY == "YES" ]]; then pip install django-otp-yubikey; fi;
+  - if [[ $FLAKE8 == "YES" ]]; then pip install flake8; fi;
 
 script:
-  - if [[ $COVERAGE == "YES" ]]; then make coverage; else make test; fi
+  - if [[ $DJANGO ]]; then
+        if [[ $COVERAGE != "YES" ]]; then
+            make test;
+        else
+            make coverage;
+        fi;
+    fi;
+  - if [[ $FLAKE8 == "YES" ]]; then make flake8; fi;
 
 after_success:
-  - if [[ $COVERAGE == "YES" ]]; then coveralls; fi
+  - if [[ $COVERAGE == "YES" ]]; then coveralls; fi;
