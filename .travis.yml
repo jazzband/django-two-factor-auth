@@ -3,9 +3,9 @@ language: python
 matrix:
   include:
     - python: "2.6"
-      env: DJANGO=1.4
+      env: DJANGO=1.4 COVERAGE=YES
     - python: "2.6"
-      env: DJANGO=1.4 COVERAGE=YES YUBIKEY=YES
+      env: DJANGO=1.4 YUBIKEY=YES
 
     - python: "2.7"
       env: DJANGO=1.5 YUBIKEY=YES
@@ -30,9 +30,9 @@ matrix:
     - python: "2.7"
       env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User
     - python: "3.4"
-      env: DJANGO=1.7b3
+      env: DJANGO=1.7b3 COVERAGE=YES
     - python: "3.4"
-      env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User YUBIKEY=YES
+      env: DJANGO=1.7b3 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
 
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
