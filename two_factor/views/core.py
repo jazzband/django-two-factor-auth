@@ -105,10 +105,11 @@ class LoginView(IdempotentSessionWizardView):
         if step in ('token', 'backup'):
             return {
                 'user': self.get_user(),
+                'initial_device': self.get_device(step),
             }
         return {}
 
-    def get_device(self):
+    def get_device(self, step=None):
         """
         Returns the OTP device selected by the user, or his default device.
         """
@@ -119,6 +120,11 @@ class LoginView(IdempotentSessionWizardView):
                     if device.persistent_id == challenge_device_id:
                         self.device_cache = device
                         break
+            if step == 'backup':
+                try:
+                    self.device_cache = self.get_user().staticdevice_set.get(name='backup')
+                except StaticDevice.DoesNotExist:
+                    pass
             if not self.device_cache:
                 self.device_cache = default_device(self.get_user())
         return self.device_cache

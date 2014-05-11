@@ -15,7 +15,6 @@ except ImportError:
 
 from .models import (PhoneDevice, get_available_phone_methods,
                      get_available_methods)
-from .utils import default_device
 
 
 class MethodForm(forms.Form):
@@ -132,7 +131,13 @@ class DisableForm(forms.Form):
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1, max_value=999999)
 
-    def __init__(self, user, **kwargs):
+    def __init__(self, user, initial_device, **kwargs):
+        """
+        `initial_device` is either the user's default device, or the backup
+        device when the user chooses to enter a backup token. The token will
+        be verified against all devices, it is not limited to the given
+        device.
+        """
         super(AuthenticationTokenForm, self).__init__(**kwargs)
         self.user = user
 
@@ -140,7 +145,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         # user's primary device is a YubiKey, replace the otp_token
         # IntegerField with a CharField.
         if RemoteYubikeyDevice and YubikeyDevice and \
-                isinstance(default_device(user), (RemoteYubikeyDevice, YubikeyDevice)):
+                isinstance(initial_device, (RemoteYubikeyDevice, YubikeyDevice)):
             self.fields['otp_token'] = forms.CharField(label=_('YubiKey'))
 
     def clean(self):
