@@ -366,7 +366,8 @@ class SetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].method, 'sms')
 
     def test_already_setup(self):
-        self.user.totpdevice_set.create(name='default')
+        self.enable_otp()
+        self.login_user()
         response = self.client.get(reverse('two_factor:setup'))
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
@@ -380,6 +381,22 @@ class SetupTest(UserMixin, TestCase):
 
         self.assertEqual(device.persistent_id,
                          self.client.session.get(DEVICE_ID_SESSION_KEY))
+
+    def test_suggest_backup_number(self):
+        """
+        Finishing the setup wizard should suggest to add a phone number, if
+        a phone method is available. Refs #49.
+        """
+        self.enable_otp()
+        self.login_user()
+
+        with self.settings(TWO_FACTOR_SMS_GATEWAY=None):
+            response = self.client.get(reverse('two_factor:setup_complete'))
+            self.assertNotContains(response, 'Add Phone Number')
+
+        with self.settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake'):
+            response = self.client.get(reverse('two_factor:setup_complete'))
+            self.assertContains(response, 'Add Phone Number')
 
 
 class OTPRequiredMixinTest(UserMixin, TestCase):

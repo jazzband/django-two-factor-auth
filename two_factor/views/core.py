@@ -31,7 +31,7 @@ from ..compat import is_safe_url, import_by_path
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
                      PhoneNumberForm, BackupTokenForm, YubiKeyDeviceForm)
-from ..models import PhoneDevice
+from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (get_otpauth_url, default_device,
                      backup_phones)
 from .utils import (IdempotentSessionWizardView, class_view_decorator)
@@ -443,12 +443,17 @@ class PhoneDeleteView(DeleteView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@class_view_decorator(otp_required)
 class SetupCompleteView(TemplateView):
     """
     View congratulation the user when OTP setup has completed.
     """
     template_name = 'two_factor/core/setup_complete.html'
+
+    def get_context_data(self):
+        return {
+            'phone_methods': get_available_phone_methods(),
+        }
 
 
 @class_view_decorator(never_cache)
