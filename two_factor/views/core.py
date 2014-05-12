@@ -18,6 +18,7 @@ import django_otp
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
 from django_otp.util import random_hex
+from two_factor import signals
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -96,6 +97,11 @@ class LoginView(IdempotentSessionWizardView):
         redirect_to = self.request.GET.get(self.redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = str(settings.LOGIN_REDIRECT_URL)
+
+        device = getattr(self.get_user(), 'otp_device', None)
+        if device:
+            signals.user_verified.send(sender=__name__, request=self.request,
+                                       user=self.get_user(), device=device)
         return redirect(redirect_to)
 
     def get_form_kwargs(self, step=None):

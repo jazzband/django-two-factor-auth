@@ -97,6 +97,8 @@ TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
 
 SESSION_ENGINE = 'user_sessions.backends.db'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 try:
     from .settings_private import *  # noqa
 except ImportError:
