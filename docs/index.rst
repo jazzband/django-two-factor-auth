@@ -16,7 +16,7 @@ Contents:
    requirements
    installation
    configuration
-   implementation
+   implementing
    management-commands
    class-reference
    release-notes

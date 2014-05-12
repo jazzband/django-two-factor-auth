@@ -1,5 +1,5 @@
-Implementation
-==============
+Implementing
+============
 Users can opt-in to enhanced security by enabling two-factor authentication.
 There is currently no enforcement of a policy, it is entirely optional.
 However, you could override this behaviour to enforce a custom policy.
@@ -64,3 +64,31 @@ to circumvent OTP verification. See also :data:`~two_factor.TWO_FACTOR_PATCH_ADM
 
 .. _Hooking AdminSite instances into your URLconf:
    https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
+
+
+Signals
+-------
+When a user was successfully verified using a OTP, the signal
+:data:`~two_factor.signals.user_verified` is sent. The signal includes the
+user, the device used and the request itself. You can use this signal for
+example to warn a user when one of his backup tokens was used::
+
+    from django.contrib.sites.models import get_current_site
+    from django.dispatch import receiver
+    from two_factor.signals import user_verified
+
+
+    @receiver(user_verified)
+    def test_receiver(request, user, device, **kwargs):
+        current_site = get_current_site(request)
+        if device.name == 'backup':
+            message = 'Hi %(username)s,\n\n'\
+                      'You\'ve verified yourself using a backup device '\
+                      'on %(site_name)s. If this wasn\'t you, your '\
+                      'account might have been compromised. You need to '\
+                      'change your password at once, check your backup '\
+                      'phone numbers and generate new backup tokens.'\
+                      % {'username': user.get_username(),
+                         'site_name': current_site.name}
+            user.email_user(subject='Backup token used', message=message)
+

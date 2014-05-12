@@ -113,12 +113,16 @@ class LoginTest(UserMixin, TestCase):
         self.assertContains(response, 'Please enter a correct')
         self.assertContains(response, 'and password.')
 
-    def test_valid_login(self):
+    @patch('two_factor.views.core.signals.user_verified.send')
+    def test_valid_login(self, mock_signal):
         self.create_user()
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
+        # No signal should be fired for non-verified user logins.
+        self.assertFalse(mock_signal.called)
 
     def test_valid_login_with_custom_redirect(self):
         redirect_url = reverse('two_factor:setup')
@@ -142,7 +146,8 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
-    def test_with_generator(self):
+    @patch('two_factor.views.core.signals.user_verified.send')
+    def test_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
                                             key=random_hex().decode())
@@ -164,12 +169,16 @@ class LoginTest(UserMixin, TestCase):
         self.assertEqual(device.persistent_id,
                          self.client.session.get(DEVICE_ID_SESSION_KEY))
 
+        # Check that the signal was fired.
+        mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
+
     @patch('two_factor.gateways.fake.Fake')
+    @patch('two_factor.views.core.signals.user_verified.send')
     @override_settings(
         TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
     )
-    def test_with_backup_phone(self, fake):
+    def test_with_backup_phone(self, mock_signal, fake):
         user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.phonedevice_set.create(name='backup', number='123456789',
@@ -206,7 +215,18 @@ class LoginTest(UserMixin, TestCase):
         fake.return_value.make_call.assert_called_with(
             device=device, token='%06d' % totp(device.bin_key))
 
-    def test_with_backup_token(self):
+        # Valid token should be accepted.
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(device.persistent_id,
+                         self.client.session.get(DEVICE_ID_SESSION_KEY))
+
+        # Check that the signal was fired.
+        mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
+
+    @patch('two_factor.views.core.signals.user_verified.send')
+    def test_with_backup_token(self, mock_signal):
         user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.staticdevice_set.create(name='backup')
@@ -227,10 +247,13 @@ class LoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'backup'})
         self.assertContains(response, 'Please enter your OTP token')
 
-        # Valid code should be accepted
+        # Valid token should be accepted.
         response = self._post({'backup-otp_token': 'abcdef123',
                                'login_view-current_step': 'backup'})
         self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
+        # Check that the signal was fired.
+        mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
 
 
 class SetupTest(UserMixin, TestCase):

@@ -25,6 +25,27 @@ Middleware
 ----------
 .. autoclass:: django_otp.middleware.OTPMiddleware
 
+Signals
+-------
+.. module:: two_factor.signals
+.. data:: user_verified
+
+   Sent when a user is verified against a OTP device. Provides the following
+   arguments:
+
+   ``sender``
+       The class sending the signal (``'two_factor.views.core'``).
+
+   ``user``
+       The user that was verified.
+
+   ``device``
+       The OTP device that was used.
+
+
+   ``request``
+       The ``HttpRequest`` in which the user was verified.
+
 Template Tags
 -------------
 .. automodule:: two_factor.templatetags.two_factor
