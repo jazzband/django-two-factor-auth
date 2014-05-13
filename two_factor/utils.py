@@ -2,6 +2,7 @@ from two_factor.models import PhoneDevice
 
 from django_otp import devices_for_user
 
+import urllib
 
 def default_device(user):
     if not user or user.is_anonymous():
@@ -17,8 +18,8 @@ def backup_phones(user):
     return user.phonedevice_set.filter(name='backup')
 
 
-def get_otpauth_url(alias, key):
-    return 'otpauth://totp/%s?secret=%s' % (alias, key)
+def get_otpauth_url(alias, key, issuer=None):
+    return 'otpauth://totp/%s?secret=%s&issuer=%s' % (urllib.quote(alias), key, urllib.quote(issuer))
 
 
 # from http://mail.python.org/pipermail/python-dev/2008-January/076194.html
