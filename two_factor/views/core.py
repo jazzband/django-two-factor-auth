@@ -488,11 +488,13 @@ class QRGeneratorView(View):
             username = self.request.user.get_username()
         except AttributeError:
             username = self.request.user.username
-        alias = '{site_name} ({username})'.format(
-            username=username, site_name=get_current_site(self.request).name)
+
+        site_name = get_current_site(self.request).name
+        alias = '{site_name}:{username}'.format(
+            username=username, site_name=site_name)
 
         # Make and return QR code
-        img = qrcode.make(get_otpauth_url(alias, key), image_factory=image_factory)
+        img = qrcode.make(get_otpauth_url(alias, key, site_name), image_factory=image_factory)
         resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp
