@@ -9,9 +9,10 @@ except ImportError:
     from io import StringIO
 
 try:
-    from urllib.parse import urlencode
+    from urllib.parse import urlencode, urlparse, parse_qs
 except ImportError:
     from urllib import urlencode
+    from urlparse import urlparse, parse_qs
 
 try:
     import unittest2 as unittest
@@ -791,6 +792,43 @@ class UtilsTest(UserMixin, TestCase):
 
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].pk, backup.pk)
+
+    def test_get_otpauth_url(self):
+        self.assertEqualUrl(
+            get_otpauth_url(accountname='bouke@example.com', secret='abcdef123'),
+            'otpauth://totp/bouke%40example.com?secret=abcdef123')
+
+        self.assertEqualUrl(
+            get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123'),
+            'otpauth://totp/Bouke%20Haarsma?secret=abcdef123')
+
+        self.assertEqualUrl(
+            get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
+                            secret='abcdef123'),
+            'otpauth://totp/example.com%3A%20bouke%40example.com?'
+            'secret=abcdef123&issuer=example.com')
+
+        self.assertEqualUrl(
+            get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
+                            secret='abcdef123'),
+            'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
+            'secret=abcdef123&issuer=My+Site')
+
+    def assertEqualUrl(self, lhs, rhs):
+        """
+        We're using urlencode(dict) and the order of items in a dictionary
+        is not guaranteed. Now we could use an OrderedDict, but that's not
+        available on Python 2.6. We actually don't care about the order of
+        the query parameters, so parsing them back into a dictionary and
+        comparing that is quite fine.
+        """
+        lhs = urlparse(lhs)
+        rhs = urlparse(rhs)
+        self.assertEqual(lhs.scheme, rhs.scheme)
+        self.assertEqual(lhs.netloc, rhs.netloc)
+        self.assertEqual(lhs.path, rhs.path)
+        self.assertEqual(lhs.fragment, rhs.fragment)
+        self.assertEqual(parse_qs(lhs.query), parse_qs(rhs.query))
 
 
 class ValidatorsTest(TestCase):
