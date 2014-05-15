@@ -19,7 +19,12 @@ def backup_phones(user):
 
 
 def get_otpauth_url(alias, key, issuer=None):
-    return 'otpauth://totp/%s?secret=%s&issuer=%s' % (urllib.quote(alias), key, urllib.quote(issuer))
+
+    alias = urllib.quote(alias or '')
+    key = urllib.quote(key or '')
+    issuer = urllib.quote(issuer or '')
+
+    return 'otpauth://totp/%s?secret=%s&issuer=%s' % (alias, key, issuer)
 
 
 # from http://mail.python.org/pipermail/python-dev/2008-January/076194.html

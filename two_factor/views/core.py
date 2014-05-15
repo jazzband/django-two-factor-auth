@@ -490,7 +490,7 @@ class QRGeneratorView(View):
             username = self.request.user.username
 
         site_name = get_current_site(self.request).name
-        alias = '{site_name} ({username})'.format(
+        alias = '{site_name}:{username}'.format(
             username=username, site_name=site_name)
 
         # Make and return QR code
