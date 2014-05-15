@@ -40,13 +40,13 @@ matrix:
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - if [[ $DJANGO ]]; then
-        pip install -e .;
-        pip install twilio qrcode;
         if [[ $DJANGO != 1.7* ]]; then
             pip install "django>=$DJANGO,<=$DJANGO.99";
         else
             pip install https://www.djangoproject.com/download/$DJANGO/tarball/;
         fi;
+        pip install twilio qrcode;
+        pip install -e .;
     fi;
   - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi;
   - if [[ $YUBIKEY == "YES" ]]; then pip install django-otp-yubikey; fi;
