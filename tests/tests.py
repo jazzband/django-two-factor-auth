@@ -641,7 +641,7 @@ class QRTest(UserMixin, TestCase):
 
         # Check things went as expected
         mockqrcode.assert_called_with(
-            get_otpauth_url('testserver (bouke@example.com)', self.test_secret),
+            get_otpauth_url('testserver:bouke@example.com', self.test_secret, "testserver"),
             image_factory=default_factory)
         mockimg.save.assert_called()
         self.assertEquals(response.status_code, 200)
