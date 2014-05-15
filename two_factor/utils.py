@@ -3,9 +3,10 @@ from two_factor.models import PhoneDevice
 from django_otp import devices_for_user
 
 try:
-  from urllib.parse import quote
+    from urllib.parse import quote
 except ImportError:
-  from urllib import quote
+    from urllib import quote
+
 
 def default_device(user):
     if not user or user.is_anonymous():
