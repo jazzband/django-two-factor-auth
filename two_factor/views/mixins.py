@@ -1,15 +1,15 @@
-from django.template.response import TemplateResponse
-from two_factor.utils import default_device
-
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
 
-from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.template.response import TemplateResponse
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.exceptions import PermissionDenied, ImproperlyConfigured
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
+
+from ..utils import default_device
 
 
 class OTPRequiredMixin(object):
@@ -27,7 +27,7 @@ class OTPRequiredMixin(object):
     login_url = None
     """
     If :attr:`raise_anonymous` is set to `False`, this defines where the user
-    will be redirected to. Defaults to ``settings.LOGIN_URL``.
+    will be redirected to. Defaults to ``two_factor:login``.
     """
 
     redirect_field_name = REDIRECT_FIELD_NAME
@@ -51,12 +51,7 @@ class OTPRequiredMixin(object):
         """
         Returns login url to redirect to.
         """
-        login_url = self.login_url or settings.LOGIN_URL
-        if not login_url:
-            raise ImproperlyConfigured(
-                "Define %(cls)s.login_url or settings.LOGIN_URL or override "
-                "%(cls)s.get_login_url()." % {"cls": self.__class__.__name__})
-        return str(login_url)
+        return self.login_url and str(self.login_url) or reverse('two_factor:login')
 
     def get_verification_url(self):
         """

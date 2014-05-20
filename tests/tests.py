@@ -27,7 +27,6 @@ except ImportError:
 import django
 from django import forms
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.core.management import call_command, CommandError
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -424,11 +423,6 @@ class SetupTest(UserMixin, TestCase):
 
 
 class OTPRequiredMixinTest(UserMixin, TestCase):
-    @override_settings(LOGIN_URL=None)
-    def test_not_configured(self):
-        with self.assertRaises(ImproperlyConfigured):
-            self.client.get('/secure/')
-
     def test_unauthenticated_redirect(self):
         url = '/secure/'
         response = self.client.get(url)
