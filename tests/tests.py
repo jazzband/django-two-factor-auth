@@ -703,10 +703,22 @@ class TwilioGatewayTest(TestCase):
         url = reverse('two_factor:twilio_call_app', args=['123456'])
         response = self.client.get(url)
         self.assertEqual(response.content,
-                         b'<?xml version="1.0" encoding="UTF-8" ?><Response>'
-                         b'<Say language="en">Hi, this is testserver calling. '
-                         b'Please enter the following code on your screen: 1. '
-                         b'2. 3. 4. 5. 6. Repeat: 1. 2. 3. 4. 5. 6.</Say>'
+                         b'<?xml version="1.0" encoding="UTF-8" ?>'
+                         b'<Response>'
+                         b'  <Gather timeout="15" numDigits="1" finishOnKey="">'
+                         b'    <Say language="en">Hi, this is testserver calling. '
+                         b'Press any key to continue.</Say>'
+                         b'  </Gather>'
+                         b'  <Say language="en">You didn\'t press any keys. Good bye.</Say>'
+                         b'</Response>')
+
+        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        response = self.client.post(url)
+        self.assertEqual(response.content,
+                         b'<?xml version="1.0" encoding="UTF-8" ?>'
+                         b'<Response>'
+                         b'  <Say language="en">Your token is 1. 2. 3. 4. 5. 6. '
+                         b'Repeat: 1. 2. 3. 4. 5. 6. Good bye.</Say>'
                          b'</Response>')
 
         # there is a en-gb voice
@@ -729,7 +741,7 @@ class TwilioGatewayTest(TestCase):
 
         twilio.make_call(device=Mock(number='+123'), token='654321')
         client.return_value.calls.create.assert_called_with(
-            from_='+456', to='+123', method='GET',
+            from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
             url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-us')
 
         twilio.send_sms(device=Mock(number='+123'), token='654321')
@@ -740,7 +752,7 @@ class TwilioGatewayTest(TestCase):
         with translation.override('en-gb'):
             twilio.make_call(device=Mock(number='+123'), token='654321')
             client.return_value.calls.create.assert_called_with(
-                from_='+456', to='+123', method='GET',
+                from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
                 url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-gb')
 
     @override_settings(
