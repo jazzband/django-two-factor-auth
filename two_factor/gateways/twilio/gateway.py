@@ -13,7 +13,7 @@ from twilio.rest import TwilioRestClient
 from two_factor.middleware.threadlocals import get_current_request
 
 # Supported voice languages, see http://bit.ly/187I5cr
-VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de',  'da-DK', 'de-DE',
+VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
                    'en-AU', 'en-CA', 'en-GB', 'en-IN', 'en-US', 'ca-ES',
                    'es-ES', 'es-MX', 'fi-FI', 'fr-CA', 'fr-FR', 'it-IT',
                    'ja-JP', 'ko-KR', 'nb-NO', 'nl-NL', 'pl-PL', 'pt-BR',
