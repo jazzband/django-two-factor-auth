@@ -23,7 +23,7 @@ coverage:
 	coverage report
 
 tx-pull:
-	tx pull -a --minimum-perc=90
+	tx pull -a
 	cd two_factor; django-admin.py compilemessages
 	cd example; django-admin.py compilemessages
 

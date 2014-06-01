@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-01 09:33+0100\n"
-"PO-Revision-Date: 2014-03-08 05:06+0000\n"
+"POT-Creation-Date: 2014-05-20 22:44+0200\n"
+"PO-Revision-Date: 2014-05-25 02:31+0000\n"
 "Last-Translator: mozillazg <opensource.mozillazg@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/django-two-factor-auth/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -19,80 +19,95 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: forms.py:15 forms.py:25
+#: forms.py:21 forms.py:31
 msgid "Method"
 msgstr "方法"
 
-#: forms.py:43 forms.py:57 forms.py:110 forms.py:122
+#: forms.py:49 forms.py:79 forms.py:132 forms.py:157
 msgid "Token"
 msgstr "验证码"
 
-#: forms.py:52
-msgid "Entered token is not valid"
-msgstr "输入的验证码无效"
+#: forms.py:52 forms.py:82
+msgid "Entered token is not valid."
+msgstr "输入的验证码无效。"
 
-#: forms.py:60
-msgid "Please enter a valid token."
-msgstr "请输入一个有效的验证码。"
+#: forms.py:67 forms.py:149 models.py:46
+msgid "YubiKey"
+msgstr "YubiKey"
 
-#: forms.py:106
+#: forms.py:70
+msgid "The YubiKey could not be verified."
+msgstr "YubiKey 无法被验证。"
+
+#: forms.py:128
 msgid "Yes, I am sure"
 msgstr "是的，我确定"
 
-#: models.py:18
+#: models.py:24
 msgid ""
 "Please enter a valid phone number, including your country code starting with"
 " + or 00."
 msgstr "请输入一个有效的电话号码，包含以 + 或 00 开头的国家区号。"
 
-#: models.py:23
+#: models.py:29
 msgid "Phone Call"
 msgstr "电话呼叫"
 
-#: models.py:24
+#: models.py:30
 msgid "Text Message"
 msgstr "短信"
 
-#: models.py:31
+#: models.py:37
 msgid "Phone call"
 msgstr "电话呼叫"
 
-#: models.py:33
+#: models.py:39
 msgid "Text message"
 msgstr "短信"
 
-#: models.py:38
+#: models.py:51
 msgid "Token generator"
 msgstr "验证码生成器"
 
-#: models.py:52
+#: models.py:66
 msgid "number"
 msgstr "号码"
 
-#: models.py:58
+#: models.py:72
 msgid "method"
 msgstr "方法"
 
-#: gateways/twilio/gateway.py:56
+#: gateways/twilio/gateway.py:54
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "您的授权验证码是 %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:65 gateways/twilio/views.py:45
+#: gateways/twilio/gateway.py:63 gateways/twilio/views.py:73
 msgctxt "twilio_locale"
 msgid "en"
-msgstr "en"
+msgstr "zh-CN"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:25
+#: gateways/twilio/views.py:38
 #, python-format
-msgid ""
-"Hi, this is %(site_name)s calling. Please enter the following code on your "
-"screen: %(token)s. Repeat: %(token)s."
-msgstr "Hi, this is %(site_name)s calling. Please enter the following code on your screen: %(token)s. Repeat: %(token)s."
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "您好，这是来自 %(site_name)s 的电话. 按任意键继续。"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:43
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr "您的验证码是 %(token)s. 重复: %(token)s. 再见。"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:47
+msgid "You didn't press any keys. Good bye."
+msgstr "您没有按下任何按键。再见。"
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
@@ -108,7 +123,7 @@ msgid "Next"
 msgstr "下一步"
 
 #: templates/two_factor/core/backup_tokens.html:5
-#: templates/two_factor/profile/profile.html:33
+#: templates/two_factor/profile/profile.html:35
 msgid "Backup Tokens"
 msgstr "备用验证码"
 
@@ -209,7 +224,7 @@ msgstr "返回"
 #: templates/two_factor/core/otp_required.html:18
 #: templates/two_factor/core/setup.html:5
 #: templates/two_factor/core/setup_complete.html:5
-#: templates/two_factor/profile/profile.html:56
+#: templates/two_factor/profile/profile.html:58
 msgid "Enable Two-Factor Authentication"
 msgstr "启用两步验证"
 
@@ -264,15 +279,35 @@ msgid ""
 "      This number will be validated in the next step. "
 msgstr "请输入您想被呼叫的电话号码。这个号码将在下一步被验证。"
 
+#: templates/two_factor/core/setup.html:35
+msgid ""
+"To identify and verify your YubiKey, please insert a\n"
+"      token in the field below. Your YubiKey will be linked to your\n"
+"      account."
+msgstr "为了识别和验证您的 YubiKey，请在下面的字段中插入一个验证码.。您的 YubiKey 将被链接到您的账户。"
+
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
-"Congratulations, you've successfully enabled\n"
-"    two-factor authentication."
+"Congratulations, you've successfully enabled two-factor\n"
+"      authentication."
 msgstr "恭喜，您已成功启用两步验证。"
 
-#: templates/two_factor/core/setup_complete.html:11
+#: templates/two_factor/core/setup_complete.html:12
+#: templates/two_factor/core/setup_complete.html:19
 msgid "Back to Profile"
 msgstr "返回个人资料页面"
+
+#: templates/two_factor/core/setup_complete.html:14
+msgid ""
+"However, it might happen that you don't have access to\n"
+"      your primary token device. To enable account recovery, add a phone \n"
+"      number."
+msgstr "然而，这可能是因为您没有访问主验证设备的缘故。为了启用账户恢复功能，添加一个电话号码。"
+
+#: templates/two_factor/core/setup_complete.html:21
+#: templates/two_factor/profile/profile.html:33
+msgid "Add Phone Number"
+msgstr "添加电话号码"
 
 #: templates/two_factor/profile/disable.html:5
 msgid "Disable Two-factor Authentication"
@@ -293,39 +328,39 @@ msgid "Account Security"
 msgstr "账户安全"
 
 #: templates/two_factor/profile/profile.html:9
+msgid "Tokens will be generated by your token generator."
+msgstr "验证码将由您的验证码生成器来生成。"
+
+#: templates/two_factor/profile/profile.html:11
 #, python-format
 msgid "Primary method: %(primary)s"
 msgstr "主方法：%(primary)s"
 
-#: templates/two_factor/profile/profile.html:11
-msgid "Tokens will be generated by your token generator."
-msgstr "验证码将由您的验证码生成器来生成。"
+#: templates/two_factor/profile/profile.html:13
+msgid "Tokens will be generated by your YubiKey."
+msgstr "验证码将由您的 YubiKey 来生成。"
 
-#: templates/two_factor/profile/profile.html:14
+#: templates/two_factor/profile/profile.html:16
 msgid "Backup Phone Numbers"
 msgstr "备用电话号码"
 
-#: templates/two_factor/profile/profile.html:15
+#: templates/two_factor/profile/profile.html:17
 msgid ""
 "If your primary method is not available, we are able to\n"
 "      send backup tokens to the phone numbers listed below."
 msgstr "如果您的主方法不可用，我们可以给下面列出的手机号码发送备用验证码。"
 
-#: templates/two_factor/profile/profile.html:25
+#: templates/two_factor/profile/profile.html:27
 msgid "Unregister"
 msgstr "未注册"
 
-#: templates/two_factor/profile/profile.html:31
-msgid "Add Phone Number"
-msgstr "添加电话号码"
-
-#: templates/two_factor/profile/profile.html:35
+#: templates/two_factor/profile/profile.html:37
 msgid ""
 "If you don't have any device with you, you can access\n"
 "        your account using backup tokens."
 msgstr "如果您身边没有设备，您可以使用备用验证码来访问您的账户。"
 
-#: templates/two_factor/profile/profile.html:37
+#: templates/two_factor/profile/profile.html:39
 #, python-format
 msgid ""
 "\n"
@@ -337,22 +372,22 @@ msgid_plural ""
 "      "
 msgstr[0] "\n        您还剩下 %(counter)s 个备用验证码。\n      "
 
-#: templates/two_factor/profile/profile.html:44
+#: templates/two_factor/profile/profile.html:46
 msgid "Show Codes"
 msgstr "显示验证码"
 
-#: templates/two_factor/profile/profile.html:46
-#: templates/two_factor/profile/profile.html:50
+#: templates/two_factor/profile/profile.html:48
+#: templates/two_factor/profile/profile.html:52
 msgid "Disable Two-Factor Authentication"
 msgstr "禁用两步验证"
 
-#: templates/two_factor/profile/profile.html:47
+#: templates/two_factor/profile/profile.html:49
 msgid ""
 "However we strongly discourage you to do so, you can\n"
 "      also disable two-factor authentication for your account."
 msgstr "您当然可以对您的账户禁用两步验证，但是我们强力建议您别这么做。"
 
-#: templates/two_factor/profile/profile.html:52
+#: templates/two_factor/profile/profile.html:54
 msgid ""
 "Two-factor authentication is not enabled for your\n"
 "      account. Enable two-factor authentication for enhanced account\n"
@@ -368,3 +403,6 @@ msgstr "给 %s 发短信"
 #, python-format
 msgid "Call number %s"
 msgstr "呼叫号码 %s"
+
+#~ msgid "Please enter a valid token."
+#~ msgstr "Please enter a valid token."

@@ -1,0 +1,167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Translators:
+# dessibelle <simon@dessibelle.se>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-20 22:44+0200\n"
+"PO-Revision-Date: 2014-05-19 08:20+0000\n"
+"Last-Translator: dessibelle <simon@dessibelle.se>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/django-two-factor-auth/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gateways.py:10
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Simulerat telefonsamtal till %(number)s: \"Din engångskod är: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "Simulerat SMS till %(number)s: \"Din engångskod är: %(token)s\""
+
+#: templates/_base.html:20
+msgid "Toggle navigation"
+msgstr "Visa/dölj navigationsmeny"
+
+#: templates/_base.html:25 templates/two_factor/_base_focus.html:8
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/_base.html:32
+msgid "Home"
+msgstr "Hem"
+
+#: templates/_base.html:34 templates/secret.html:7
+msgid "Secret Page"
+msgstr "Hemlig sida"
+
+#: templates/_base.html:42
+msgid "Account Security"
+msgstr "Kontosäkerhet"
+
+#: templates/_base.html:44
+msgid "Sessions"
+msgstr "Sessioner"
+
+#: templates/_base.html:45
+msgid "Logout"
+msgstr "Logga ut"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Inte inloggad"
+
+#: templates/_base.html:48 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Logga in"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – Demoapplikation"
+
+#: templates/home.html:8
+msgid ""
+"Improve Your Security <small>your users will thank\n"
+"    you</small>"
+msgstr "Förbättra din säkerhet <small>dina användare kommer att tacka\ndig</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of\n"
+"      <code>django-two-factor-auth</code>. Use this example to get an\n"
+"    understanding of what the app can do for you."
+msgstr "Välkommen till exempelappen för\n<code>django-two-factor-auth</code>. Använd detta exempel för att få en\nförståelse för vad appen kan hjälpa dig med."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Vänligen verifiera dina inställningar"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the\n"
+"      <code>settings_private.py</code> file? By doing so, the example app will\n"
+"      be able to call and text you to verify your authentication tokens.\n"
+"      Otherwise, the tokens will be shown on the screen."
+msgstr "Har du angett dina Twilio-inställningar i\n<code>settings_private.py</code>? Genom att göra det kommer exempelappen\nKunna ringa upp samt skicka SMS till dig för att verifiera auktoriseringskoder.\nI annat fall kommer engångskoderna visas i skärmen."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Nästa steg:"
+
+#: templates/home.html:28
+#, python-format
+msgid ""
+"Start by <a href=\"%(reg_url)s\">registering</a> an\n"
+"      account."
+msgstr "Börja med att <a href=\"%(reg_url)s\">registrera</a> ett\n konto."
+
+#: templates/home.html:30
+#, python-format
+msgid ""
+"<a href=\"%(login_url)s\">Login</a> to your account.\n"
+"      "
+msgstr "<a href=\"%(login_url)s\">Logga in</a> till ditt konto.\n      "
+
+#: templates/home.html:32
+#, python-format
+msgid ""
+"<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
+"      authentication."
+msgstr "<a href=\"%(setup_url)s\">Aktivera</a> tvåfaktorsautentisering."
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and\n"
+"      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
+"      two-factor authentication at work."
+msgstr "<a href=\"%(logout_url)s\">Logga sedan ut</a> och\n<a href=\"%(login_url)s\">in igen</a> med ditt konto för att\nanvända tvåfaktorsautentisering i praktiken."
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the\n"
+"      <a href=\"%(secret_url)s\">secret page</a>! :-)"
+msgstr "Äntligen, du har fått åtkomst till den\n<a href=\"%(secret_url)s\">hemliga sidan</a>! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Registrering"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Registrera"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Registrering genomförd"
+
+#: templates/registration_complete.html:6
+msgid ""
+"Congratulations, you've successfully registered an\n"
+"    account."
+msgstr "Grattis, du har nu registrerat att\nkonto"
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully\n"
+"    enabled two-factor authentication and logged in with your token."
+msgstr "Grattis, du klarade det. Du har nu\naktiverat tvåfaktorsautentisering och logga in med din engångskod."
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Utloggad"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Vi ses!"

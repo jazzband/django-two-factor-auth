@@ -4,32 +4,32 @@
 # 
 # Translators:
 # Translators:
-# Bashar Al-Abdulhadi, 2013-2014
+# dessibelle <simon@dessibelle.se>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2014-05-21 00:12+0000\n"
-"Last-Translator: Bashar Al-Abdulhadi\n"
-"Language-Team: Arabic (http://www.transifex.com/projects/p/django-two-factor-auth/language/ar/)\n"
+"PO-Revision-Date: 2014-05-21 07:28+0000\n"
+"Last-Translator: dessibelle <simon@dessibelle.se>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/django-two-factor-auth/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ar\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: forms.py:21 forms.py:31
 msgid "Method"
-msgstr "الطريقة"
+msgstr "Metod"
 
 #: forms.py:49 forms.py:79 forms.py:132 forms.py:157
 msgid "Token"
-msgstr "رمز التفويض"
+msgstr "Engångskod"
 
 #: forms.py:52 forms.py:82
 msgid "Entered token is not valid."
-msgstr "رمز التفويض الذي تم إدخاله غير صحيح."
+msgstr "Engångskoden du angav är ogiltig."
 
 #: forms.py:67 forms.py:149 models.py:46
 msgid "YubiKey"
@@ -37,95 +37,95 @@ msgstr "YubiKey"
 
 #: forms.py:70
 msgid "The YubiKey could not be verified."
-msgstr "لم يتمكن التحقق من مفتاح YubiKey."
+msgstr "Den YubiKey du angav kunde inte verifieras."
 
 #: forms.py:128
 msgid "Yes, I am sure"
-msgstr "نعم, أنا متأكد"
+msgstr "Ja, jag är säker"
 
 #: models.py:24
 msgid ""
 "Please enter a valid phone number, including your country code starting with"
 " + or 00."
-msgstr "يرجى إدخال رقم هاتف صحيح، بما في ذلك رمز البلد الخاص بدءا بـ + أو 00."
+msgstr "Vänligen ange ett gilitigt telefonnummer, inklusive din landskod, som börjar med + or 00."
 
 #: models.py:29
 msgid "Phone Call"
-msgstr "مكالمة هاتفية"
+msgstr "Telefonsamtal"
 
 #: models.py:30
 msgid "Text Message"
-msgstr "رسالة نصية"
+msgstr "SMS"
 
 #: models.py:37
 msgid "Phone call"
-msgstr "مكالمة هاتفية"
+msgstr "Telefonsamtal"
 
 #: models.py:39
 msgid "Text message"
-msgstr "رسالة نصية"
+msgstr "SMS"
 
 #: models.py:51
 msgid "Token generator"
-msgstr "منشئ رمز التفويض"
+msgstr "Kodgenerator"
 
 #: models.py:66
 msgid "number"
-msgstr "الرقم"
+msgstr "nummer"
 
 #: models.py:72
 msgid "method"
-msgstr "الطريقة"
+msgstr "metod"
 
 #: gateways/twilio/gateway.py:54
 #, python-format
 msgid "Your authentication token is %s"
-msgstr "رمز التفويض الخاص بك هو %s"
+msgstr "Din engångskod för inloggning är %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
 #: gateways/twilio/gateway.py:63 gateways/twilio/views.py:73
 msgctxt "twilio_locale"
 msgid "en"
-msgstr "الإنجليزية"
+msgstr "sv-SE"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:38
 #, python-format
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr ""
+msgstr "Hej, det är %(site_name)s som ringer. Tryck på vilken knapp som helst för att fortsätta."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:43
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr ""
+msgstr "Den engångskod är %(token)s. Jag upprepar: %(token)s. Hej då."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:47
 msgid "You didn't press any keys. Good bye."
-msgstr ""
+msgstr "Du tryckte inte på någon knapp. Hej då."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "Avbryt"
 
 #: templates/two_factor/_wizard_actions.html:8
 #: templates/two_factor/_wizard_actions.html:11
 msgid "Back"
-msgstr "الرجوع"
+msgstr "Tillbaka"
 
 #: templates/two_factor/_wizard_actions.html:13
 msgid "Next"
-msgstr "التالي"
+msgstr "Nästa"
 
 #: templates/two_factor/core/backup_tokens.html:5
 #: templates/two_factor/profile/profile.html:35
 msgid "Backup Tokens"
-msgstr "رموز تفويض إحتياطية"
+msgstr "Förinställda engångskoder"
 
 #: templates/two_factor/core/backup_tokens.html:6
 msgid ""
@@ -134,129 +134,129 @@ msgid ""
 "      for login verification. If you've used up all your backup tokens, you\n"
 "      can generate a new set of backup tokens. Only the backup tokens shown\n"
 "      below will be valid."
-msgstr "رموز التفويض الإحتياطية يمكن إستخدامها عندما يكون هاتفك الإحتياطي\n      و هاتفك الرئيسي غير متوفرين معك. يمكن إستخدام رموز التفويض الإحتياطية أدناه\n      للتحقق من تسجيل الدخول. إذا استنفذت جميع رموز التفويض الإحتياطية, يمكنك\n      إنشاء مجموعة رموز إحتياطية جديدة. فقط الرموز التفويض الإحتياطية الظاهرة\n      أدناه سوف تكون صالحة."
+msgstr "Förinställda engångskoder kan användas när inget av dina\ntelefonnummer är tillgängliga. Dina förinställda engångskoder kan användas\nför inloggning. Om du har förbrukar samtliga förinställda engångskoder kan\ndu skapa en ny uppsättning. Endast de engångskoder som visas nedan kommer\natt vara giliga."
 
 #: templates/two_factor/core/backup_tokens.html:18
 msgid "Print these tokens and keep them somewhere safe."
-msgstr "الرجاء طباعة رموز التفويض هذه و حفظها في مكان آمن."
+msgstr "Skriv ut dessa engångskoder och förvara dem på ett säkert ställe."
 
 #: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
-msgstr "لا يتوفر لديك أي رموز تفويض إحتياطية إلى الآن."
+msgstr "Du har inte några förinställda engångskoder ännu."
 
 #: templates/two_factor/core/backup_tokens.html:25
 msgid "Back to Account Security"
-msgstr "الرجوع لصفحة أمان الحساب"
+msgstr "Tillbaka till kontosäkerhet"
 
 #: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
-msgstr "إنشاء رموز تفويض"
+msgstr "Skapa engångskoder"
 
 #: templates/two_factor/core/login.html:5
 msgid "Login"
-msgstr "تسجيل الدخول"
+msgstr "Logga in"
 
 #: templates/two_factor/core/login.html:8
 msgid "Enter your credentials."
-msgstr "أدخل البيانات الخاصة بك"
+msgstr "Ange dina inloggningsuppgifter."
 
 #: templates/two_factor/core/login.html:11
 #: templates/two_factor/core/setup.html:28
 msgid ""
 "We are calling your phone right now, please enter the\n"
 "        digits you hear."
-msgstr "جاري الإتصال بكم الآن, الرجاء إدخال\nالأرقام التي تسمعها عبر الإتصال."
+msgstr "Vi ringer upp dig just nu, vänligen mata in de siffror\n        du hör i luren."
 
 #: templates/two_factor/core/login.html:14
 #: templates/two_factor/core/setup.html:31
 msgid ""
 "We sent you a text message, please enter the tokens we\n"
 "        sent."
-msgstr "تم إرسال الرسالة النصية لكم, الرجاء إدخال رمز التفويض المرسل\nلكم."
+msgstr "Vi har skickat ett textmeddelande, vänligen ange koden\n        i meddelandet."
 
 #: templates/two_factor/core/login.html:17
 msgid ""
 "Please enter the tokens generated by your token\n"
 "        generator."
-msgstr "الرجاء إدخال رمز التفويض الذي تم إنشاؤه من خلال تطبيق إنشاء رموز\n التفويض."
+msgstr "Vänligen ange den förinställda engångskod du\n        skapat tidigare."
 
 #: templates/two_factor/core/login.html:21
 msgid ""
 "Use this form for entering backup tokens for logging in.\n"
 "      These tokens have been generated for you to print and keep safe. Please\n"
 "      enter one of these backup tokens to login to your account."
-msgstr "استخدم هذه نموذج لإدخال رمز التفويض الاحتياطي لتسجيل الدخول.\n      رموز التفويض هذه تم إنشاؤها ليتم طباعتها و الاحتفاظ بها بمكان آمن. الرجاء إدخال أحد رموز التفويض الإحتياطية للدخول لحسابك."
+msgstr "Använd detta formulär för att logga in med en förinställd engångskod.\n      Dessa engångskoder har skapats åt dig, skriv ut dem och förvara dem på ett säkert ställe.Vänligen\n      ange en av dina förinställda engångskoder för att logga in."
 
 #: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
-msgstr "أو، بدلا من ذلك، استخدم أحد هواتفك الإحتياطية:"
+msgstr "Eller använd ett av dina alternativ telefonnummer:"
 
 #: templates/two_factor/core/login.html:43
 msgid "As a last resort, you can use a backup token:"
-msgstr "كملاذ أخير، يمكنك استخدام رمز تفويض احتياطي:"
+msgstr "Som en sista utväg kan använda en förinställd engångskod:"
 
 #: templates/two_factor/core/login.html:46
 msgid "Use Backup Token"
-msgstr "استخدم رمز تفويض إحتياطي"
+msgstr "Använd en förinställd engångskod"
 
 #: templates/two_factor/core/otp_required.html:5
 msgid "Permission Denied"
-msgstr "الإذن مرفوض"
+msgstr "Åtkomst nekad"
 
 #: templates/two_factor/core/otp_required.html:7
 msgid ""
 "The page you requested, enforces users to verify using\n"
 "    two-factor authentication for security reasons. You need to enable these\n"
 "    security features in order to access this page."
-msgstr "الصفحة التي تود زيارتها ترغم المستخدمين على إستخدام\n    التحقق عن طريق خطوتين لأسباب أمنية. يجب تفعيل ميزات\n    الأمان لكي تتمكن من الولوج لهذه الصفحة."
+msgstr "Sidan du försöker nå kräver av säkerhetsskäl att du använder\n    tvåfaktorsautentisering. Du måste aktivera detta i\n    säkerhetsinställningarna för att se sidan."
 
 #: templates/two_factor/core/otp_required.html:11
 msgid ""
 "Two-factor authentication is not enabled for your\n"
 "    account. Enable two-factor authentication for enhanced account\n"
 "    security."
-msgstr "خاصية التحقق عن طريق خطوتين لم يتم تفعيلها \n    لحسابك. يرجى تفعيل التحقق عن طريق خطوتين لتعزيز أمان\n    الحساب."
+msgstr "Tvåfaktorsautentisering är inte aktiverat för ditt\n    konto. Aktivera tvåfaktorsautentisering för ökad\n    kontosäkerhet."
 
 #: templates/two_factor/core/otp_required.html:16
 msgid "Go back"
-msgstr "الرجوع"
+msgstr "Gå tillbaka"
 
 #: templates/two_factor/core/otp_required.html:18
 #: templates/two_factor/core/setup.html:5
 #: templates/two_factor/core/setup_complete.html:5
 #: templates/two_factor/profile/profile.html:58
 msgid "Enable Two-Factor Authentication"
-msgstr "تفعيل خاصية التحقق من خطوتين"
+msgstr "Aktivera tvåfaktorsautentisering"
 
 #: templates/two_factor/core/phone_register.html:5
 msgid "Add Backup Phone"
-msgstr "أضف رقم هاتف إحتياطي"
+msgstr "Lägg till alternativt telefonnummer"
 
 #: templates/two_factor/core/phone_register.html:8
 msgid ""
 "You'll be adding a backup phone number to your\n"
 "        account. This number will be used if your primary method of\n"
 "        registration is not available."
-msgstr "سوف تضيف رقم هاتف احتياطي لهذا\n         الحساب. سيتم استخدام هذا الرقم إذا الطريقة الأساسية الخاصة\n         بتسجيل الدخول غير متوفر."
+msgstr "Du kommer att lägga till ett alternativt telefonnummer till ditt\n        konto. Detta nummer kommer att användas då din huvudsakliga\n        registreringsmetod inte är tillgänglig."
 
 #: templates/two_factor/core/phone_register.html:12
 msgid ""
 "We've sent a token to your phone number. Please\n"
 "        enter the token you've received."
-msgstr "تم إرسال رمز تفويض لرقم هاتفكم. الرجاء\nإدخال رمز التفويض الذي وصل لكم."
+msgstr "Vi har skickat en ett SMS till ditt telefonnummer. Vänligen\n        ange den engångskod du får i meddelandet."
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
 "You are about to take your account security to the\n"
 "        next level. Follow the steps in this wizard to enable two-factor\n"
 "        authentication."
-msgstr "أنت بصدد ترقية أمان حسابك\nللمستوى التالي. الرجاء إتباع الخطوات التالية لتفعيل خاصية التحقق من\nخطوتين."
+msgstr "Du är på väg att höja säkerhetsnivån för ditt konto.\n        Följ stegen i den här guiden för att aktivera tvåfaktorsautentisering\n        för ditt konto."
 
 #: templates/two_factor/core/setup.html:11
 msgid ""
 "Please select which authentication method you would\n"
 "        like to use."
-msgstr "الرجاء الإختيار أي خاصية تحقق من خطوتين ترغب\nفي إستخدامها."
+msgstr "Vänligen välj den autentiseringsmetod som du\n        vill använda."
 
 #: templates/two_factor/core/setup.html:14
 msgid ""
@@ -264,101 +264,101 @@ msgid ""
 "        smartphone to scan the QR code below. For example, use Google\n"
 "        Authenticator. Then, enter the token generated by the app.\n"
 "        "
-msgstr "للبدأ بإستخدام منشئ رمز تفويض, الرجاء إستخدام\nهاتفك الذكي لمسح رمز QR بالأسفل. على سبيل المثال, يمكنك إستخدام برنامج Google\nAuthenticator. بعدها يمكن إدخال رمز التفويض الذي تم إنشاؤه من خلال التطبيق."
+msgstr "För att börja använda kodgeneratorn, vänligen använd din\n        smartphone för att skanna QR-koden nedan. Du kan t.ex. använda\n        Google Authenticator. Mata därefter in den kod som du får tillbaka.\n        "
 
 #: templates/two_factor/core/setup.html:20
 msgid ""
 "Please enter the phone number you wish to receive the\n"
 "      text messages on. This number will be validated in the next step.\n"
 "      "
-msgstr "الرجاء إدخال رقم الهاتف الذي ترغب بإستلام\nالرسائل النصية القصيرة عليه. سيتم التحقق من الرقم بالخطوة التالية."
+msgstr "Vänligen ange det telefonnummer som du vill få dina SMS\n      skickade till. Detta nummer kommer att valideras i nästa steg.\n      "
 
 #: templates/two_factor/core/setup.html:24
 msgid ""
 "Please enter the phone number you wish to be called on.\n"
 "      This number will be validated in the next step. "
-msgstr "الرجاء إدخال رقم الهاتف الذي ترغب بإستلام\nالمكالمة عليه. سيتم التحقق من الرقم بالخطوة التالية."
+msgstr "Vänligen ange det telefonnummer som du vill bli uooringd på.\n      Detta nummer kommer att valideras i nästa steg. "
 
 #: templates/two_factor/core/setup.html:35
 msgid ""
 "To identify and verify your YubiKey, please insert a\n"
 "      token in the field below. Your YubiKey will be linked to your\n"
 "      account."
-msgstr "ليتم التعرف و التحقق من مفتاح YubiKey الخاص بك, الرجاء أدخل\n      رمز تفويض في الحقل أدناه. مفتاح YubiKey الخاص بك سيتم ربطة\n      بحسابك."
+msgstr "För att identifiera och verifiera din YubiKey, vänligen mata in en\nengångskod i fältet nedan. Din YubiKey kommer att länkas till ditt\nkonto."
 
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
 "Congratulations, you've successfully enabled two-factor\n"
 "      authentication."
-msgstr "تهانينا, لقد قمت بتفعيل خاصية التحقق من خطوتين \n      بنجاح."
+msgstr "Grattis, du har nu aktiverat tvåfaktorsinloggning."
 
 #: templates/two_factor/core/setup_complete.html:12
 #: templates/two_factor/core/setup_complete.html:19
 msgid "Back to Profile"
-msgstr "الرجوع للملف الشخصي"
+msgstr "Tillbaka till profil"
 
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
 "However, it might happen that you don't have access to\n"
 "      your primary token device. To enable account recovery, add a phone \n"
 "      number."
-msgstr "ومع ذلك، قد لا تتمكن من الوصول للجهاز الذي ينشئ رمز التفويض \nالخاص بك. لتفعيل خاصية إسترداد الحساب، أضف رقم\nهاتف."
+msgstr "Det kan dock hända att du ibland inte har tillgång till\ndin primary enhet för engångskoder. För att aktivera kontoåterställning, lägg till ett\ntelefonnummer."
 
 #: templates/two_factor/core/setup_complete.html:21
 #: templates/two_factor/profile/profile.html:33
 msgid "Add Phone Number"
-msgstr "أضف رقم هاتف"
+msgstr "Lägg till telefonnummer"
 
 #: templates/two_factor/profile/disable.html:5
 msgid "Disable Two-factor Authentication"
-msgstr "تعطيل خاصية التحقق من خطوتين"
+msgstr "Avaktivera tvåfaktorsautentisering"
 
 #: templates/two_factor/profile/disable.html:6
 msgid ""
 "You are about to disable two-factor authentication. This\n"
 "    compromises your account security, are you sure?"
-msgstr "أنت بصدد تعطيل خاصية التحقق من خطوتين. هذه\nالخطوة تهدد أمان حسابك, هل أنت متأكد؟"
+msgstr "Du är på väg att avaktivera tvåfaktorsautentisering. Detta\n    innebär en säkerhetsrisk, är du säker?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
-msgstr "تعطيل"
+msgstr "Avaktivera"
 
 #: templates/two_factor/profile/profile.html:5
 msgid "Account Security"
-msgstr "أمان الحساب"
+msgstr "Kontosäkerhet"
 
 #: templates/two_factor/profile/profile.html:9
 msgid "Tokens will be generated by your token generator."
-msgstr "رموز التفويض سيتم إنشاؤها عبر تطبيق إنشاء رموز التفويض."
+msgstr "Engångskoder kommer att skapas av kodgeneratorn."
 
 #: templates/two_factor/profile/profile.html:11
 #, python-format
 msgid "Primary method: %(primary)s"
-msgstr "الطريقة الأساسية: %(primary)s"
+msgstr "Förvald metod: %(primary)s"
 
 #: templates/two_factor/profile/profile.html:13
 msgid "Tokens will be generated by your YubiKey."
-msgstr "رموز التفويض سيتم إنشاؤها بإستخدام مفتاح YubiKey الخاص بك."
+msgstr "Engångskoder kommer att genereras av din YubiKey."
 
 #: templates/two_factor/profile/profile.html:16
 msgid "Backup Phone Numbers"
-msgstr "أرقام هواتف إحتياطية"
+msgstr "Alternativa telefonnummer"
 
 #: templates/two_factor/profile/profile.html:17
 msgid ""
 "If your primary method is not available, we are able to\n"
 "      send backup tokens to the phone numbers listed below."
-msgstr "في حال عدم توافر الطريقة الأساسية, يمكننا\nإرسال رموز التفويض الإحتياطية للأرقام المدرجة أدناه."
+msgstr "Om din förvalda metod inte är tillgänglig kommer vi skicka\n      förinställda engångskoder till numren nedan."
 
 #: templates/two_factor/profile/profile.html:27
 msgid "Unregister"
-msgstr "إلغاء"
+msgstr "Avregistrera"
 
 #: templates/two_factor/profile/profile.html:37
 msgid ""
 "If you don't have any device with you, you can access\n"
 "        your account using backup tokens."
-msgstr "إذا لم يكن لديك أي جهاز معك، يمكنك الوصول إلى\nحسابك باستخدام رموز التفويض الاحتياطية."
+msgstr "Om du inte har någon enhet med dig kan du logga in\n        med hjälp av dina förinställda engångskoder."
 
 #: templates/two_factor/profile/profile.html:39
 #, python-format
@@ -370,44 +370,40 @@ msgid_plural ""
 "\n"
 "        You have %(counter)s backup tokens remaining.\n"
 "      "
-msgstr[0] "\nعدد رموز التفويض المتبقية هو %(counter)s.\n      "
-msgstr[1] "\n        لديك رمز تفويض إحتياطي واحد فقط متبقي.\n      "
-msgstr[2] "\n        لديك %(counter)s رموز تفويض إحتياطية متبقية فقط.\n      "
-msgstr[3] "\n        لديك بعض رموز التفويض الإحتياطية متبقية بعدد %(counter)s.\n      "
-msgstr[4] "\n        لديك %(counter)s رمز تفويض إحتياطي متبقي.\n      "
-msgstr[5] "\n        لديك %(counter)s رمز تفويض إحتياطي متبقي.\n      "
+msgstr[0] "\n      Du har endast en förinställd engångskod kvar.\n      "
+msgstr[1] "\n      Du har %(counter)s förinställda engångskoder kvar.\n      "
 
 #: templates/two_factor/profile/profile.html:46
 msgid "Show Codes"
-msgstr "عرض رموز التفويض"
+msgstr "Visa koder"
 
 #: templates/two_factor/profile/profile.html:48
 #: templates/two_factor/profile/profile.html:52
 msgid "Disable Two-Factor Authentication"
-msgstr "تعطيل خاصية التحقق من خطوتين"
+msgstr "Avaktivera tvåfaktorsautentisering"
 
 #: templates/two_factor/profile/profile.html:49
 msgid ""
 "However we strongly discourage you to do so, you can\n"
 "      also disable two-factor authentication for your account."
-msgstr "ولكن نحن بقوة لا نشجعك بأن تفعل ذلك, يمكنك\nأيضا تعطيل خاصية التحقق من خطوتين لحسابك."
+msgstr "Trots att vi starkt avråder från att göra det, kan du \n      också avaktivera tvåfaktorsautentisering för ditt konto."
 
 #: templates/two_factor/profile/profile.html:54
 msgid ""
 "Two-factor authentication is not enabled for your\n"
 "      account. Enable two-factor authentication for enhanced account\n"
 "      security."
-msgstr "خاصية التحقق من خطوتين غير مفعلة\nلحسابك. فعّل خاصية التحقق من خطوتين لترقية أمان\nحسابك."
+msgstr "Two-factor authentication is not enabled for your\n      account. Enable two-factor authentication for enhanced account\n      security."
 
 #: templatetags/two_factor.py:38
 #, python-format
 msgid "Send text message to %s"
-msgstr "أرسل رسالة لـ %s"
+msgstr "Skicka textmeddelande til %s"
 
 #: templatetags/two_factor.py:40
 #, python-format
 msgid "Call number %s"
-msgstr "أتصل بالرقم %s"
+msgstr "Ring nummer %s"
 
 #~ msgid "Please enter a valid token."
 #~ msgstr "Please enter a valid token."
