@@ -108,11 +108,13 @@ For Python compatibility, tox_ is used. You can run the full test suite with::
 
     tox
 
-
 See Also
 ========
 Have a look at django-user-sessions_ for Django sessions with a foreign key to
 the user. This package is also included in the online `example app`_.
+
+Also as a note-to-self, for packaging see
+`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`_.
 
 License
 =======
@@ -129,3 +131,5 @@ The project is licensed under the MIT license.
 .. _source code: https://github.com/Bouke/django-two-factor-auth
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
 .. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
+.. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
+   https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/

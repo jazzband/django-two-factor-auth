@@ -9,9 +9,9 @@ Python 3.
 
 Python
 ------
-The following Python versions are supported: 2.6, 2.7, 3.2 and 3.3. As support
-for older Django versions is dropped, the minimum version might be raised. See
-also `What Python version can I use with Django?`_.
+The following Python versions are supported: 2.6, 2.7, 3.2, 3.3 and 3.4. As
+support for older Django versions is dropped, the minimum version might be
+raised. See also `What Python version can I use with Django?`_.
 
 django-otp
 ----------

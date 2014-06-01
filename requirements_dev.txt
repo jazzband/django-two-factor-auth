@@ -30,3 +30,7 @@ transifex-client
 
 Sphinx
 sphinx_rtd_theme
+
+# Build
+
+wheel

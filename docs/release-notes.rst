@@ -1,19 +1,27 @@
 Release Notes
 =============
 
-0.6.0 (in development)
-----------------------
+1.0.0-beta1
+-----------
 * Support for Django 1.7
-* Fixed #39 -- Added support for custom user model (Django 1.5+)
-* Two new translations: German and Spanish
+* New translations: German, Spanish, French, Swedish and Portuguese (Brazil)
+* #39 -- Added support for custom user model (Django 1.5+)
+* Added management commands
+* Added support for YubiKeys
+* Fire signal when user is verified
+* #44 -- Don't require re-login after setup
+* #49 -- Advise to add backup devices after setup
+* #52 -- Add URL encoding to otpauth URL
+* #54 -- Mitigate voicemail hack
+* #55 -- Use two_factor:login instead of LOGIN_URL
 
 0.5.0
 -----
-* Fixed #32 -- Make the auth method label capitalization more consistent
-* Fixed #31 -- Set an error code for phone_number_validator
-* Fixed #30 -- Don't transmit token seed through GET parameters
-* Fixed #29 -- Generate QR codes locally
-* Fixed #27 -- South migrations to support custom user model
+* #32 -- Make the auth method label capitalization more consistent
+* #31 -- Set an error code for phone_number_validator
+* #30 -- Don't transmit token seed through GET parameters
+* #29 -- Generate QR codes locally
+* #27 -- South migrations to support custom user model
 
 0.4.0
 -----
