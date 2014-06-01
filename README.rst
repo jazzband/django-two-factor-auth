@@ -113,9 +113,6 @@ See Also
 Have a look at django-user-sessions_ for Django sessions with a foreign key to
 the user. This package is also included in the online `example app`_.
 
-Also as a note-to-self, for packaging see
-`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`_.
-
 License
 =======
 The project is licensed under the MIT license.
