@@ -792,6 +792,15 @@ class PhoneDeviceTest(UserMixin, TestCase):
         self.assertFalse(device.verify_token(-1))
         self.assertTrue(device.verify_token(totp(device.bin_key)))
 
+    def test_verify_token_as_string(self):
+        """
+        The field used to read the token may be a CharField,
+        so the PhoneDevice must be able to validate tokens
+        read as strings
+        """
+        device = PhoneDevice(key=random_hex().decode())
+        self.assertTrue(device.verify_token(str(totp(device.bin_key))))
+
     def test_unicode(self):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
