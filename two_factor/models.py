@@ -89,6 +89,11 @@ class PhoneDevice(Device):
         return unhexlify(self.key.encode())
 
     def verify_token(self, token):
+        try:
+            token = int(token)
+        except ValueError:
+            return False
+
         for drift in range(-5, 1):
             if totp(self.bin_key, drift=drift) == token:
                 return True
