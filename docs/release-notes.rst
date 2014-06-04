@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+1.0.0-beta2
+-----------
+* Fixed #60 -- Always cast the token to an int before verification
+
 1.0.0-beta1
 -----------
 * Support for Django 1.7

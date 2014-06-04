@@ -6,6 +6,7 @@ Contributors:
 
 * Agris Ameriks
 * Artur Barseghyan
+* Vitor M. A. da Cruz
 * Edward D'Souza
 * Daniel Hall
 * Christian Hammond
