@@ -12,6 +12,7 @@ Contributors:
 * Christian Hammond
 * Matt Krukowski
 * Daniel Lawrence
+* Jay McEntire
 * Eugene Prikazchikov
 * Chris Templin
 * Julian Wachholz

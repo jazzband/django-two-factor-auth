@@ -11,6 +11,7 @@ from django.forms import Form
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, DeleteView, TemplateView
 from django.views.generic.base import View
 
@@ -38,6 +39,7 @@ from ..utils import (get_otpauth_url, default_device,
 from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
 
+@class_view_decorator(sensitive_post_parameters())
 @class_view_decorator(never_cache)
 class LoginView(IdempotentSessionWizardView):
     """
