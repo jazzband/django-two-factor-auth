@@ -39,7 +39,7 @@ from ..utils import (get_otpauth_url, default_device,
 from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
 
-@class_view_decorator(sensitive_post_parameters('auth-password'))
+@class_view_decorator(sensitive_post_parameters())
 @class_view_decorator(never_cache)
 class LoginView(IdempotentSessionWizardView):
     """
