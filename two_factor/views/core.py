@@ -155,7 +155,7 @@ class LoginView(IdempotentSessionWizardView):
         if not self.user_cache:
             form_obj = self.get_form(step='auth',
                                      data=self.storage.get_step_data('auth'))
-            self.user_cache = form_obj.is_valid() and form_obj.user_cache
+            self.user_cache = form_obj.user_cache if form_obj.is_valid() else None
         return self.user_cache
 
     def get_context_data(self, form, **kwargs):
