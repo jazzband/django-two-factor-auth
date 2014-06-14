@@ -254,6 +254,28 @@ class LoginTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
 
+    def test_change_password_in_between(self):
+        """
+        When the password of the user is changed while trying to login, should
+        not result in errors. Refs #63.
+        """
+        user = self.create_user()
+        self.enable_otp()
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        # Now, the password is changed. When the form is submitted, the
+        # credentials should be checked again. If that's the case, the
+        # login form should note that the credentials are invalid.
+        user.set_password('secret2')
+        user.save()
+        response = self._post({'login_view-current_step': 'token'})
+        self.assertContains(response, 'Please enter a correct')
+        self.assertContains(response, 'and password.')
+
 
 class SetupTest(UserMixin, TestCase):
     def setUp(self):

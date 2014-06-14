@@ -73,6 +73,16 @@ class IdempotentSessionWizardView(SessionWizardView):
                 return next_step
         return None
 
+    def post(self, *args, **kwargs):
+        """
+        Check if the current step is still available. It might not be if
+        conditions have changed.
+        """
+        if self.steps.current not in self.steps.all:
+            return self.render_goto_step(self.steps.all[-1])
+
+        return super(IdempotentSessionWizardView, self).post(*args, **kwargs)
+
     def process_step(self, form):
         """
         Stores the validated data for `form` and cleans out validated forms

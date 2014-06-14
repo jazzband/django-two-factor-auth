@@ -86,8 +86,10 @@ class LoginView(IdempotentSessionWizardView):
         The user can select a particular device to challenge, being the backup
         devices added to the account.
         """
+        # Generating a challenge doesn't require to validate the form.
         if 'challenge_device' in self.request.POST:
             return self.render_goto_step('token')
+
         return super(LoginView, self).post(*args, **kwargs)
 
     def done(self, form_list, **kwargs):
