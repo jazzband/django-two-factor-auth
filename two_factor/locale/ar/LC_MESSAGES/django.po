@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2014-05-21 00:12+0000\n"
+"PO-Revision-Date: 2014-06-01 16:10+0000\n"
 "Last-Translator: Bashar Al-Abdulhadi\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/django-two-factor-auth/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -94,20 +94,20 @@ msgstr "الإنجليزية"
 #: gateways/twilio/views.py:38
 #, python-format
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr ""
+msgstr "Hi, this is %(site_name)s calling. Press any key to continue."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:43
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr ""
+msgstr "Your token is %(token)s. Repeat: %(token)s. Good bye."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:47
 msgid "You didn't press any keys. Good bye."
-msgstr ""
+msgstr "You didn't press any keys. Good bye."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"

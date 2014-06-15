@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Translators:
+# vitormazzi <vitormazzi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2014-05-31 05:41+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"PO-Revision-Date: 2014-06-03 20:14+0000\n"
+"Last-Translator: vitormazzi <vitormazzi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/django-two-factor-auth/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -93,20 +94,20 @@ msgstr "pt-BR"
 #: gateways/twilio/views.py:38
 #, python-format
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr ""
+msgstr "Olá, aqui é o %(site_name)s. Pressione qualquer tecla para continuar."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:43
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr ""
+msgstr "Seu código de acesso é %(token)s. Repetindo: %(token)s. Até logo."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:47
 msgid "You didn't press any keys. Good bye."
-msgstr ""
+msgstr "Você não pressionou uma tecla. Até logo."
 
 #: templates/two_factor/_wizard_actions.html:4
 msgid "Cancel"
@@ -347,7 +348,7 @@ msgstr "Números de telefone reserva"
 msgid ""
 "If your primary method is not available, we are able to\n"
 "      send backup tokens to the phone numbers listed below."
-msgstr ""
+msgstr "Caso seu mecanismo principal não esteja disponível, podemos enviar códigos reserva para os números de telefone listados abaixo."
 
 #: templates/two_factor/profile/profile.html:27
 msgid "Unregister"
