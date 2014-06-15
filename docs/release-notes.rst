@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0.0-beta3
+-----------
+* Fixed #62 -- Don't leak sensitive post parameters
+* Fixed #63 -- Login wizard should handle changing passwords
+
 1.0.0-beta2
 -----------
 * Fixed #60 -- Always cast the token to an int before verification
