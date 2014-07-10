@@ -1,5 +1,6 @@
 from binascii import unhexlify
 from base64 import b32encode
+from urllib2 import quote
 
 from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
@@ -501,7 +502,7 @@ class QRGeneratorView(View):
 
         site_name = get_current_site(self.request).name
         alias = '{site_name}:{username}'.format(
-            username=username, site_name=site_name)
+            username=quote(username), site_name=quote(site_name))
 
         # Make and return QR code
         img = qrcode.make(get_otpauth_url(alias, key, site_name), image_factory=image_factory)
