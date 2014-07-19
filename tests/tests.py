@@ -1,5 +1,8 @@
+# encoding=UTF8
+from __future__ import unicode_literals
 from binascii import unhexlify
 import os
+import sys
 
 try:
     # Try StringIO first, as Python 2.7 also includes an unicode-strict
@@ -652,7 +655,7 @@ class QRTest(UserMixin, TestCase):
 
     def setUp(self):
         super(QRTest, self).setUp()
-        self.create_user()
+        self.user = self.create_user(username='ⓑỚ𝓾⒦ȩ')
         self.login_user()
 
     def test_without_secret(self):
@@ -660,6 +663,7 @@ class QRTest(UserMixin, TestCase):
         self.assertEquals(response.status_code, 404)
 
     @patch('qrcode.make')
+    @unittest.skipIf(django.VERSION < (1, 5), "Django 1.4 not supported")
     def test_with_secret(self, mockqrcode):
         # Setup the mock data
         def side_effect(resp):
@@ -681,7 +685,8 @@ class QRTest(UserMixin, TestCase):
 
         # Check things went as expected
         mockqrcode.assert_called_with(
-            get_otpauth_url('testserver:bouke@example.com', self.test_secret, "testserver"),
+            get_otpauth_url(accountname=self.user.get_username(),
+                            secret=self.test_secret, issuer="testserver"),
             image_factory=default_factory)
         mockimg.save.assert_called()
         self.assertEquals(response.status_code, 200)
@@ -853,41 +858,60 @@ class UtilsTest(UserMixin, TestCase):
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].pk, backup.pk)
 
+    @unittest.skipIf((3, 2) <= sys.version_info < (3, 3), "Python 3.2's urlparse is broken")
+    @unittest.skipIf(sys.version_info < (2, 7), "Python 2.6 not supported")
     def test_get_otpauth_url(self):
         self.assertEqualUrl(
-            get_otpauth_url(accountname='bouke@example.com', secret='abcdef123'),
-            'otpauth://totp/bouke%40example.com?secret=abcdef123')
+            'otpauth://totp/bouke%40example.com?secret=abcdef123',
+            get_otpauth_url(accountname='bouke@example.com', secret='abcdef123'))
 
         self.assertEqualUrl(
-            get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123'),
-            'otpauth://totp/Bouke%20Haarsma?secret=abcdef123')
+            'otpauth://totp/Bouke%20Haarsma?secret=abcdef123',
+            get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123'))
 
         self.assertEqualUrl(
-            get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
-                            secret='abcdef123'),
             'otpauth://totp/example.com%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=example.com')
+            'secret=abcdef123&issuer=example.com',
+            get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
+                            secret='abcdef123'))
 
         self.assertEqualUrl(
-            get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
-                            secret='abcdef123'),
             'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=My+Site')
+            'secret=abcdef123&issuer=My+Site',
+            get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
+                            secret='abcdef123'))
+
+        self.assertEqualUrl(
+            'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
+            '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
+            'secret=abcdef123&issuer=测试网站',
+            get_otpauth_url(accountname='我不是逗比',
+                            issuer='测试网站',
+                            secret='abcdef123'))
 
     def assertEqualUrl(self, lhs, rhs):
         """
-        We're using urlencode(dict) and the order of items in a dictionary
-        is not guaranteed. Now we could use an OrderedDict, but that's not
-        available on Python 2.6. We actually don't care about the order of
-        the query parameters, so parsing them back into a dictionary and
-        comparing that is quite fine.
+        Asserts whether the URLs are canonically equal.
         """
+        if six.PY2:
+            # See those Chinese characters above? Those are quite difficult
+            # to match against the generated URLs in portable code. True,
+            # this solution is not the nicest, but it works. And it's test
+            # code after all.
+            lhs = lhs.encode('utf8')
+
         lhs = urlparse(lhs)
         rhs = urlparse(rhs)
         self.assertEqual(lhs.scheme, rhs.scheme)
         self.assertEqual(lhs.netloc, rhs.netloc)
         self.assertEqual(lhs.path, rhs.path)
         self.assertEqual(lhs.fragment, rhs.fragment)
+
+        # We're using urlencode(dict) and the order of items in a dictionary
+        # is not guaranteed. Now we could use an OrderedDict, but that's not
+        # available on Python 2.6. We actually don't care about the order of
+        # the query parameters, so parsing them back into a dictionary and
+        # comparing that is quite fine.
         self.assertEqual(parse_qs(lhs.query), parse_qs(rhs.query))
 
 

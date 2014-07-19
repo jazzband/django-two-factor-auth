@@ -500,12 +500,12 @@ class QRGeneratorView(View):
         except AttributeError:
             username = self.request.user.username
 
-        site_name = get_current_site(self.request).name
-        alias = '{site_name}:{username}'.format(
-            username=username, site_name=site_name)
+        otpauth_url = get_otpauth_url(accountname=username,
+                                      issuer=get_current_site(self.request).name,
+                                      secret=key)
 
         # Make and return QR code
-        img = qrcode.make(get_otpauth_url(alias, key, site_name), image_factory=image_factory)
+        img = qrcode.make(otpauth_url, image_factory=image_factory)
         resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp
