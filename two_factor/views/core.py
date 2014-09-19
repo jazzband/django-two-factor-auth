@@ -150,7 +150,8 @@ class LoginView(IdempotentSessionWizardView):
 
     def get_user(self):
         """
-        Returns the user authenticated by the AuthenticationForm.
+        Returns the user authenticated by the AuthenticationForm. Returns False
+        if not a valid user; see also issue #65.
         """
         if not self.user_cache:
             form_obj = self.get_form(step='auth',
