@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0.0
+-----
+* Fixed #68 -- Cannot generate QR code for unicode characters
+* Fixed #66 -- Admin not secure when using admindocs (clarified documentation)
+
 1.0.0-beta3
 -----------
 * Fixed #62 -- Don't leak sensitive post parameters
