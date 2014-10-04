@@ -26,8 +26,8 @@
   <form action="" method="post">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
 
-    {# hidden submit button to enable [enter] key #}
-    <div style="margin-left: -500px"><input type="submit" value=""/></div>
+    {# hidden submit button to enable [enter] key the 1px fix for IE7#}
+    <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
     {% if other_devices %}
       <p>{% trans "Or, alternatively, use one of your backup phones:" %}</p>
