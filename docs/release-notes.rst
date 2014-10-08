@@ -4,6 +4,7 @@ Release Notes
 1.1.0
 -----
 * Added Django 1.7 migrations
+* Fixed #65 -- Exception after GET on login view
 
 1.0.0
 -----

@@ -257,7 +257,8 @@ class LoginTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
 
-    def test_change_password_in_between(self):
+    @patch('two_factor.views.utils.logger')
+    def test_change_password_in_between(self, mock_logger):
         """
         When the password of the user is changed while trying to login, should
         not result in errors. Refs #63.
@@ -278,6 +279,37 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'login_view-current_step': 'token'})
         self.assertContains(response, 'Please enter a correct')
         self.assertContains(response, 'and password.')
+
+        # Check that a message was logged.
+        mock_logger.warning.assert_called_with(
+            "Current step '%s' is no longer valid, returning to last valid "
+            "step in the wizard.",
+            'token')
+
+    @patch('two_factor.views.utils.logger')
+    def test_reset_wizard_state(self, mock_logger):
+        self.create_user()
+        self.enable_otp()
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        # A GET request resets the state of the wizard...
+        self.client.get(reverse('two_factor:login'))
+
+        # ...so there is no user in this request anymore. As the login flow
+        # depends on a user being present, this should be handled gracefully.
+        response = self._post({'token-otp_token': '123456',
+                               'login_view-current_step': 'token'})
+        self.assertContains(response, 'Password:')
+
+        # Check that a message was logged.
+        mock_logger.warning.assert_called_with(
+            "Requested step '%s' is no longer valid, returning to last valid "
+            "step in the wizard.",
+            'token')
 
 
 class SetupTest(UserMixin, TestCase):
