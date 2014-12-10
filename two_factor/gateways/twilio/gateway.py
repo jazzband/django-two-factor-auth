@@ -55,7 +55,7 @@ class Twilio(object):
                                  url=uri, method='GET', if_machine='Hangup', timeout=15)
 
     def send_sms(self, device, token):
-        body = ugettext('Your authentication token is %s' % token)
+        body = ugettext('Your authentication token is %s') % token
         self.client.sms.messages.create(
             to=device.number,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
