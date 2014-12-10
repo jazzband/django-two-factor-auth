@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+1.1.0
+-----
+* Added Django 1.7 migrations
+
 1.0.0
 -----
 * Fixed #69 -- Cannot generate QR code for unicode characters

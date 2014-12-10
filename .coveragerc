@@ -1,6 +1,6 @@
 [run]
 source = two_factor
-omit = */migrations/*,two_factor/compat.py
+omit = */migrations/*,*/south_migrations/*,two_factor/compat.py
 parallel = true
 
 [report]
