@@ -981,22 +981,22 @@ class DisableCommandTest(UserMixin, TestCase):
 
     def test_raises(self):
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
-            call_command('disable', 'some_username')
+            call_command('two_factor_disable', 'some_username')
 
         with self._assert_raises(CommandError, 'User "other_username" does not exist'):
-            call_command('disable', 'other_username', 'some_username')
+            call_command('two_factor_disable', 'other_username', 'some_username')
 
     def test_disable_single(self):
         user = self.create_user()
         self.enable_otp(user)
-        call_command('disable', 'bouke@example.com')
+        call_command('two_factor_disable', 'bouke@example.com')
         self.assertEqual(list(devices_for_user(user)), [])
 
     def test_happy_flow_multiple(self):
         usernames = ['user%d@example.com' % i for i in range(0, 3)]
         users = [self.create_user(username) for username in usernames]
         [self.enable_otp(user) for user in users]
-        call_command('disable', *usernames[:2])
+        call_command('two_factor_disable', *usernames[:2])
         self.assertEqual(list(devices_for_user(users[0])), [])
         self.assertEqual(list(devices_for_user(users[1])), [])
         self.assertNotEqual(list(devices_for_user(users[2])), [])
@@ -1015,27 +1015,27 @@ class StatusCommandTest(UserMixin, TestCase):
 
     def test_raises(self):
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
-            call_command('status', 'some_username')
+            call_command('two_factor_status', 'some_username')
 
         with self._assert_raises(CommandError, 'User "other_username" does not exist'):
-            call_command('status', 'other_username', 'some_username')
+            call_command('two_factor_status', 'other_username', 'some_username')
 
     def test_status_single(self):
         user = self.create_user()
         stdout = StringIO()
-        call_command('status', 'bouke@example.com', stdout=stdout)
+        call_command('two_factor_status', 'bouke@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'bouke@example.com: disabled\n')
 
         stdout = StringIO()
         self.enable_otp(user)
-        call_command('status', 'bouke@example.com', stdout=stdout)
+        call_command('two_factor_status', 'bouke@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'bouke@example.com: enabled\n')
 
     def test_status_mutiple(self):
         users = [self.create_user(n) for n in ['user0@example.com', 'user1@example.com']]
         self.enable_otp(users[0])
         stdout = StringIO()
-        call_command('status', 'user0@example.com', 'user1@example.com', stdout=stdout)
+        call_command('two_factor_status', 'user0@example.com', 'user1@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'user0@example.com: enabled\n'
                                             'user1@example.com: disabled\n')
 
