@@ -45,7 +45,7 @@ install:
         else
             pip install https://www.djangoproject.com/download/$DJANGO/tarball/;
         fi;
-        pip install twilio qrcode;
+        pip install twilio==3.6.8 qrcode;
         pip install -e .;
     fi;
   - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi;
