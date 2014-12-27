@@ -7,6 +7,7 @@ try:
 except ImportError:
     from urllib import quote, urlencode
 
+from django.conf import settings
 
 def default_device(user):
     if not user or user.is_anonymous():
@@ -22,7 +23,7 @@ def backup_phones(user):
     return user.phonedevice_set.filter(name='backup')
 
 
-def get_otpauth_url(accountname, secret, issuer=None):
+def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     # For a complete run-through of all the parameters, have a look at the
     # specs at:
     # https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
@@ -33,9 +34,14 @@ def get_otpauth_url(accountname, secret, issuer=None):
 
     label = quote(b': '.join([issuer, accountname]) if issuer else accountname)
 
-    query = {'secret': secret}
+    query = {
+        'secret': secret,
+        'digits': digits or totp_digits()
+    }
+
     if issuer:
         query['issuer'] = issuer
+
     return 'otpauth://totp/%s?%s' % (label, urlencode(query))
 
 
@@ -45,3 +51,11 @@ def monkeypatch_method(cls):
         setattr(cls, func.__name__, func)
         return func
     return decorator
+
+
+def totp_digits():
+    """
+    Returns the number of digits (as configured by the TWO_FACTOR_TOTP_DIGITS setting)
+    for totp tokens. Defaults to 6
+    """
+    return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)

@@ -893,33 +893,34 @@ class UtilsTest(UserMixin, TestCase):
     @unittest.skipIf((3, 2) <= sys.version_info < (3, 3), "Python 3.2's urlparse is broken")
     @unittest.skipIf(sys.version_info < (2, 7), "Python 2.6 not supported")
     def test_get_otpauth_url(self):
-        self.assertEqualUrl(
-            'otpauth://totp/bouke%40example.com?secret=abcdef123',
-            get_otpauth_url(accountname='bouke@example.com', secret='abcdef123'))
+        for num_digits in (6, 8):
+            self.assertEqualUrl(
+                'otpauth://totp/bouke%40example.com?secret=abcdef123&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/Bouke%20Haarsma?secret=abcdef123',
-            get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/Bouke%20Haarsma?secret=abcdef123&digits=' + str(num_digits),
+                get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/example.com%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=example.com',
-            get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/example.com%3A%20bouke%40example.com?'
+                'secret=abcdef123&issuer=example.com&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
+                                secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=My+Site',
-            get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
+                'secret=abcdef123&issuer=My+Site&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
+                                secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
-            '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
-            'secret=abcdef123&issuer=测试网站',
-            get_otpauth_url(accountname='我不是逗比',
-                            issuer='测试网站',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
+                '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
+                'secret=abcdef123&issuer=测试网站&digits=' + str(num_digits),
+                get_otpauth_url(accountname='我不是逗比',
+                                issuer='测试网站',
+                                secret='abcdef123', digits=num_digits))
 
     def assertEqualUrl(self, lhs, rhs):
         """
