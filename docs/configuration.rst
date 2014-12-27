@@ -53,6 +53,13 @@ General Settings
   
   For more QR factories that are available see python-qrcode_.
 
+``TWO_FACTOR_TOTP_DIGITS`` (default: ``6``)
+  The number of digits to use for TOTP tokens. Can be set to 6 or 8.
+  Please note that Google Authenticator does not support 8 digit codes (see
+  https://code.google.com/p/google-authenticator/issues/detail?id=327). So don't
+  set this option to 8 unless all of your users use a 8 digit compatible authenticator
+  app.
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_::

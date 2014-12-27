@@ -58,7 +58,7 @@ from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
 from two_factor.models import PhoneDevice, phone_number_validator
-from two_factor.utils import backup_phones, default_device, get_otpauth_url
+from two_factor.utils import backup_phones, default_device, get_otpauth_url, totp_digits
 
 
 class UserMixin(object):
@@ -182,50 +182,55 @@ class LoginTest(UserMixin, TestCase):
     )
     def test_with_backup_phone(self, mock_signal, fake):
         user = self.create_user()
-        user.totpdevice_set.create(name='default', key=random_hex().decode())
-        device = user.phonedevice_set.create(name='backup', number='123456789',
-                                             method='sms',
-                                             key=random_hex().decode())
+        for no_digits in (6, 8):
+            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                user.totpdevice_set.create(name='default', key=random_hex().decode(),
+                                           digits=no_digits)
+                device = user.phonedevice_set.create(name='backup', number='123456789',
+                                                     method='sms',
+                                                     key=random_hex().decode())
 
-        # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Send text message to 123****89')
+                # Backup phones should be listed on the login form
+                response = self._post({'auth-username': 'bouke@example.com',
+                                       'auth-password': 'secret',
+                                       'login_view-current_step': 'auth'})
+                self.assertContains(response, 'Send text message to 123****89')
 
-        # Ask for challenge on invalid device
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'challenge_device': 'MALICIOUS/INPUT/666'})
-        self.assertContains(response, 'Send text message to 123****89')
+                # Ask for challenge on invalid device
+                response = self._post({'auth-username': 'bouke@example.com',
+                                       'auth-password': 'secret',
+                                       'challenge_device': 'MALICIOUS/INPUT/666'})
+                self.assertContains(response, 'Send text message to 123****89')
 
-        # Ask for SMS challenge
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'challenge_device': device.persistent_id})
-        self.assertContains(response, 'We sent you a text message')
-        fake.return_value.send_sms.assert_called_with(
-            device=device, token='%06d' % totp(device.bin_key))
+                # Ask for SMS challenge
+                response = self._post({'auth-username': 'bouke@example.com',
+                                       'auth-password': 'secret',
+                                       'challenge_device': device.persistent_id})
+                self.assertContains(response, 'We sent you a text message')
+                fake.return_value.send_sms.assert_called_with(
+                    device=device,
+                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
 
-        # Ask for phone challenge
-        device.method = 'call'
-        device.save()
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'challenge_device': device.persistent_id})
-        self.assertContains(response, 'We are calling your phone right now')
-        fake.return_value.make_call.assert_called_with(
-            device=device, token='%06d' % totp(device.bin_key))
+                # Ask for phone challenge
+                device.method = 'call'
+                device.save()
+                response = self._post({'auth-username': 'bouke@example.com',
+                                       'auth-password': 'secret',
+                                       'challenge_device': device.persistent_id})
+                self.assertContains(response, 'We are calling your phone right now')
+                fake.return_value.make_call.assert_called_with(
+                    device=device,
+                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
 
-        # Valid token should be accepted.
-        response = self._post({'token-otp_token': totp(device.bin_key),
-                               'login_view-current_step': 'token'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
-        self.assertEqual(device.persistent_id,
-                         self.client.session.get(DEVICE_ID_SESSION_KEY))
+            # Valid token should be accepted.
+            response = self._post({'token-otp_token': totp(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+            self.assertEqual(device.persistent_id,
+                             self.client.session.get(DEVICE_ID_SESSION_KEY))
 
-        # Check that the signal was fired.
-        mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
+            # Check that the signal was fired.
+            mock_signal.assert_called_with(sender=ANY, request=ANY, user=user, device=device)
 
     @patch('two_factor.views.core.signals.user_verified.send')
     def test_with_backup_token(self, mock_signal):
@@ -792,21 +797,29 @@ class TwilioGatewayTest(TestCase):
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
 
-        twilio.make_call(device=Mock(number='+123'), token='654321')
-        client.return_value.calls.create.assert_called_with(
-            from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
-            url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-us')
-
-        twilio.send_sms(device=Mock(number='+123'), token='654321')
-        client.return_value.sms.messages.create.assert_called_with(
-            to='+123', body='Your authentication token is 654321', from_='+456')
-
-        client.return_value.calls.create.reset_mock()
-        with translation.override('en-gb'):
-            twilio.make_call(device=Mock(number='+123'), token='654321')
+        for code in ['654321', '054321', '87654321', '07654321']:
+            twilio.make_call(device=Mock(number='+123'), token=code)
             client.return_value.calls.create.assert_called_with(
                 from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
-                url='http://testserver/twilio/inbound/two_factor/654321/?locale=en-gb')
+                url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-us' % code)
+
+            twilio.send_sms(device=Mock(number='+123'), token=code)
+            client.return_value.sms.messages.create.assert_called_with(
+                to='+123', body='Your authentication token is %s' % code, from_='+456')
+
+            client.return_value.calls.create.reset_mock()
+            with translation.override('en-gb'):
+                twilio.make_call(device=Mock(number='+123'), token=code)
+                client.return_value.calls.create.assert_called_with(
+                    from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
+                    url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-gb' % code)
+
+            client.return_value.calls.create.reset_mock()
+            with translation.override('en-gb'):
+                twilio.make_call(device=Mock(number='+123'), token=code)
+                client.return_value.calls.create.assert_called_with(
+                    from_='+456', to='+123', method='GET', if_machine='Hangup', timeout=15,
+                    url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-gb' % code)
 
     @override_settings(
         TWILIO_ACCOUNT_SID='SID',
@@ -836,20 +849,24 @@ class FakeGatewayTest(TestCase):
     def test_gateway(self, logger):
         fake = Fake()
 
-        fake.make_call(device=Mock(number='+123'), token='654321')
-        logger.info.assert_called_with(
-            'Fake call to %s: "Your token is: %s"', '+123', '654321')
+        for code in ['654321', '87654321']:
+            fake.make_call(device=Mock(number='+123'), token=code)
+            logger.info.assert_called_with(
+                'Fake call to %s: "Your token is: %s"', '+123', code)
 
-        fake.send_sms(device=Mock(number='+123'), token='654321')
-        logger.info.assert_called_with(
-            'Fake SMS to %s: "Your token is: %s"', '+123', '654321')
+            fake.send_sms(device=Mock(number='+123'), token=code)
+            logger.info.assert_called_with(
+                'Fake SMS to %s: "Your token is: %s"', '+123', code)
 
 
 class PhoneDeviceTest(UserMixin, TestCase):
     def test_verify(self):
-        device = PhoneDevice(key=random_hex().decode())
-        self.assertFalse(device.verify_token(-1))
-        self.assertTrue(device.verify_token(totp(device.bin_key)))
+        for no_digits in (6, 8):
+            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                device = PhoneDevice(key=random_hex().decode())
+                self.assertFalse(device.verify_token(-1))
+                self.assertFalse(device.verify_token('foobar'))
+                self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
 
     def test_verify_token_as_string(self):
         """
@@ -857,8 +874,10 @@ class PhoneDeviceTest(UserMixin, TestCase):
         so the PhoneDevice must be able to validate tokens
         read as strings
         """
-        device = PhoneDevice(key=random_hex().decode())
-        self.assertTrue(device.verify_token(str(totp(device.bin_key))))
+        for no_digits in (6, 8):
+            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                device = PhoneDevice(key=random_hex().decode())
+                self.assertTrue(device.verify_token(str(totp(device.bin_key, digits=no_digits))))
 
     def test_unicode(self):
         device = PhoneDevice(name='unknown')
@@ -893,33 +912,36 @@ class UtilsTest(UserMixin, TestCase):
     @unittest.skipIf((3, 2) <= sys.version_info < (3, 3), "Python 3.2's urlparse is broken")
     @unittest.skipIf(sys.version_info < (2, 7), "Python 2.6 not supported")
     def test_get_otpauth_url(self):
-        self.assertEqualUrl(
-            'otpauth://totp/bouke%40example.com?secret=abcdef123',
-            get_otpauth_url(accountname='bouke@example.com', secret='abcdef123'))
+        for num_digits in (6, 8):
+            self.assertEqualUrl(
+                'otpauth://totp/bouke%40example.com?secret=abcdef123&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', secret='abcdef123',
+                                digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/Bouke%20Haarsma?secret=abcdef123',
-            get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/Bouke%20Haarsma?secret=abcdef123&digits=' + str(num_digits),
+                get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123',
+                                digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/example.com%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=example.com',
-            get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/example.com%3A%20bouke%40example.com?'
+                'secret=abcdef123&issuer=example.com&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
+                                secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
-            'secret=abcdef123&issuer=My+Site',
-            get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
+                'secret=abcdef123&issuer=My+Site&digits=' + str(num_digits),
+                get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
+                                secret='abcdef123', digits=num_digits))
 
-        self.assertEqualUrl(
-            'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
-            '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
-            'secret=abcdef123&issuer=测试网站',
-            get_otpauth_url(accountname='我不是逗比',
-                            issuer='测试网站',
-                            secret='abcdef123'))
+            self.assertEqualUrl(
+                'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
+                '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
+                'secret=abcdef123&issuer=测试网站&digits=' + str(num_digits),
+                get_otpauth_url(accountname='我不是逗比',
+                                issuer='测试网站',
+                                secret='abcdef123', digits=num_digits))
 
     def assertEqualUrl(self, lhs, rhs):
         """
@@ -946,6 +968,13 @@ class UtilsTest(UserMixin, TestCase):
         # comparing that is quite fine.
         self.assertEqual(parse_qs(lhs.query), parse_qs(rhs.query))
 
+    def test_get_totp_digits(self):
+        # test that the default is 6 if TWO_FACTOR_TOTP_DIGITS is not set
+        self.assertEqual(totp_digits(), 6)
+
+        for no_digits in (6, 8):
+            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                self.assertEqual(totp_digits(), no_digits)
 
 class ValidatorsTest(TestCase):
     def test_phone_number_validator_on_form_valid(self):

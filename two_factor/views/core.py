@@ -20,6 +20,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
 from django_otp.util import random_hex
 from two_factor import signals
+from two_factor.utils import totp_digits
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -502,7 +503,8 @@ class QRGeneratorView(View):
 
         otpauth_url = get_otpauth_url(accountname=username,
                                       issuer=get_current_site(self.request).name,
-                                      secret=key)
+                                      secret=key,
+                                      digits=totp_digits())
 
         # Make and return QR code
         img = qrcode.make(otpauth_url, image_factory=image_factory)
