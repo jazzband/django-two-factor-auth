@@ -132,7 +132,8 @@ class DisableForm(forms.Form):
 
 
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
-    otp_token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
+    otp_token = forms.IntegerField(label=_("Token"), min_value=1,
+                                   max_value=int('9' * totp_digits()))
 
     def __init__(self, user, initial_device, **kwargs):
         """

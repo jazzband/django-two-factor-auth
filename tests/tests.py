@@ -896,11 +896,13 @@ class UtilsTest(UserMixin, TestCase):
         for num_digits in (6, 8):
             self.assertEqualUrl(
                 'otpauth://totp/bouke%40example.com?secret=abcdef123&digits=' + str(num_digits),
-                get_otpauth_url(accountname='bouke@example.com', secret='abcdef123', digits=num_digits))
+                get_otpauth_url(accountname='bouke@example.com', secret='abcdef123',
+                                digits=num_digits))
 
             self.assertEqualUrl(
                 'otpauth://totp/Bouke%20Haarsma?secret=abcdef123&digits=' + str(num_digits),
-                get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123', digits=num_digits))
+                get_otpauth_url(accountname='Bouke Haarsma', secret='abcdef123',
+                                digits=num_digits))
 
             self.assertEqualUrl(
                 'otpauth://totp/example.com%3A%20bouke%40example.com?'

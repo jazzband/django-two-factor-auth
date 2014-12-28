@@ -9,6 +9,7 @@ except ImportError:
 
 from django.conf import settings
 
+
 def default_device(user):
     if not user or user.is_anonymous():
         return
