@@ -89,21 +89,28 @@ class PhoneDevice(Device):
         return unhexlify(self.key.encode())
 
     def verify_token(self, token):
+        # local import to avoid circular import
+        from two_factor.utils import totp_digits
+
         try:
             token = int(token)
         except ValueError:
             return False
 
         for drift in range(-5, 1):
-            if totp(self.bin_key, drift=drift) == token:
+            if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
                 return True
         return False
 
     def generate_challenge(self):
+        # local import to avoid circular import
+        from two_factor.utils import totp_digits
+
         """
         Sends the current TOTP token to `self.number` using `self.method`.
         """
-        token = '%06d' % totp(self.bin_key)
+        no_digits = totp_digits()
+        token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
         if self.method == 'call':
             make_call(device=self, token=token)
         else:
