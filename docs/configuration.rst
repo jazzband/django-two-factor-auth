@@ -50,15 +50,19 @@ General Settings
 
   * ``qrcode.image.pil.PilImage`` may be used for PIL/Pillow
   * ``qrcode.image.pure.PymagingImage`` may be used for pyimaging
-  
+
   For more QR factories that are available see python-qrcode_.
 
 ``TWO_FACTOR_TOTP_DIGITS`` (default: ``6``)
-  The number of digits to use for TOTP tokens. Can be set to 6 or 8.
-  Please note that Google Authenticator does not support 8 digit codes (see
-  https://code.google.com/p/google-authenticator/issues/detail?id=327). So don't
-  set this option to 8 unless all of your users use a 8 digit compatible authenticator
-  app.
+  The number of digits to use for TOTP tokens, can be set to 6 or 8. This
+  setting will be used for tokens delivered by phone call or text message and
+  newly configured token generators. Existing token generator devices will not
+  be affected.
+
+  .. warning::
+     The Google Authenticator app does not support 8 digit codes (see
+     `the upstream ticket`_). Don't set this option to 8 unless all of your
+     users use a 8 digit compatible token generator app.
 
 Twilio Gateway
 --------------
@@ -89,3 +93,4 @@ Fake Gateway
 .. _Twilio: http://www.twilio.com/
 .. _`Twilio client`: https://pypi.python.org/pypi/twilio
 .. _python-qrcode: https://pypi.python.org/pypi/qrcode
+.. _`the upstream ticket`: https://code.google.com/p/google-authenticator/issues/detail?id=327

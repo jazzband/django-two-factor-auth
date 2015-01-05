@@ -976,6 +976,7 @@ class UtilsTest(UserMixin, TestCase):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
                 self.assertEqual(totp_digits(), no_digits)
 
+
 class ValidatorsTest(TestCase):
     def test_phone_number_validator_on_form_valid(self):
         class TestForm(forms.Form):
