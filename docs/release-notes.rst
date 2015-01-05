@@ -1,10 +1,13 @@
 Release Notes
 =============
 
-1.1.0
------
+1.1.0 (in development)
+----------------------
+* #79 -- Support for 8 digit codes
+* Renamed management commands
+* #76 -- Off-screen submit button visible on large displays
 * Added Django 1.7 migrations
-* Fixed #65 -- Exception after GET on login view
+* #65 -- Exception after GET on login view
 
 1.0.0
 -----
