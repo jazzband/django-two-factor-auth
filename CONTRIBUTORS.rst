@@ -14,6 +14,7 @@ Contributors:
 * Daniel Lawrence
 * Jay McEntire
 * Eugene Prikazchikov
+* Johann Schmitz
 * Chris Templin
 * Julian Wachholz
 
