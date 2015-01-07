@@ -116,7 +116,7 @@ The following actions are required to push a new version:
     git commit -am "Released [version]"
     git tag [version]
     python setup.py sdist upload
-    python setup.py bdist upload
+    python setup.py bdist_wheel upload
 
 See Also
 ========
