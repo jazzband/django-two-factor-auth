@@ -1,8 +1,8 @@
 Release Notes
 =============
 
-1.1.0 (in development)
-----------------------
+1.1.0
+-----
 * #79 -- Support for 8 digit codes
 * Renamed management commands
 * #76 -- Off-screen submit button visible on large displays

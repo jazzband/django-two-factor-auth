@@ -108,6 +108,16 @@ For Python compatibility, tox_ is used. You can run the full test suite with::
 
     tox
 
+Releasing
+---------
+The following actions are required to push a new version:
+
+    bumpversion [major|minor|patch]
+    git commit -am "Released [version]"
+    git tag [version]
+    python setup.py sdist upload
+    python setup.py bdist upload
+
 See Also
 ========
 Have a look at django-user-sessions_ for Django sessions with a foreign key to
