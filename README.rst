@@ -112,6 +112,9 @@ Releasing
 ---------
 The following actions are required to push a new version:
 
+    python example/manage.py makemigrations two_factor
+    git commit -am "Added migrations"
+
     bumpversion [major|minor|patch]
     git commit -am "Released [version]"
     git tag [version]

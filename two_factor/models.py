@@ -18,6 +18,8 @@ except ImportError:
 from .gateways import make_call, send_sms
 
 
+logger = logging.getLogger(__name__)
+
 phone_number_validator = RegexValidator(
     code='invalid-phone-number',
     regex='^(\+|00)',
@@ -54,7 +56,9 @@ def get_available_methods():
     return methods
 
 
-logger = logging.getLogger(__name__)
+def key_validator(*args, **kwargs):
+    """Wraps hex_validator generator, to keep makemigrations happy."""
+    return hex_validator()(*args, **kwargs)
 
 
 class PhoneDevice(Device):
@@ -65,8 +69,8 @@ class PhoneDevice(Device):
                               validators=[phone_number_validator],
                               verbose_name=_('number'))
     key = models.CharField(max_length=40,
-                           validators=[hex_validator()],
-                           default=lambda: random_hex(20),
+                           validators=[key_validator],
+                           default=random_hex,
                            help_text="Hex-encoded secret key")
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))
