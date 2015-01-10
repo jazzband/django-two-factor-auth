@@ -118,8 +118,7 @@ The following actions are required to push a new version:
     bumpversion [major|minor|patch]
     git commit -am "Released [version]"
     git tag [version]
-    python setup.py sdist upload
-    python setup.py bdist_wheel upload
+    python setup.py sdist bdist_wheel upload
 
 See Also
 ========
