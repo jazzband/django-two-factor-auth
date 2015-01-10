@@ -1,6 +1,10 @@
 TARGET?=tests
 
-.PHONY: flake8 example test coverage
+.PHONY: docs flake8 example test coverage
+
+docs:
+	cd docs; make html
+	open docs/_build/html/index.html
 
 flake8:
 	flake8 --ignore=W999 two_factor example tests
