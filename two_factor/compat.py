@@ -1,7 +1,16 @@
 import django
 
 
-if django.VERSION[:2] >= (1, 6):
+if django.VERSION[:2] >= (1, 8):
+    from formtools.wizard.forms import ManagementForm
+    from formtools.wizard.views import WizardView
+    from formtools.wizard.views import SessionWizardView
+    from formtools.wizard.storage.session import SessionStorage
+    from django.utils.http import is_safe_url
+    from django.utils.module_loading import import_by_path
+
+elif django.VERSION[:2] >= (1, 6):
+    from django.contrib.formtools.wizard.forms import ManagementForm
     from django.contrib.formtools.wizard.views import WizardView
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
@@ -22,6 +31,7 @@ else:
     from django.utils.importlib import import_module
     from django.utils.datastructures import SortedDict
 
+    from django.contrib.formtools.wizard.forms import ManagementForm
     from django.contrib.formtools.wizard.storage.exceptions import NoFileStorageConfigured
     from django.contrib.formtools.wizard.views import WizardView as _WizardView
 
@@ -160,7 +170,10 @@ if (1, 5) <= django.VERSION[:2] < (1, 6):
         storage_name = 'django.contrib.formtools.wizard.storage.session.SessionStorage'
 
 else:
-    from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
+    if django.VERSION[:2] >= (1, 8):
+        from formtools.wizard.storage.session import SessionStorage as _SessionStorage
+    else:
+        from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
     from django.core import urlresolvers
 
     # Fix for Django 1.4 -- it does `return .. or {}`, which makes working with

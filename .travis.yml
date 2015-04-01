@@ -34,16 +34,26 @@ matrix:
     - python: "3.4"
       env: DJANGO=1.7 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
 
+    - python: "2.7"
+      env: DJANGO=1.8
+    - python: "2.7"
+      env: DJANGO=1.8 AUTH_USER_MODEL=tests.User
+    - python: "3.4"
+      env: DJANGO=1.8 COVERAGE=YES
+    - python: "3.4"
+      env: DJANGO=1.8 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
+
     - python: "3.4"
       env: FLAKE8=YES
 
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - if [[ $DJANGO ]]; then
-        if [[ $DJANGO != 1.8* ]]; then
+        if [[ $DJANGO != 1.9* ]]; then
             pip install "django>=$DJANGO,<=$DJANGO.99";
-        else
-            pip install https://www.djangoproject.com/download/$DJANGO/tarball/;
+        fi;
+        if [[ $DJANGO == 1.8 ]]; then
+            pip install django-formtools;
         fi;
         pip install twilio==3.6.8 qrcode;
         pip install -e .;

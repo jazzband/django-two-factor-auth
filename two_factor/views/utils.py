@@ -1,10 +1,9 @@
 import logging
-from django.contrib.formtools.wizard.forms import ManagementForm
 from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.functional import lazy_property
 from django.utils.translation import ugettext as _
-from two_factor.compat import SessionStorage, SessionWizardView
+from two_factor.compat import ManagementForm, SessionStorage, SessionWizardView
 
 logger = logging.getLogger(__name__)
 
