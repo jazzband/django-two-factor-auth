@@ -1,5 +1,5 @@
 import logging
-from django.contrib.formtools.wizard.forms import ManagementForm
+from formtools.wizard.forms import ManagementForm
 from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.functional import lazy_property
