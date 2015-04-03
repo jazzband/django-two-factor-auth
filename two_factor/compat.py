@@ -2,9 +2,9 @@ import django
 
 
 if django.VERSION[:2] >= (1, 6):
-    from django.contrib.formtools.wizard.views import WizardView
-    from django.contrib.formtools.wizard.views import SessionWizardView
-    from django.contrib.formtools.wizard.storage.session import SessionStorage
+    from formtools.wizard.views import WizardView
+    from formtools.wizard.views import SessionWizardView
+    from formtools.wizard.storage.session import SessionStorage
     from django.utils.http import is_safe_url
     from django.utils.module_loading import import_by_path
 
@@ -22,8 +22,8 @@ else:
     from django.utils.importlib import import_module
     from django.utils.datastructures import SortedDict
 
-    from django.contrib.formtools.wizard.storage.exceptions import NoFileStorageConfigured
-    from django.contrib.formtools.wizard.views import WizardView as _WizardView
+    from formtools.wizard.storage.exceptions import NoFileStorageConfigured
+    from formtools.wizard.views import WizardView as _WizardView
 
 
     # Fix for Django 1.4 and 1.5 which don't allow setting form_list etc on the
@@ -152,15 +152,15 @@ else:
 
 
 if (1, 5) <= django.VERSION[:2] < (1, 6):
-    from django.contrib.formtools.wizard.storage.session import SessionStorage
+    from formtools.wizard.storage.session import SessionStorage
 
     # Need to override SessionWizardView to subclass from the backported
     # WizardView.
     class SessionWizardView(WizardView):
-        storage_name = 'django.contrib.formtools.wizard.storage.session.SessionStorage'
+        storage_name = 'formtools.wizard.storage.session.SessionStorage'
 
 else:
-    from django.contrib.formtools.wizard.storage.session import SessionStorage as _SessionStorage
+    from formtools.wizard.storage.session import SessionStorage as _SessionStorage
     from django.core import urlresolvers
 
     # Fix for Django 1.4 -- it does `return .. or {}`, which makes working with
