@@ -1,19 +1,22 @@
 import django
 
-
-if django.VERSION[:2] >= (1, 8):
+try:
     from formtools.wizard.forms import ManagementForm
     from formtools.wizard.views import WizardView
     from formtools.wizard.views import SessionWizardView
     from formtools.wizard.storage.session import SessionStorage
-    from django.utils.http import is_safe_url
-    from django.utils.module_loading import import_by_path
-
-elif django.VERSION[:2] >= (1, 6):
+except ImportError:
     from django.contrib.formtools.wizard.forms import ManagementForm
     from django.contrib.formtools.wizard.views import WizardView
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
+
+
+if django.VERSION[:2] >= (1, 8):
+    from django.utils.http import is_safe_url
+    from django.utils.module_loading import import_by_path
+
+elif django.VERSION[:2] >= (1, 6):
     from django.utils.http import is_safe_url
     from django.utils.module_loading import import_by_path
 
