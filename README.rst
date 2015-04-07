@@ -34,8 +34,9 @@ django-user-sessions_ for providing Django sessions with a foreign key to the
 user. Although the package is optional, it improves account security control
 over ``django.contrib.sessions``.
 
-Compatible with Django 1.4, 1.5, 1.6 and 1.7 on Python 2.6, 2.7, 3.2, 3.3 and
-3.4. Documentation is available at `readthedocs.org`_.
+Compatible with all supported Django (LTS) versions. At the moment of writing
+that's including 1.4, 1.7 and 1.8 on Python 2.6, 2.7, 3.2, 3.3 and 3.4.
+Documentation is available at `readthedocs.org`_.
 
 Installation
 ============

@@ -8,24 +8,6 @@ matrix:
       env: DJANGO=1.4 YUBIKEY=YES
 
     - python: "2.7"
-      env: DJANGO=1.5 YUBIKEY=YES
-    - python: "2.7"
-      env: DJANGO=1.5 AUTH_USER_MODEL=tests.User
-    - python: "3.2"
-      env: DJANGO=1.5
-    - python: "3.2"
-      env: DJANGO=1.5 AUTH_USER_MODEL=tests.User YUBIKEY=YES
-
-    - python: "2.7"
-      env: DJANGO=1.6
-    - python: "2.7"
-      env: DJANGO=1.6 AUTH_USER_MODEL=tests.User
-    - python: "3.3"
-      env: DJANGO=1.6
-    - python: "3.3"
-      env: DJANGO=1.6 AUTH_USER_MODEL=tests.User YUBIKEY=YES
-
-    - python: "2.7"
       env: DJANGO=1.7
     - python: "2.7"
       env: DJANGO=1.7 AUTH_USER_MODEL=tests.User
