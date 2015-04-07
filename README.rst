@@ -44,6 +44,10 @@ Installation with ``pip``::
 
     $ pip install django-two-factor-auth
 
+On Django 1.8, also install ``django-formtools``:
+
+    $ pip install django-formtools
+
 Add the following apps to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (

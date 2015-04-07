@@ -1,10 +1,14 @@
 Installation
 ============
 
-You can install from PyPI_ using ``pip`` to install  ``django-two-factor-auth``
+You can install from PyPI_ using ``pip`` to install ``django-two-factor-auth``
 and its dependencies::
 
-    ``pip install django-two-factor-auth``
+    pip install django-two-factor-auth
+
+On Django 1.8, an extra dependency must be installed::
+
+    pip install django-formtools
 
 Add the following apps to the ``INSTALLED_APPS``::
 
@@ -74,6 +78,6 @@ You could also do this using this snippet::
 
     manage.py shell
     >>> from otp_yubikey.models import ValidationService
-    >>> ValidationService.objects.create(name='default', use_ssl=True, 
+    >>> ValidationService.objects.create(name='default', use_ssl=True,
     ...     param_sl='', param_timeout='')
     <ValidationService: default>
