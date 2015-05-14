@@ -38,6 +38,7 @@ Compatible with all supported Django (LTS) versions. At the moment of writing
 that's including 1.4, 1.7 and 1.8 on Python 2.6, 2.7, 3.2, 3.3 and 3.4.
 Documentation is available at `readthedocs.org`_.
 
+
 Installation
 ============
 Installation with ``pip``::
@@ -89,6 +90,7 @@ automatically patched to use the new login method.
 Support for YubiKey_ is disabled by default, but enabling is easy. Please
 refer to the documentation for instructions.
 
+
 Contribute
 ==========
 * Submit issues to the `issue tracker`_ on Github
@@ -115,7 +117,7 @@ For Python compatibility, tox_ is used. You can run the full test suite with::
 
 Releasing
 ---------
-The following actions are required to push a new version:
+The following actions are required to push a new version::
 
     python example/manage.py makemigrations two_factor
     git commit -am "Added migrations"
@@ -125,10 +127,12 @@ The following actions are required to push a new version:
     git tag [version]
     python setup.py sdist bdist_wheel upload
 
+
 See Also
 ========
 Have a look at django-user-sessions_ for Django sessions with a foreign key to
 the user. This package is also included in the online `example app`_.
+
 
 License
 =======
