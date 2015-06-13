@@ -27,7 +27,7 @@ def backup_phones(user):
 def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     # For a complete run-through of all the parameters, have a look at the
     # specs at:
-    # https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
+    # https://github.com/google/google-authenticator/wiki/Key-Uri-Format
 
     # quote and urlencode work best with bytes, not unicode strings.
     accountname = accountname.encode('utf8')
