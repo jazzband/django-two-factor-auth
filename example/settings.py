@@ -88,7 +88,6 @@ LOGGING = {
 
 TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
 TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
-TWO_FACTOR_TOTP_DIGITS = 8
 
 SESSION_ENGINE = 'user_sessions.backends.db'
 
