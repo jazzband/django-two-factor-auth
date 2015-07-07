@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponse, Http404
@@ -31,6 +30,7 @@ import qrcode
 import qrcode.image.svg
 
 from ..compat import is_safe_url, import_by_path
+from ..compat import get_current_site
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
                      PhoneNumberForm, BackupTokenForm, YubiKeyDeviceForm)

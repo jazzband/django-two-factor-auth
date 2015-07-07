@@ -11,6 +11,10 @@ except ImportError:
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
 
+try:
+    from django.contrib.sites.shortcuts import get_current_site
+except ImportError:
+    from django.contrib.sites.models import get_current_site
 
 if django.VERSION[:2] >= (1, 8):
     from django.utils.http import is_safe_url

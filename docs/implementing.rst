@@ -78,8 +78,8 @@ When a user was successfully verified using a OTP, the signal
 user, the device used and the request itself. You can use this signal for
 example to warn a user when one of his backup tokens was used::
 
-    from django.contrib.sites.models import get_current_site
     from django.dispatch import receiver
+    from two_factor.compat import get_current_site
     from two_factor.signals import user_verified
 
 
