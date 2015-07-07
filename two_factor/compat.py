@@ -17,19 +17,13 @@ except ImportError:
     from django.contrib.sites.models import get_current_site
 
 if django.VERSION[:2] >= (1, 8):
-    from django.utils.http import is_safe_url
     from django.utils.module_loading import import_by_path
 
 elif django.VERSION[:2] >= (1, 6):
-    from django.utils.http import is_safe_url
     from django.utils.module_loading import import_by_path
 
 else:
     import sys
-    try:
-        from urllib.parse import urlparse
-    except ImportError:
-        from urlparse import urlparse
 
     from django import forms
     from django.core.exceptions import ImproperlyConfigured
@@ -127,20 +121,6 @@ else:
                 data=self.storage.get_step_data(self.steps.current),
                 files=self.storage.get_step_files(self.steps.current))
             return self.render(form)
-
-
-    def is_safe_url(url, host=None):
-        """
-        Return ``True`` if the url is a safe redirection (i.e. it doesn't point to
-        a different host and uses a safe scheme).
-
-        Always returns ``False`` on an empty url.
-        """
-        if not url:
-            return False
-        url_info = urlparse(url)
-        return (not url_info.netloc or url_info.netloc == host) and \
-               (not url_info.scheme or url_info.scheme in ['http', 'https'])
 
 
     def import_by_path(dotted_path, error_prefix=''):

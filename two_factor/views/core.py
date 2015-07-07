@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
+from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, DeleteView, TemplateView
@@ -29,7 +30,7 @@ except ImportError:
 import qrcode
 import qrcode.image.svg
 
-from ..compat import is_safe_url, import_by_path
+from ..compat import import_by_path
 from ..compat import get_current_site
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
