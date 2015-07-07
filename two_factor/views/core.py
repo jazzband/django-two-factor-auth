@@ -30,7 +30,7 @@ except ImportError:
 import qrcode
 import qrcode.image.svg
 
-from ..compat import import_by_path
+from ..compat import import_string
 from ..compat import get_current_site
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
@@ -495,7 +495,7 @@ class QRGeneratorView(View):
 
         # Get data for qrcode
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
-        image_factory = import_by_path(image_factory_string)
+        image_factory = import_string(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
         try:
             username = self.request.user.get_username()
