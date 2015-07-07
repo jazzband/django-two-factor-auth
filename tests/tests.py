@@ -1096,7 +1096,8 @@ class YubiKeyTest(UserMixin, TestCase):
         self.assertContains(response, 'YubiKey')
 
         # Without ValidationService it won't work
-        with self.assertRaisesMessage(KeyError, "No ValidationService found with name 'default'"):
+        with six.assertRaisesRegex(self, KeyError,
+                                   "No ValidationService found with name 'default'"):
                 self.client.post(reverse('two_factor:setup'),
                                  data={'setup_view-current_step': 'method',
                                        'method-method': 'yubikey'})
