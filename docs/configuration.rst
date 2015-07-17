@@ -82,6 +82,20 @@ base urlpatterns, like so::
         url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     )
 
+Additionally, you need to enable the``ThreadLocals`` middleware::
+
+    MIDDLEWARE_CLASSES = (
+        ...
+
+        # Always include for two-factor auth
+        'django_otp.middleware.OTPMiddleware',
+
+        # Include for twilio gateway
+        'two_factor.middleware.threadlocals.ThreadLocals',
+    )
+
+
+
 .. autoclass:: two_factor.gateways.twilio.gateway.Twilio
 
 Fake Gateway
