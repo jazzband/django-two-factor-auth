@@ -2,6 +2,7 @@ from binascii import unhexlify
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -25,7 +26,10 @@ logger = logging.getLogger(__name__)
 if phonenumbers:
     def phone_number_validator(phone_number):
         try:
-            phonenumbers.parse(phone_number, None)
+            num = phonenumbers.parse(phone_number, None)
+            if not phonenumbers.is_valid_number(num):
+                raise ValidationError(_('Please enter a valid phone number, including your country code '
+                                        'starting with + or 00.'))
         except phonenumbers.phonenumberutil.NumberParseException:
             raise ValidationError(_('Please enter a valid phone number, including your country code '
                                     'starting with + or 00.'))
