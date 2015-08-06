@@ -28,11 +28,11 @@ if phonenumbers:
         try:
             num = phonenumbers.parse(phone_number, None)
             if not phonenumbers.is_valid_number(num):
-                raise ValidationError(_('Please enter a valid phone number, including your country code '
-                                        'starting with + or 00.'))
+                raise ValidationError(_('Please enter a valid phone number, including '
+                                        'your country code  starting with + or 00.'))
         except phonenumbers.phonenumberutil.NumberParseException:
-            raise ValidationError(_('Please enter a valid phone number, including your country code '
-                                    'starting with + or 00.'))
+            raise ValidationError(_('Please enter a valid phone number, including '
+                                    'your country code starting with + or 00.'))
 
 else:
     phone_number_validator = RegexValidator(
