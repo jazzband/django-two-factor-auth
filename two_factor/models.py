@@ -9,7 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 from django_otp import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
-
+try:
+    import phonenumbers
+except ImportError:
+    phonenumbers = None
 try:
     import yubiotp
 except ImportError:
@@ -19,13 +22,22 @@ from .gateways import make_call, send_sms
 
 
 logger = logging.getLogger(__name__)
+if phonenumbers:
+    def phone_number_validator(phone_number):
+        try:
+            phonenumbers.parse(phone_number, None)
+        except phonenumbers.phonenumberutil.NumberParseException:
+            raise ValidationError(_('Please enter a valid phone number, including your country code '
+                                    'starting with + or 00.'))
 
-phone_number_validator = RegexValidator(
-    code='invalid-phone-number',
-    regex='^(\+|00)',
-    message=_('Please enter a valid phone number, including your country code '
-              'starting with + or 00.'),
-)
+else:
+    phone_number_validator = RegexValidator(
+        code='invalid-phone-number',
+        regex='^(\+|00)',
+        message=_('Please enter a valid phone number, including your country code '
+                  'starting with + or 00.'),
+    )
+
 
 PHONE_METHODS = (
     ('call', _('Phone Call')),
