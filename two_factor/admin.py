@@ -76,4 +76,12 @@ if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
     patch_admin()
 
 
-admin.site.register(PhoneDevice)
+class PhoneDeviceAdmin(admin.ModelAdmin):
+    """
+    :class:`~django.contrib.admin.ModelAdmin` for
+    :class:`~two_factor.models.PhoneDevice`.
+    """
+    raw_id_fields = ('user',)
+
+
+admin.site.register(PhoneDevice, PhoneDeviceAdmin)
