@@ -725,7 +725,7 @@ class QRTest(UserMixin, TestCase):
             get_otpauth_url(accountname=self.user.get_username(),
                             secret=self.test_secret, issuer="testserver"),
             image_factory=default_factory)
-        mockimg.save.assert_called()
+        mockimg.save.assert_called_with(ANY)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.content.decode('utf-8'), self.test_img)
         self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
@@ -1095,9 +1095,13 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'setup_view-current_step': 'welcome'})
         self.assertContains(response, 'YubiKey')
 
-        # Without ValidationService it won't work
-        with six.assertRaisesRegex(self, KeyError,
-                                   "No ValidationService found with name 'default'"):
+        # self.assertRaises is broken on Python 2.7.10. See also
+        # https://bugs.python.org/issue24134 and
+        # https://code.djangoproject.com/ticket/24903.
+        if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
+            # Without ValidationService it won't work
+            with six.assertRaisesRegex(self, KeyError, "No ValidationService "
+                                                       "found with name 'default'"):
                 self.client.post(reverse('two_factor:setup'),
                                  data={'setup_view-current_step': 'method',
                                        'method-method': 'yubikey'})
