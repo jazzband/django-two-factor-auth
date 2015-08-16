@@ -725,7 +725,7 @@ class QRTest(UserMixin, TestCase):
             get_otpauth_url(accountname=self.user.get_username(),
                             secret=self.test_secret, issuer="testserver"),
             image_factory=default_factory)
-        mockimg.save.assert_called()
+        mockimg.save.assert_called_with(ANY)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.content.decode('utf-8'), self.test_img)
         self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
