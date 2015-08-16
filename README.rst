@@ -93,9 +93,9 @@ refer to the documentation for instructions.
 
 Contribute
 ==========
-* Submit issues to the `issue tracker`_ on Github
-* Fork the `source code`_ at Github
-* Run the tests.
+* Submit issues to the `issue tracker`_ on Github.
+* Fork the `source code`_ at Github.
+* Write some code and make sure it is covered with unit tests.
 * Send a pull request with your changes.
 * Provide a translation using Transifex_.
 
