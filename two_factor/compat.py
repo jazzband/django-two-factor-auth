@@ -11,14 +11,14 @@ except ImportError:
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
 
-try:
+if django.VERSION[:2] >= (1, 7):
     from django.contrib.sites.shortcuts import get_current_site
-except ImportError:
+else:
     from django.contrib.sites.models import get_current_site
 
-try:
+if django.VERSION[:2] >= (1, 7):
     from django.utils.module_loading import import_string
-except ImportError:
+else:
     import sys
     from django.utils.importlib import import_module
     from django.utils import six
