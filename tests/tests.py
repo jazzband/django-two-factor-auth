@@ -1083,8 +1083,12 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'setup_view-current_step': 'welcome'})
         self.assertContains(response, 'YubiKey')
 
-        # Without ValidationService it won't work
-        with self.assertRaisesMessage(KeyError, "No ValidationService found with name 'default'"):
+        # self.assertRaises is broken on Python 2.7.10. See also
+        # https://bugs.python.org/issue24134 and
+        # https://code.djangoproject.com/ticket/24903.
+        if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
+            # Without ValidationService it won't work
+            with self.assertRaisesMessage(KeyError, "No ValidationService found with name 'default'"):
                 self.client.post(reverse('two_factor:setup'),
                                  data={'setup_view-current_step': 'method',
                                        'method-method': 'yubikey'})
