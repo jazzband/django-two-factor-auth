@@ -1088,7 +1088,8 @@ class YubiKeyTest(UserMixin, TestCase):
         # https://code.djangoproject.com/ticket/24903.
         if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
             # Without ValidationService it won't work
-            with self.assertRaisesMessage(KeyError, "No ValidationService found with name 'default'"):
+            with self.assertRaisesMessage(KeyError, "No ValidationService "
+                                                    "found with name 'default'"):
                 self.client.post(reverse('two_factor:setup'),
                                  data={'setup_view-current_step': 'method',
                                        'method-method': 'yubikey'})
