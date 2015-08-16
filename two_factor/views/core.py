@@ -1,5 +1,6 @@
 from binascii import unhexlify
 from base64 import b32encode
+import logging
 
 from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
@@ -39,6 +40,8 @@ from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (get_otpauth_url, default_device,
                      backup_phones)
 from .utils import (IdempotentSessionWizardView, class_view_decorator)
+
+logger = logging.getLogger(__name__)
 
 
 @class_view_decorator(sensitive_post_parameters())
@@ -238,7 +241,12 @@ class SetupView(IdempotentSessionWizardView):
         """
         next_step = self.steps.next
         if next_step == 'validation':
-            self.get_device().generate_challenge()
+            try:
+                self.get_device().generate_challenge()
+                kwargs["challenge_succeeded"] = True
+            except:
+                logger.exception("Could not generate challenge")
+                kwargs["challenge_succeeded"] = False
         return super(SetupView, self).render_next_step(form, **kwargs)
 
     def done(self, form_list, **kwargs):
