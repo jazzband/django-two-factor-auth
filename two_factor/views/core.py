@@ -5,11 +5,11 @@ from django.conf import settings
 from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
+from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, DeleteView, TemplateView
@@ -30,7 +30,8 @@ except ImportError:
 import qrcode
 import qrcode.image.svg
 
-from ..compat import is_safe_url, import_by_path
+from ..compat import import_string
+from ..compat import get_current_site
 from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
                      DeviceValidationForm, AuthenticationTokenForm,
                      PhoneNumberForm, BackupTokenForm, YubiKeyDeviceForm)
@@ -494,7 +495,7 @@ class QRGeneratorView(View):
 
         # Get data for qrcode
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
-        image_factory = import_by_path(image_factory_string)
+        image_factory = import_string(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
         try:
             username = self.request.user.get_username()

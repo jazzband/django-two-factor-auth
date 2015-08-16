@@ -16,6 +16,11 @@ setup(
         'django_otp>=0.2.0,<0.2.99',
         'qrcode>=4.0.0,<4.99',
     ],
+    extras_require={
+        'Call': ['twilio'],
+        'SMS': ['twilio'],
+        'YubiKey': ['django-otp-yubikey'],
+    },
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',

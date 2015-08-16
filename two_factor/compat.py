@@ -11,27 +11,43 @@ except ImportError:
     from django.contrib.formtools.wizard.views import SessionWizardView
     from django.contrib.formtools.wizard.storage.session import SessionStorage
 
+if django.VERSION[:2] >= (1, 7):
+    from django.contrib.sites.shortcuts import get_current_site
+else:
+    from django.contrib.sites.models import get_current_site
 
-if django.VERSION[:2] >= (1, 8):
-    from django.utils.http import is_safe_url
-    from django.utils.module_loading import import_by_path
-
-elif django.VERSION[:2] >= (1, 6):
-    from django.utils.http import is_safe_url
-    from django.utils.module_loading import import_by_path
-
+if django.VERSION[:2] >= (1, 7):
+    from django.utils.module_loading import import_string
 else:
     import sys
-    try:
-        from urllib.parse import urlparse
-    except ImportError:
-        from urlparse import urlparse
+    from django.utils.importlib import import_module
+    from django.utils import six
 
+    def import_string(dotted_path):
+        """
+        Import a dotted module path and return the attribute/class designated by the
+        last name in the path. Raise ImportError if the import failed.
+        """
+        try:
+            module_path, class_name = dotted_path.rsplit('.', 1)
+        except ValueError:
+            msg = "%s doesn't look like a module path" % dotted_path
+            six.reraise(ImportError, ImportError(msg), sys.exc_info()[2])
+
+        module = import_module(module_path)
+
+        try:
+            return getattr(module, class_name)
+        except AttributeError:
+            msg = 'Module "%s" does not define a "%s" attribute/class' % (
+                module_path, class_name)
+            six.reraise(ImportError, ImportError(msg), sys.exc_info()[2])
+
+
+if django.VERSION[:2] < (1, 6):
     from django import forms
-    from django.core.exceptions import ImproperlyConfigured
     from django.forms import formsets
     from django.utils import six
-    from django.utils.importlib import import_module
     from django.utils.datastructures import SortedDict
 
     from django.contrib.formtools.wizard.forms import ManagementForm
@@ -123,46 +139,6 @@ else:
                 data=self.storage.get_step_data(self.steps.current),
                 files=self.storage.get_step_files(self.steps.current))
             return self.render(form)
-
-
-    def is_safe_url(url, host=None):
-        """
-        Return ``True`` if the url is a safe redirection (i.e. it doesn't point to
-        a different host and uses a safe scheme).
-
-        Always returns ``False`` on an empty url.
-        """
-        if not url:
-            return False
-        url_info = urlparse(url)
-        return (not url_info.netloc or url_info.netloc == host) and \
-               (not url_info.scheme or url_info.scheme in ['http', 'https'])
-
-
-    def import_by_path(dotted_path, error_prefix=''):
-        """
-        Import a dotted module path and return the attribute/class designated by the
-        last name in the path. Raise ImproperlyConfigured if something goes wrong.
-        """
-        try:
-            module_path, class_name = dotted_path.rsplit('.', 1)
-        except ValueError:
-            raise ImproperlyConfigured("%s%s doesn't look like a module path" % (
-                error_prefix, dotted_path))
-        try:
-            module = import_module(module_path)
-        except ImportError as e:
-            msg = '%sError importing module %s: "%s"' % (
-                error_prefix, module_path, e)
-            six.reraise(ImproperlyConfigured, ImproperlyConfigured(msg),
-                        sys.exc_info()[2])
-        try:
-            attr = getattr(module, class_name)
-        except AttributeError:
-            raise ImproperlyConfigured('%sModule "%s" does not define a "%s" attribute/class' % (
-                error_prefix, module_path, class_name))
-        return attr
-
 
 if (1, 5) <= django.VERSION[:2] < (1, 6):
     from django.contrib.formtools.wizard.storage.session import SessionStorage

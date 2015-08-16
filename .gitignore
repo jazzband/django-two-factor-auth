@@ -1,4 +1,5 @@
 *.py[co]
+example/database.sqlite
 example/settings_private.py
 *.egg-info
 /.coverage.*

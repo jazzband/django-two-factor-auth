@@ -1010,11 +1010,17 @@ class DisableCommandTest(UserMixin, TestCase):
             return self.assertRaises(SystemExit)
 
     def test_raises(self):
+        stdout = six.StringIO()
+        stderr = six.StringIO()
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
-            call_command('two_factor_disable', 'some_username')
+            call_command(
+                'two_factor_disable', 'some_username',
+                stdout=stdout, stderr=stderr)
 
         with self._assert_raises(CommandError, 'User "other_username" does not exist'):
-            call_command('two_factor_disable', 'other_username', 'some_username')
+            call_command(
+                'two_factor_disable', 'other_username', 'some_username',
+                stdout=stdout, stderr=stderr)
 
     def test_disable_single(self):
         user = self.create_user()
@@ -1044,11 +1050,17 @@ class StatusCommandTest(UserMixin, TestCase):
         os.environ['DJANGO_COLORS'] = 'nocolor'
 
     def test_raises(self):
+        stdout = six.StringIO()
+        stderr = six.StringIO()
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
-            call_command('two_factor_status', 'some_username')
+            call_command(
+                'two_factor_status', 'some_username',
+                stdout=stdout, stderr=stderr)
 
         with self._assert_raises(CommandError, 'User "other_username" does not exist'):
-            call_command('two_factor_status', 'other_username', 'some_username')
+            call_command(
+                'two_factor_status', 'other_username', 'some_username',
+                stdout=stdout, stderr=stderr)
 
     def test_status_single(self):
         user = self.create_user()
@@ -1088,8 +1100,8 @@ class YubiKeyTest(UserMixin, TestCase):
         # https://code.djangoproject.com/ticket/24903.
         if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
             # Without ValidationService it won't work
-            with self.assertRaisesMessage(KeyError, "No ValidationService "
-                                                    "found with name 'default'"):
+            with six.assertRaisesRegex(self, KeyError, "No ValidationService "
+                                                       "found with name 'default'"):
                 self.client.post(reverse('two_factor:setup'),
                                  data={'setup_view-current_step': 'method',
                                        'method-method': 'yubikey'})
