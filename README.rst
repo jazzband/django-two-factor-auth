@@ -24,8 +24,8 @@ generator (optional).
 
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
-forking the repository and sending some pull requests. The package is currently
-translated into English, Dutch, Hebrew and Arabic. Please contribute your own
+forking the repository and sending some pull requests. The package is 
+translated into English, Dutch and other languages. Please contribute your own
 language using Transifex_.
 
 Test drive this app through the online `example app`_, hosted by Heroku_. It
