@@ -23,23 +23,58 @@ from .gateways import make_call, send_sms
 logger = logging.getLogger(__name__)
 
 
-@deconstructible
 class PhoneNumberValidator(object):
-    code = 'invalid-phone-number'
+    region = None
+    code = 'invalid'
     message = _('Please enter a valid phone number, including your country code '
                 'starting with +.')
 
+    def __init__(self, region=None, message=None, code=None):
+        if region:
+            self.region = region
+        if message:
+            self.message = message
+        if code:
+            self.code = code
+
     def __call__(self, value):
-        region = getattr(settings, 'TWO_FACTOR_PHONE_REGION_FALLBACK', None)
-        try:
-            number = phonenumbers.parse(value, region=region)
-        except phonenumbers.NumberParseException:
-            raise ValidationError(self.message, code=self.code)
-        if not phonenumbers.is_valid_number(number):
+        if not phonenumbers.is_valid_number(value):
             raise ValidationError(self.message, code=self.code)
 
     def __eq__(self, other):
-        return True
+        return self.region == other.region and self.code == other.code and self.message == other.message
+
+
+class PhoneNumberField(models.Field):
+    region = getattr(settings, 'TWO_FACTOR_PHONE_REGION_FALLBACK', None)
+    default_error_messages = {
+        'invalid': PhoneNumberValidator.message
+    }
+
+    def __init__(self, verbose_name=_('number'), region=None, **kwargs):
+        kwargs['max_length'] = 16
+        super(PhoneNumberField, self).__init__(verbose_name=verbose_name, **kwargs)
+        if region:
+            self.region = region
+        self.validators.append(PhoneNumberValidator(region=self.region, message=self.error_messages['invalid']))
+
+    def to_python(self, value):
+        try:
+            return phonenumbers.parse(value, region=self.region)
+        except phonenumbers.NumberParseException:
+            raise ValidationError(
+                self.error_messages['invalid'],
+                code='invalid',
+                params={'value': value},
+            )
+
+    def get_prep_value(self, value):
+        if value is None:
+            return ""
+        return phonenumbers.format_number(value, phonenumbers.PhoneNumberFormat.E164)
+
+    def get_internal_type(self):
+        return 'CharField'
 
 
 PHONE_METHODS = (
@@ -80,9 +115,7 @@ class PhoneDevice(Device):
     """
     Model with phone number and token seed linked to a user.
     """
-    number = models.CharField(max_length=16,
-                              validators=[PhoneNumberValidator()],
-                              verbose_name=_('number'))
+    number = PhoneNumberField()
     key = models.CharField(max_length=40,
                            validators=[key_validator],
                            default=random_hex,
