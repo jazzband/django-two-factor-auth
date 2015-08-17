@@ -1,6 +1,6 @@
 TARGET?=tests
 
-.PHONY: docs flake8 example test coverage
+.PHONY: docs flake8 example test coverage migrations
 
 docs:
 	cd docs; make html
@@ -16,6 +16,10 @@ example:
 test:
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
 		django-admin.py test ${TARGET}
+
+migrations:
+	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
+		django-admin.py makemigrations two_factor
 
 coverage:
 	coverage erase
