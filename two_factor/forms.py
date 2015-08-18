@@ -32,7 +32,6 @@ class MethodForm(forms.Form):
 
 class PhoneNumberMethodForm(ModelForm):
     number = forms.CharField(label=_("Phone Number"),
-                             error_messages={'invalid': _('Enter a valid phone number.')},
                              validators=[validate_international_phonenumber])
     method = forms.ChoiceField(widget=forms.RadioSelect, label=_('Method'))
 
@@ -48,7 +47,6 @@ class PhoneNumberMethodForm(ModelForm):
 class PhoneNumberForm(ModelForm):
     # Cannot use PhoneNumberField, as it produces a PhoneNumber object, which cannot be serialized.
     number = forms.CharField(label=_("Phone Number"),
-                             error_messages={'invalid': _('Enter a valid phone number.')},
                              validators=[validate_international_phonenumber])
 
     class Meta:

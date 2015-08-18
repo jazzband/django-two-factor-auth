@@ -662,10 +662,14 @@ class PhoneSetupTest(UserMixin, TestCase):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '123',
                                'setup-method': 'call'})
-        print(response.context_data['wizard']['form'].errors)
-        self.assertEqual(
-            response.context_data['wizard']['form'].errors,
-            {'number': [six.text_type('Enter a valid phone number.')]})
+        if django.VERSION >= (1, 5):
+            self.assertEqual(
+                response.context_data['wizard']['form'].errors,
+                {'number': [six.text_type(validate_international_phonenumber.message)]})
+        else:
+            self.assertEqual(
+                response.context_data['wizard']['form'].errors,
+                {'number': ['Enter a valid value.']})
 
 
 class PhoneDeleteTest(UserMixin, TestCase):
@@ -1003,7 +1007,7 @@ class ValidatorsTest(TestCase):
 
         if django.VERSION >= (1, 5):
             self.assertEqual(form.errors['number'],
-                             [six.text_type('The phone number entered is not valid.')])
+                             [six.text_type(validate_international_phonenumber.message)])
         else:
             if django.VERSION >= (1, 5):
                 self.assertEqual(form.errors['number'],
