@@ -8,7 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
-from two_factor.utils import totp_digits
 
 try:
     from otp_yubikey.models import RemoteYubikeyDevice, YubikeyDevice
@@ -17,6 +16,8 @@ except ImportError:
 
 from .models import (PhoneDevice, get_available_phone_methods,
                      get_available_methods)
+from .utils import totp_digits
+from .validators import validate_international_phonenumber
 
 
 class MethodForm(forms.Form):
@@ -30,6 +31,9 @@ class MethodForm(forms.Form):
 
 
 class PhoneNumberMethodForm(ModelForm):
+    number = forms.CharField(label=_("Phone Number"),
+                             error_messages={'invalid': _('Enter a valid phone number.')},
+                             validators=[validate_international_phonenumber])
     method = forms.ChoiceField(widget=forms.RadioSelect, label=_('Method'))
 
     class Meta:
@@ -42,6 +46,11 @@ class PhoneNumberMethodForm(ModelForm):
 
 
 class PhoneNumberForm(ModelForm):
+    # Cannot use PhoneNumberField, as it produces a PhoneNumber object, which cannot be serialized.
+    number = forms.CharField(label=_("Phone Number"),
+                             error_messages={'invalid': _('Enter a valid phone number.')},
+                             validators=[validate_international_phonenumber])
+
     class Meta:
         model = PhoneDevice
         fields = 'number',

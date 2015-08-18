@@ -64,6 +64,11 @@ General Settings
      `the upstream ticket`_). Don't set this option to 8 unless all of your
      users use a 8 digit compatible token generator app.
 
+``PHONENUMBER_DEFAULT_REGION`` (default: ``None``)
+  The default region for parsing phone numbers. If your application's primary
+  audience is a certain country, setting the region to that country allows
+  entering phone numbers without that country's country code.
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_::

@@ -2,15 +2,13 @@ from binascii import unhexlify
 import logging
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 
 from django_otp import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
-import phonenumbers
+from phonenumber_field.modelfields import PhoneNumberField
 
 try:
     import yubiotp
@@ -21,69 +19,6 @@ from .gateways import make_call, send_sms
 
 
 logger = logging.getLogger(__name__)
-
-
-class PhoneNumberValidator(object):
-    region = None
-    code = 'invalid'
-    message = _('Please enter a valid phone number, including your country code '
-                'starting with +.')
-
-    def __init__(self, region=None, message=None, code=None):
-        if region:
-            self.region = region
-        if message:
-            self.message = message
-        if code:
-            self.code = code
-
-    def __call__(self, value):
-        if not phonenumbers.is_valid_number(value):
-            raise ValidationError(self.message, code=self.code)
-
-    def __eq__(self, other):
-        return self.region == other.region and self.code == other.code and self.message == other.message
-
-
-class PhoneNumberField(models.Field):
-    region = getattr(settings, 'TWO_FACTOR_PHONE_REGION_FALLBACK', None)
-    default_error_messages = {
-        'invalid': PhoneNumberValidator.message
-    }
-
-    def __init__(self, verbose_name=_('number'), region=None, **kwargs):
-        kwargs['max_length'] = 16
-        super(PhoneNumberField, self).__init__(verbose_name=verbose_name, **kwargs)
-        if region:
-            self.region = region
-        self.validators.append(PhoneNumberValidator(region=self.region, message=self.error_messages['invalid']))
-
-    def from_db_value(self, value, expression, connection, context):
-        if value is None:
-            return value
-        try:
-            return phonenumbers.parse(value, region=self.region)
-        except phonenumbers.NumberParseException:
-            return None
-
-    def to_python(self, value):
-        try:
-            return phonenumbers.parse(value, region=self.region)
-        except phonenumbers.NumberParseException:
-            raise ValidationError(
-                self.error_messages['invalid'],
-                code='invalid',
-                params={'value': value},
-            )
-
-    def get_prep_value(self, value):
-        if value is None:
-            return ""
-        return phonenumbers.format_number(value, phonenumbers.PhoneNumberFormat.E164)
-
-    def get_internal_type(self):
-        return 'CharField'
-
 
 PHONE_METHODS = (
     ('call', _('Phone Call')),
