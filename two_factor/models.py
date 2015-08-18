@@ -58,6 +58,14 @@ class PhoneNumberField(models.Field):
             self.region = region
         self.validators.append(PhoneNumberValidator(region=self.region, message=self.error_messages['invalid']))
 
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        try:
+            return phonenumbers.parse(value, region=self.region)
+        except phonenumbers.NumberParseException:
+            return None
+
     def to_python(self, value):
         try:
             return phonenumbers.parse(value, region=self.region)
