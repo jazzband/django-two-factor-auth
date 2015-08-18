@@ -57,8 +57,9 @@ import qrcode.image.svg
 from two_factor.admin import patch_admin, unpatch_admin
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
-from two_factor.models import PhoneDevice, phone_number_validator
+from two_factor.models import PhoneDevice
 from two_factor.utils import backup_phones, default_device, get_otpauth_url, totp_digits
+from two_factor.validators import validate_international_phonenumber
 
 
 class UserMixin(object):
@@ -186,7 +187,7 @@ class LoginTest(UserMixin, TestCase):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
                 user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                            digits=no_digits)
-                device = user.phonedevice_set.create(name='backup', number='123456789',
+                device = user.phonedevice_set.create(name='backup', number='+31101234567',
                                                      method='sms',
                                                      key=random_hex().decode())
 
@@ -194,13 +195,13 @@ class LoginTest(UserMixin, TestCase):
                 response = self._post({'auth-username': 'bouke@example.com',
                                        'auth-password': 'secret',
                                        'login_view-current_step': 'auth'})
-                self.assertContains(response, 'Send text message to 123****89')
+                self.assertContains(response, 'Send text message to +31 ** *** **67')
 
                 # Ask for challenge on invalid device
                 response = self._post({'auth-username': 'bouke@example.com',
                                        'auth-password': 'secret',
                                        'challenge_device': 'MALICIOUS/INPUT/666'})
-                self.assertContains(response, 'Send text message to 123****89')
+                self.assertContains(response, 'Send text message to +31 ** *** **67')
 
                 # Ask for SMS challenge
                 response = self._post({'auth-username': 'bouke@example.com',
@@ -387,7 +388,7 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Number:')
 
         response = self._post(data={'setup_view-current_step': 'call',
-                                    'call-number': '+123456789'})
+                                    'call-number': '+31101234567'})
         self.assertContains(response, 'Token:')
         self.assertContains(response, 'We are calling your phone right now')
 
@@ -410,7 +411,7 @@ class SetupTest(UserMixin, TestCase):
         phones = self.user.phonedevice_set.all()
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].name, 'default')
-        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'call')
 
     @patch('two_factor.gateways.fake.Fake')
@@ -424,7 +425,7 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Number:')
 
         response = self._post(data={'setup_view-current_step': 'sms',
-                                    'sms-number': '+123456789'})
+                                    'sms-number': '+31101234567'})
         self.assertContains(response, 'Token:')
         self.assertContains(response, 'We sent you a text message')
 
@@ -447,7 +448,7 @@ class SetupTest(UserMixin, TestCase):
         phones = self.user.phonedevice_set.all()
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].name, 'default')
-        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'sms')
 
     def test_already_setup(self):
@@ -631,7 +632,7 @@ class PhoneSetupTest(UserMixin, TestCase):
                           'number': ['This field is required.']})
 
         response = self._post({'phone_setup_view-current_step': 'setup',
-                               'setup-number': '+123456789',
+                               'setup-number': '+31101234567',
                                'setup-method': 'call'})
         self.assertContains(response, 'We\'ve sent a token to your phone')
         device = response.context_data['wizard']['form'].device
@@ -649,7 +650,7 @@ class PhoneSetupTest(UserMixin, TestCase):
         phones = self.user.phonedevice_set.all()
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].name, 'backup')
-        self.assertEqual(phones[0].number, '+123456789')
+        self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].key, device.key)
 
     @patch('two_factor.gateways.fake.Fake')
@@ -661,17 +662,18 @@ class PhoneSetupTest(UserMixin, TestCase):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '123',
                                'setup-method': 'call'})
+        print(response.context_data['wizard']['form'].errors)
         self.assertEqual(
             response.context_data['wizard']['form'].errors,
-            {'number': [six.text_type(phone_number_validator.message)]})
+            {'number': [six.text_type('Enter a valid phone number.')]})
 
 
 class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneDeleteTest, self).setUp()
         self.user = self.create_user()
-        self.backup = self.user.phonedevice_set.create(name='backup', method='sms')
-        self.default = self.user.phonedevice_set.create(name='default', method='call')
+        self.backup = self.user.phonedevice_set.create(name='backup', method='sms', number='+1')
+        self.default = self.user.phonedevice_set.create(name='default', method='call', number='+1')
         self.login_user()
 
     def test_delete(self):
@@ -892,18 +894,18 @@ class UtilsTest(UserMixin, TestCase):
         user = self.create_user()
         self.assertEqual(default_device(user), None)
 
-        user.phonedevice_set.create(name='backup')
+        user.phonedevice_set.create(name='backup', number='+1')
         self.assertEqual(default_device(user), None)
 
-        default = user.phonedevice_set.create(name='default')
+        default = user.phonedevice_set.create(name='default', number='+1')
         self.assertEqual(default_device(user).pk, default.pk)
 
     def test_backup_phones(self):
         self.assertQuerysetEqual(list(backup_phones(None)),
                                  list(PhoneDevice.objects.none()))
         user = self.create_user()
-        user.phonedevice_set.create(name='default')
-        backup = user.phonedevice_set.create(name='backup')
+        user.phonedevice_set.create(name='default', number='+1')
+        backup = user.phonedevice_set.create(name='backup', number='+1')
         phones = backup_phones(user)
 
         self.assertEqual(len(phones), 1)
@@ -980,26 +982,32 @@ class UtilsTest(UserMixin, TestCase):
 class ValidatorsTest(TestCase):
     def test_phone_number_validator_on_form_valid(self):
         class TestForm(forms.Form):
-            number = forms.CharField(validators=[phone_number_validator])
+            number = forms.CharField(validators=[validate_international_phonenumber])
 
         form = TestForm({
-            'number': '+1234567890',
+            'number': '+31101234567',
         })
 
         self.assertTrue(form.is_valid())
 
     def test_phone_number_validator_on_form_invalid(self):
         class TestForm(forms.Form):
-            number = forms.CharField(validators=[phone_number_validator])
+            number = forms.CharField(validators=[validate_international_phonenumber])
 
         form = TestForm({
-            'number': '123',
+            'number': '+3110123456',
         })
 
         self.assertFalse(form.is_valid())
         self.assertIn('number', form.errors)
-        self.assertEqual(form.errors['number'],
-                         [six.text_type(phone_number_validator.message)])
+
+        if django.VERSION >= (1, 5):
+            self.assertEqual(form.errors['number'],
+                             [six.text_type('The phone number entered is not valid.')])
+        else:
+            if django.VERSION >= (1, 5):
+                self.assertEqual(form.errors['number'],
+                                 [six.text_type('Enter a valid value.')])
 
 
 class DisableCommandTest(UserMixin, TestCase):
