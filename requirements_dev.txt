@@ -10,6 +10,9 @@ django_otp
 qrcode
 # django-formtools on Django 1.8 and above
 
+# Optional - improves phone number validation.
+phonenumbers
+
 # Example app
 
 django-debug-toolbar
