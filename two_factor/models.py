@@ -6,7 +6,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django_otp import Device
+from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 
