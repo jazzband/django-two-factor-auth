@@ -140,6 +140,11 @@ if django.VERSION[:2] < (1, 6):
                 files=self.storage.get_step_files(self.steps.current))
             return self.render(form)
 
+        def get_context_data(self, form, **kwargs):
+            context = super(WizardView, self).get_context_data(form)
+            context.update(**kwargs)
+            return context
+
 if (1, 5) <= django.VERSION[:2] < (1, 6):
     from django.contrib.formtools.wizard.storage.session import SessionStorage
 
