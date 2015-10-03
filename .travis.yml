@@ -2,11 +2,6 @@ language: python
 
 matrix:
   include:
-    - python: "2.6"
-      env: DJANGO=1.4 COVERAGE=YES
-    - python: "2.6"
-      env: DJANGO=1.4 YUBIKEY=YES
-
     - python: "2.7"
       env: DJANGO=1.7
     - python: "2.7"
