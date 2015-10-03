@@ -1,5 +1,5 @@
 from django.conf import settings
-from ..compat import import_string
+from django.utils.module_loading import import_string
 
 
 def get_gateway_class(import_path):

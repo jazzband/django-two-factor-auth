@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 from django.utils import translation
 from django.utils.translation import (ugettext_lazy as _, pgettext,
@@ -8,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from .gateway import validate_voice_locale
-from ...compat import get_current_site
 from ...views.utils import class_view_decorator
 
 

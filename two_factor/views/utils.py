@@ -3,7 +3,16 @@ from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.functional import lazy_property
 from django.utils.translation import ugettext as _
-from two_factor.compat import ManagementForm, SessionStorage, SessionWizardView
+
+try:
+    from formtools.wizard.forms import ManagementForm
+    from formtools.wizard.views import SessionWizardView
+    from formtools.wizard.storage.session import SessionStorage
+except ImportError:
+    from django.contrib.formtools.wizard.forms import ManagementForm
+    from django.contrib.formtools.wizard.views import SessionWizardView
+    from django.contrib.formtools.wizard.storage.session import SessionStorage
+
 
 logger = logging.getLogger(__name__)
 
