@@ -35,13 +35,15 @@ def get_otpauth_url(accountname, secret, issuer=None, digits=None):
 
     label = quote(b': '.join([issuer, accountname]) if issuer else accountname)
 
-    query = {
-        'secret': secret,
-        'digits': digits or totp_digits()
-    }
+    # Ensure that the secret parameter is the FIRST parameter of the URI, this
+    # allows Microsoft Authenticator to work.
+    query = [
+        ('secret', secret),
+        ('digits', digits or totp_digits())
+    ]
 
     if issuer:
-        query['issuer'] = issuer
+        query.append(('issuer', issuer))
 
     return 'otpauth://totp/%s?%s' % (label, urlencode(query))
 
