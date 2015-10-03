@@ -27,7 +27,6 @@ try:
 except ImportError:
     from mock import patch, Mock, ANY, call
 
-import django
 from django import forms
 from django.conf import settings
 from django.core.management import call_command, CommandError
@@ -662,14 +661,9 @@ class PhoneSetupTest(UserMixin, TestCase):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '123',
                                'setup-method': 'call'})
-        if django.VERSION >= (1, 5):
-            self.assertEqual(
-                response.context_data['wizard']['form'].errors,
-                {'number': [six.text_type(validate_international_phonenumber.message)]})
-        else:
-            self.assertEqual(
-                response.context_data['wizard']['form'].errors,
-                {'number': ['Enter a valid value.']})
+        self.assertEqual(
+            response.context_data['wizard']['form'].errors,
+            {'number': [six.text_type(validate_international_phonenumber.message)]})
 
 
 class PhoneDeleteTest(UserMixin, TestCase):
@@ -706,7 +700,6 @@ class QRTest(UserMixin, TestCase):
         self.assertEquals(response.status_code, 404)
 
     @patch('qrcode.make')
-    @unittest.skipIf(django.VERSION < (1, 5), "Django 1.4 not supported")
     def test_with_secret(self, mockqrcode):
         # Setup the mock data
         def side_effect(resp):
@@ -1005,21 +998,13 @@ class ValidatorsTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('number', form.errors)
 
-        if django.VERSION >= (1, 5):
-            self.assertEqual(form.errors['number'],
-                             [six.text_type(validate_international_phonenumber.message)])
-        else:
-            if django.VERSION >= (1, 5):
-                self.assertEqual(form.errors['number'],
-                                 [six.text_type('Enter a valid value.')])
+        self.assertEqual(form.errors['number'],
+                         [six.text_type(validate_international_phonenumber.message)])
 
 
 class DisableCommandTest(UserMixin, TestCase):
     def _assert_raises(self, err_type, err_message):
-        if django.VERSION >= (1, 5):
-            return self.assertRaisesMessage(err_type, err_message)
-        else:
-            return self.assertRaises(SystemExit)
+        return self.assertRaisesMessage(err_type, err_message)
 
     def test_raises(self):
         stdout = six.StringIO()
@@ -1052,10 +1037,7 @@ class DisableCommandTest(UserMixin, TestCase):
 
 class StatusCommandTest(UserMixin, TestCase):
     def _assert_raises(self, err_type, err_message):
-        if django.VERSION >= (1, 5):
-            return self.assertRaisesMessage(err_type, err_message)
-        else:
-            return self.assertRaises(SystemExit)
+        return self.assertRaisesMessage(err_type, err_message)
 
     def setUp(self):
         super(StatusCommandTest, self).setUp()

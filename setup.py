@@ -12,8 +12,8 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=1.4.2,<1.8.99,!=1.5.*,!=1.6.*',
-        'django_otp>=0.2.0,<0.3.99',
+        'Django>=1.7,<1.8.99',
+        'django_otp>=0.2.0,<0.99',
         'qrcode>=4.0.0,<4.99',
         'phonenumbers>=7.0.9,<7.99',
         'django-phonenumber-field>=0.7.2,<0.99',
@@ -33,7 +33,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',

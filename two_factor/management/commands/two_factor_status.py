@@ -1,14 +1,9 @@
-import django
 from django.core.management.base import BaseCommand, CommandError
-
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
+from django.contrib.auth import get_user_model
 
 from ...utils import default_device
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -34,13 +29,7 @@ class Command(BaseCommand):
             except User.DoesNotExist:
                 raise CommandError('User "%s" does not exist' % username)
 
-            self._write('%s: %s' % (
+            self.stdout.write('%s: %s' % (
                 username,
                 'enabled' if default_device(user) else self.style.ERROR('disabled')
             ))
-
-    def _write(self, text):
-        if django.VERSION >= (1, 5):
-            self.stdout.write(text)
-        else:
-            self.stdout.write('%s\n' % text)
