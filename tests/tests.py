@@ -12,10 +12,10 @@ except ImportError:
     from io import StringIO
 
 try:
-    from urllib.parse import urlencode, urlparse, parse_qs
+    from urllib.parse import urlencode, urlparse, parse_qsl
 except ImportError:
     from urllib import urlencode
-    from urlparse import urlparse, parse_qs
+    from urlparse import urlparse, parse_qsl
 
 try:
     import unittest2 as unittest
@@ -924,20 +924,20 @@ class UtilsTest(UserMixin, TestCase):
 
             self.assertEqualUrl(
                 'otpauth://totp/example.com%3A%20bouke%40example.com?'
-                'secret=abcdef123&issuer=example.com&digits=' + str(num_digits),
+                'secret=abcdef123&digits=' + str(num_digits) + '&issuer=example.com',
                 get_otpauth_url(accountname='bouke@example.com', issuer='example.com',
                                 secret='abcdef123', digits=num_digits))
 
             self.assertEqualUrl(
                 'otpauth://totp/My%20Site%3A%20bouke%40example.com?'
-                'secret=abcdef123&issuer=My+Site&digits=' + str(num_digits),
+                'secret=abcdef123&digits=' + str(num_digits) + '&issuer=My+Site',
                 get_otpauth_url(accountname='bouke@example.com', issuer='My Site',
                                 secret='abcdef123', digits=num_digits))
 
             self.assertEqualUrl(
                 'otpauth://totp/%E6%B5%8B%E8%AF%95%E7%BD%91%E7%AB%99%3A%20'
                 '%E6%88%91%E4%B8%8D%E6%98%AF%E9%80%97%E6%AF%94?'
-                'secret=abcdef123&issuer=测试网站&digits=' + str(num_digits),
+                'secret=abcdef123&digits=' + str(num_digits) + '&issuer=测试网站',
                 get_otpauth_url(accountname='我不是逗比',
                                 issuer='测试网站',
                                 secret='abcdef123', digits=num_digits))
@@ -960,12 +960,10 @@ class UtilsTest(UserMixin, TestCase):
         self.assertEqual(lhs.path, rhs.path)
         self.assertEqual(lhs.fragment, rhs.fragment)
 
-        # We're using urlencode(dict) and the order of items in a dictionary
-        # is not guaranteed. Now we could use an OrderedDict, but that's not
-        # available on Python 2.6. We actually don't care about the order of
-        # the query parameters, so parsing them back into a dictionary and
-        # comparing that is quite fine.
-        self.assertEqual(parse_qs(lhs.query), parse_qs(rhs.query))
+        # We used parse_qs before, but as query parameter order became 
+        # significant with Microsoft Authenticator and possibly other 
+        # authenticator apps, we've switched to parse_qsl.
+        self.assertEqual(parse_qsl(lhs.query), parse_qsl(rhs.query))
 
     def test_get_totp_digits(self):
         # test that the default is 6 if TWO_FACTOR_TOTP_DIGITS is not set
