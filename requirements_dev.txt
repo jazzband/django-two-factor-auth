@@ -21,6 +21,7 @@ coverage
 flake8
 tox
 mock
+detox
 
 # Translation
 

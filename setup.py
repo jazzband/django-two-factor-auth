@@ -13,7 +13,7 @@ setup(
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
         'Django>=1.4.2,<1.8.99',
-        'django_otp>=0.2.0,<0.2.99',
+        'django_otp>=0.2.0,<0.3.99',
         'qrcode>=4.0.0,<4.99',
     ],
     include_package_data=True,
