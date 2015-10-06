@@ -960,8 +960,8 @@ class UtilsTest(UserMixin, TestCase):
         self.assertEqual(lhs.path, rhs.path)
         self.assertEqual(lhs.fragment, rhs.fragment)
 
-        # We used parse_qs before, but as query parameter order became 
-        # significant with Microsoft Authenticator and possibly other 
+        # We used parse_qs before, but as query parameter order became
+        # significant with Microsoft Authenticator and possibly other
         # authenticator apps, we've switched to parse_qsl.
         self.assertEqual(parse_qsl(lhs.query), parse_qsl(rhs.query))
 
