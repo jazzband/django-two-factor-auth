@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
 from .utils import monkeypatch_method
