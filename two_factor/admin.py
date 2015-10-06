@@ -39,7 +39,7 @@ class AdminSiteOTPRequiredMixin(object):
         else:
             url = request.get_full_path()
         return redirect('%s?%s' % (
-            reverse(settings.LOGIN_URL),
+            settings.LOGIN_URL,
             urlencode({REDIRECT_FIELD_NAME: url})
         ))
 
@@ -62,7 +62,7 @@ def patch_admin():
         else:
             url = request.get_full_path()
         return redirect('%s?%s' % (
-            reverse(settings.LOGIN_URL),
+            settings.LOGIN_URL,
             urlencode({REDIRECT_FIELD_NAME: url})
         ))
 
