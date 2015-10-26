@@ -24,7 +24,7 @@ generator (optional).
 
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
-forking the repository and sending some pull requests. The package is 
+forking the repository and sending some pull requests. The package is
 translated into English, Dutch and other languages. Please contribute your own
 language using Transifex_.
 
@@ -78,10 +78,9 @@ Configure a few urls::
 
 Add the url routes::
 
-    urlpatterns = patterns('',
-        ...
+    urlpatterns = [
         url(r'', include('two_factor.urls', 'two_factor')),
-    )
+    ]
 
 Be sure to remove any other login routes, otherwise the two-factor
 authentication might be circumvented. The admin interface should be

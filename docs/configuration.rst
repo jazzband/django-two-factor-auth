@@ -83,9 +83,9 @@ base urlpatterns, like so::
     from two_factor.urls import urlpatterns as tf_urls
     from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 
-    urlpatterns = patterns('',
+    urlpatterns = [
         url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
-    )
+    ]
 
 Additionally, you need to enable the``ThreadLocals`` middleware::
 

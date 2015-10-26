@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from two_factor.admin import AdminSiteOTPRequired
@@ -11,8 +11,7 @@ from .views import SecureView
 admin.autodiscover()
 otp_admin_site = AdminSiteOTPRequired()
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(
         regex=r'^account/logout/$',
         view='django.contrib.auth.views.logout',
@@ -41,4 +40,4 @@ urlpatterns = patterns(
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^otp_admin/', include(otp_admin_site.urls)),
-)
+]

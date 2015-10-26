@@ -1,12 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from two_factor.views import (LoginView,
                               PhoneDeleteView, PhoneSetupView, DisableView,
                               BackupTokensView, SetupCompleteView, SetupView,
                               ProfileView, QRGeneratorView)
 
 
-core = patterns(
-    '',
+core = [
     url(
         regex=r'^account/login/$',
         view=LoginView.as_view(),
@@ -42,10 +41,9 @@ core = patterns(
         view=PhoneDeleteView.as_view(),
         name='phone_delete',
     ),
-)
+]
 
-profile = patterns(
-    '',
+profile = [
     url(
         regex=r'^account/two_factor/$',
         view=ProfileView.as_view(),
@@ -56,6 +54,6 @@ profile = patterns(
         view=DisableView.as_view(),
         name='disable',
     ),
-)
+]
 
 urlpatterns = core + profile
