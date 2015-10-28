@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+1.2.1
+-----
+* Fix: Resolved an issue with django_otp 0.3.2 and higher
+
+1.2.0
+-----
+* Fix: Issue with migrations on Py3 (#87)
+* Fix: Fixed failing migration on Django 1.7.0 (#83)
+* Fix: Issue with pip unable to install package
+* Dropped support for Django 1.5 and 1.6
+* Added support for Django 1.8
+
 1.1.1
 -----
 * Fix: Resolved a warning from Django 1.7 migrations (#80).
