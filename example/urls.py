@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 
 from two_factor.urls import urlpatterns as tf_urls
@@ -10,8 +10,7 @@ from .views import (ExampleSecretView, HomeView, RegistrationView,
 
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(
         regex=r'^$',
         view=HomeView.as_view(),
@@ -40,4 +39,4 @@ urlpatterns = patterns(
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     url(r'', include('user_sessions.urls', 'user_sessions')),
     url(r'^admin/', include(admin.site.urls)),
-)
+]

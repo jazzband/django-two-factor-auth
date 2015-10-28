@@ -41,11 +41,10 @@ Point to the new login pages in your settings::
 
 Add the routes to your url configuration::
 
-    urlpatterns = patterns(
-        '',
+    urlpatterns = [
         url(r'', include('two_factor.urls', 'two_factor')),
         ...
-    )
+    ]
 
 .. warning::
    Be sure to remove any other login routes, otherwise the two-factor
