@@ -1,19 +1,18 @@
 # encoding=UTF8
 try:
-    from urllib.parse import urlencode, urlparse, parse_qsl
+    from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-    from urlparse import urlparse, parse_qsl
 
 try:
-    from unittest.mock import patch, Mock, ANY, call
+    from unittest.mock import patch, Mock
 except ImportError:
-    from mock import patch, Mock, ANY, call
+    from mock import patch, Mock
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import translation, six
+from django.utils import translation
 from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.gateways.fake import Fake
@@ -106,7 +105,6 @@ class TwilioGatewayTest(TestCase):
             twilio = Twilio()
             with translation.override('ar'):
                 twilio.make_call(device=Mock(number='+123'), token='654321')
-
 
 
 class FakeGatewayTest(TestCase):

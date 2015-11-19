@@ -3,33 +3,20 @@ from __future__ import unicode_literals
 import sys
 
 try:
-    # Try StringIO first, as Python 2.7 also includes an unicode-strict
-    # io.StringIO.
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
-try:
-    from urllib.parse import urlencode, urlparse, parse_qsl
-except ImportError:
-    from urllib import urlencode
-    from urlparse import urlparse, parse_qsl
-
-try:
     import unittest2 as unittest
 except ImportError:
     import unittest
 
 try:
-    from unittest.mock import patch, Mock, ANY, call
+    from unittest.mock import patch
 except ImportError:
-    from mock import patch, Mock, ANY, call
+    from mock import patch
 
 from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.utils import translation, six
+from django.utils import six
 
 try:
     from django.contrib.auth import get_user_model

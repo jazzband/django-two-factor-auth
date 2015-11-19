@@ -33,7 +33,7 @@ from django.core.management import call_command, CommandError
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import translation, six
+from django.utils import six
 
 try:
     from django.contrib.auth import get_user_model
