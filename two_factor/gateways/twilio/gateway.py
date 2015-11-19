@@ -51,13 +51,13 @@ class Twilio(object):
         url = reverse('two_factor:twilio_call_app', kwargs={'token': token})
         url = '%s?%s' % (url, urlencode({'locale': locale}))
         uri = request.build_absolute_uri(url)
-        self.client.calls.create(to=device.number, from_=getattr(settings, 'TWILIO_CALLER_ID'),
+        self.client.calls.create(to=device.number.as_e164, from_=getattr(settings, 'TWILIO_CALLER_ID'),
                                  url=uri, method='GET', if_machine='Hangup', timeout=15)
 
     def send_sms(self, device, token):
         body = ugettext('Your authentication token is %s') % token
         self.client.sms.messages.create(
-            to=device.number,
+            to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
             body=body)
 
