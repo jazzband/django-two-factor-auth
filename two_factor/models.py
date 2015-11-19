@@ -58,6 +58,9 @@ class PhoneDevice(Device):
     """
     Model with phone number and token seed linked to a user.
     """
+    class Meta:
+        app_label = 'two_factor'
+
     number = PhoneNumberField()
     key = models.CharField(max_length=40,
                            validators=[key_validator],

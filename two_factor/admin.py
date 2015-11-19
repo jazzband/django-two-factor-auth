@@ -72,8 +72,6 @@ def unpatch_admin():
 
 
 original_login = AdminSite.login
-if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
-    patch_admin()
 
 
 class PhoneDeviceAdmin(admin.ModelAdmin):
