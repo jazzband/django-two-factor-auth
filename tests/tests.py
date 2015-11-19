@@ -533,6 +533,8 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
 
 
 class AdminPatchTest(TestCase):
+    urls = 'tests.urls_admin'
+
     def setUp(self):
         patch_admin()
 
@@ -547,6 +549,8 @@ class AdminPatchTest(TestCase):
 
 
 class AdminSiteTest(UserMixin, TestCase):
+    urls = 'tests.urls_admin'
+
     def setUp(self):
         super(AdminSiteTest, self).setUp()
         self.user = self.create_superuser()
@@ -555,6 +559,15 @@ class AdminSiteTest(UserMixin, TestCase):
     def test_default_admin(self):
         response = self.client.get('/admin/')
         self.assertEqual(response.status_code, 200)
+
+
+class OTPAdminSiteTest(UserMixin, TestCase):
+    urls = 'tests.urls_otp_admin'
+
+    def setUp(self):
+        super(OTPAdminSiteTest, self).setUp()
+        self.user = self.create_superuser()
+        self.login_user()
 
     def test_otp_admin_without_otp(self):
         response = self.client.get('/otp_admin/', follow=True)

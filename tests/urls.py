@@ -1,15 +1,11 @@
 from django.conf.urls import url, include
-from django.contrib import admin
 
-from two_factor.admin import AdminSiteOTPRequired
 from two_factor.views import LoginView
 from two_factor.urls import urlpatterns as tf_urls
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 
 from .views import SecureView
 
-admin.autodiscover()
-otp_admin_site = AdminSiteOTPRequired()
 
 urlpatterns = [
     url(
@@ -38,6 +34,4 @@ urlpatterns = [
     ),
 
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^otp_admin/', include(otp_admin_site.urls)),
 ]
