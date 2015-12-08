@@ -12,7 +12,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=1.7,<1.8.99',
+        'Django>=1.7,<1.9.99',
         'django_otp>=0.2.0,<0.99',
         'qrcode>=4.0.0,<4.99',
         'phonenumbers>=7.0.9,<7.99',
@@ -38,6 +38,7 @@ setup(
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Security',
         'Topic :: System :: Systems Administration :: Authentication/Directory',
     ],
