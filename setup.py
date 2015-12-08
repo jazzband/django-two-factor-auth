@@ -12,11 +12,12 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=1.7,<1.9.99',
-        'django_otp>=0.2.0,<0.99',
+        'Django>=1.8,<1.9.99',
+        'django_otp>=0.3.3,<0.99',
         'qrcode>=4.0.0,<4.99',
         'phonenumbers>=7.0.9,<7.99',
         'django-phonenumber-field>=0.7.2,<0.99',
+        'django-formtools',
     ],
     extras_require={
         'Call': ['twilio'],
