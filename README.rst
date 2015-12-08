@@ -49,6 +49,8 @@ On Django 1.8, also install ``django-formtools``:
 
     $ pip install django-formtools
 
+Setup
+=====
 Add the following apps to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
@@ -71,12 +73,12 @@ be installed *after* ``AuthenticationMiddleware``::
         'django.contrib.messages.middleware.MessageMiddleware',
     ]
 
-Configure a few urls::
+Configure a few urls in settings.py::
 
     from django.core.urlresolvers import reverse_lazy
     LOGIN_URL = reverse_lazy('two_factor:login')
 
-Add the url routes::
+Add the url routes to the project in urls.py::
 
     urlpatterns = [
         url(r'', include('two_factor.urls', 'two_factor')),

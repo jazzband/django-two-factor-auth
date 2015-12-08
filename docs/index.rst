@@ -22,7 +22,7 @@ Contents:
    release-notes
 
 I would love to hear your feedback on this application. If you run into
-problems, please file an issue on GitHub, or contribute to the project by
+problems, please file an issue on GitHub_, or contribute to the project by
 forking the repository and sending some pull requests.
 
 This application is currently translated into English, Dutch, Hebrew, Arabic,
@@ -38,3 +38,4 @@ Indices and tables
 
 .. _django-otp: https://pypi.python.org/pypi/django-otp
 .. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _GitHub: https://github.com/Bouke/django-two-factor-auth/issues

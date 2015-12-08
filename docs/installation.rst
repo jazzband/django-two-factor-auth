@@ -10,6 +10,9 @@ On Django 1.8, an extra dependency must be installed::
 
     pip install django-formtools
 
+Setup
+-----
+
 Add the following apps to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
@@ -30,7 +33,7 @@ it comes after ``AuthenticationMiddleware``::
         ...
     )
 
-Point to the new login pages in your settings::
+Point to the new login pages in your ``settings.py``::
 
     from django.core.urlresolvers import reverse_lazy
 
@@ -39,7 +42,7 @@ Point to the new login pages in your settings::
     # this one is optional
     LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
 
-Add the routes to your url configuration::
+Add the routes to your project url configuration::
 
     urlpatterns = [
         url(r'', include('two_factor.urls', 'two_factor')),
@@ -51,10 +54,10 @@ Add the routes to your url configuration::
    authentication might be circumvented. The admin interface should be
    automatically patched to use the new login method.
 
-Yubikey
--------
+Yubikey Setup
+-------------
 
-In order to support Yubikeys, you have to install a plugin for `django-otp`::
+In order to support Yubikeys_, you have to install a plugin for `django-otp`::
 
     pip install django-otp-yubikey
 
@@ -80,3 +83,5 @@ You could also do this using this snippet::
     >>> ValidationService.objects.create(name='default', use_ssl=True,
     ...     param_sl='', param_timeout='')
     <ValidationService: default>
+
+.. _Yubikeys: https://www.yubico.com/products/yubikey-hardware/
