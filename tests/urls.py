@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.contrib.auth.views import logout
 
 from two_factor.views import LoginView
 from two_factor.urls import urlpatterns as tf_urls
@@ -10,7 +11,7 @@ from .views import SecureView
 urlpatterns = [
     url(
         regex=r'^account/logout/$',
-        view='django.contrib.auth.views.logout',
+        view=logout,
         name='logout',
     ),
     url(

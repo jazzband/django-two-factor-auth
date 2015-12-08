@@ -532,8 +532,8 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+@override_settings(ROOT_URLCONF='tests.urls_admin')
 class AdminPatchTest(TestCase):
-    urls = 'tests.urls_admin'
 
     def setUp(self):
         patch_admin()
@@ -548,8 +548,8 @@ class AdminPatchTest(TestCase):
         self.assertRedirects(response, redirect_to)
 
 
+@override_settings(ROOT_URLCONF='tests.urls_admin')
 class AdminSiteTest(UserMixin, TestCase):
-    urls = 'tests.urls_admin'
 
     def setUp(self):
         super(AdminSiteTest, self).setUp()
@@ -561,8 +561,8 @@ class AdminSiteTest(UserMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+@override_settings(ROOT_URLCONF='tests.urls_otp_admin')
 class OTPAdminSiteTest(UserMixin, TestCase):
-    urls = 'tests.urls_otp_admin'
 
     def setUp(self):
         super(OTPAdminSiteTest, self).setUp()
