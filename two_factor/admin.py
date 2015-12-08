@@ -3,6 +3,7 @@ try:
 except ImportError:
     from urllib import urlencode
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
