@@ -48,8 +48,8 @@ General Settings
   on IE8 and below. If you have PIL, Pillow or pyimaging installed
   you may wish to use PNG images instead.
 
-  * ``qrcode.image.pil.PilImage`` may be used for PIL/Pillow
-  * ``qrcode.image.pure.PymagingImage`` may be used for pyimaging
+  * ``'qrcode.image.pil.PilImage'`` may be used for PIL/Pillow
+  * ``'qrcode.image.pure.PymagingImage'`` may be used for pyimaging
 
   For more QR factories that are available see python-qrcode_.
 
