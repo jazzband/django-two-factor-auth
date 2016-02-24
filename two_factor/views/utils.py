@@ -28,6 +28,12 @@ class ExtraSessionStorage(SessionStorage):
         super(ExtraSessionStorage, self).init_data()
         self.data[self.validated_step_data_key] = {}
 
+    def reset(self):
+        if self.prefix in self.request.session:
+            super(ExtraSessionStorage, self).reset()
+        else:
+            self.init_data()
+
     def _get_validated_step_data(self):
         return self.data[self.validated_step_data_key]
 
