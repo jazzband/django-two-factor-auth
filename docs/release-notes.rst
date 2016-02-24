@@ -1,8 +1,8 @@
 Release Notes
 =============
 
-Development
------------
+1.3.1
+-----
 * Fix: KeyError when trying to login (#102)
 * Fix: Migration fails with custom user model without username field
 * Fix: Added missing migrations
