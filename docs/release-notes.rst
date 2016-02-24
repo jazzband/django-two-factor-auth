@@ -1,6 +1,31 @@
 Release Notes
 =============
 
+Development
+-----------
+* Fix: KeyError when trying to login (#102)
+* Fix: Migration fails with custom user model without username field
+* Fix: Added missing migrations
+* Fix: Spurious migrations on Python 3
+* Require django-otp 0.3.4 and above for better Python 3 compatibility
+
+1.3.0
+-----
+* New feature: Added support for Django 1.9
+* New feature: Use phonenumbers library to validate phone number format
+* New feature: Use django-phonenumber-field for storing phone number in E.164 format
+* Use AppConfig for patching admin
+* Reduced number of tox test environments
+* Removed support for Django 1.7 and below
+* Fix: Catch gateway errors
+* Fix: Use raw_id_fields on admin site form
+* Fix: Skip test that hits bug in Python 2.7.10
+* Fix: Import changed in django-otp 0.3.?
+
+1.2.2
+-----
+* Allow django-otp 0.3.x as well as 0.2.x
+
 1.2.1
 -----
 * Fix: Resolved an issue with django_otp 0.3.2 and higher
