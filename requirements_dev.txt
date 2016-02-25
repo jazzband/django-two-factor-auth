@@ -8,7 +8,6 @@ Django
 twilio
 django_otp
 qrcode
-# django-formtools on Django 1.8 and above
 
 # Example app
 

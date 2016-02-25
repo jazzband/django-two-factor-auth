@@ -1,5 +1,6 @@
 # encoding=UTF8
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from binascii import unhexlify
 import os
 import sys
@@ -313,6 +314,25 @@ class LoginTest(UserMixin, TestCase):
             "Requested step '%s' is no longer valid, returning to last valid "
             "step in the wizard.",
             'token')
+
+    @patch('two_factor.views.utils.logger')
+    def test_login_different_user_on_existing_session(self, mock_logger):
+        """
+        This test reproduces the issue where a user is logged in and a different user
+        attempts to login.
+        """
+        self.create_user()
+        self.create_user(username='vedran@example.com')
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+
+        response = self._post({'auth-username': 'vedran@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
 
 
 class SetupTest(UserMixin, TestCase):
