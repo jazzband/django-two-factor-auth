@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 
 from .utils import monkeypatch_method
 from .models import PhoneDevice
@@ -38,7 +38,7 @@ class AdminSiteOTPRequiredMixin(object):
         else:
             url = request.get_full_path()
         return redirect('%s?%s' % (
-            settings.LOGIN_URL,
+            resolve_url(settings.LOGIN_URL),
             urlencode({REDIRECT_FIELD_NAME: url})
         ))
 
@@ -61,7 +61,7 @@ def patch_admin():
         else:
             url = request.get_full_path()
         return redirect('%s?%s' % (
-            settings.LOGIN_URL,
+            resolve_url(settings.LOGIN_URL),
             urlencode({REDIRECT_FIELD_NAME: url})
         ))
 

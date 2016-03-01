@@ -567,6 +567,13 @@ class AdminPatchTest(TestCase):
                                  urlencode({'next': '/admin/'}))
         self.assertRedirects(response, redirect_to)
 
+    @override_settings(LOGIN_URL='two_factor:login')
+    def test_named_url(self):
+        response = self.client.get('/admin/', follow=True)
+        redirect_to = '%s?%s' % (reverse(settings.LOGIN_URL),
+                                 urlencode({'next': '/admin/'}))
+        self.assertRedirects(response, redirect_to)
+
 
 @override_settings(ROOT_URLCONF='tests.urls_admin')
 class AdminSiteTest(UserMixin, TestCase):
@@ -592,6 +599,13 @@ class OTPAdminSiteTest(UserMixin, TestCase):
     def test_otp_admin_without_otp(self):
         response = self.client.get('/otp_admin/', follow=True)
         redirect_to = '%s?%s' % (settings.LOGIN_URL,
+                                 urlencode({'next': '/otp_admin/'}))
+        self.assertRedirects(response, redirect_to)
+
+    @override_settings(LOGIN_URL='two_factor:login')
+    def test_otp_admin_without_otp_named_url(self):
+        response = self.client.get('/otp_admin/', follow=True)
+        redirect_to = '%s?%s' % (reverse(settings.LOGIN_URL),
                                  urlencode({'next': '/otp_admin/'}))
         self.assertRedirects(response, redirect_to)
 
