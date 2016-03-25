@@ -6,7 +6,7 @@ setup(
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst').read(),
     author='Bouke Haarsma',
-    author_email='bouke@webatoom.nl',
+    author_email='bouke@haarsma.eu',
     url='https://github.com/Bouke/django-two-factor-auth',
     download_url='https://pypi.python.org/pypi/django-two-factor-auth',
     license='MIT',
