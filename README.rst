@@ -1,3 +1,5 @@
+**This project is currently unmaintained. Not recommended for production use.**
+
 ================================
 Django Two-Factor Authentication
 ================================
