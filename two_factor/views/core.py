@@ -204,7 +204,7 @@ class SetupView(IdempotentSessionWizardView):
     session_key_name = 'django_two_factor-qr_secret_key'
     initial_dict = {}
     form_list = (
-        ('welcome', Form),
+        #('welcome', Form),
         ('method', MethodForm),
         ('generator', TOTPDeviceForm),
         ('sms', PhoneNumberForm),
