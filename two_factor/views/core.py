@@ -23,6 +23,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
 from django_otp.util import random_hex
 from two_factor import signals
+from two_factor.models import get_available_methods
 from two_factor.utils import totp_digits
 
 try:
@@ -234,6 +235,18 @@ class SetupView(IdempotentSessionWizardView):
         if default_device(self.request.user):
             return redirect(self.redirect_url)
         return super(SetupView, self).get(request, *args, **kwargs)
+
+    def get_form_list(self):
+        """
+        Check if there is only one method, then skip the MethodForm from form_list
+        """
+        form_list = super(SetupView, self).get_form_list()
+        available_methods = get_available_methods()
+        if len(available_methods) == 1:
+            form_list.pop('method', None)
+            method_key, _ = available_methods[0]
+            self.storage.validated_step_data['method'] = {'method': method_key}
+        return form_list
 
     def render_next_step(self, form, **kwargs):
         """
