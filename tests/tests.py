@@ -33,7 +33,7 @@ from django.conf import settings
 from django.core.management import call_command, CommandError
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.utils import override_settings
+from django.test.utils import override_settings, modify_settings
 from django.utils import six
 
 try:
@@ -346,7 +346,43 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Follow the steps in this wizard to '
                                       'enable two-factor')
 
-    def test_setup_generator(self):
+    @modify_settings(INSTALLED_APPS={
+        'remove': ['otp_yubikey'],
+    })
+    def test_setup_only_generator_available(self):
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'welcome'})
+
+        self.assertContains(response, 'Token:')
+        session = self.client.session
+        self.assertIn('django_two_factor-qr_secret_key', session.keys())
+
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'generator'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['This field is required.']})
+
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'generator',
+                  'generator-token': '123456'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid.']})
+
+        key = response.context_data['keys'].get('generator')
+        bin_key = unhexlify(key.encode())
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'generator',
+                  'generator-token': totp(bin_key)})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+        self.assertEqual(1, self.user.totpdevice_set.count())
+
+    @override_settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+                       TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
+    def test_setup_generator_with_multi_method(self):
         response = self.client.post(
             reverse('two_factor:setup'),
             data={'setup_view-current_step': 'welcome'})
@@ -479,7 +515,7 @@ class SetupTest(UserMixin, TestCase):
         Activating two-factor authentication for ones account, should
         automatically mark the session as being OTP verified. Refs #44.
         """
-        self.test_setup_generator()
+        self.test_setup_only_generator_available()
         device = self.user.totpdevice_set.all()[0]
 
         self.assertEqual(device.persistent_id,
