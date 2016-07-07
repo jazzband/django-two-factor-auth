@@ -214,8 +214,9 @@ class SetupView(IdempotentSessionWizardView):
         ('yubikey', YubiKeyDeviceForm),
     )
 
+    show_welcome = not hasattr(settings, 'TWO_FACTOR_SKIP_WELCOME') or not settings.TWO_FACTOR_SKIP_WELCOME
     condition_dict = {
-        'welcome': lambda self: not hasattr(settings, 'TWO_FACTOR_SKIP_WELCOME') or not settings.TWO_FACTOR_SKIP_WELCOME,
+        'welcome': lambda self: show_welcome,
         'generator': lambda self: self.get_method() == 'generator',
         'call': lambda self: self.get_method() == 'call',
         'sms': lambda self: self.get_method() == 'sms',
