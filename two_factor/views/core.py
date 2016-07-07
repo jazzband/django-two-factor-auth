@@ -204,7 +204,7 @@ class SetupView(IdempotentSessionWizardView):
     template_name = 'two_factor/core/setup.html'
     session_key_name = 'django_two_factor-qr_secret_key'
     initial_dict = {}
-    form_list = [
+    form_list = (
         ('welcome', Form),
         ('method', MethodForm),
         ('generator', TOTPDeviceForm),
@@ -212,12 +212,10 @@ class SetupView(IdempotentSessionWizardView):
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
-    ]
-    if hasattr(settings, 'TWO_FACTOR_SKIP_WELCOME') and settings.TWO_FACTOR_SKIP_WELCOME:
-        form_list.pop(0)
-    form_list = tuple(form_list)
+    )
 
     condition_dict = {
+        'welcome': lambda self: not hasattr(settings, 'TWO_FACTOR_SKIP_WELCOME') or not settings.TWO_FACTOR_SKIP_WELCOME,
         'generator': lambda self: self.get_method() == 'generator',
         'call': lambda self: self.get_method() == 'call',
         'sms': lambda self: self.get_method() == 'sms',
