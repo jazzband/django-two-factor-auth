@@ -17,7 +17,7 @@ core = [
         name='setup',
     ),
     url(
-        regex=r'^account/two_factor/qrcode$',
+        regex=r'^account/two_factor/qrcode/$',
         view=QRGeneratorView.as_view(),
         name='qr',
     ),
