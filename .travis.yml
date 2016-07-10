@@ -9,6 +9,9 @@ env:
   - TOXENV=py27-dj19
   - TOXENV=py27-dj19-custom_user
   - TOXENV=py27-dj19-yubikey
+  - TOXENV=py27-dj110
+  - TOXENV=py27-dj110-custom_user
+  - TOXENV=py27-dj110-yubikey
   - TOXENV=py27-djmaster
   - TOXENV=py27-djmaster-custom_user
   - TOXENV=py27-djmaster-yubikey
@@ -24,6 +27,9 @@ env:
   - TOXENV=py34-dj19
   - TOXENV=py34-dj19-custom_user
   - TOXENV=py34-dj19-yubikey
+  - TOXENV=py34-dj110
+  - TOXENV=py34-dj110-custom_user
+  - TOXENV=py34-dj110-yubikey
   - TOXENV=py34-djmaster
   - TOXENV=py34-djmaster-custom_user
   - TOXENV=py34-djmaster-yubikey
@@ -33,6 +39,9 @@ env:
   - TOXENV=py35-dj19
   - TOXENV=py35-dj19-custom_user
   - TOXENV=py35-dj19-yubikey
+  - TOXENV=py35-dj110
+  - TOXENV=py35-dj110-custom_user
+  - TOXENV=py35-dj110-yubikey
   - TOXENV=py35-djmaster
   - TOXENV=py35-djmaster-custom_user
   - TOXENV=py35-djmaster-yubikey
