@@ -36,9 +36,9 @@ django-user-sessions_ for providing Django sessions with a foreign key to the
 user. Although the package is optional, it improves account security control
 over ``django.contrib.sessions``.
 
-Compatible with all supported Django (LTS) versions. At the moment of writing
-that's including 1.7 and 1.8 on Python 2.7, 3.2, 3.3 and 3.4.
-Documentation is available at `readthedocs.org`_.
+Compatible with all supported Django versions. At the moment of writing that's
+including 1.8, 1.9 and 1.10 on Python 2.7, 3.2, 3.3, 3.4 and 3.5. Documentation
+is available at `readthedocs.org`_.
 
 
 Installation
@@ -46,10 +46,6 @@ Installation
 Installation with ``pip``::
 
     $ pip install django-two-factor-auth
-
-On Django 1.8, also install ``django-formtools``:
-
-    $ pip install django-formtools
 
 Setup
 =====
@@ -114,7 +110,8 @@ Or run a specific test with::
 
     make test TARGET=tests.tests.TwilioGatewayTest
 
-For Python compatibility, tox_ is used. You can run the full test suite with::
+For Python compatibility, tox_ is used. You can run the full test suite,
+covering all supported Python and Django version with::
 
     tox
 

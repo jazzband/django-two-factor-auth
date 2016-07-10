@@ -6,10 +6,6 @@ and its dependencies::
 
     pip install django-two-factor-auth
 
-On Django 1.8, an extra dependency must be installed::
-
-    pip install django-formtools
-
 Setup
 -----
 
