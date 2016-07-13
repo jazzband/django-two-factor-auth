@@ -7,7 +7,7 @@ from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms import Form
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
@@ -469,11 +469,11 @@ class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.
     """
+
+    success_url = reverse_lazy('two_factor:profile')
+
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
-
-    def get_success_url(self):
-        return str(settings.LOGIN_REDIRECT_URL)
 
 
 @class_view_decorator(never_cache)
