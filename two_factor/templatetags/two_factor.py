@@ -18,7 +18,7 @@ def mask_phone_number(number):
 
     Examples:
 
-    * +31 * ******58
+    * `+31 * ******58`
 
     :param number: str or phonenumber object
     :return: str
@@ -47,8 +47,8 @@ def device_action(device):
 
     Examples:
 
-    * Send text message to +31 * ******58
-    * Call number +31 * ******58
+    * Send text message to `+31 * ******58`
+    * Call number `+31 * ******58`
     """
     assert isinstance(device, PhoneDevice)
     number = mask_phone_number(format_phone_number(device.number))

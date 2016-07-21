@@ -15,10 +15,17 @@
 import sys
 import os
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+
+sys.path.insert(0, os.path.abspath('extensions'))
+sys.path.insert(0, os.path.abspath('..'))
+import django
+django.setup()
 
 # -- General configuration ------------------------------------------------
 
@@ -29,7 +36,7 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'settings']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -269,11 +276,3 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
-
-# allow autodoc to import some project files, which rely on Django
-from django.conf import settings
-settings.configure(
-  DEBUG=False,
-  INSTALLED_APPS=('django.contrib.auth',),
-  AUTH_USER_MODEL='auth.User',
-)
