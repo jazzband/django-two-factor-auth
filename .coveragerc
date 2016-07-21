@@ -1,10 +1,9 @@
 [run]
+branch = True
 source = two_factor
-omit = */migrations/*,*/south_migrations/*,two_factor/compat.py
-parallel = true
 
 [report]
-precision = 2
+show_missing = True
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover

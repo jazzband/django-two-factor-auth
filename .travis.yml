@@ -1,49 +1,71 @@
 language: python
 
-matrix:
-  include:
-    - python: "2.7"
-      env: DJANGO=1.8
-    - python: "2.7"
-      env: DJANGO=1.8 AUTH_USER_MODEL=tests.User
-    - python: "3.5"
-      env: DJANGO=1.8 COVERAGE=YES
-    - python: "3.5"
-      env: DJANGO=1.8 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
+python: 3.5
 
-    - python: "2.7"
-      env: DJANGO=1.9
-    - python: "2.7"
-      env: DJANGO=1.9 AUTH_USER_MODEL=tests.User
-    - python: "3.5"
-      env: DJANGO=1.9 COVERAGE=YES
-    - python: "3.5"
-      env: DJANGO=1.9 AUTH_USER_MODEL=tests.User YUBIKEY=YES COVERAGE=YES
-
-    - python: "3.4"
-      env: FLAKE8=YES
+env:
+  - TOXENV=py27-dj18
+  - TOXENV=py27-dj18-custom_user
+  - TOXENV=py27-dj18-yubikey
+  - TOXENV=py27-dj19
+  - TOXENV=py27-dj19-custom_user
+  - TOXENV=py27-dj19-yubikey
+  - TOXENV=py27-dj110
+  - TOXENV=py27-dj110-custom_user
+  - TOXENV=py27-dj110-yubikey
+  - TOXENV=py27-djmaster
+  - TOXENV=py27-djmaster-custom_user
+  - TOXENV=py27-djmaster-yubikey
+  - TOXENV=py32-dj18
+  - TOXENV=py32-dj18-custom_user
+  - TOXENV=py32-dj18-yubikey
+  - TOXENV=py33-dj18
+  - TOXENV=py33-dj18-custom_user
+  - TOXENV=py33-dj18-yubikey
+  - TOXENV=py34-dj18
+  - TOXENV=py34-dj18-custom_user
+  - TOXENV=py34-dj18-yubikey
+  - TOXENV=py34-dj19
+  - TOXENV=py34-dj19-custom_user
+  - TOXENV=py34-dj19-yubikey
+  - TOXENV=py34-dj110
+  - TOXENV=py34-dj110-custom_user
+  - TOXENV=py34-dj110-yubikey
+  - TOXENV=py34-djmaster
+  - TOXENV=py34-djmaster-custom_user
+  - TOXENV=py34-djmaster-yubikey
+  - TOXENV=py35-dj18
+  - TOXENV=py35-dj18-custom_user
+  - TOXENV=py35-dj18-yubikey
+  - TOXENV=py35-dj19
+  - TOXENV=py35-dj19-custom_user
+  - TOXENV=py35-dj19-yubikey
+  - TOXENV=py35-dj110
+  - TOXENV=py35-dj110-custom_user
+  - TOXENV=py35-dj110-yubikey
+  - TOXENV=py35-djmaster
+  - TOXENV=py35-djmaster-custom_user
+  - TOXENV=py35-djmaster-yubikey
+  - TOXENV=flake8
 
 install:
-  - if [[ $DJANGO ]]; then
-        if [[ $DJANGO != 1.10* ]]; then
-            pip install "django>=$DJANGO,<=$DJANGO.99";
-        fi;
-        pip install twilio==3.6.8 qrcode;
-        pip install -e .;
-    fi;
-  - if [[ $COVERAGE == "YES" ]]; then pip install coveralls; fi;
-  - if [[ $YUBIKEY == "YES" ]]; then pip install django-otp-yubikey; fi;
-  - if [[ $FLAKE8 == "YES" ]]; then pip install flake8; fi;
+  - pip install -U pip
+  - pip install -U tox
+  - pip install coveralls
 
 script:
-  - if [[ $DJANGO ]]; then
-        if [[ $COVERAGE != "YES" ]]; then
-            make test;
-        else
-            make coverage;
-        fi;
-    fi;
-  - if [[ $FLAKE8 == "YES" ]]; then make flake8; fi;
+  - tox -e ${TOXENV}
+
+matrix:
+  allow_failures:
+    - env: TOXENV=py27-djmaster
+    - env: TOXENV=py27-djmaster-custom_user
+    - env: TOXENV=py27-djmaster-yubikey
+    - env: TOXENV=py34-djmaster
+    - env: TOXENV=py34-djmaster-custom_user
+    - env: TOXENV=py34-djmaster-yubikey
+    - env: TOXENV=py35-djmaster
+    - env: TOXENV=py35-djmaster-custom_user
+    - env: TOXENV=py35-djmaster-yubikey
 
 after_success:
-  - if [[ $COVERAGE == "YES" ]]; then coveralls; fi;
+    coveralls

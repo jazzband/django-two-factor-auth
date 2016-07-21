@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.4 (under development)
+-----------------------
+* Add: Support for Django 1.10
+
+
 1.3.1
 -----
 * Fix: KeyError when trying to login (#102)

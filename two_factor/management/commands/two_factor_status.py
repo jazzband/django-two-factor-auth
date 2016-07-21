@@ -3,8 +3,6 @@ from django.contrib.auth import get_user_model
 
 from ...utils import default_device
 
-User = get_user_model()
-
 
 class Command(BaseCommand):
     """
@@ -19,11 +17,14 @@ class Command(BaseCommand):
         bouke: enabled
         steve: disabled
     """
-    args = '<username username ...>'
     help = 'Checks two-factor authentication status for the given users'
 
-    def handle(self, *args, **options):
-        for username in args:
+    def add_arguments(self, parser):
+        parser.add_argument('args', metavar='usernames', nargs='*')
+
+    def handle(self, *usernames, **options):
+        User = get_user_model()
+        for username in usernames:
             try:
                 user = User.objects.get_by_natural_key(username)
             except User.DoesNotExist:
