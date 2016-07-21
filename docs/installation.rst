@@ -96,4 +96,5 @@ You could also do this using Django's `manage.py shell`:
     ... )
     <ValidationService: default>
 
+.. _PyPI: https://pypi.python.org/pypi/django-two-factor-auth
 .. _Yubikeys: https://www.yubico.com/products/yubikey-hardware/
