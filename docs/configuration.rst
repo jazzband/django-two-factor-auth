@@ -71,9 +71,11 @@ General Settings
 
 Twilio Gateway
 --------------
-To use the Twilio gateway, you need first to install the `Twilio client`_::
+To use the Twilio gateway, you need first to install the `Twilio client`_:
 
-    pip install twilio
+.. code-block:: console
+
+    $ pip install twilio
 
 Next, you also need to include the Twilio urlpatterns. As these urlpatterns are
 all defined using a single Django namespace, these should be joined with the
@@ -87,7 +89,9 @@ base urlpatterns, like so::
         url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
     ]
 
-Additionally, you need to enable the``ThreadLocals`` middleware::
+Additionally, you need to enable the``ThreadLocals`` middleware:
+
+.. code-block:: python
 
     MIDDLEWARE_CLASSES = (
         ...

@@ -2,14 +2,18 @@ Installation
 ============
 
 You can install from PyPI_ using ``pip`` to install ``django-two-factor-auth``
-and its dependencies::
+and its dependencies:
 
-    pip install django-two-factor-auth
+.. code-block:: console
+
+    $ pip install django-two-factor-auth
 
 Setup
 -----
 
-Add the following apps to the ``INSTALLED_APPS``::
+Add the following apps to the ``INSTALLED_APPS``:
+
+.. code-block:: python
 
     INSTALLED_APPS = (
         ...
@@ -20,7 +24,9 @@ Add the following apps to the ``INSTALLED_APPS``::
     )
 
 Add the ``django-otp`` middleware to your ``MIDDLEWARE_CLASSES``. Make sure
-it comes after ``AuthenticationMiddleware``::
+it comes after ``AuthenticationMiddleware``:
+
+.. code-block:: python
 
     MIDDLEWARE_CLASSES = (
         ...
@@ -53,11 +59,15 @@ Add the routes to your project url configuration::
 Yubikey Setup
 -------------
 
-In order to support Yubikeys_, you have to install a plugin for `django-otp`::
+In order to support Yubikeys_, you have to install a plugin for `django-otp`:
 
-    pip install django-otp-yubikey
+.. code-block:: console
 
-Add the following app to the ``INSTALLED_APPS``::
+    $ pip install django-otp-yubikey
+
+Add the following app to the ``INSTALLED_APPS``:
+
+.. code-block:: python
 
     INSTALLED_APPS = (
         ...
@@ -72,12 +82,18 @@ name ``default``. The other fields can be left empty, but you might want to
 consider requesting an API ID along with API key and using SSL for
 communicating with YubiCloud.
 
-You could also do this using this snippet::
+You could also do this using Django's `manage.py shell`:
 
-    manage.py shell
+.. code-block:: console
+
+    $ python manage.py shell
+
+.. code-block:: python
+
     >>> from otp_yubikey.models import ValidationService
-    >>> ValidationService.objects.create(name='default', use_ssl=True,
-    ...     param_sl='', param_timeout='')
+    >>> ValidationService.objects.create(
+    ...     name='default', use_ssl=True, param_sl='', param_timeout=''
+    ... )
     <ValidationService: default>
 
 .. _Yubikeys: https://www.yubico.com/products/yubikey-hardware/
