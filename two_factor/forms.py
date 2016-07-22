@@ -2,22 +2,22 @@ from binascii import unhexlify
 from time import time
 
 from django import forms
-from django.forms import ModelForm, Form
+from django.forms import Form, ModelForm
 from django.utils.translation import ugettext_lazy as _
-
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
+
+from .models import (
+    PhoneDevice, get_available_methods, get_available_phone_methods,
+)
+from .utils import totp_digits
+from .validators import validate_international_phonenumber
 
 try:
     from otp_yubikey.models import RemoteYubikeyDevice, YubikeyDevice
 except ImportError:
     RemoteYubikeyDevice = YubikeyDevice = None
-
-from .models import (PhoneDevice, get_available_phone_methods,
-                     get_available_methods)
-from .utils import totp_digits
-from .validators import validate_international_phonenumber
 
 
 class MethodForm(forms.Form):

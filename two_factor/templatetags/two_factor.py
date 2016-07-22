@@ -1,8 +1,8 @@
 import re
 
+import phonenumbers
 from django import template
 from django.utils.translation import ugettext
-import phonenumbers
 
 from ..models import PhoneDevice
 

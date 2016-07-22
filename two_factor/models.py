@@ -1,23 +1,22 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
-from binascii import unhexlify
 import logging
+from binascii import unhexlify
 
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
 
+from .gateways import make_call, send_sms
+
 try:
     import yubiotp
 except ImportError:
     yubiotp = None
-
-from .gateways import make_call, send_sms
 
 
 logger = logging.getLogger(__name__)

@@ -1,16 +1,18 @@
 from __future__ import absolute_import
 
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.utils import translation
+from django.utils.translation import pgettext, ugettext
+from twilio.rest import TwilioRestClient
+
+from two_factor.middleware.threadlocals import get_current_request
+
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils import translation
-from django.utils.translation import ugettext, pgettext
-from twilio.rest import TwilioRestClient
-from two_factor.middleware.threadlocals import get_current_request
 
 # Supported voice languages, see http://bit.ly/187I5cr
 VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',

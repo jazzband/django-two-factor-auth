@@ -1,46 +1,46 @@
-from binascii import unhexlify
-from base64 import b32encode
 import logging
+from base64 import b32encode
+from binascii import unhexlify
 
+import django_otp
+import qrcode
+import qrcode.image.svg
 from django.conf import settings
-from django.contrib.auth import login as login, REDIRECT_FIELD_NAME
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.forms import Form
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import FormView, DeleteView, TemplateView
+from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
-
-import django_otp
 from django_otp.decorators import otp_required
-from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
+from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
+
 from two_factor import signals
 from two_factor.models import get_available_methods
 from two_factor.utils import totp_digits
+
+from ..forms import (
+    AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
+    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+)
+from ..models import PhoneDevice, get_available_phone_methods
+from ..utils import backup_phones, default_device, get_otpauth_url
+from .utils import IdempotentSessionWizardView, class_view_decorator
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
 
-import qrcode
-import qrcode.image.svg
-
-from ..forms import (MethodForm, TOTPDeviceForm, PhoneNumberMethodForm,
-                     DeviceValidationForm, AuthenticationTokenForm,
-                     PhoneNumberForm, BackupTokenForm, YubiKeyDeviceForm)
-from ..models import PhoneDevice, get_available_phone_methods
-from ..utils import (get_otpauth_url, default_device,
-                     backup_phones)
-from .utils import (IdempotentSessionWizardView, class_view_decorator)
 
 logger = logging.getLogger(__name__)
 

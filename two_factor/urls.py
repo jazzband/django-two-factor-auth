@@ -1,9 +1,9 @@
 from django.conf.urls import url
-from two_factor.views import (LoginView,
-                              PhoneDeleteView, PhoneSetupView, DisableView,
-                              BackupTokensView, SetupCompleteView, SetupView,
-                              ProfileView, QRGeneratorView)
 
+from two_factor.views import (
+    BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
+    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
+)
 
 core = [
     url(

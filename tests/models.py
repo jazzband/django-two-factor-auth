@@ -1,6 +1,5 @@
 from django.conf import settings
 
-
 if settings.AUTH_USER_MODEL == 'tests.User':
     from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
                                             UserManager as BaseUserManager)

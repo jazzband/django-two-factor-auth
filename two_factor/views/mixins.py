@@ -3,11 +3,11 @@ try:
 except ImportError:
     from urllib import urlencode
 
-from django.core.urlresolvers import reverse
-from django.template.response import TemplateResponse
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 
 from ..utils import default_device
 

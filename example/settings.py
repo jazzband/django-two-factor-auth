@@ -1,5 +1,6 @@
-from django.core.urlresolvers import reverse_lazy
 import os
+
+from django.core.urlresolvers import reverse_lazy
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
