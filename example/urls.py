@@ -9,8 +9,6 @@ from .views import (
     ExampleSecretView, HomeView, RegistrationCompleteView, RegistrationView,
 )
 
-admin.autodiscover()
-
 urlpatterns = [
     url(
         regex=r'^$',

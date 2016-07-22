@@ -104,7 +104,6 @@ Additionally, you need to enable the``ThreadLocals`` middleware:
     )
 
 
-
 .. autoclass:: two_factor.gateways.twilio.gateway.Twilio
 
 Fake Gateway
