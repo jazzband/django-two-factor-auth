@@ -4,7 +4,6 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils.six.moves.urllib.parse import urlencode
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
@@ -47,8 +46,7 @@ class LoginTest(UserMixin, TestCase):
         redirect_url = reverse('two_factor:setup')
         self.create_user()
         response = self.client.post(
-            '%s?%s' % (reverse('two_factor:login'),
-                       urlencode({'next': redirect_url})),
+            '%s?%s' % (reverse('two_factor:login'), 'next=' + redirect_url),
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
@@ -58,8 +56,7 @@ class LoginTest(UserMixin, TestCase):
         redirect_url = reverse('two_factor:setup')
         self.create_user()
         response = self.client.post(
-            '%s?%s' % (reverse('custom-login'),
-                       urlencode({'next_page': redirect_url})),
+            '%s?%s' % (reverse('custom-login'), 'next_page=' + redirect_url),
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})

@@ -1,13 +1,9 @@
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import redirect, resolve_url
+from django.contrib.auth.views import redirect_to_login
+from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 
 from .models import PhoneDevice
@@ -40,10 +36,7 @@ class AdminSiteOTPRequiredMixin(object):
         if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
-        return redirect('%s?%s' % (
-            resolve_url(settings.LOGIN_URL),
-            urlencode({REDIRECT_FIELD_NAME: redirect_to})
-        ))
+        return redirect_to_login(redirect_to)
 
 
 class AdminSiteOTPRequired(AdminSiteOTPRequiredMixin, AdminSite):
@@ -64,10 +57,7 @@ def patch_admin():
         if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
-        return redirect('%s?%s' % (
-            resolve_url(settings.LOGIN_URL),
-            urlencode({REDIRECT_FIELD_NAME: redirect_to})
-        ))
+        return redirect_to_login(redirect_to)
 
 
 def unpatch_admin():

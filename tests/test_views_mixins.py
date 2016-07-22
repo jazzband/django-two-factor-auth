@@ -2,16 +2,16 @@
 
 from django.conf import settings
 from django.test import TestCase
-from django.utils.six.moves.urllib.parse import urlencode
 
 from .utils import UserMixin
 
 
 class OTPRequiredMixinTest(UserMixin, TestCase):
+
     def test_unauthenticated_redirect(self):
         url = '/secure/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
+        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_unauthenticated_raise(self):
@@ -23,7 +23,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.login_user()
         url = '/secure/redirect_unverified/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % ('/account/login/', urlencode({'next': url}))
+        redirect_to = '%s?%s' % ('/account/login/', 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):
@@ -37,8 +37,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.login_user()
         response = self.client.get('/secure/')
         self.assertContains(response, 'Permission Denied', status_code=403)
-        self.assertContains(response, 'Enable Two-Factor Authentication',
-                            status_code=403)
+        self.assertContains(response, 'Enable Two-Factor Authentication', status_code=403)
 
     def test_unverified_need_login(self):
         self.create_user()
@@ -46,7 +45,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.enable_otp()  # create OTP after login, so not verified
         url = '/secure/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, urlencode({'next': url}))
+        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_verified(self):
