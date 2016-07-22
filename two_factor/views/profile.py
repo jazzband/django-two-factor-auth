@@ -2,11 +2,11 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
-from django.views.generic import TemplateView, FormView
-from django_otp import user_has_device, devices_for_user
+from django.views.generic import FormView, TemplateView
+from django_otp import devices_for_user, user_has_device
 
 from ..forms import DisableForm
-from ..utils import default_device, backup_phones
+from ..utils import backup_phones, default_device
 from .utils import class_view_decorator
 
 

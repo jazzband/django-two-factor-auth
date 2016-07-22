@@ -22,6 +22,7 @@ flake8
 tox
 mock
 detox
+isort
 
 # Translation
 

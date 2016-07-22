@@ -1,12 +1,11 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.contrib.auth.views import logout
 
-from two_factor.views import LoginView
-from two_factor.urls import urlpatterns as tf_urls
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+from two_factor.urls import urlpatterns as tf_urls
+from two_factor.views import LoginView
 
 from .views import SecureView
-
 
 urlpatterns = [
     url(

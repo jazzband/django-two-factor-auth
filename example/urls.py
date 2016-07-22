@@ -2,14 +2,12 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.views import logout
 
-from two_factor.urls import urlpatterns as tf_urls
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+from two_factor.urls import urlpatterns as tf_urls
 
-from .views import (ExampleSecretView, HomeView, RegistrationView,
-                    RegistrationCompleteView)
-
-
-admin.autodiscover()
+from .views import (
+    ExampleSecretView, HomeView, RegistrationCompleteView, RegistrationView,
+)
 
 urlpatterns = [
     url(
