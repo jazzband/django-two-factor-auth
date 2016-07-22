@@ -1,12 +1,7 @@
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
 from ..utils import default_device
@@ -71,19 +66,13 @@ class OTPRequiredMixin(object):
             if self.raise_anonymous:
                 raise PermissionDenied()
             else:
-                return redirect('%s?%s' % (
-                    self.get_login_url(),
-                    urlencode({self.redirect_field_name: request.get_full_path()})
-                ))
+                return redirect_to_login(request.get_full_path(), self.get_login_url())
 
         if not request.user.is_verified():
             if self.raise_unverified:
                 raise PermissionDenied()
             elif self.get_verification_url():
-                return redirect('%s?%s' % (
-                    self.verification_url,
-                    urlencode({self.redirect_field_name: request.get_full_path()})
-                ))
+                return redirect_to_login(request.get_full_path(), self.get_verification_url())
             else:
                 return TemplateResponse(
                     request=request,

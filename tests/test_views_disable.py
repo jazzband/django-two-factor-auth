@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.shortcuts import resolve_url
 from django.test import TestCase
 from django_otp import devices_for_user
 
@@ -25,9 +26,9 @@ class DisableTest(UserMixin, TestCase):
 
         response = self.client.post(reverse('two_factor:disable'),
                                     {'understand': '1'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         self.assertEqual(list(devices_for_user(self.user)), [])
 
         # cannot disable twice
         response = self.client.get(reverse('two_factor:disable'))
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))

@@ -7,6 +7,7 @@ except ImportError:
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import six
@@ -62,7 +63,7 @@ class PhoneSetupTest(UserMixin, TestCase):
 
         response = self._post({'phone_setup_view-current_step': 'validation',
                                'validation-token': totp(device.bin_key)})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         phones = self.user.phonedevice_set.all()
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].name, 'backup')
@@ -94,7 +95,7 @@ class PhoneDeleteTest(UserMixin, TestCase):
     def test_delete(self):
         response = self.client.post(reverse('two_factor:phone_delete',
                                             args=[self.backup.pk]))
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         self.assertEqual(list(backup_phones(self.user)), [])
 
     def test_cannot_delete_default(self):

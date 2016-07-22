@@ -72,7 +72,7 @@ be installed *after* ``AuthenticationMiddleware``::
 Configure a few urls in settings.py::
 
     from django.core.urlresolvers import reverse_lazy
-    LOGIN_URL = reverse_lazy('two_factor:login')
+    LOGIN_URL = 'two_factor:login'
 
 Add the url routes to the project in urls.py::
 

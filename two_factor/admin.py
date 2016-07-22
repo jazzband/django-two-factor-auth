@@ -1,13 +1,10 @@
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import redirect, resolve_url
+from django.contrib.auth.views import redirect_to_login
+from django.shortcuts import resolve_url
+from django.utils.http import is_safe_url
 
 from .models import PhoneDevice
 from .utils import monkeypatch_method
@@ -20,6 +17,7 @@ class AdminSiteOTPRequiredMixin(object):
     Custom admin views should either be wrapped using :meth:`admin_view` or
     use :meth:`has_permission` in order to secure those views.
     """
+
     def has_permission(self, request):
         """
         Returns True if the given HttpRequest has permission to view
@@ -33,14 +31,12 @@ class AdminSiteOTPRequiredMixin(object):
         """
         Redirects to the site login page for the given HttpRequest.
         """
-        if REDIRECT_FIELD_NAME in request.GET:
-            url = request.GET[REDIRECT_FIELD_NAME]
-        else:
-            url = request.get_full_path()
-        return redirect('%s?%s' % (
-            resolve_url(settings.LOGIN_URL),
-            urlencode({REDIRECT_FIELD_NAME: url})
-        ))
+        redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
+
+        if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+
+        return redirect_to_login(redirect_to)
 
 
 class AdminSiteOTPRequired(AdminSiteOTPRequiredMixin, AdminSite):
@@ -56,14 +52,12 @@ def patch_admin():
         """
         Redirects to the site login page for the given HttpRequest.
         """
-        if REDIRECT_FIELD_NAME in request.GET:
-            url = request.GET[REDIRECT_FIELD_NAME]
-        else:
-            url = request.get_full_path()
-        return redirect('%s?%s' % (
-            resolve_url(settings.LOGIN_URL),
-            urlencode({REDIRECT_FIELD_NAME: url})
-        ))
+        redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
+
+        if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+
+        return redirect_to_login(redirect_to)
 
 
 def unpatch_admin():

@@ -8,6 +8,7 @@ import unittest
 from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.utils import six
 
@@ -89,7 +90,7 @@ class YubiKeyTest(UserMixin, TestCase):
         response = self.client.post(reverse('two_factor:login'),
                                     data={'token-otp_token': token,
                                           'login_view-current_step': 'token'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         verify_token.assert_called_with(token)
 
     def test_show_correct_label(self):

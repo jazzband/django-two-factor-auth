@@ -64,9 +64,9 @@ INSTALLED_APPS = (
 )
 
 
-LOGOUT_URL = reverse_lazy('logout')
-LOGIN_URL = reverse_lazy('two_factor:login')
-LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
+LOGOUT_URL = 'logout'
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'two_factor:profile'
 
 INTERNAL_IPS = ('127.0.0.1',)
 
