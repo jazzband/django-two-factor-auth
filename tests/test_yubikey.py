@@ -1,16 +1,9 @@
-# encoding=UTF8
+# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
+
 import sys
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+import unittest
 
 from django import forms
 from django.conf import settings
@@ -18,19 +11,17 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import six
 
+from .utils import UserMixin
+
 try:
-    from django.contrib.auth import get_user_model
+    from unittest.mock import patch
 except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
+    from mock import patch
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
-
-from .tests import UserMixin
 
 
 @unittest.skipUnless(ValidationService, 'No YubiKey support')
