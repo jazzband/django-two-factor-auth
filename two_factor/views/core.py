@@ -13,7 +13,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
@@ -181,7 +181,7 @@ class LoginView(IdempotentSessionWizardView):
             except StaticDevice.DoesNotExist:
                 context['backup_tokens'] = 0
 
-        context['cancel_url'] = settings.LOGOUT_URL
+        context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
 
 

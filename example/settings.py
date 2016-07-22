@@ -64,7 +64,7 @@ INSTALLED_APPS = (
 )
 
 
-LOGOUT_URL = reverse_lazy('logout')
+LOGOUT_URL = 'logout'
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
 
