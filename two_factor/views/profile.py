@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from django_otp import devices_for_user, user_has_device
@@ -48,10 +48,10 @@ class DisableView(FormView):
 
     def get(self, request, *args, **kwargs):
         if not user_has_device(self.request.user):
-            return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))
+            return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))
         return super(DisableView, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
-        return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))

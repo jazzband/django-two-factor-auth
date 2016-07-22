@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
 from django_otp import DEVICE_ID_SESSION_KEY
@@ -37,7 +38,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # No signal should be fired for non-verified user logins.
         self.assertFalse(mock_signal.called)
@@ -80,7 +81,7 @@ class LoginTest(UserMixin, TestCase):
 
         response = self._post({'token-otp_token': totp(device.bin_key),
                                'login_view-current_step': 'token'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         self.assertEqual(device.persistent_id,
                          self.client.session.get(DEVICE_ID_SESSION_KEY))
@@ -139,7 +140,7 @@ class LoginTest(UserMixin, TestCase):
             # Valid token should be accepted.
             response = self._post({'token-otp_token': totp(device.bin_key),
                                    'login_view-current_step': 'token'})
-            self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
             self.assertEqual(device.persistent_id,
                              self.client.session.get(DEVICE_ID_SESSION_KEY))
 
@@ -171,7 +172,7 @@ class LoginTest(UserMixin, TestCase):
         # Valid token should be accepted.
         response = self._post({'backup-otp_token': 'abcdef123',
                                'login_view-current_step': 'backup'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
@@ -242,12 +243,12 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, str(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
 
 class BackupTokensTest(UserMixin, TestCase):

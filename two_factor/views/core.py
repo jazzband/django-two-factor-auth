@@ -106,7 +106,7 @@ class LoginView(IdempotentSessionWizardView):
 
         redirect_to = self.request.GET.get(self.redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
-            redirect_to = str(settings.LOGIN_REDIRECT_URL)
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
@@ -348,7 +348,7 @@ class SetupView(IdempotentSessionWizardView):
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
-        context['cancel_url'] = settings.LOGIN_REDIRECT_URL
+        context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
         return context
 
     def process_step(self, form):
@@ -422,7 +422,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         Store the device and redirect to profile page.
         """
         self.get_device(user=self.request.user, name='backup').save()
-        return redirect(self.redirect_url or str(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))
 
     def render_next_step(self, form, **kwargs):
         """
@@ -459,7 +459,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         return self.storage.extra_data[self.key_name]
 
     def get_context_data(self, form, **kwargs):
-        kwargs.setdefault('cancel_url', settings.LOGIN_REDIRECT_URL)
+        kwargs.setdefault('cancel_url', resolve_url(settings.LOGIN_REDIRECT_URL))
         return super(PhoneSetupView, self).get_context_data(form, **kwargs)
 
 
@@ -469,11 +469,12 @@ class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.
     """
+
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
 
     def get_success_url(self):
-        return str(settings.LOGIN_REDIRECT_URL)
+        return resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
 @class_view_decorator(never_cache)

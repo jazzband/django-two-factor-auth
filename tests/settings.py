@@ -41,7 +41,7 @@ ROOT_URLCONF = 'tests.urls'
 
 LOGOUT_URL = 'logout'
 LOGIN_URL = 'two_factor:login'
-LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
+LOGIN_REDIRECT_URL = 'two_factor:profile'
 
 CACHES = {
     'default': {

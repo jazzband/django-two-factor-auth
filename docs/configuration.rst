@@ -39,7 +39,8 @@ General Settings
 
 ``LOGIN_REDIRECT_URL``
   This application provides a basic page for managing one's account. This view
-  is entirely optional and could be implemented in a custom view.
+  is entirely optional and could be implemented in a custom view. This can be a
+  URL path or URL name as defined in the Django documentation.
 
   See also LOGIN_REDIRECT_URL_.
 
