@@ -30,9 +30,10 @@ General Settings
     default logger.
 
 ``LOGIN_URL``
-  Should point to the login view provided by this application as described in setup. This login view
-  handles password authentication followed by a one-time password exchange if
-  enabled for that account.
+  Should point to the login view provided by this application as described in
+  setup. This login view handles password authentication followed by a one-time
+  password exchange if enabled for that account. This can be a URL path or URL
+  name as defined in the Django documentation.
 
   See also LOGIN_URL_.
 

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 
@@ -26,7 +26,7 @@ class RegistrationCompleteView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(RegistrationCompleteView, self).get_context_data(**kwargs)
-        context['login_url'] = str(settings.LOGIN_URL)
+        context['login_url'] = resolve_url(settings.LOGIN_URL)
         return context
 
 

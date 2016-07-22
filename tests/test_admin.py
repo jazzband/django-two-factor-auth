@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -21,13 +21,13 @@ class AdminPatchTest(TestCase):
 
     def test(self):
         response = self.client.get('/admin/', follow=True)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=/admin/')
+        redirect_to = '%s?next=/admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
     @override_settings(LOGIN_URL='two_factor:login')
     def test_named_url(self):
         response = self.client.get('/admin/', follow=True)
-        redirect_to = '%s?%s' % (reverse(settings.LOGIN_URL), 'next=/admin/')
+        redirect_to = '%s?next=/admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
 
@@ -54,13 +54,13 @@ class OTPAdminSiteTest(UserMixin, TestCase):
 
     def test_otp_admin_without_otp(self):
         response = self.client.get('/otp_admin/', follow=True)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=/otp_admin/')
+        redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
     @override_settings(LOGIN_URL='two_factor:login')
     def test_otp_admin_without_otp_named_url(self):
         response = self.client.get('/otp_admin/', follow=True)
-        redirect_to = '%s?%s' % (reverse(settings.LOGIN_URL), 'next=/otp_admin/')
+        redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
     def test_otp_admin_with_otp(self):

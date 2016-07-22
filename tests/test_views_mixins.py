@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.shortcuts import resolve_url
 from django.test import TestCase
 
 from .utils import UserMixin
@@ -11,7 +12,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
     def test_unauthenticated_redirect(self):
         url = '/secure/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=' + url)
+        redirect_to = '%s?%s' % (resolve_url(settings.LOGIN_URL), 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_unauthenticated_raise(self):
@@ -45,7 +46,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.enable_otp()  # create OTP after login, so not verified
         url = '/secure/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % (settings.LOGIN_URL, 'next=' + url)
+        redirect_to = '%s?%s' % (resolve_url(settings.LOGIN_URL), 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_verified(self):

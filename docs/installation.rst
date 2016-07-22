@@ -39,7 +39,7 @@ Point to the new login pages in your ``settings.py``::
 
     from django.core.urlresolvers import reverse_lazy
 
-    LOGIN_URL = reverse_lazy('two_factor:login')
+    LOGIN_URL = 'two_factor:login'
 
     # this one is optional
     LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
