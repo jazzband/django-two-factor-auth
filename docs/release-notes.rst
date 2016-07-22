@@ -3,7 +3,10 @@ Release Notes
 
 1.4 (under development)
 -----------------------
-* Add: Support for Django 1.10
+* New: Support for Django 1.10 (#157)
+* Fix: Enable autodoc builds in documentation (#164)
+* Fix: Support named urls in ``LOGIN_URL``, ``LOGIN_REDIRECT_URL`` and
+  ``LOGOUT_URL`` (#153)
 
 
 1.3.1
