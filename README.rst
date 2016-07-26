@@ -121,9 +121,10 @@ The following actions are required to push a new version::
     git commit -am "Added migrations"
 
     bumpversion [major|minor|patch]
-    git commit -am "Released [version]"
+    git commit -am "Released version [version]"
     git tag [version]
-    python setup.py sdist bdist_wheel upload
+    python setup.py sdist bdist_wheel
+    twine upload [LIST_OF_FILES]
 
 
 See Also
