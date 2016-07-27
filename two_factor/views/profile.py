@@ -23,17 +23,19 @@ class ProfileView(TemplateView):
     template_name = 'two_factor/profile/profile.html'
 
     def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
         try:
             backup_tokens = self.request.user.staticdevice_set.all()[0].token_set.count()
         except Exception:
             backup_tokens = 0
 
-        return {
+        context.update({
             'default_device': default_device(self.request.user),
             'default_device_type': default_device(self.request.user).__class__.__name__,
             'backup_phones': backup_phones(self.request.user),
             'backup_tokens': backup_tokens,
-        }
+        })
+        return context
 
 
 @class_view_decorator(never_cache)
