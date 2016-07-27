@@ -1,0 +1,14 @@
+{% load i18n %}
+
+{# hidden submit button to enable [enter] key #}
+<div style="margin-left: -9999px; position: absolute;"><input type="submit" value=""/></div>
+
+<div class="form-row">
+  <a href="{{ cancel_url }}" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
+  {% if wizard.steps.prev %}
+    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="">{% trans "Back" %}</button>
+  {% else %}
+    <button disabled name="" type="button">{% trans "Back" %}</button>
+  {% endif %}
+  <button type="submit" class="">{% trans "Next" %}</button>
+</div>

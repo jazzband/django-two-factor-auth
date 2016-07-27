@@ -1,0 +1,8 @@
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.number.errors }}{% endif %}
+  <label for="id_call-number" class="required">{{ form.number.label }}:</label> {{ form.number }}
+</div>
+
+<script type="text/javascript">
+document.getElementById('id_call-number').focus()
+</script>
