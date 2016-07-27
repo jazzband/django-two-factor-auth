@@ -4,14 +4,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext
 
 from .models import PhoneDevice
-from .utils import monkeypatch_method
 from .views import BackupTokensView, LoginView, ProfileView, SetupView
 
 
@@ -129,6 +127,9 @@ class AdminSiteOTPRequiredMixin(object):
             return False
         return request.user.is_verified()
 
+
+class AdminSiteOTPMixin(object):
+
     def get_urls(self):
         from django.conf.urls import include, url
 
@@ -147,7 +148,7 @@ class AdminSiteOTPRequiredMixin(object):
         urlpatterns = [
             url(r'^two_factor/', include(urlpatterns_2fa, namespace='two_factor'))
         ]
-        urlpatterns += super(AdminSiteOTPRequiredMixin, self).get_urls()
+        urlpatterns += super(AdminSiteOTPMixin, self).get_urls()
         return urlpatterns
 
     def login(self, request, extra_context=None):
@@ -163,32 +164,36 @@ class AdminSiteOTPRequiredMixin(object):
         return admin_backup_tokens_view(request)
 
 
-class AdminSiteOTPRequired(AdminSiteOTPRequiredMixin, AdminSite):
+class AdminSiteOTP(AdminSiteOTPMixin, AdminSite):
+    """
+    AdminSite using OTP login.
+    """
+    pass
+
+
+class AdminSiteOTPRequired(AdminSiteOTPMixin, AdminSiteOTPRequiredMixin, AdminSite):
     """
     AdminSite enforcing OTP verified staff users.
     """
     pass
 
 
+__default_admin_site__ = None
+
+
 def patch_admin():
-    @monkeypatch_method(AdminSite)
-    def login(self, request, extra_context=None):
-        """
-        Redirects to the site login page for the given HttpRequest.
-        """
-        redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
-
-        if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
-            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
-
-        return redirect_to_login(redirect_to)
+    global __default_admin_site__
+    __default_admin_site__ = admin.site.__class__
+    if getattr(settings, 'TWO_FACTOR_FORCE_OTP_ADMIN', False):
+        admin.site.__class__ = AdminSiteOTPRequired
+    else:
+        admin.site.__class__ = AdminSiteOTP
 
 
 def unpatch_admin():
-    setattr(AdminSite, 'login', original_login)
-
-
-original_login = AdminSite.login
+    global __default_admin_site__
+    admin.site.__class__ = __default_admin_site__
+    __default_admin_site__ = None
 
 
 class PhoneDeviceAdmin(admin.ModelAdmin):
