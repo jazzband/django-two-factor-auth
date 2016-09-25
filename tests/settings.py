@@ -1,7 +1,5 @@
 import os
 
-from django.core.urlresolvers import reverse_lazy
-
 try:
     import otp_yubikey
 except ImportError:

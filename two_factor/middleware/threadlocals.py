@@ -3,7 +3,8 @@ from threading import local
 try:
     from django.utils.deprecation import MiddlewareMixin
 except ImportError:
-    class MiddlewareMixin(object): pass
+    class MiddlewareMixin(object):
+        pass
 
 
 _thread_locals = local()

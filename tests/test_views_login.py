@@ -77,7 +77,8 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'token-otp_token': '123456',
                                'login_view-current_step': 'token'})
         self.assertEqual(response.context_data['wizard']['form'].errors,
-                         {'__all__': ['Please enter your OTP token']})
+                         {'__all__': ['Invalid token. Please make sure you '
+                                      'have entered it correctly.']})
 
         response = self._post({'token-otp_token': totp(device.bin_key),
                                'login_view-current_step': 'token'})
@@ -167,7 +168,9 @@ class LoginTest(UserMixin, TestCase):
         # Wrong codes should not be accepted
         response = self._post({'backup-otp_token': 'WRONG',
                                'login_view-current_step': 'backup'})
-        self.assertContains(response, 'Please enter your OTP token')
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': ['Invalid token. Please make sure you '
+                                      'have entered it correctly.']})
 
         # Valid token should be accepted.
         response = self._post({'backup-otp_token': 'abcdef123',
