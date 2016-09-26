@@ -1,0 +1,8 @@
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.otp_token.errors }}{% endif %}
+  <label for="id_token-otp_token" class="required">{{ form.otp_token.label }}:</label> {{ form.otp_token }}
+</div>
+
+<script type="text/javascript">
+document.getElementById('id_token-otp_token').focus()
+</script>

@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.method.errors }}{% endif %}
+  {{ form.method }}
+</div>
+
+<script type="text/javascript">
+document.getElementById('id_auth-username').focus()
+</script>

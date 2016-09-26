@@ -1,0 +1,33 @@
+{% extends "admin/login.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+  <div class="form-row">
+    {% blocktrans %}Backup tokens can be used when your primary and backup phone numbers aren't available. The backup tokens below can be used for login verification. If you've used up all your backup tokens, you can generate a new set of backup tokens. Only the backup tokens shown below will be valid.{% endblocktrans %}
+  </div>
+
+  <div class="form-row">
+    {% if device.token_set.count %}
+      <ul>
+        {% for token in device.token_set.all %}
+          <li>{{ token.token }}</li>
+        {% endfor %}
+      </ul>
+      <p>{% blocktrans %}Print these tokens and keep them somewhere safe.{% endblocktrans %}</p>
+    {% else %}
+      <p>{% trans "You don't have any backup codes yet." %}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-row">
+    <a href="{% url 'admin:two_factor:profile'%}">{% trans "Back to Account Security" %}</a>
+    <label>&nbsp;</label><input type="submit" value="{% trans "Generate Tokens" %}">
+  </div>
+
+</form>
+
+</div>
+{% endblock %}

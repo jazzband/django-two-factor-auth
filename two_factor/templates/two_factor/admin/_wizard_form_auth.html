@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+  <label for="id_auth-username" class="required">{{ form.username.label }}:</label> {{ form.username }}
+</div>
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
+  <label for="id_auth-password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
+  <input type="hidden" name="this_is_the_login_form" value="1" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</div>
+{% url 'admin_password_reset' as password_reset_url %}
+{% if password_reset_url %}
+<div class="password-reset-link">
+  <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+</div>
+{% endif %}
+
+<script type="text/javascript">
+document.getElementById('id_auth-username').focus()
+</script>

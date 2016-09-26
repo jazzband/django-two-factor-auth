@@ -1,0 +1,8 @@
+<div class="form-row">
+  {% if not form.this_is_the_login_form.errors %}{{ form.token.errors }}{% endif %}
+  <label for="id_yubikey-token" class="required">{{ form.token.label }}:</label> {{ form.token }}
+</div>
+
+<script type="text/javascript">
+document.getElementById('id_yubikey-token').focus()
+</script>

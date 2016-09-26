@@ -47,14 +47,6 @@ def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     return 'otpauth://totp/%s?%s' % (label, urlencode(query))
 
 
-# from http://mail.python.org/pipermail/python-dev/2008-January/076194.html
-def monkeypatch_method(cls):
-    def decorator(func):
-        setattr(cls, func.__name__, func)
-        return func
-    return decorator
-
-
 def totp_digits():
     """
     Returns the number of digits (as configured by the TWO_FACTOR_TOTP_DIGITS setting)

@@ -136,7 +136,27 @@ class IdempotentSessionWizardView(SessionWizardView):
                            self.steps.current)
             return self.render_goto_step(self.steps.all[-1])
 
-        return super(IdempotentSessionWizardView, self).post(*args, **kwargs)
+        # -- Duplicated code from upstream
+        # get the form for the current step
+        form = self.get_form(data=self.request.POST, files=self.request.FILES)
+
+        # and try to validate
+        if form.is_valid():
+            # if the form is valid, store the cleaned data and files.
+            self.storage.set_step_data(self.steps.current,
+                                       self.process_step(form))
+            self.storage.set_step_files(self.steps.current,
+                                        self.process_step_files(form))
+
+            # check if the current step is the last step
+            if self.steps.current == self.steps.last:
+                # no more steps, render done view
+                return self.render_done(form, **kwargs)
+            else:
+                # proceed to the next step
+                return self.render_next_step(form)
+        return self.render(form)
+        # -- End duplicated code from upstream
 
     def process_step(self, form):
         """

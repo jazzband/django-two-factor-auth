@@ -81,6 +81,7 @@ class LoginView(IdempotentSessionWizardView):
         'backup': has_backup_step,
     }
     redirect_field_name = REDIRECT_FIELD_NAME
+    redirect_url = settings.LOGIN_REDIRECT_URL
 
     def __init__(self, **kwargs):
         super(LoginView, self).__init__(**kwargs)
@@ -104,9 +105,7 @@ class LoginView(IdempotentSessionWizardView):
         """
         login(self.request, self.get_user())
 
-        redirect_to = self.request.GET.get(self.redirect_field_name, '')
-        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
-            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        redirect_to = self.get_redirect_url()
 
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
@@ -144,6 +143,12 @@ class LoginView(IdempotentSessionWizardView):
             if not self.device_cache:
                 self.device_cache = default_device(self.get_user())
         return self.device_cache
+
+    def get_redirect_url(self):
+        redirect_to = self.request.GET.get(self.redirect_field_name, '')
+        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
+            redirect_to = resolve_url(self.redirect_url)
+        return redirect_to
 
     def render(self, form=None, **kwargs):
         """
@@ -233,7 +238,7 @@ class SetupView(IdempotentSessionWizardView):
         Start the setup wizard. Redirect if already enabled.
         """
         if default_device(self.request.user):
-            return redirect(self.redirect_url)
+            return redirect(self.get_redirect_url())
         return super(SetupView, self).get(request, *args, **kwargs)
 
     def get_form_list(self):
@@ -280,7 +285,7 @@ class SetupView(IdempotentSessionWizardView):
             raise NotImplementedError("Unknown method '%s'" % self.get_method())
 
         django_otp.login(self.request, device)
-        return redirect(self.redirect_url)
+        return redirect(self.get_redirect_url())
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
@@ -299,6 +304,9 @@ class SetupView(IdempotentSessionWizardView):
                 'metadata': metadata,
             })
         return kwargs
+
+    def get_redirect_url(self):
+        return self.redirect_url
 
     def get_device(self, **kwargs):
         """
