@@ -142,6 +142,14 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1,
                                    max_value=int('9' * totp_digits()))
 
+    # Our authentication form has an additional submit button to go to the
+    # backup token form. When the `required` attribute is set on an input
+    # field, that button cannot be used on browsers that implement html5
+    # validation. For now we'll use this workaround, but an even nicer
+    # solution would be to move the button outside the `<form>` and into
+    # its own `<form>`.
+    use_required_attribute = False
+
     def __init__(self, user, initial_device, **kwargs):
         """
         `initial_device` is either the user's default device, or the backup
