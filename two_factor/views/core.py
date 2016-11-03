@@ -269,7 +269,8 @@ class SetupView(IdempotentSessionWizardView):
         # Remove secret key used for QR code generation
         try:
             del self.request.session[self.session_key_name]
-        except KeyError: pass
+        except KeyError:
+            pass
 
         # TOTPDeviceForm
         if self.get_method() == 'generator':
