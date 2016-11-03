@@ -266,6 +266,11 @@ class SetupView(IdempotentSessionWizardView):
         """
         Finish the wizard. Save all forms and redirect.
         """
+        # Remove secret key used for QR code generation
+        try:
+            del self.request.session[self.session_key_name]
+        except KeyError: pass
+
         # TOTPDeviceForm
         if self.get_method() == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
@@ -511,7 +516,6 @@ class QRGeneratorView(View):
         # Get the data from the session
         try:
             key = self.request.session[self.session_key_name]
-            del self.request.session[self.session_key_name]
         except KeyError:
             raise Http404()
 
