@@ -1,13 +1,21 @@
 Release Notes
 =============
 
+1.5.0
+-----
+* New: Django 1.10’s MIDDLEWARE support
+* New: Allow ``success_url`` overrides from ``urls.py``
+* Renamed ``redirect_url`` properties to ``success_url`` to be consistent with Django
+* Fix: Allow Firefox users to enter backup tokens (#177)
+* Fix: Allow multiple requests for QR code (#99)
+* Fix: Don't add phone number without gateway (#92)
+
 1.4.0
 -----
 * New: Support for Django 1.10 (#157)
 * Fix: Enable autodoc builds in documentation (#164)
 * Fix: Support named urls in ``LOGIN_URL``, ``LOGIN_REDIRECT_URL`` and
   ``LOGOUT_URL`` (#153)
-
 
 1.3.1
 -----

@@ -199,7 +199,7 @@ class SetupView(IdempotentSessionWizardView):
     is asked to provide a generated token. For call and sms methods, the user
     provides the phone number which is then validated in the final step.
     """
-    redirect_url = 'two_factor:setup_complete'
+    success_url = 'two_factor:setup_complete'
     qrcode_url = 'two_factor:qr'
     template_name = 'two_factor/core/setup.html'
     session_key_name = 'django_two_factor-qr_secret_key'
@@ -233,7 +233,7 @@ class SetupView(IdempotentSessionWizardView):
         Start the setup wizard. Redirect if already enabled.
         """
         if default_device(self.request.user):
-            return redirect(self.redirect_url)
+            return redirect(self.success_url)
         return super(SetupView, self).get(request, *args, **kwargs)
 
     def get_form_list(self):
@@ -286,7 +286,7 @@ class SetupView(IdempotentSessionWizardView):
             raise NotImplementedError("Unknown method '%s'" % self.get_method())
 
         django_otp.login(self.request, device)
-        return redirect(self.redirect_url)
+        return redirect(self.success_url)
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
@@ -380,7 +380,7 @@ class BackupTokensView(FormView):
     a pillow ;-).
     """
     form_class = Form
-    redirect_url = 'two_factor:backup_tokens'
+    success_url = 'two_factor:backup_tokens'
     template_name = 'two_factor/core/backup_tokens.html'
     number_of_tokens = 10
 
@@ -401,7 +401,7 @@ class BackupTokensView(FormView):
         for n in range(self.number_of_tokens):
             device.token_set.create(token=StaticToken.random_token())
 
-        return redirect(self.redirect_url)
+        return redirect(self.success_url)
 
 
 @class_view_decorator(never_cache)
@@ -416,19 +416,24 @@ class PhoneSetupView(IdempotentSessionWizardView):
     numbers can be used for verification.
     """
     template_name = 'two_factor/core/phone_register.html'
-    redirect_url = None
+    success_url = None
     form_list = (
         ('setup', PhoneNumberMethodForm),
         ('validation', DeviceValidationForm),
     )
     key_name = 'key'
 
+    def __init__(self, **kwargs):
+        if not self.success_url and 'success_url' not in kwargs:
+            kwargs['success_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
+        super(PhoneSetupView, self).__init__(**kwargs)
+
     def get(self, request, *args, **kwargs):
         """
         Start the setup wizard. Redirect if no phone methods available.
         """
         if not get_available_phone_methods():
-            return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))
+            return redirect(self.success_url)
         return super(PhoneSetupView, self).get(request, *args, **kwargs)
 
     def done(self, form_list, **kwargs):
@@ -436,7 +441,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         Store the device and redirect to profile page.
         """
         self.get_device(user=self.request.user, name='backup').save()
-        return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.success_url)
 
     def render_next_step(self, form, **kwargs):
         """
@@ -473,7 +478,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         return self.storage.extra_data[self.key_name]
 
     def get_context_data(self, form, **kwargs):
-        kwargs.setdefault('cancel_url', resolve_url(settings.LOGIN_REDIRECT_URL))
+        kwargs.setdefault('cancel_url', self.success_url)
         return super(PhoneSetupView, self).get_context_data(form, **kwargs)
 
 
@@ -483,12 +488,13 @@ class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.
     """
+    def __init__(self, **kwargs):
+        if not self.success_url and 'success_url' not in kwargs:
+            kwargs['success_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
+        super(PhoneDeleteView, self).__init__(**kwargs)
 
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
-
-    def get_success_url(self):
-        return resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
 @class_view_decorator(never_cache)
