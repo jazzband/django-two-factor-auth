@@ -10,7 +10,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login as login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms import Form
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, resolve_url
@@ -416,17 +416,12 @@ class PhoneSetupView(IdempotentSessionWizardView):
     numbers can be used for verification.
     """
     template_name = 'two_factor/core/phone_register.html'
-    success_url = None
+    success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
     form_list = (
         ('setup', PhoneNumberMethodForm),
         ('validation', DeviceValidationForm),
     )
     key_name = 'key'
-
-    def __init__(self, **kwargs):
-        if not self.success_url and 'success_url' not in kwargs:
-            kwargs['success_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
-        super(PhoneSetupView, self).__init__(**kwargs)
 
     def get(self, request, *args, **kwargs):
         """
@@ -488,10 +483,7 @@ class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.
     """
-    def __init__(self, **kwargs):
-        if not self.success_url and 'success_url' not in kwargs:
-            kwargs['success_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
-        super(PhoneDeleteView, self).__init__(**kwargs)
+    success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
 
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
