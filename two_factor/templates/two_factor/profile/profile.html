@@ -29,8 +29,10 @@
         </li>
       {% endfor %}
     </ul>
-    <p><a href="{% url 'two_factor:phone_create' %}"
-       class="btn btn-info">{% trans "Add Phone Number" %}</a></p>
+    {% if available_phone_methods %}
+      <p><a href="{% url 'two_factor:phone_create' %}"
+        class="btn btn-info">{% trans "Add Phone Number" %}</a></p>
+    {% endif %}
 
     <h2>{% trans "Backup Tokens" %}</h2>
     <p>

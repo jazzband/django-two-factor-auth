@@ -422,6 +422,14 @@ class PhoneSetupView(IdempotentSessionWizardView):
     )
     key_name = 'key'
 
+    def get(self, request, *args, **kwargs):
+        """
+        Start the setup wizard. Redirect if no phone methods available.
+        """
+        if not get_available_phone_methods():
+            return redirect(self.redirect_url or resolve_url(settings.LOGIN_REDIRECT_URL))
+        return super(PhoneSetupView, self).get(request, *args, **kwargs)
+
     def done(self, form_list, **kwargs):
         """
         Store the device and redirect to profile page.

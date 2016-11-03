@@ -21,6 +21,10 @@ from two_factor.validators import validate_international_phonenumber
 from .utils import UserMixin
 
 
+@override_settings(
+    TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
+    TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+)
 class PhoneSetupTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneSetupTest, self).setUp()
@@ -36,10 +40,6 @@ class PhoneSetupTest(UserMixin, TestCase):
         return self.client.post(reverse('two_factor:phone_create'), data=data)
 
     @mock.patch('two_factor.gateways.fake.Fake')
-    @override_settings(
-        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
-        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
-    )
     def test_setup(self, fake):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '',
@@ -71,10 +71,6 @@ class PhoneSetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].key, device.key)
 
     @mock.patch('two_factor.gateways.fake.Fake')
-    @override_settings(
-        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
-        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
-    )
     def test_number_validation(self, fake):
         response = self._post({'phone_setup_view-current_step': 'setup',
                                'setup-number': '123',
