@@ -23,7 +23,7 @@ def backup_phones(user):
     return user.phonedevice_set.filter(name='backup')
 
 
-def get_otpauth_url(accountname, secret, issuer=None, digits=None):
+def get_otpauth_url(accountname, secret, issuer=None, digits=None, image_url=None):
     # For a complete run-through of all the parameters, have a look at the
     # specs at:
     # https://github.com/google/google-authenticator/wiki/Key-Uri-Format
@@ -43,6 +43,9 @@ def get_otpauth_url(accountname, secret, issuer=None, digits=None):
 
     if issuer:
         query.append(('issuer', issuer))
+
+    if image_url:
+        query.append(('image', image_url))
 
     return 'otpauth://totp/%s?%s' % (label, urlencode(query))
 
