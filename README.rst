@@ -115,14 +115,18 @@ covering all supported Python and Django version with::
 
 Releasing
 ---------
-The following actions are required to push a new version::
+The following actions are required to push a new version:
+
+* Update release notes
+* Add migrations::
 
     python example/manage.py makemigrations two_factor
     git commit -am "Added migrations"
 
+* Package and upload::
+
     bumpversion [major|minor|patch]
-    git commit -am "Released version [version]"
-    git tag [version]
+    git push && git push --tags
     python setup.py sdist bdist_wheel
     twine upload dist/*
 
