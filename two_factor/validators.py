@@ -9,6 +9,7 @@ def validate_international_phonenumber(value):
         raise ValidationError(validate_international_phonenumber.message,
                               code='invalid')
 
+
 validate_international_phonenumber.message = \
     _('Please enter a valid phone number, including your country code '
       'starting with + or 00.')
