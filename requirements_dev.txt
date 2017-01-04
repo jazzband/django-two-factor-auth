@@ -2,12 +2,9 @@
 
 -e .
 
-# Runtime dependencies
+# Additional runtime dependencies
 
-Django
 twilio
-django_otp
-qrcode
 
 # Example app
 
