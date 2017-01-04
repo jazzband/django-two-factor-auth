@@ -1,4 +1,5 @@
 import logging
+import warnings
 from base64 import b32encode
 from binascii import unhexlify
 
@@ -6,7 +7,7 @@ import django_otp
 import qrcode
 import qrcode.image.svg
 from django.conf import settings
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as login
+from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
@@ -181,7 +182,14 @@ class LoginView(IdempotentSessionWizardView):
             except StaticDevice.DoesNotExist:
                 context['backup_tokens'] = 0
 
-        context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
+        if settings.LOGOUT_REDIRECT_URL:
+            context['cancel_url'] = resolve_url(settings.LOGOUT_REDIRECT_URL)
+        elif settings.LOGOUT_URL:
+            warnings.warn(
+                "LOGOUT_URL has been replaced by LOGOUT_REDIRECT_URL, please "
+                "review the URL and update your settings.",
+                DeprecationWarning)
+            context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
 
 

@@ -70,7 +70,7 @@ INSTALLED_APPS = (
 )
 
 
-LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'two_factor:profile'
 

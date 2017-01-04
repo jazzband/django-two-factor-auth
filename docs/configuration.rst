@@ -44,6 +44,13 @@ General Settings
 
   See also LOGIN_REDIRECT_URL_.
 
+``LOGOUT_REDIRECT_URL``
+  Should point to a view that the user is redirected to after loging out. It was
+  added in Django 1.10, and also adapted by this application. This can be a
+  URL path or URL name as defined in the Django documentation.
+
+  See also LOGOUT_REDIRECT_URL_.
+
 ``TWO_FACTOR_QR_FACTORY``
   The default generator for the QR code images is set to SVG. This
   does not require any further dependencies, however it does not work
@@ -114,6 +121,7 @@ Fake Gateway
 
 .. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 .. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+.. _LOGOUT_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
 .. _Twilio: http://www.twilio.com/
 .. _`Twilio client`: https://pypi.python.org/pypi/twilio
 .. _python-qrcode: https://pypi.python.org/pypi/qrcode
