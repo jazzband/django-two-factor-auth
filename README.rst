@@ -35,7 +35,7 @@ user. Although the package is optional, it improves account security control
 over ``django.contrib.sessions``.
 
 Compatible with all supported Django versions. At the moment of writing that's
-including 1.8, 1.9 and 1.10 on Python 2.7, 3.2, 3.3, 3.4 and 3.5. Documentation
+including 1.8, 1.9 and 1.10 on Python 2.7, 3.4, 3.5 and 3.6. Documentation
 is available at `readthedocs.org`_.
 
 
@@ -124,7 +124,7 @@ The following actions are required to push a new version::
     git commit -am "Released version [version]"
     git tag [version]
     python setup.py sdist bdist_wheel
-    twine upload [LIST_OF_FILES]
+    twine upload dist/*
 
 
 See Also

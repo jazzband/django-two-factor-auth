@@ -5,6 +5,7 @@ python: 3.5
 env:
   - TOXENV=flake8
   - TOXENV=isort
+  
   - TOXENV=py27-dj18
   - TOXENV=py27-dj18-custom_user
   - TOXENV=py27-dj18-yubikey
@@ -17,12 +18,7 @@ env:
   - TOXENV=py27-djmaster
   - TOXENV=py27-djmaster-custom_user
   - TOXENV=py27-djmaster-yubikey
-  - TOXENV=py32-dj18
-  - TOXENV=py32-dj18-custom_user
-  - TOXENV=py32-dj18-yubikey
-  - TOXENV=py33-dj18
-  - TOXENV=py33-dj18-custom_user
-  - TOXENV=py33-dj18-yubikey
+
   - TOXENV=py34-dj18
   - TOXENV=py34-dj18-custom_user
   - TOXENV=py34-dj18-yubikey
@@ -35,6 +31,7 @@ env:
   - TOXENV=py34-djmaster
   - TOXENV=py34-djmaster-custom_user
   - TOXENV=py34-djmaster-yubikey
+
   - TOXENV=py35-dj18
   - TOXENV=py35-dj18-custom_user
   - TOXENV=py35-dj18-yubikey
@@ -47,6 +44,10 @@ env:
   - TOXENV=py35-djmaster
   - TOXENV=py35-djmaster-custom_user
   - TOXENV=py35-djmaster-yubikey
+
+  - TOXENV=py36-djmaster
+  - TOXENV=py36-djmaster-custom_user
+  - TOXENV=py36-djmaster-yubikey
 
 install:
   - pip install -U pip
@@ -67,6 +68,9 @@ matrix:
     - env: TOXENV=py35-djmaster
     - env: TOXENV=py35-djmaster-custom_user
     - env: TOXENV=py35-djmaster-yubikey
+    - env: TOXENV=py36-djmaster
+    - env: TOXENV=py36-djmaster-custom_user
+    - env: TOXENV=py36-djmaster-yubikey
 
 after_success:
     coveralls
