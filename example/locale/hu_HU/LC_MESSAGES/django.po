@@ -4,87 +4,87 @@
 # 
 # Translators:
 # Translators:
-# Tony G. Bolaño <tonybolanyo@gmail.com>, 2016
+# Gergely Polonkai <gergely@polonkai.eu>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2016-07-20 08:11+0000\n"
-"Last-Translator: Tony G. Bolaño <tonybolanyo@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/Bouke/django-two-factor-auth/language/es/)\n"
+"PO-Revision-Date: 2015-04-21 12:32+0000\n"
+"Last-Translator: Gergely Polonkai <gergely@polonkai.eu>\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/Bouke/django-two-factor-auth/language/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
+"Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: gateways.py:10
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
-msgstr "Llamada falsa a %(number)s: \"Tu código es: %(token)s"
+msgstr "Szimulált hívás a %(number)s telefonszámra: \"Az Ön tokenje: %(token)s\""
 
 #: gateways.py:16
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
-msgstr "SMS falso a %(number)s: \"Tu código es: %(token)s\""
+msgstr "Szimulált SMS a %(number)s telefonszámra: \"Az Ön tokenje: %(token)s\""
 
 #: templates/_base.html:20
 msgid "Toggle navigation"
-msgstr "Mostrar/Ocultar navegación"
+msgstr "Navigáció ki/be kapcsolása"
 
 #: templates/_base.html:25 templates/two_factor/_base_focus.html:8
 msgid "Demo"
-msgstr "Demo"
+msgstr "Bemutató"
 
 #: templates/_base.html:32
 msgid "Home"
-msgstr "Inicio"
+msgstr "Főoldal"
 
 #: templates/_base.html:34 templates/secret.html:7
 msgid "Secret Page"
-msgstr "Página secreta"
+msgstr "Titkos Oldal"
 
 #: templates/_base.html:42
 msgid "Account Security"
-msgstr "Seguridad de la Cuenta"
+msgstr "Biztonsági Beállítások"
 
 #: templates/_base.html:44
 msgid "Sessions"
-msgstr "Sesiones"
+msgstr "Munkamenetek"
 
 #: templates/_base.html:45
 msgid "Logout"
-msgstr "Cerrar sesión"
+msgstr "Kijelentkezés"
 
 #: templates/_base.html:47
 msgid "Not logged in"
-msgstr "Sesión no iniciada"
+msgstr "Nincs bejelentkezve"
 
 #: templates/_base.html:48 templates/registration_complete.html:9
 msgid "Login"
-msgstr "Iniciar de Sesión"
+msgstr "Bejelentkezés"
 
 #: templates/home.html:4
 msgid "django-two-factor-auth – Demo Application"
-msgstr "django-two-factor-auth – Aplicación de demostración"
+msgstr "django-two-factor-outh – Bemutató Alkalmazás"
 
 #: templates/home.html:8
 msgid ""
 "Improve Your Security <small>your users will thank\n"
 "    you</small>"
-msgstr "Mejora tu seguridad <small>tus usuarios te lo agradecerán</small>"
+msgstr "Fejlessze oldala biztonsági lehetőségeit <small>a felhasználói\nmeg fogják köszönni</small>"
 
 #: templates/home.html:10
 msgid ""
 "Welcome to the example app of\n"
 "      <code>django-two-factor-auth</code>. Use this example to get an\n"
 "    understanding of what the app can do for you."
-msgstr "Bienvenido a la aplicación de ejemplo de <code>django-two-factor-auth</code>. Usa este ejemplo para entender lo que la aplicación puede hacer por ti."
+msgstr "Üdvözöljük a <code>django-two-factor-auth</code> bemutató\nalkalmazásában! Ezen a példaprogramon keresztül megtudhatja,\nmilyen szolgáltatásokat tud nyújtani ez az alkalmazás."
 
 #: templates/home.html:14
 msgid "Please verify your settings"
-msgstr "Por favor, comprueba tus configuraciones"
+msgstr "Kérjük, hagyja jóvá a beállításait"
 
 #: templates/home.html:15
 msgid ""
@@ -92,32 +92,32 @@ msgid ""
 "      <code>settings_private.py</code> file? By doing so, the example app will\n"
 "      be able to call and text you to verify your authentication tokens.\n"
 "      Otherwise, the tokens will be shown on the screen."
-msgstr "¿Has configurado tus credenciales de Twilio en el archivo <code>settings_private.py</code>? Cuando lo hagas, la aplicación será capaz de llamar y enviarte mensajes de texto para verificar los códigos de identificación. En caso contrario, los códigos se mostrarán en pantalla."
+msgstr "Megadta a Twillio beállításait a <code>settings_private.py</code> fileban? Ha megteszi, a példaprogram fel tudja Önt hívni vagy\nSMS-t tud küldeni a tokenekkel. Enélkül a tokeneket a képernyőn\nfogjuk megjeleníteni."
 
 #: templates/home.html:26
 msgid "Next steps:"
-msgstr "Siguientes pasos:"
+msgstr "Következő lépések:"
 
 #: templates/home.html:28
 #, python-format
 msgid ""
 "Start by <a href=\"%(reg_url)s\">registering</a> an\n"
 "      account."
-msgstr "Comienza <a href=\"%(reg_url)s\">creando una cuenta</a>."
+msgstr "Kezdetnek <a href=\"%(reg_url)s\">regisztráljon</a> egy fiókot!"
 
 #: templates/home.html:30
 #, python-format
 msgid ""
 "<a href=\"%(login_url)s\">Login</a> to your account.\n"
 "      "
-msgstr "<a href=\"%(login_url)s\">Inicia sesión</a> en tu cuenta."
+msgstr "<a href=\"%(login_url)s\">Jelentkezzen be</a> a fiókjába!"
 
 #: templates/home.html:32
 #, python-format
 msgid ""
 "<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
 "      authentication."
-msgstr "<a href=\"%(setup_url)s\">Habilita</a> la identificación en dos pasos."
+msgstr "<a href=\"%(setup_url)s\">Engedélyezze</a> a kétlépcsős\nazonosítást!"
 
 #: templates/home.html:34
 #, python-format
@@ -125,43 +125,43 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and\n"
 "      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
 "      two-factor authentication at work."
-msgstr "Después, <a href=\"%(logout_url)s\">cierra sesión</a> y <a href=\"%(login_url)s>inicia sesión</a> de nuevo en tu cuenta para ver funcionando la identificación en dos pasos."
+msgstr "Ezután <a href=\"%(logout_url)s\">jelentkezzen ki</a> és <a href=\"%(login_url)s\">jelentkezzen be</a> újra, hogy lássa a kétlépcsős\nazonosítást munka közben!"
 
 #: templates/home.html:37
 #, python-format
 msgid ""
 "At last, you've gained access to the\n"
 "      <a href=\"%(secret_url)s\">secret page</a>! :-)"
-msgstr "¡Por fin, tienes acceso a la <a href=\"%(secret_url)s\">página secreta</a>! :-)"
+msgstr "Végre, hozzáfér a <a href=\"%(secret_url)s\">titkos oldalhoz</a>! :-)"
 
 #: templates/registration.html:5
 msgid "Registration"
-msgstr "Registro"
+msgstr "Regisztráció"
 
 #: templates/registration.html:10
 msgid "Register"
-msgstr "Registrarse"
+msgstr "Regisztráció"
 
 #: templates/registration_complete.html:5
 msgid "Registration Complete"
-msgstr "Registro Completo"
+msgstr "A regisztráció befejeződött"
 
 #: templates/registration_complete.html:6
 msgid ""
 "Congratulations, you've successfully registered an\n"
 "    account."
-msgstr "Enhorabuena, te has registrado con éxito."
+msgstr "Gratulálunk, Ön sikeresen regisztrált egy felhasználói fiókot!"
 
 #: templates/secret.html:9
 msgid ""
 "Congratulations, you've made it. You have successfully\n"
 "    enabled two-factor authentication and logged in with your token."
-msgstr "Enhorabuena, lo has hecho. Has activado con éxito la identificación en dos pasos y has iniciado sesión con tu código."
+msgstr "Gratulálunk, megcsinálta! Sikeresen engedélyezte a kétlépéses\nazonosítást és bejelentkezett egy token használatával."
 
 #: templates/registration/logged_out.html:5
 msgid "Logged Out"
-msgstr "Sessión cerrada"
+msgstr "Kijelentkezve"
 
 #: templates/registration/logged_out.html:6
 msgid "See you around!"
-msgstr "¡Nos vemos!"
+msgstr "Viszlát később!"
