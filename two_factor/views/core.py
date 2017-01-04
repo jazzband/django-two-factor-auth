@@ -182,9 +182,9 @@ class LoginView(IdempotentSessionWizardView):
             except StaticDevice.DoesNotExist:
                 context['backup_tokens'] = 0
 
-        if settings.LOGOUT_REDIRECT_URL:
+        if hasattr(settings, 'LOGOUT_REDIRECT_URL'):
             context['cancel_url'] = resolve_url(settings.LOGOUT_REDIRECT_URL)
-        elif settings.LOGOUT_URL:
+        elif hasattr(settings, 'LOGOUT_URL'):
             warnings.warn(
                 "LOGOUT_URL has been replaced by LOGOUT_REDIRECT_URL, please "
                 "review the URL and update your settings.",
