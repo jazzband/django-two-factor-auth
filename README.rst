@@ -118,10 +118,20 @@ Releasing
 The following actions are required to push a new version:
 
 * Update release notes
+* If any new translations strings were added, push the new source language to
+  Transifex_. Make sure translators have sufficient time to translate those
+  new strings::
+
+    make tx-push
+
 * Add migrations::
 
     python example/manage.py makemigrations two_factor
     git commit -am "Added migrations"
+
+* Update translations::
+
+    make tx-pull
 
 * Package and upload::
 
