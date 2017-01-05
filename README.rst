@@ -127,7 +127,7 @@ The following actions are required to push a new version:
 * Add migrations::
 
     python example/manage.py makemigrations two_factor
-    git commit -am "Added migrations"
+    git commit two_factor/migrations -m "Added migrations"
 
 * Update translations::
 
