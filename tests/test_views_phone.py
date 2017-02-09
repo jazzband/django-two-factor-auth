@@ -17,6 +17,7 @@ from django_otp.util import random_hex
 from two_factor.models import PhoneDevice
 from two_factor.utils import backup_phones
 from two_factor.validators import validate_international_phonenumber
+from two_factor.views.core import PhoneDeleteView, PhoneSetupView
 
 from .utils import UserMixin
 
@@ -79,6 +80,35 @@ class PhoneSetupTest(UserMixin, TestCase):
             response.context_data['wizard']['form'].errors,
             {'number': [six.text_type(validate_international_phonenumber.message)]})
 
+    @mock.patch('formtools.wizard.views.WizardView.get_context_data')
+    def test_success_url_as_url(self, get_context_data):
+        url = '/account/two_factor/'
+        view = PhoneSetupView()
+        view.success_url = url
+
+        def return_kwargs(form, **kwargs):
+            return kwargs
+        get_context_data.side_effect = return_kwargs
+
+        context = view.get_context_data(None)
+        self.assertIn('cancel_url', context)
+        self.assertEqual(url, context['cancel_url'])
+
+    @mock.patch('formtools.wizard.views.WizardView.get_context_data')
+    def test_success_url_as_named_url(self, get_context_data):
+        url_name = 'two_factor:profile'
+        url = reverse(url_name)
+        view = PhoneSetupView()
+        view.success_url = url
+
+        def return_kwargs(form, **kwargs):
+            return kwargs
+        get_context_data.side_effect = return_kwargs
+
+        context = view.get_context_data(None)
+        self.assertIn('cancel_url', context)
+        self.assertEqual(url, context['cancel_url'])
+
 
 class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
@@ -98,6 +128,19 @@ class PhoneDeleteTest(UserMixin, TestCase):
         response = self.client.post(reverse('two_factor:phone_delete',
                                             args=[self.default.pk]))
         self.assertContains(response, 'was not found', status_code=404)
+
+    def test_success_url_as_url(self):
+        url = '/account/two_factor/'
+        view = PhoneDeleteView()
+        view.success_url = url
+        self.assertEqual(view.get_success_url(), url)
+
+    def test_success_url_as_named_url(self):
+        url_name = 'two_factor:profile'
+        url = reverse(url_name)
+        view = PhoneDeleteView()
+        view.success_url = url
+        self.assertEqual(view.get_success_url(), url)
 
 
 class PhoneDeviceTest(UserMixin, TestCase):
