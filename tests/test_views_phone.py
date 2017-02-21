@@ -6,7 +6,7 @@ except ImportError:
     import mock
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -99,7 +99,22 @@ class PhoneSetupTest(UserMixin, TestCase):
         url_name = 'two_factor:profile'
         url = reverse(url_name)
         view = PhoneSetupView()
-        view.success_url = url
+        view.success_url = url_name
+
+        def return_kwargs(form, **kwargs):
+            return kwargs
+        get_context_data.side_effect = return_kwargs
+
+        context = view.get_context_data(None)
+        self.assertIn('cancel_url', context)
+        self.assertEqual(url, context['cancel_url'])
+
+    @mock.patch('formtools.wizard.views.WizardView.get_context_data')
+    def test_success_url_as_reverse_lazy(self, get_context_data):
+        url_name = 'two_factor:profile'
+        url = reverse(url_name)
+        view = PhoneSetupView()
+        view.success_url = reverse_lazy(url_name)
 
         def return_kwargs(form, **kwargs):
             return kwargs
@@ -139,7 +154,14 @@ class PhoneDeleteTest(UserMixin, TestCase):
         url_name = 'two_factor:profile'
         url = reverse(url_name)
         view = PhoneDeleteView()
-        view.success_url = url
+        view.success_url = url_name
+        self.assertEqual(view.get_success_url(), url)
+
+    def test_success_url_as_reverse_lazy(self):
+        url_name = 'two_factor:profile'
+        url = reverse(url_name)
+        view = PhoneDeleteView()
+        view.success_url = reverse_lazy(url_name)
         self.assertEqual(view.get_success_url(), url)
 
 
