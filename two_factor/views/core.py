@@ -32,6 +32,7 @@ from two_factor.utils import totp_digits
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
     PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    TokenAuthenticationForm
 )
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
@@ -62,6 +63,7 @@ class LoginView(TemplateView):
     template_name = 'two_factor/core/login.html'
     form_dict = {
         'auth': AuthenticationForm,
+        'token_auth': TokenAuthenticationForm,
         'token': AuthenticationTokenForm,
         'backup': BackupTokenForm,
     }
@@ -74,17 +76,24 @@ class LoginView(TemplateView):
     def __init__(self, **kwargs):
         super(LoginView, self).__init__(**kwargs)
         self.user_cache = None
-        self._username_cache = None
-        self._password_cache = None
         self.device_cache = None
         self.step_cache = 'auth'
 
     def authenticate_user(self):
-        form = self.form_dict['auth'](data=self.request.POST)
+        user_id = self.request.session.get('auth_user_id', None)
+        backend = self.request.session.get('auth_user_backend', None)
+        if (self.request.POST.get('step') in ['token', 'backup'] and
+                'auth_user_backend' in self.request.session and
+                user_id and backend):
+            form = self.form_dict['token_auth'](data={
+                'user_id': user_id, 'backend': backend
+            })
+        else:
+            form = self.form_dict['auth'](data=self.request.POST)
         if form.is_valid():
-            self._username_cache = form.cleaned_data['username']
-            self._password_cache = form.cleaned_data['password']
             self.user_cache = form.user_cache
+            self.request.session['auth_user_id'] = self.user_cache.id
+            self.request.session['auth_user_backend'] = self.user_cache.backend
         return form
 
     def check_otp_token(self, *args, **kwargs):
@@ -96,6 +105,15 @@ class LoginView(TemplateView):
         if form.is_valid():
             return self.done()
         return self.get(step=step, form=form, *args, **kwargs)
+
+    def clean_session(self):
+        self.request.session.pop('auth_user_id', None)
+        self.request.session.pop('auth_user_backend', None)
+
+    def get(self, *args, **kwargs):
+        if kwargs.get('step', None) == 'auth':
+            self.clean_session()
+        return super(LoginView, self).get(*args, **kwargs)
 
     def post(self, *args, **kwargs):
         """
@@ -125,8 +143,8 @@ class LoginView(TemplateView):
         """
         Login the user and redirect to the desired page.
         """
+        self.clean_session()
         login(self.request, self.get_user())
-
         redirect_to = self.request.GET.get(self.redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
@@ -183,8 +201,6 @@ class LoginView(TemplateView):
         if step == 'auth':
             context['form'] = form or self.form_dict['auth']()
         elif step in ['token', 'backup']:
-            context['username'] = self._username_cache
-            context['password'] = self._password_cache
             context['form'] = form or self.form_dict[step](
                 self.request.user,
                 self.get_device(step)

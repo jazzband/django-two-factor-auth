@@ -1,6 +1,6 @@
 from binascii import unhexlify
 from time import time
-
+from django.contrib.auth import get_user_model
 from django import forms
 from django.forms import Form, ModelForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -177,3 +177,31 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
 
 class BackupTokenForm(AuthenticationTokenForm):
     otp_token = forms.CharField(label=_("Token"))
+
+
+class TokenAuthenticationForm(AuthenticationForm):
+    user_id = forms.CharField()
+    backend = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(TokenAuthenticationForm, self).__init__(*args, **kwargs)
+        del self.fields['username']
+        del self.fields['password']
+
+    def authenticate(self):
+        UserModel = get_user_model()
+        user = UserModel.objects.get(id=self.cleaned_data['user_id'])
+        user.backend = self.cleaned_data['backend']
+        return user
+
+    def clean(self):
+        self.user_cache = self.authenticate()
+        if self.user_cache is None:
+            raise forms.ValidationError(
+                self.error_messages['invalid_login'],
+                code='invalid_login',
+                params={'username': self.username_field.verbose_name},
+            )
+        else:
+            self.confirm_login_allowed(self.user_cache)
+        return self.cleaned_data

@@ -26,10 +26,6 @@
   <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input id="step" maxlength="10" name="step" type="hidden" autocomplete="off" value="{{step}}">
-    {% if step == 'token' or step == 'backup' %}
-    <input id="id_username" maxlength="254" name="username" type="hidden" autocomplete="off" value="{{username}}">
-    <input id="id_password" name="password" type="hidden" autocomplete="off" value="{{password}}">
-    {% endif %}
 
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -9999px"><input type="submit" value=""/></div>
