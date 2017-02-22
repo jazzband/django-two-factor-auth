@@ -116,7 +116,9 @@ class LoginView(TemplateView):
             # user has requested to enter backup token
             return self.get(step='backup', *args, **kwargs)
         if 'otp_token' in self.request.POST:
+            # check 2 factor token
             return self.check_otp_token(*args, **kwargs)
+        # auth step validated but user is using 2 factor, show token step
         return self.get(step='token', *args, **kwargs)
 
     def done(self, **kwargs):
