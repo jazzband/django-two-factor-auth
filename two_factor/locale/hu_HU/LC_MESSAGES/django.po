@@ -1,0 +1,409 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Translators:
+# Gergely Polonkai <gergely@polonkai.eu>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-20 22:44+0200\n"
+"PO-Revision-Date: 2015-04-21 12:32+0000\n"
+"Last-Translator: Gergely Polonkai <gergely@polonkai.eu>\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/Bouke/django-two-factor-auth/language/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forms.py:21 forms.py:31
+msgid "Method"
+msgstr "Metódus"
+
+#: forms.py:49 forms.py:79 forms.py:132 forms.py:157
+msgid "Token"
+msgstr "Token"
+
+#: forms.py:52 forms.py:82
+msgid "Entered token is not valid."
+msgstr "A megadott token érvénytelen."
+
+#: forms.py:67 forms.py:149 models.py:46
+msgid "YubiKey"
+msgstr "YubiKey"
+
+#: forms.py:70
+msgid "The YubiKey could not be verified."
+msgstr "Nem sikerült ellenőrizni a YubiKey-t."
+
+#: forms.py:128
+msgid "Yes, I am sure"
+msgstr "Igen, biztos"
+
+#: models.py:24
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "Adjon meg egy érvényes telefonszámot, országhívóval együtt +-szal vagy 00-val kezdve."
+
+#: models.py:29
+msgid "Phone Call"
+msgstr "Telefonhívás"
+
+#: models.py:30
+msgid "Text Message"
+msgstr "Szöveges Üzenet"
+
+#: models.py:37
+msgid "Phone call"
+msgstr "Telefonhívás"
+
+#: models.py:39
+msgid "Text message"
+msgstr "Szöveges üzenet"
+
+#: models.py:51
+msgid "Token generator"
+msgstr "Token generátor"
+
+#: models.py:66
+msgid "number"
+msgstr "szám"
+
+#: models.py:72
+msgid "method"
+msgstr "metódus"
+
+#: gateways/twilio/gateway.py:54
+#, python-format
+msgid "Your authentication token is %s"
+msgstr "Az Ön azonosító tokenje: %s"
+
+#. Translators: twilio_locale should be a locale supported by
+#. Twilio, see http://bit.ly/187I5cr
+#: gateways/twilio/gateway.py:63 gateways/twilio/views.py:73
+msgctxt "twilio_locale"
+msgid "en"
+msgstr "en"
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:38
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "Hi, this is %(site_name)s calling. Press any key to continue."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:43
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr "Your token is %(token)s. Repeat: %(token)s. Good bye."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: gateways/twilio/views.py:47
+msgid "You didn't press any keys. Good bye."
+msgstr "You didn't press any keys. Good bye."
+
+#: templates/two_factor/_wizard_actions.html:4
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: templates/two_factor/_wizard_actions.html:8
+#: templates/two_factor/_wizard_actions.html:11
+msgid "Back"
+msgstr "Vissza"
+
+#: templates/two_factor/_wizard_actions.html:13
+msgid "Next"
+msgstr "Tovább"
+
+#: templates/two_factor/core/backup_tokens.html:5
+#: templates/two_factor/profile/profile.html:35
+msgid "Backup Tokens"
+msgstr "Tartalék Tokenek"
+
+#: templates/two_factor/core/backup_tokens.html:6
+msgid ""
+"Backup tokens can be used when your primary and backup\n"
+"      phone numbers aren't available. The backup tokens below can be used\n"
+"      for login verification. If you've used up all your backup tokens, you\n"
+"      can generate a new set of backup tokens. Only the backup tokens shown\n"
+"      below will be valid."
+msgstr "A tartalék tokeneket akkor használhatja, ha az elsődleges és tartalék\n      telefonszáma sem áll rendelkezésre. Az alábbi tartalék tokeneket\n      használhatja az azonosításhoz. Ha az összes tartalék tokenjét\n      elhasználta, újakat készíthet. Csak az itt megjelenő tokenek\n      érvényesek."
+
+#: templates/two_factor/core/backup_tokens.html:18
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "Nyomtassa ki a tokeneket, és tárolja biztonságos helyen."
+
+#: templates/two_factor/core/backup_tokens.html:20
+msgid "You don't have any backup codes yet."
+msgstr "Még nincsenek tartalék tokenjei."
+
+#: templates/two_factor/core/backup_tokens.html:25
+msgid "Back to Account Security"
+msgstr "Vissza a Biztonsági Beállításokhoz"
+
+#: templates/two_factor/core/backup_tokens.html:26
+msgid "Generate Tokens"
+msgstr "Tokenek készítése"
+
+#: templates/two_factor/core/login.html:5
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: templates/two_factor/core/login.html:8
+msgid "Enter your credentials."
+msgstr "Adja meg azonosító adatait."
+
+#: templates/two_factor/core/login.html:11
+#: templates/two_factor/core/setup.html:28
+msgid ""
+"We are calling your phone right now, please enter the\n"
+"        digits you hear."
+msgstr "Most felhívjuk a megadott telefonszámot. Kérjük, írja be a\nkapott kódot."
+
+#: templates/two_factor/core/login.html:14
+#: templates/two_factor/core/setup.html:31
+msgid ""
+"We sent you a text message, please enter the tokens we\n"
+"        sent."
+msgstr "Írja be az SMS-ben kapott kódot!"
+
+#: templates/two_factor/core/login.html:17
+msgid ""
+"Please enter the tokens generated by your token\n"
+"        generator."
+msgstr "Kérjük adja meg a token-generáló programtól kapott kódot!"
+
+#: templates/two_factor/core/login.html:21
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr "Itt írhat be egy tartalék tokent. Ezeket a tokeneket a beállításkor\ngeneráltuk, hogy Ön kinyomtathassa. Kérjük, adja meg az egyik\ntartalék tokent a bejelentkezéshez."
+
+#: templates/two_factor/core/login.html:33
+msgid "Or, alternatively, use one of your backup phones:"
+msgstr "Vagy használja a tartalék telefonszámait:"
+
+#: templates/two_factor/core/login.html:43
+msgid "As a last resort, you can use a backup token:"
+msgstr "Végső megoldásként használjon fel egy tartalék tokent:"
+
+#: templates/two_factor/core/login.html:46
+msgid "Use Backup Token"
+msgstr "Tartalék Token használata"
+
+#: templates/two_factor/core/otp_required.html:5
+msgid "Permission Denied"
+msgstr "Hozzáférés megtagadva"
+
+#: templates/two_factor/core/otp_required.html:7
+msgid ""
+"The page you requested, enforces users to verify using\n"
+"    two-factor authentication for security reasons. You need to enable these\n"
+"    security features in order to access this page."
+msgstr "Az Ön által kért oldal kétlépéses azonosítást követel meg.\nEngedélyezze ezt a biztonsági funkciót az oldal eléréséhez."
+
+#: templates/two_factor/core/otp_required.html:11
+msgid ""
+"Two-factor authentication is not enabled for your\n"
+"    account. Enable two-factor authentication for enhanced account\n"
+"    security."
+msgstr "A kétlépéses azonosítás nincs engedélyezve az Ön fiókjához. Engedélyezze a kétlépésest azonosítást a nagyobb biztonság érdekében!"
+
+#: templates/two_factor/core/otp_required.html:16
+msgid "Go back"
+msgstr "Vissza"
+
+#: templates/two_factor/core/otp_required.html:18
+#: templates/two_factor/core/setup.html:5
+#: templates/two_factor/core/setup_complete.html:5
+#: templates/two_factor/profile/profile.html:58
+msgid "Enable Two-Factor Authentication"
+msgstr "Kétlépéses Azonosítás engedélyezése"
+
+#: templates/two_factor/core/phone_register.html:5
+msgid "Add Backup Phone"
+msgstr "Másodlagos telefonszám megadása"
+
+#: templates/two_factor/core/phone_register.html:8
+msgid ""
+"You'll be adding a backup phone number to your\n"
+"        account. This number will be used if your primary method of\n"
+"        registration is not available."
+msgstr "Hozzáadhat egy tartalék telefonszámot a fiókjához. Ezt a számot\nfogjuk használni, ha az elsődlegesként beállított metódus nem\náll rendelkezésre."
+
+#: templates/two_factor/core/phone_register.html:12
+msgid ""
+"We've sent a token to your phone number. Please\n"
+"        enter the token you've received."
+msgstr "Elküldtünk egy tokent a telefonszámára. Írja be a kapott tokent."
+
+#: templates/two_factor/core/setup.html:7
+msgid ""
+"You are about to take your account security to the\n"
+"        next level. Follow the steps in this wizard to enable two-factor\n"
+"        authentication."
+msgstr "Magasabb szintre készül emelni fiókja biztonságát. Kövesse\na varázsló utasításait a kétlépéses azonosítás engedélyezéséhez!"
+
+#: templates/two_factor/core/setup.html:11
+msgid ""
+"Please select which authentication method you would\n"
+"        like to use."
+msgstr "Jelölje meg milyen azonosítást szeretne használni!"
+
+#: templates/two_factor/core/setup.html:14
+msgid ""
+"To start using a token generator, please use your\n"
+"        smartphone to scan the QR code below. For example, use Google\n"
+"        Authenticator. Then, enter the token generated by the app.\n"
+"        "
+msgstr "A token generátor használatához olvassa be az alábbi QR kódot.\n       Ehhez használhatja például a Google Authenticator szoftvert.\n       Ezután írja be az alkalmazás által generált kódot!"
+
+#: templates/two_factor/core/setup.html:20
+msgid ""
+"Please enter the phone number you wish to receive the\n"
+"      text messages on. This number will be validated in the next step.\n"
+"      "
+msgstr "Adja meg a telefonszámot ahol fogadni szeretné az SMS-eket.\nEzt a telefonszámot a következő lépésben ellenőrizzük."
+
+#: templates/two_factor/core/setup.html:24
+msgid ""
+"Please enter the phone number you wish to be called on.\n"
+"      This number will be validated in the next step. "
+msgstr "Adja meg a telefonszámot ahol a hívást szeretné fogadni.\nEzt a telefonszámot a következő lépésben ellenőrizzük."
+
+#: templates/two_factor/core/setup.html:35
+msgid ""
+"To identify and verify your YubiKey, please insert a\n"
+"      token in the field below. Your YubiKey will be linked to your\n"
+"      account."
+msgstr "A YubiKey azonosításához és ellenőrzéséhez adjon meg egy\n      YubiKey tokent az alábbi mezőben. A YubiKey-ét ezután kapcsoljuk\n      a fiókjához."
+
+#: templates/two_factor/core/setup_complete.html:7
+msgid ""
+"Congratulations, you've successfully enabled two-factor\n"
+"      authentication."
+msgstr "Gratulálunk, sikeresen engedélyezte a kétlépéses\n      azonosítást."
+
+#: templates/two_factor/core/setup_complete.html:12
+#: templates/two_factor/core/setup_complete.html:19
+msgid "Back to Profile"
+msgstr "Vissza a Profilhoz"
+
+#: templates/two_factor/core/setup_complete.html:14
+msgid ""
+"However, it might happen that you don't have access to\n"
+"      your primary token device. To enable account recovery, add a phone \n"
+"      number."
+msgstr "Előfordulhat, hogy nem áll rendelkezésre az elsődleges token\ngeneráló eszköze. Itt megadhat egy telefonszámot ezekre az\nesetekre."
+
+#: templates/two_factor/core/setup_complete.html:21
+#: templates/two_factor/profile/profile.html:33
+msgid "Add Phone Number"
+msgstr "Telefonszám hozzáadása"
+
+#: templates/two_factor/profile/disable.html:5
+msgid "Disable Two-factor Authentication"
+msgstr "Kétlépéses azonosítás letiltása"
+
+#: templates/two_factor/profile/disable.html:6
+msgid ""
+"You are about to disable two-factor authentication. This\n"
+"    compromises your account security, are you sure?"
+msgstr "Arra készül, hogy letiltsa a kétlépéses azonosítást.\n    Ez veszélyeztetheti a fiókjá, biztos benne, hogy ezt szeretné?"
+
+#: templates/two_factor/profile/disable.html:12
+msgid "Disable"
+msgstr "Letiltás"
+
+#: templates/two_factor/profile/profile.html:5
+msgid "Account Security"
+msgstr "Biztonsági Beállítások"
+
+#: templates/two_factor/profile/profile.html:9
+msgid "Tokens will be generated by your token generator."
+msgstr "A tokeneket a token generátora fogja elkészíteni."
+
+#: templates/two_factor/profile/profile.html:11
+#, python-format
+msgid "Primary method: %(primary)s"
+msgstr "Elsődleges metódus: %(primary)s"
+
+#: templates/two_factor/profile/profile.html:13
+msgid "Tokens will be generated by your YubiKey."
+msgstr "A tokeneket az Ön YubiKey-e állítja elő."
+
+#: templates/two_factor/profile/profile.html:16
+msgid "Backup Phone Numbers"
+msgstr "Tartalék Telefonszámok"
+
+#: templates/two_factor/profile/profile.html:17
+msgid ""
+"If your primary method is not available, we are able to\n"
+"      send backup tokens to the phone numbers listed below."
+msgstr "Ha az elsődleges metódusa nem elérhető, tudunk tartalék\ntokent küldeni az alábbi telefonszámokra."
+
+#: templates/two_factor/profile/profile.html:27
+msgid "Unregister"
+msgstr "Fiók törlése"
+
+#: templates/two_factor/profile/profile.html:37
+msgid ""
+"If you don't have any device with you, you can access\n"
+"        your account using backup tokens."
+msgstr "Ha nincs Önnél egyik eszköze sem, elérheti fiókját\ntartalék tokenekkel."
+
+#: templates/two_factor/profile/profile.html:39
+#, python-format
+msgid ""
+"\n"
+"        You have only one backup token remaining.\n"
+"      "
+msgid_plural ""
+"\n"
+"        You have %(counter)s backup tokens remaining.\n"
+"      "
+msgstr[0] "\n        Már csak egy tartalék tokenje maradt.\n      "
+msgstr[1] "\n        Még %(counter)s tartalék tokenje van.\n      "
+
+#: templates/two_factor/profile/profile.html:46
+msgid "Show Codes"
+msgstr "Kódok Megjelenítése"
+
+#: templates/two_factor/profile/profile.html:48
+#: templates/two_factor/profile/profile.html:52
+msgid "Disable Two-Factor Authentication"
+msgstr "Kétlépéses Azonosítás letiltása"
+
+#: templates/two_factor/profile/profile.html:49
+msgid ""
+"However we strongly discourage you to do so, you can\n"
+"      also disable two-factor authentication for your account."
+msgstr "Bár egyáltalán nem ajánljuk, kikapcsolhatja a kétlépéses azonosítást\na fiókján."
+
+#: templates/two_factor/profile/profile.html:54
+msgid ""
+"Two-factor authentication is not enabled for your\n"
+"      account. Enable two-factor authentication for enhanced account\n"
+"      security."
+msgstr "A kétlépéses azonosítás nincs engedélyezve az Ön fiókjához.\n      Engedélyezze a kétlépésest azonosítást a nagyobb biztonság érdekében!"
+
+#: templatetags/two_factor.py:38
+#, python-format
+msgid "Send text message to %s"
+msgstr "SMS küldése a %s számra"
+
+#: templatetags/two_factor.py:40
+#, python-format
+msgid "Call number %s"
+msgstr "Telefonhívás a %s számon"
+
+#~ msgid "Please enter a valid token."
+#~ msgstr "Please enter a valid token."

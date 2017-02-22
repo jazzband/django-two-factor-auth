@@ -5,10 +5,14 @@ Release Notes
 -----
 * New: Django 1.10’s MIDDLEWARE support
 * New: Allow ``success_url`` overrides from ``urls.py``
+* New: Autofocus token input during authentication
+* New translations: Polish, Italian, Hungarian, Finnish and Danish.
 * Renamed ``redirect_url`` properties to ``success_url`` to be consistent with Django
+* Dropped Python 3.2 and 3.3 support.
 * Fix: Allow Firefox users to enter backup tokens (#177)
 * Fix: Allow multiple requests for QR code (#99)
 * Fix: Don't add phone number without gateway (#92)
+* Fix: Redirect to 2FA profile page after removing a phone (#159)
 
 1.4.0
 -----

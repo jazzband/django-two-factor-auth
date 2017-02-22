@@ -4,18 +4,18 @@ Requirements
 Django
 ------
 All Django versions listed by the Django Project under `Supported versions`_
-are supported. Currently this list includes Django 1.8, 1.9, 1.10
+are supported. Currently this list includes Django 1.8, 1.9 and 1.10.
 
 Python
 ------
-The following Python versions are supported: 2.7, 3.2, 3.3, 3.4 and 3.5 with a
+The following Python versions are supported: 2.7, 3.4, 3.5 and 3.6 with a
 limit to what Django itself supports. As support for older Django versions is
 dropped, the minimum version might be raised. See also `What Python version can
 I use with Django?`_.
 
 django-otp
 ----------
-This project is used for generating one-time passwords. Version 0.2 and above
+This project is used for generating one-time passwords. Version 0.3.x and above
 are supported.
 
 django-formtools
