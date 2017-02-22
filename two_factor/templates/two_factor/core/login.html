@@ -3,6 +3,7 @@
 
 {% block content %}
   <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
+
   {% if step == 'auth' %}
     <p>{% blocktrans %}Enter your credentials.{% endblocktrans %}</p>
   {% elif step == 'token' %}
