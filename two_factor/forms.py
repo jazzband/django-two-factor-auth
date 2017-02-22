@@ -3,6 +3,7 @@ from time import time
 
 from django import forms
 from django.forms import Form, ModelForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
