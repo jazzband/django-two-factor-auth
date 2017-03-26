@@ -1,10 +1,14 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
 
 from ..utils import default_device
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse  # < django 1.10
 
 
 class OTPRequiredMixin(object):

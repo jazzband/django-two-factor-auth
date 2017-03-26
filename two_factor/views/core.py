@@ -11,7 +11,6 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, resolve_url
@@ -36,6 +35,11 @@ from ..forms import (
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse  # < django 1.10
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
