@@ -1,12 +1,16 @@
 from __future__ import absolute_import
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.utils import translation
 from django.utils.translation import pgettext, ugettext
 from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse  # < django 1.10
 
 try:
     from urllib.parse import urlencode
