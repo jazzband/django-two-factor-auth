@@ -53,12 +53,6 @@ DATABASES = {
     }
 }
 
-# Django < 1.8
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
-
-# Django >= 1.8
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
