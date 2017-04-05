@@ -1,62 +1,68 @@
 Release Notes
 =============
 
+1.6.0
+-----
+* New: Support for Django 1.11 (#188).
+* Fix: Allow setting ``LOGIN_REDIRECT_URL`` to a URL (#192).
+* Fix: ``DisableView`` should also take ``success_url`` parameter (#187).
+
 1.5.0
 -----
-* New: Django 1.10’s MIDDLEWARE support
-* New: Allow ``success_url`` overrides from ``urls.py``
-* New: Autofocus token input during authentication
+* New: Django 1.10’s MIDDLEWARE support.
+* New: Allow ``success_url`` overrides from ``urls.py``.
+* New: Autofocus token input during authentication.
 * New translations: Polish, Italian, Hungarian, Finnish and Danish.
-* Renamed ``redirect_url`` properties to ``success_url`` to be consistent with Django
+* Renamed ``redirect_url`` properties to ``success_url`` to be consistent with Django.
 * Dropped Python 3.2 and 3.3 support.
-* Fix: Allow Firefox users to enter backup tokens (#177)
-* Fix: Allow multiple requests for QR code (#99)
-* Fix: Don't add phone number without gateway (#92)
-* Fix: Redirect to 2FA profile page after removing a phone (#159)
+* Fix: Allow Firefox users to enter backup tokens (#177).
+* Fix: Allow multiple requests for QR code (#99).
+* Fix: Don't add phone number without gateway (#92).
+* Fix: Redirect to 2FA profile page after removing a phone (#159).
 
 1.4.0
 -----
-* New: Support for Django 1.10 (#157)
-* Fix: Enable autodoc builds in documentation (#164)
+* New: Support for Django 1.10 (#157).
+* Fix: Enable autodoc builds in documentation (#164).
 * Fix: Support named urls in ``LOGIN_URL``, ``LOGIN_REDIRECT_URL`` and
-  ``LOGOUT_URL`` (#153)
+  ``LOGOUT_URL`` (#153).
 
 1.3.1
 -----
-* Fix: KeyError when trying to login (#102)
-* Fix: Migration fails with custom user model without username field
-* Fix: Added missing migrations
-* Fix: Spurious migrations on Python 3
-* Require django-otp 0.3.4 and above for better Python 3 compatibility
+* Fix: KeyError when trying to login (#102).
+* Fix: Migration fails with custom user model without username field.
+* Fix: Added missing migrations.
+* Fix: Spurious migrations on Python 3.
+* Require django-otp 0.3.4 and above for better Python 3 compatibility.
 
 1.3.0
 -----
-* New feature: Added support for Django 1.9
-* New feature: Use phonenumbers library to validate phone number format
-* New feature: Use django-phonenumber-field for storing phone number in E.164 format
-* Use AppConfig for patching admin
-* Reduced number of tox test environments
-* Removed support for Django 1.7 and below
-* Fix: Catch gateway errors
-* Fix: Use raw_id_fields on admin site form
-* Fix: Skip test that hits bug in Python 2.7.10
-* Fix: Import changed in django-otp 0.3.?
+* New feature: Added support for Django 1.9.
+* New feature: Use phonenumbers library to validate phone number format.
+* New feature: Use django-phonenumber-field for storing phone number in E.164 format.
+* Use AppConfig for patching admin.
+* Reduced number of tox test environments.
+* Removed support for Django 1.7 and below.
+* Fix: Catch gateway errors.
+* Fix: Use raw_id_fields on admin site form.
+* Fix: Skip test that hits bug in Python 2.7.10.
+* Fix: Import changed in django-otp 0.3.?.
 
 1.2.2
 -----
-* Allow django-otp 0.3.x as well as 0.2.x
+* Allow django-otp 0.3.x as well as 0.2.x.
 
 1.2.1
 -----
-* Fix: Resolved an issue with django_otp 0.3.2 and higher
+* Fix: Resolved an issue with django_otp 0.3.2 and higher.
 
 1.2.0
 -----
-* Fix: Issue with migrations on Py3 (#87)
-* Fix: Fixed failing migration on Django 1.7.0 (#83)
-* Fix: Issue with pip unable to install package
-* Dropped support for Django 1.5 and 1.6
-* Added support for Django 1.8
+* Fix: Issue with migrations on Py3 (#87).
+* Fix: Fixed failing migration on Django 1.7.0 (#83).
+* Fix: Issue with pip unable to install package.
+* Dropped support for Django 1.5 and 1.6.
+* Added support for Django 1.8.
 
 1.1.1
 -----
