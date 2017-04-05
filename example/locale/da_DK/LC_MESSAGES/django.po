@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Translators:
+# Lars Sinning <larssin@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2013-11-20 09:31+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"PO-Revision-Date: 2017-02-21 19:01+0000\n"
+"Last-Translator: Lars Sinning <larssin@gmail.com>\n"
 "Language-Team: Danish (Denmark) (http://www.transifex.com/Bouke/django-two-factor-auth/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,15 +35,15 @@ msgstr ""
 
 #: templates/_base.html:25 templates/two_factor/_base_focus.html:8
 msgid "Demo"
-msgstr ""
+msgstr "Demo"
 
 #: templates/_base.html:32
 msgid "Home"
-msgstr ""
+msgstr "Hjem"
 
 #: templates/_base.html:34 templates/secret.html:7
 msgid "Secret Page"
-msgstr ""
+msgstr "Hemmelig side"
 
 #: templates/_base.html:42
 msgid "Account Security"
@@ -50,11 +51,11 @@ msgstr "Kontosikkerhed"
 
 #: templates/_base.html:44
 msgid "Sessions"
-msgstr ""
+msgstr "Sessioner"
 
 #: templates/_base.html:45
 msgid "Logout"
-msgstr ""
+msgstr "Log ud"
 
 #: templates/_base.html:47
 msgid "Not logged in"
@@ -135,21 +136,21 @@ msgstr ""
 
 #: templates/registration.html:5
 msgid "Registration"
-msgstr ""
+msgstr "Registrering"
 
 #: templates/registration.html:10
 msgid "Register"
-msgstr ""
+msgstr "Registrér"
 
 #: templates/registration_complete.html:5
 msgid "Registration Complete"
-msgstr ""
+msgstr "Registrering færdig"
 
 #: templates/registration_complete.html:6
 msgid ""
 "Congratulations, you've successfully registered an\n"
 "    account."
-msgstr ""
+msgstr "Tillykke, du har nu registreret en konto."
 
 #: templates/secret.html:9
 msgid ""
@@ -163,4 +164,4 @@ msgstr ""
 
 #: templates/registration/logged_out.html:6
 msgid "See you around!"
-msgstr ""
+msgstr "Vi ses!"
