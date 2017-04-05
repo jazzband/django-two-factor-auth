@@ -4,6 +4,7 @@ Release Notes
 1.6.0
 -----
 * New: Support for Django 1.11 (#188).
+* Dropped Django 1.9 support.
 * Fix: Allow setting ``LOGIN_REDIRECT_URL`` to a URL (#192).
 * Fix: ``DisableView`` should also take ``success_url`` parameter (#187).
 

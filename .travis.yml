@@ -7,8 +7,8 @@ python:
 
 env:
  - DJANGO=1.8 VARIANT=normal
- - DJANGO=1.9 VARIANT=normal
  - DJANGO=1.10 VARIANT=normal
+ - DJANGO=1.11 VARIANT=normal
  - DJANGO=master VARIANT=normal
 
 matrix:
@@ -17,14 +17,18 @@ matrix:
       env: DJANGO=1.8 VARIANT=yubikey
     - python: 2.7
       env: DJANGO=1.8 VARIANT=custom_user
-    - python: 3.4
-      env: DJANGO=1.9 VARIANT=yubikey
-    - python: 3.4
-      env: DJANGO=1.9 VARIANT=custom_user
     - python: 3.5
       env: DJANGO=1.10 VARIANT=yubikey
     - python: 3.5
       env: DJANGO=1.10 VARIANT=custom_user
+    - python: 2.7
+      env: DJANGO=1.11 VARIANT=normal
+    - python: 3.6
+      env: DJANGO=1.11 VARIANT=normal
+    - python: 3.6
+      env: DJANGO=1.11 VARIANT=yubikey
+    - python: 3.6
+      env: DJANGO=1.11 VARIANT=custom_user
     - python: 3.6
       env: DJANGO=master VARIANT=normal
     - python: 3.6
