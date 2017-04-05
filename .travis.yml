@@ -29,6 +29,8 @@ matrix:
       env: DJANGO=1.11 VARIANT=yubikey
     - python: 3.6
       env: DJANGO=1.11 VARIANT=custom_user
+    - python: 3.5
+      env: DJANGO=master VARIANT=normal
     - python: 3.6
       env: DJANGO=master VARIANT=normal
     - python: 3.6
