@@ -53,6 +53,15 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
+    def test_valid_login_with_custom_post_redirect(self):
+        redirect_url = reverse('two_factor:setup')
+        self.create_user()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth',
+                               'next': redirect_url})
+        self.assertRedirects(response, redirect_url)
+
     def test_valid_login_with_redirect_field_name(self):
         redirect_url = reverse('two_factor:setup')
         self.create_user()
