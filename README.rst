@@ -1,3 +1,6 @@
+.. image:: https://badge.waffle.io/Bouke/django-two-factor-auth.png?label=ready&title=Ready 
+ :target: https://waffle.io/Bouke/django-two-factor-auth
+ :alt: 'Stories in Ready'
 ================================
 Django Two-Factor Authentication
 ================================
