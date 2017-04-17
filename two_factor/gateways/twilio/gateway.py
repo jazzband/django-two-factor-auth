@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import translation
 from django.utils.translation import pgettext, ugettext
-from twilio.rest import TwilioRestClient
+from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
 
@@ -42,8 +42,8 @@ class Twilio(object):
     .. _Twilio: http://www.twilio.com/
     """
     def __init__(self):
-        self.client = TwilioRestClient(getattr(settings, 'TWILIO_ACCOUNT_SID'),
-                                       getattr(settings, 'TWILIO_AUTH_TOKEN'))
+        self.client = Client(getattr(settings, 'TWILIO_ACCOUNT_SID'),
+                             getattr(settings, 'TWILIO_AUTH_TOKEN'))
 
     def make_call(self, device, token):
         locale = translation.get_language()

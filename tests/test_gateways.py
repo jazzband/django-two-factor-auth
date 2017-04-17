@@ -52,7 +52,7 @@ class TwilioGatewayTest(TestCase):
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
     )
-    @patch('two_factor.gateways.twilio.gateway.TwilioRestClient')
+    @patch('two_factor.gateways.twilio.gateway.Client')
     def test_gateway(self, client):
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
@@ -86,7 +86,7 @@ class TwilioGatewayTest(TestCase):
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
     )
-    @patch('two_factor.gateways.twilio.gateway.TwilioRestClient')
+    @patch('two_factor.gateways.twilio.gateway.Client')
     def test_invalid_twilio_language(self, client):
         # This test assumes an invalid twilio voice language being present in
         # the Arabic translation. Might need to create a faux translation when
