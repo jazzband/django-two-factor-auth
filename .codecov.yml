@@ -1,0 +1,8 @@
+coverage:
+  status:
+    project:
+      default: false
+      tests:
+        paths: tests
+      two_factor:
+        paths: two_factor
