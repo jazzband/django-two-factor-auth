@@ -8,7 +8,7 @@ Django Two-Factor Authentication
 
 .. image:: https://codecov.io/gh/Bouke/django-two-factor-auth/branch/master/graph/badge.svg
     :alt: Test Coverage
-  :target: https://codecov.io/gh/Bouke/django-two-factor-auth
+    :target: https://codecov.io/gh/Bouke/django-two-factor-auth
 
 .. image:: https://badge.fury.io/py/django-two-factor-auth.svg
     :alt: PyPI
