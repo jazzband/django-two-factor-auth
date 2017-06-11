@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+1.6.1
+-----
+* Support Twilio client 6.0 (#203)
+* Fix: Fixed redirect_to after successful login (#204)
+* Updated translation: Norwegian Bokmål
+
 1.6.0
 -----
 * New: Support for Django 1.11 (#188).
