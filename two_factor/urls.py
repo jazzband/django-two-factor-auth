@@ -2,7 +2,10 @@ from django.conf.urls import url
 
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
-    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
+    ProfileView, QRGeneratorView, SetupCompleteView, SetupView, ManageKeysView,
+)
+from two_factor.forms import (
+    U2FDeviceForm,
 )
 
 core = [
@@ -40,6 +43,24 @@ core = [
         regex=r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
         view=PhoneDeleteView.as_view(),
         name='phone_delete',
+    ),
+    url(
+        regex=r'^account/two_factor/manage_keys/$',
+        view=ManageKeysView.as_view(),
+        name='manage_keys',
+    ),
+    url(
+        regex=r'^account/two_factor/add_u2f_key/$',
+        view=SetupView.as_view(
+            disabled_methods=(
+                'call',
+                'sms',
+                'yubikey',
+                'generator',
+            ),
+            force=True,
+        ),
+        name='add_u2f_key'
     ),
 ]
 

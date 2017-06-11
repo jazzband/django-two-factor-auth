@@ -45,12 +45,20 @@
       account.{% endblocktrans %}</p>
   {% endif %}
 
-  <form action="" method="post">{% csrf_token %}
+  <form action="" method="post" id="auth-form">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
-
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -9999px"><input type="submit" value=""/></div>
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+
+<script>
+    var request = {{ wizard.form.registration_request|safe }};
+    u2f.register(request.appId, request.registerRequests, request.registeredKeys, function(resp) {
+        var form = document.getElementById('auth-form');
+        form['u2f-token'].value = JSON.stringify(resp);
+        form.submit();
+    })
+</script>
 {% endblock %}

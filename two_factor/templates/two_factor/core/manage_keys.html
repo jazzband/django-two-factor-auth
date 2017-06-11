@@ -1,0 +1,26 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block content %}
+{{ block.super }}
+<h1>U2F Keys</h1>
+<a href="{% url 'two_factor:profile' %}"
+  class="btn btn-info">{% trans 'Back to profile' %}</a>
+<table>
+  <tbody>
+    {% for key in object_list %}
+      <tr>
+        <td>{{ key.public_key }}</td>
+        <td>
+          <form method="post">{% csrf_token %}
+            <input name="key_id" type="hidden" value="{{ key.public_key }}">
+            <input type="submit" name="delete" value="X">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'two_factor:add_u2f_key' %}"
+  class="btn btn-info">{% trans 'Add another key' %}</a>
+{% endblock %}

@@ -6,7 +6,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 
-from .models import PhoneDevice
+from .models import PhoneDevice, U2FDevice
 from .utils import monkeypatch_method
 
 
@@ -75,4 +75,9 @@ class PhoneDeviceAdmin(admin.ModelAdmin):
     raw_id_fields = ('user',)
 
 
+class U2FDeviceAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(PhoneDevice, PhoneDeviceAdmin)
+admin.site.register(U2FDevice, U2FDeviceAdmin)
