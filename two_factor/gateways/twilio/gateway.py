@@ -62,11 +62,12 @@ class Twilio(object):
                                  url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = ugettext('Your authentication token is %s') % token
+        body = getattr(settings, 'TWO_FACTOR_SMS_BODY', ugettext('Your authentication token is %s')) % token
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
-            body=body)
+            body=body
+        )
 
 
 def validate_voice_locale(locale):
