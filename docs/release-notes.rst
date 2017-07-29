@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.6.2
+-----
+* Fix: Twilio client 6.0 usage (#211)
+* Updated translation: Russian
+
 1.6.1
 -----
 * Support Twilio client 6.0 (#203)
