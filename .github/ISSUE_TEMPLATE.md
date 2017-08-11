@@ -27,6 +27,7 @@
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
 * Browser and version:
+* Python version:
 * Django version:
 * django-otp version:
 * django-two-factor-auth version:
