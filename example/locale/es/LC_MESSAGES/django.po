@@ -63,7 +63,7 @@ msgstr "Sesión no iniciada"
 
 #: templates/_base.html:48 templates/registration_complete.html:9
 msgid "Login"
-msgstr "Iniciar de Sesión"
+msgstr "Iniciar Sesión"
 
 #: templates/home.html:4
 msgid "django-two-factor-auth – Demo Application"
