@@ -55,7 +55,7 @@ msgstr "Телефонный звонок"
 
 #: models.py:30
 msgid "Text Message"
-msgstr "Смс сообщение"
+msgstr "SMS сообщение"
 
 #: models.py:37
 msgid "Phone call"
@@ -63,7 +63,7 @@ msgstr "Телефонный звонок"
 
 #: models.py:39
 msgid "Text message"
-msgstr "Смс сообщение"
+msgstr "SMS сообщение"
 
 #: models.py:51
 msgid "Token generator"
