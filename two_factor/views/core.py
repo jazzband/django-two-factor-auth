@@ -126,6 +126,10 @@ class LoginView(IdempotentSessionWizardView):
         """
         AuthenticationTokenForm requires the user kwarg.
         """
+        if step == 'auth':
+            return {
+                'request': self.request
+            }
         if step in ('token', 'backup'):
             return {
                 'user': self.get_user(),
