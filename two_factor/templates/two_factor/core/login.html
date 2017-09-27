@@ -23,7 +23,7 @@
       enter one of these backup tokens to login to your account.{% endblocktrans %}</p>
   {% endif %}
 
-  <form action="" method="post">{% csrf_token %}
+  <form action="" method="post" id="login-form">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
@@ -49,4 +49,13 @@
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+
+  <script>
+      var request = {{ wizard.form.sign_request|safe }};
+      u2f.sign(request.appId, request.challenge, request.registeredKeys, function(resp) {
+          var form = document.getElementById('login-form');
+          form['token-otp_token'].value = JSON.stringify(resp);
+          form.submit();
+      })
+  </script>
 {% endblock %}

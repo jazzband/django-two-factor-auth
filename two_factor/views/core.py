@@ -12,13 +12,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.forms import Form
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
+from django.utils.decorators import classonlymethod
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DeleteView, FormView, TemplateView
+from django.views.generic import DeleteView, FormView, TemplateView, ListView
 from django.views.generic.base import View
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
@@ -30,9 +31,9 @@ from two_factor.utils import totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm, U2FDeviceForm,
 )
-from ..models import PhoneDevice, get_available_phone_methods
+from ..models import PhoneDevice, U2FDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
 
@@ -134,6 +135,7 @@ class LoginView(IdempotentSessionWizardView):
             return {
                 'user': self.get_user(),
                 'initial_device': self.get_device(step),
+                'request': self.request,
             }
         return {}
 
@@ -231,6 +233,7 @@ class SetupView(IdempotentSessionWizardView):
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
+        ('u2f', U2FDeviceForm),
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
@@ -238,10 +241,14 @@ class SetupView(IdempotentSessionWizardView):
         'sms': lambda self: self.get_method() == 'sms',
         'validation': lambda self: self.get_method() in ('sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
+        'u2f': lambda self: self.get_method() == 'u2f',
     }
     idempotent_dict = {
         'yubikey': False,
+        'u2f': False,
     }
+    disabled_methods = None
+    force = False
 
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})
@@ -251,7 +258,7 @@ class SetupView(IdempotentSessionWizardView):
         """
         Start the setup wizard. Redirect if already enabled.
         """
-        if default_device(self.request.user):
+        if default_device(self.request.user) and not self.force:
             return redirect(self.success_url)
         return super(SetupView, self).get(request, *args, **kwargs)
 
@@ -296,6 +303,10 @@ class SetupView(IdempotentSessionWizardView):
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
             device = form.save()
 
+        elif self.get_method() == 'u2f':
+            form = [form for form in form_list if isinstance(form, U2FDeviceForm)][0]
+            device = form.save()
+
         # PhoneNumberForm / YubiKeyDeviceForm
         elif self.get_method() in ('call', 'sms', 'yubikey'):
             device = self.get_device()
@@ -309,6 +320,10 @@ class SetupView(IdempotentSessionWizardView):
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
+        if step == 'method':
+            kwargs.update({
+                'disabled_methods': self.disabled_methods,
+            })
         if step == 'generator':
             kwargs.update({
                 'key': self.get_key(step),
@@ -317,6 +332,12 @@ class SetupView(IdempotentSessionWizardView):
         if step in ('validation', 'yubikey'):
             kwargs.update({
                 'device': self.get_device()
+            })
+        if step == 'u2f':
+            kwargs.update({
+                'user': self.request.user,
+                'device': self.get_device(),
+                'request': self.request,
             })
         metadata = self.get_form_metadata(step)
         if metadata:
@@ -344,7 +365,7 @@ class SetupView(IdempotentSessionWizardView):
 
         if method == 'yubikey':
             kwargs['public_id'] = self.storage.validated_step_data\
-                .get('yubikey', {}).get('token', '')[:-32]
+                .get(method, {}).get('token', '')[:-32]
             try:
                 kwargs['service'] = ValidationService.objects.get(name='default')
             except ValidationService.DoesNotExist:
@@ -353,6 +374,8 @@ class SetupView(IdempotentSessionWizardView):
                 raise KeyError("Multiple ValidationService found with name 'default'")
             return RemoteYubikeyDevice(**kwargs)
 
+        if method == 'u2f':
+            return U2FDevice(**kwargs)
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})
         if step in self.storage.extra_data['keys']:
@@ -385,6 +408,10 @@ class SetupView(IdempotentSessionWizardView):
     def get_form_metadata(self, step):
         self.storage.extra_data.setdefault('forms', {})
         return self.storage.extra_data['forms'].get(step, None)
+
+    @classonlymethod
+    def as_view(cls, *args, **kwargs):
+        return super(IdempotentSessionWizardView, cls).as_view(*args, **kwargs)
 
 
 @class_view_decorator(never_cache)
@@ -567,3 +594,25 @@ class QRGeneratorView(View):
         resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp
+
+@class_view_decorator(never_cache)
+@class_view_decorator(login_required)
+class ManageKeysView(ListView):
+    template_name = 'two_factor/core/manage_keys.html'
+    def get_queryset(self):
+        return self.request.user.u2f_keys.all()
+
+    def post(self, request):
+        assert 'delete' in self.request.POST
+        key = U2FDevice.objects.get(public_key=self.request.POST['key_id'])
+        key.delete()
+        keys = self.request.user.u2f_keys.all()
+        if U2FDevice.objects.filter(name='default').count() == 0:
+            if len(keys) > 0:
+                keys[0].name = 'default'
+                keys[0].save()
+        
+        if len(keys) == 0:
+            return HttpResponseRedirect(reverse('two_factor:profile'))
+        return HttpResponseRedirect(reverse('two_factor:manage_keys'))
+
