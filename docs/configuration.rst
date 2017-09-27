@@ -78,6 +78,11 @@ General Settings
   audience is a certain country, setting the region to that country allows
   entering phone numbers without that country's country code.
 
+``TWO_FACTOR_IMAGE_URL`` (default: ``None``)
+  Some two-factor authentication applications let users set custom images to
+  more easily differentiate between multiple accounts. This URL should point
+  to an image you want your users to see as associated with your site.
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_:

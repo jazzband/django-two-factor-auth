@@ -557,10 +557,13 @@ class QRGeneratorView(View):
         except AttributeError:
             username = self.request.user.username
 
+        image_url = getattr(settings, 'TWO_FACTOR_IMAGE_URL', None)
+
         otpauth_url = get_otpauth_url(accountname=username,
                                       issuer=get_current_site(self.request).name,
                                       secret=key,
-                                      digits=totp_digits())
+                                      digits=totp_digits(),
+                                      image_url=image_url)
 
         # Make and return QR code
         img = qrcode.make(otpauth_url, image_factory=image_factory)
