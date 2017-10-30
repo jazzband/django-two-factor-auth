@@ -63,6 +63,8 @@ class Twilio(object):
 
     def send_sms(self, device, token):
         body = ugettext('Your authentication token is %s') % token
+        if hasattr(settings, "TWILIO_SMS_BODY_TEXT"):
+            body = ugettext("%s %s") % (getattr(settings, 'TWILIO_SMS_BODY_TEXT'), token)
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
