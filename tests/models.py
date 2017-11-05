@@ -26,7 +26,6 @@ if settings.AUTH_USER_MODEL == "tests.User":
         def create_superuser(self, username, email, password, **extra_fields):
             return self._create_user(username, email, password, True, True, **extra_fields)
 
-
     class User(AbstractBaseUser, PermissionsMixin):
         """
         Custom User model inheriting from AbstractBaseUser. Should be admin site

@@ -276,7 +276,7 @@ class SetupView(IdempotentSessionWizardView):
             try:
                 self.get_device().generate_challenge()
                 kwargs["challenge_succeeded"] = True
-            except:
+            except Exception:
                 logger.exception("Could not generate challenge")
                 kwargs["challenge_succeeded"] = False
         return super(SetupView, self).render_next_step(form, **kwargs)
