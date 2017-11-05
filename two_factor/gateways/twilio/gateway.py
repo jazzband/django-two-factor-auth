@@ -43,6 +43,11 @@ class Twilio(object):
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
 
+    ``TWILIO_SMS_BODY_TEXT``
+      Should be set to text message suitable for your system. Please note the
+      total SMS length.
+      You should also replace the locale for different languages.
+      
     .. _Twilio: http://www.twilio.com/
     """
     def __init__(self):
@@ -63,6 +68,8 @@ class Twilio(object):
 
     def send_sms(self, device, token):
         body = ugettext('Your authentication token is %s') % token
+        if hasattr(settings, "TWILIO_SMS_BODY_TEXT"):
+            body = ugettext("%s %s") % (getattr(settings, 'TWILIO_SMS_BODY_TEXT'), token)
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
