@@ -73,7 +73,7 @@ class DeviceValidationForm(forms.Form):
 
 
 class YubiKeyDeviceForm(DeviceValidationForm):
-    token = forms.CharField(label=_("YubiKey"))
+    token = forms.CharField(label=_("YubiKey"), widget=forms.PasswordInput())
 
     error_messages = {
         'invalid_token': _("The YubiKey could not be verified."),
@@ -167,7 +167,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         # IntegerField with a CharField.
         if RemoteYubikeyDevice and YubikeyDevice and \
                 isinstance(initial_device, (RemoteYubikeyDevice, YubikeyDevice)):
-            self.fields['otp_token'] = forms.CharField(label=_('YubiKey'))
+            self.fields['otp_token'] = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput())
 
     def clean(self):
         self.clean_otp(self.user)
