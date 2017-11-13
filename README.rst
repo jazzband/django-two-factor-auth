@@ -73,6 +73,7 @@ Configure a few urls in settings.py::
 
     from django.core.urlresolvers import reverse_lazy
     LOGIN_URL = 'two_factor:login'
+    LOGIN_REDIRECT_URL = 'two_factor:profile'
 
 Add the url routes to the project in urls.py::
 
