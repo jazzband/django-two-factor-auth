@@ -73,3 +73,14 @@ def user_is_anonymous(user):
         return user.is_anonymous()
 
     return user.is_anonymous
+
+
+def user_is_authenticated(user):
+    if not user:
+        return False
+
+    # https://docs.djangoproject.com/en/dev/releases/1.10/#using-user-is-authenticated-and-user-is-anonymous-as-methods
+    if django.VERSION < (1, 10):
+        return user.is_authenticated()
+
+    return user.is_authenticated

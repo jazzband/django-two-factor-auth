@@ -3,7 +3,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 
-from ..utils import default_device
+from ..utils import default_device, user_is_authenticated
 
 try:
     from django.urls import reverse
@@ -59,7 +59,7 @@ class OTPRequiredMixin(object):
         return self.verification_url and str(self.verification_url)
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated() or \
+        if not user_is_authenticated(request.user) or \
                 (not request.user.is_verified() and default_device(request.user)):
             # If the user has not authenticated raise or redirect to the login
             # page. Also if the user just enabled two-factor authentication and
