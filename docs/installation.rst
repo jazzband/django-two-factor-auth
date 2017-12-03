@@ -23,19 +23,21 @@ Add the following apps to the ``INSTALLED_APPS``:
         'two_factor',
     )
 
-Add the ``django-otp`` middleware to your ``MIDDLEWARE_CLASSES``. Make sure
+Add the ``django-otp`` middleware to your ``MIDDLEWARE``. Make sure
 it comes after ``AuthenticationMiddleware``:
 
 .. code-block:: python
 
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = (
         ...
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django_otp.middleware.OTPMiddleware',
         ...
     )
 
-Point to the new login pages in your ``settings.py``::
+Point to the new login pages in your ``settings.py``:
+
+.. code-block:: python
 
     from django.core.urlresolvers import reverse_lazy
 
@@ -44,10 +46,13 @@ Point to the new login pages in your ``settings.py``::
     # this one is optional
     LOGIN_REDIRECT_URL = 'two_factor:profile'
 
-Add the routes to your project url configuration::
+Add the routes to your project url configuration:
 
+.. code-block:: python
+
+    from two_factor.urls import urlpatterns as tf_urls
     urlpatterns = [
-        url(r'', include('two_factor.urls', 'two_factor')),
+       url(r'', include(tf_urls)),
         ...
     ]
 

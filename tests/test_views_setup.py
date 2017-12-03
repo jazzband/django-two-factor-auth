@@ -2,9 +2,9 @@
 
 from binascii import unhexlify
 
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import modify_settings, override_settings
+from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 

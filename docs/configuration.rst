@@ -86,23 +86,22 @@ To use the Twilio gateway, you need first to install the `Twilio client`_:
 
     $ pip install twilio
 
-Next, you also need to include the Twilio urlpatterns. As these urlpatterns are
-all defined using a single Django namespace, these should be joined with the
-base urlpatterns, like so::
-
-    # urls.py
-    from two_factor.urls import urlpatterns as tf_urls
-    from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
-
-    urlpatterns = [
-        url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
-    ]
-
-Additionally, you need to enable the``ThreadLocals`` middleware:
+Next, add additional urls to your config:
 
 .. code-block:: python
 
-    MIDDLEWARE_CLASSES = (
+    # urls.py
+    from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+    urlpatterns = [
+        url(r'', include(tf_twilio_urls)),
+        ...
+    ]
+
+Additionally, you need to enable the ``ThreadLocals`` middleware:
+
+.. code-block:: python
+
+    MIDDLEWARE = (
         ...
 
         # Always include for two-factor auth

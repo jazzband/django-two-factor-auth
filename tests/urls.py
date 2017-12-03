@@ -32,6 +32,6 @@ urlpatterns = [
         view=SecureView.as_view(raise_anonymous=True,
                                 verification_url='/account/login/'),
     ),
-
-    url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
+    url(r'', include(tf_urls)),
+    url(r'', include(tf_twilio_urls)),
 ]

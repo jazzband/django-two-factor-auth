@@ -3,8 +3,8 @@ Requirements
 
 Django
 ------
-All Django versions listed by the Django Project under `Supported versions`_
-are supported. Currently this list includes Django 1.8, 1.10 and 1.11.
+Modern Django versions are supported. Currently this list includes Django 1.11
+and 2.0.
 
 Python
 ------

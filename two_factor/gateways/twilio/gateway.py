@@ -1,16 +1,12 @@
 from __future__ import absolute_import
 
 from django.conf import settings
+from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import pgettext, ugettext
 from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse  # < django 1.10
 
 try:
     from urllib.parse import urlencode
@@ -54,7 +50,7 @@ class Twilio(object):
         validate_voice_locale(locale)
 
         request = get_current_request()
-        url = reverse('two_factor:twilio_call_app', kwargs={'token': token})
+        url = reverse('two_factor_twilio:call_app', kwargs={'token': token})
         url = '%s?%s' % (url, urlencode({'locale': locale}))
         uri = request.build_absolute_uri(url)
         self.client.calls.create(to=device.number.as_e164,

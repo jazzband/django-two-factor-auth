@@ -36,9 +36,10 @@ urlpatterns = [
         view=RegistrationCompleteView.as_view(),
         name='registration_complete',
     ),
-    url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),
+    url(r'', include(tf_urls)),
+    url(r'', include(tf_twilio_urls)),
     url(r'', include('user_sessions.urls', 'user_sessions')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:

@@ -34,58 +34,14 @@ django-user-sessions_ for providing Django sessions with a foreign key to the
 user. Although the package is optional, it improves account security control
 over ``django.contrib.sessions``.
 
-Compatible with all supported Django versions. At the moment of writing that's
-including 1.8, 1.10 and 1.11 on Python 2.7, 3.4, 3.5 and 3.6. Documentation
+Compatible with modern Django versions. At the moment of writing that's
+including 1.11 and 2.0 on Python 2.7, 3.4, 3.5 and 3.6. Documentation
 is available at `readthedocs.org`_.
 
 
 Installation
 ============
-Installation with ``pip``::
-
-    $ pip install django-two-factor-auth
-
-Setup
-=====
-Add the following apps to the ``INSTALLED_APPS``::
-
-    INSTALLED_APPS = (
-        ...
-        'django_otp',
-        'django_otp.plugins.otp_static',
-        'django_otp.plugins.otp_totp',
-        'two_factor',
-    )
-
-Add ``django_otp.middleware.OTPMiddleware`` to ``MIDDLEWARE_CLASSES``. It must
-be installed *after* ``AuthenticationMiddleware``::
-
-    MIDDLEWARE_CLASSES = [
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django_otp.middleware.OTPMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-    ]
-
-Configure a few urls in settings.py::
-
-    from django.core.urlresolvers import reverse_lazy
-    LOGIN_URL = 'two_factor:login'
-
-Add the url routes to the project in urls.py::
-
-    urlpatterns = [
-        url(r'', include('two_factor.urls', 'two_factor')),
-    ]
-
-Be sure to remove any other login routes, otherwise the two-factor
-authentication might be circumvented. The admin interface should be
-automatically patched to use the new login method.
-
-Support for YubiKey_ is disabled by default, but enabling is easy. Please
-refer to the documentation for instructions.
+Refer to the `installation instructions`_ in the documentation.
 
 
 Contribute
@@ -161,6 +117,8 @@ The project is licensed under the MIT license.
 .. _issue tracker: https://github.com/Bouke/django-two-factor-auth/issues
 .. _source code: https://github.com/Bouke/django-two-factor-auth
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
+.. _`installation instructions`:
+   http://django-two-factor-auth.readthedocs.io/en/stable/installation.html
 .. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
 .. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/

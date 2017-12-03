@@ -7,9 +7,9 @@ import unittest
 
 from django import forms
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.shortcuts import resolve_url
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import six
 
 from .utils import UserMixin

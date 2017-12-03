@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 from django.utils import translation
 from django.utils.six.moves.urllib.parse import urlencode
 from phonenumber_field.phonenumber import PhoneNumber
@@ -18,7 +18,7 @@ except ImportError:
 
 class TwilioGatewayTest(TestCase):
     def test_call_app(self):
-        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.get(url)
         self.assertEqual(response.content,
                          b'<?xml version="1.0" encoding="UTF-8" ?>'
@@ -30,7 +30,7 @@ class TwilioGatewayTest(TestCase):
                          b'  <Say language="en">You didn\'t press any keys. Good bye.</Say>'
                          b'</Response>')
 
-        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.post(url)
         self.assertEqual(response.content,
                          b'<?xml version="1.0" encoding="UTF-8" ?>'
@@ -92,7 +92,7 @@ class TwilioGatewayTest(TestCase):
         # the Arabic translation. Might need to create a faux translation when
         # the translation is fixed.
 
-        url = reverse('two_factor:twilio_call_app', args=['123456'])
+        url = reverse('two_factor_twilio:call_app', args=['123456'])
         with self.assertRaises(NotImplementedError):
             self.client.get('%s?%s' % (url, urlencode({'locale': 'ar'})))
 

@@ -56,4 +56,4 @@ profile = [
     ),
 ]
 
-urlpatterns = core + profile
+urlpatterns = (core + profile, 'two_factor')
