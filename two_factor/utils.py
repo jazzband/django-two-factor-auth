@@ -1,3 +1,4 @@
+import django
 from django.conf import settings
 from django_otp import devices_for_user
 
@@ -10,7 +11,7 @@ except ImportError:
 
 
 def default_device(user):
-    if not user or user.is_anonymous:
+    if user_is_anonymous(user):
         return
     for device in devices_for_user(user):
         if device.name == 'default':
@@ -18,7 +19,7 @@ def default_device(user):
 
 
 def backup_phones(user):
-    if not user or user.is_anonymous:
+    if user_is_anonymous(user):
         return PhoneDevice.objects.none()
     return user.phonedevice_set.filter(name='backup')
 
@@ -61,3 +62,25 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
+
+
+def user_is_anonymous(user):
+    if not user:
+        return True
+
+    # https://docs.djangoproject.com/en/dev/releases/1.10/#using-user-is-authenticated-and-user-is-anonymous-as-methods
+    if django.VERSION < (1, 10):
+        return user.is_anonymous()
+
+    return user.is_anonymous
+
+
+def user_is_authenticated(user):
+    if not user:
+        return False
+
+    # https://docs.djangoproject.com/en/dev/releases/1.10/#using-user-is-authenticated-and-user-is-anonymous-as-methods
+    if django.VERSION < (1, 10):
+        return user.is_authenticated()
+
+    return user.is_authenticated
