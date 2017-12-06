@@ -1,6 +1,13 @@
-================================
-Django Two-Factor Authentication
-================================
+====================================================
+Django Two-Factor Authentication WITH U2F SUPPORT!
+====================================================
+
+This fork of Django Two-Factor Authentication is based on U2F integration of https://github.com/vereena42/django-two-factor-auth combined with some enhancements. Feel free to make this project better by shooting in a merge request.
+
+Tested with YubiKey
+
+
+
 
 .. image:: https://travis-ci.org/Bouke/django-two-factor-auth.svg?branch=master
     :alt: Build Status
