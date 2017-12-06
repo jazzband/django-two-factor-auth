@@ -2,11 +2,12 @@ from django.conf.urls import url
 
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
-    ProfileView, QRGeneratorView, SetupCompleteView, SetupView, ManageKeysView
+    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
 )
 from two_factor.forms import (
     U2FDevice,
 )
+from two_factor.views.core import ManageKeysView
 
 core = [
     url(
