@@ -1,5 +1,6 @@
 from binascii import unhexlify
 import json
+from json import JSONDecodeError
 from time import time
 
 from django import forms
@@ -100,9 +101,12 @@ class U2FDeviceForm(DeviceValidationForm):
         if self.data:
             self.registration_request = self.request.session['u2f_registration_request']
         else:
-            self.registration_request = u2f.begin_registration(
-                self.appId, [key.to_json() for key in self.request.user.u2f_keys.all()])
-            self.request.session['u2f_registration_request'] = self.registration_request
+            try:
+                self.registration_request = u2f.begin_registration(
+                    self.appId, [key.to_json() for key in self.request.user.u2f_keys.all()])
+                self.request.session['u2f_registration_request'] = self.registration_request
+            except JSONDecodeError:
+                raise forms.ValidationError("U2F code is wrong")
 
     def clean_token(self):
         response = self.cleaned_data['token']
