@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     Example usage::
 
-        manage.py disable bouke steve
+        manage.py two_factor_disable bouke steve
     """
     help = 'Disables two-factor authentication for the given users'
 
