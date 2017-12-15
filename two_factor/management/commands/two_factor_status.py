@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     Example usage::
 
-        manage.py status bouke steve
+        manage.py two_factor_status bouke steve
         bouke: enabled
         steve: disabled
     """
