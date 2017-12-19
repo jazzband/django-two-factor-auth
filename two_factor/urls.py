@@ -4,9 +4,7 @@ from two_factor.views import (
     BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
     ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
 )
-from two_factor.forms import (
-    U2FDevice,
-)
+
 from two_factor.views.core import ManageKeysView
 
 core = [
@@ -78,4 +76,4 @@ profile = [
     ),
 ]
 
-urlpatterns = core + profile
+urlpatterns = (core + profile, 'two_factor')
