@@ -1,16 +1,23 @@
 Release Notes
 =============
 
+1.7.0
+-----
+* New: Support for Django 2.0.
+* Dropped Django <1.11 support.
+* Fix: Do not list phone method if it is not supported (#225).
+* Pass request kwarg to authentication form (#227).
+
 1.6.2
 -----
-* Fix: Twilio client 6.0 usage (#211)
-* Updated translation: Russian
+* Fix: Twilio client 6.0 usage (#211).
+* Updated translation: Russian.
 
 1.6.1
 -----
-* Support Twilio client 6.0 (#203)
-* Fix: Fixed redirect_to after successful login (#204)
-* Updated translation: Norwegian Bokmål
+* Support Twilio client 6.0 (#203).
+* Fix: Fixed redirect_to after successful login (#204).
+* Updated translation: Norwegian Bokmål.
 
 1.6.0
 -----
