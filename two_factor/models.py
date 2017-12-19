@@ -5,6 +5,7 @@ from binascii import unhexlify
 
 from django.conf import settings
 from django.db import models
+from django.db.models import CASCADE
 from django.utils.translation import ugettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
@@ -127,7 +128,7 @@ class U2FDevice(Device):
     class Meta:
         app_label = 'two_factor'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='u2f_keys')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='u2f_keys', on_delete=CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     last_used_at = models.DateTimeField(null=True)
 
