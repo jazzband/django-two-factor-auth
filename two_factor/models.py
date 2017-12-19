@@ -132,7 +132,7 @@ class U2FDevice(Device):
     created_at = models.DateTimeField(auto_now_add=True)
     last_used_at = models.DateTimeField(null=True)
 
-    public_key = models.TextField(unique=True)
+    public_key = models.TextField(unique=True, max_length=2048)
     key_handle = models.TextField()
     app_id = models.TextField()
 
