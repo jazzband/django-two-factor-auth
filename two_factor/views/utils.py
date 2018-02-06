@@ -1,6 +1,6 @@
 import logging
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import SuspiciousOperation
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from formtools.wizard.forms import ManagementForm
@@ -108,10 +108,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         # Check if form was refreshed
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
-            raise ValidationError(
-                _('ManagementForm data is missing or has been tampered.'),
-                code='missing_management_form',
-            )
+            raise SuspiciousOperation(_('ManagementForm data is missing or has been tampered.'))
 
         form_current_step = management_form.cleaned_data['current_step']
         if (form_current_step != self.steps.current and
