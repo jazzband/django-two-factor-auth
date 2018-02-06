@@ -124,6 +124,14 @@ class PhoneSetupTest(UserMixin, TestCase):
         self.assertIn('cancel_url', context)
         self.assertEqual(url, context['cancel_url'])
 
+    def test_missing_management_data(self):
+        # missing management data
+        response = self._post({'setup-number': '123',
+                               'setup-method': 'call'})
+
+        # view should return HTTP 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+
 
 class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):

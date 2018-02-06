@@ -262,6 +262,14 @@ class LoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
+    def test_missing_management_data(self):
+        # missing management data
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret'})
+
+        # view should return HTTP 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+
 
 class BackupTokensTest(UserMixin, TestCase):
     def setUp(self):
