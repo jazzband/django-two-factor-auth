@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('confirmed', models.BooleanField(default=True, help_text='Is this device ready for use?')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('last_used_at', models.DateTimeField(null=True)),
-                ('public_key', models.TextField()),
+                ('public_key', models.TextField(max_length=2048, unique=True)),
                 ('key_handle', models.TextField()),
                 ('app_id', models.TextField()),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='u2f_keys', to=settings.AUTH_USER_MODEL)),

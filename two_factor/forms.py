@@ -96,8 +96,12 @@ class U2FDeviceForm(DeviceValidationForm):
         self.request = request
         self.user = user
         self.u2f_device = None
-        self.appId = getattr(settings, "YUBIKEY_APPID", '{scheme}://{host}'.format(
-            scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()))
+        if request.META['HTTP_X_FORWARDED_HOST']:
+            self.appId = '{scheme}://{host}'.format(scheme='https' if self.request.is_secure() else 'http',
+                                       host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
+        else:
+            self.appId = '{scheme}://{host}'.format(
+                scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()).rstrip('/')
         if self.data:
             self.registration_request = self.request.session['u2f_registration_request']
         else:
@@ -210,9 +214,12 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         self.user = user
         self.request = request
         self.initial_device = initial_device
-        self.appId = getattr(settings, "YUBIKEY_APPID", '{scheme}://{host}'.format(
-            scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()))
-
+        if request.META['HTTP_X_FORWARDED_HOST']:
+            self.appId = '{scheme}://{host}'.format(scheme='https' if self.request.is_secure() else 'http',
+                                       host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
+        else:
+            self.appId = '{scheme}://{host}'.format(
+                scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()).rstrip('/')
         # YubiKey generates a OTP of 44 characters (not digits). So if the
         # user's primary device is a YubiKey, replace the otp_token
         # IntegerField with a CharField.
