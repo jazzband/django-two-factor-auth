@@ -25,7 +25,6 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
-from two_factor import signals
 from two_factor.models import get_available_methods
 from two_factor.utils import totp_digits
 

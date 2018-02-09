@@ -229,11 +229,11 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
 
     def clean(self):
         if isinstance(self.initial_device, U2FDevice):
-            response = json.loads(self.cleaned_data['otp_token'])
-            request = self.request.session['u2f_sign_request']
             try:
+                response = json.loads(self.cleaned_data['otp_token'])
+                request = self.request.session['u2f_sign_request']
                 device, login_counter, _ = u2f.complete_authentication(request, response)
-            except ValueError:
+            except (ValueError, TypeError):
                 self.add_error('__all__', 'U2F validation failed -- bad signature.')
         return self.cleaned_data
 
