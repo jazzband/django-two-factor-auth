@@ -2,6 +2,10 @@ from binascii import unhexlify
 from time import time
 
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (
+    AuthenticationForm as DjangoAuthenticationForm,
+)
 from django.forms import Form, ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
@@ -176,3 +180,57 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
 
 class BackupTokenForm(AuthenticationTokenForm):
     otp_token = forms.CharField(label=_("Token"))
+
+
+class WizardAuthenticationForm(DjangoAuthenticationForm):
+    """Allows simple hash-check authentication for multi-step wizard use.
+
+    To authenticate the user every time we check if the form is valid, the
+    password would have to be saved in the session in plain text. Rather, do
+    the actual authentication once, then allow a comparison of the user
+    password hash when validating the form again to verify that the data was
+    not altered.
+    """
+    def __init__(self, request=None, *args, **kwargs):
+        self.check_hash = kwargs.pop('check_hash', False)
+        super(WizardAuthenticationForm, self).__init__(
+            request, *args, **kwargs)
+
+    def clean(self):
+        if self.check_hash:
+            cleaned_data = self.hash_clean()
+        else:
+            cleaned_data = super(WizardAuthenticationForm, self).clean()
+            cleaned_data['password'] = self.user_cache.password
+
+        return cleaned_data
+
+    def hash_clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            self.user_cache = self.hash_check(
+                username=username, password=password)
+            if self.user_cache is None:
+                raise forms.ValidationError(
+                    self.error_messages['invalid_login'],
+                    code='invalid_login',
+                    params={'username': self.username_field.verbose_name},
+                )
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
+
+    def hash_check(self, username, password):
+        query_kwargs = {self.username_field.name: username,
+                        'password': password}
+        UserModel = get_user_model()
+
+        try:
+            user = UserModel.objects.get(**query_kwargs)
+        except UserModel.DoesNotExist:
+            user = None
+
+        return user
