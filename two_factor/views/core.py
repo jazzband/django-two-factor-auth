@@ -131,12 +131,12 @@ class LoginView(IdempotentSessionWizardView):
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
             if 'token-remember' in self.request.POST and \
-                self.request.POST['token-remember'] == "on":
-                login_good_until = str(date.today() + \
+                    self.request.POST['token-remember'] == "on":
+                login_good_until = str(date.today() +
                     timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
                 response.set_signed_cookie(key='evl', value=login_good_until,
                         salt=settings.TWO_FACTOR_SALT,
-                        max_age=settings.TWO_FACTOR_TRUSTED_DAYS*(3600*24),
+                        max_age=settings.TWO_FACTOR_TRUSTED_DAYS * (3600 * 24),
                     expires=login_good_until, path=settings.LOGIN_URL, domain=None,
                     secure=None, httponly=True)
         return response
@@ -233,12 +233,13 @@ class LoginView(IdempotentSessionWizardView):
                     salt=settings.TWO_FACTOR_SALT)
         except (BadSignature, SignatureExpired, KeyError) as e:
             return True
-        end_valid_login_dt = datetime.strptime(end_valid_login,'%Y-%m-%d')
-        if datetime.today() <  end_valid_login_dt:
+        end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
+        if datetime.today() < end_valid_login_dt:
             #--- the cookie is valid and still within {{TWO_FACTOR_TRUSTED_DAYS}} ---#
             return False
         else:
             return True
+
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
