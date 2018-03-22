@@ -2,6 +2,8 @@ import os
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['*']
+
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 DATABASES = {
@@ -18,6 +20,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 TIME_ZONE = 'Europe/Amsterdam'
+
+USE_TZ = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'DO NOT USE THIS KEY!'
@@ -95,6 +99,8 @@ LOGGING = {
 
 TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
 TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
+TWO_FACTOR_TRUSTED_DAYS = 30
+TWO_FACTOR_SALT = 'Ra74aAB404'
 PHONENUMBER_DEFAULT_REGION = 'NL'
 
 SESSION_ENGINE = 'user_sessions.backends.db'

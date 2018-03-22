@@ -36,6 +36,8 @@ from ..forms import (
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
+from datetime import datetime, date, timedelta
+from django.core.signing import BadSignature, SignatureExpired
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -71,11 +73,17 @@ class LoginView(IdempotentSessionWizardView):
     }
 
     def has_token_step(self):
-        return default_device(self.get_user())
+        if self.token_required(self.request):
+            return default_device(self.get_user())
+        else:
+            return None
 
     def has_backup_step(self):
-        return default_device(self.get_user()) and \
-            'token' not in self.storage.validated_step_data
+        if self.token_required(self.request):
+            return default_device(self.get_user()) and \
+                'token' not in self.storage.validated_step_data
+        else:
+            return None
 
     condition_dict = {
         'token': has_token_step,
@@ -103,7 +111,12 @@ class LoginView(IdempotentSessionWizardView):
         """
         Login the user and redirect to the desired page.
         """
-        login(self.request, self.get_user())
+        # if no token is required, populate user.otp_device
+        # so OTPRequiredMixin will grant access
+        user = self.get_user()
+        if not self.token_required(self.request):
+            user.otp_device = self.get_device()
+        login(self.request, user)
 
         redirect_to = self.request.POST.get(
             self.redirect_field_name,
@@ -112,11 +125,21 @@ class LoginView(IdempotentSessionWizardView):
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
+        response = redirect(redirect_to)
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
-        return redirect(redirect_to)
+            if 'token-remember' in self.request.POST and \
+                self.request.POST['token-remember'] == "on":
+                login_good_until = str(date.today() + \
+                    timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
+                response.set_signed_cookie(key='evl', value=login_good_until,
+                        salt=settings.TWO_FACTOR_SALT,
+                        max_age=settings.TWO_FACTOR_TRUSTED_DAYS*(3600*24),
+                    expires=login_good_until, path=settings.LOGIN_URL, domain=None,
+                    secure=None, httponly=True)
+        return response
 
     def get_form_kwargs(self, step=None):
         """
@@ -199,6 +222,23 @@ class LoginView(IdempotentSessionWizardView):
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
 
+    def token_required(self, request):
+        """
+        if this user logged with a token in the last {{TWO_FACTOR_TRUSTED_DAYS}}
+        days, they can skip the token steps.
+        """
+        end_valid_login = None
+        try:
+            end_valid_login = request.get_signed_cookie('evl',
+                    salt=settings.TWO_FACTOR_SALT)
+        except (BadSignature, SignatureExpired, KeyError) as e:
+            return True
+        end_valid_login_dt = datetime.strptime(end_valid_login,'%Y-%m-%d')
+        if datetime.today() <  end_valid_login_dt:
+            #--- the cookie is valid and still within {{TWO_FACTOR_TRUSTED_DAYS}} ---#
+            return False
+        else:
+            return True
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)

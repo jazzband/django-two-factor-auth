@@ -107,7 +107,8 @@ class LoginTest(UserMixin, TestCase):
     )
     def test_with_backup_phone(self, mock_signal, fake):
         user = self.create_user()
-        for no_digits in (6, 8):
+        #--- third iteration is to test "trust this computer" logic ---#
+        for idx, no_digits in enumerate([6, 8, 8]):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
                 user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                            digits=no_digits)
@@ -119,7 +120,12 @@ class LoginTest(UserMixin, TestCase):
                 response = self._post({'auth-username': 'bouke@example.com',
                                        'auth-password': 'secret',
                                        'login_view-current_step': 'auth'})
-                self.assertContains(response, 'Send text message to +31 ** *** **67')
+                # if login was sent with 'evl' cookie, it should skip token steps
+                if 'evl' in self.client.cookies:
+                    self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+                    return
+                else:
+                    self.assertContains(response, 'Send text message to +31 ** *** **67')
 
                 # Ask for challenge on invalid device
                 response = self._post({'auth-username': 'bouke@example.com',
@@ -132,6 +138,7 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We sent you a text message')
+                self.assertContains(response, 'Remember this device for')
                 fake.return_value.send_sms.assert_called_with(
                     device=device,
                     token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
@@ -143,13 +150,17 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We are calling your phone right now')
+                self.assertContains(response, 'Remember this device for')
                 fake.return_value.make_call.assert_called_with(
                     device=device,
                     token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
 
             # Valid token should be accepted.
-            response = self._post({'token-otp_token': totp(device.bin_key),
-                                   'login_view-current_step': 'token'})
+            post_vals = {'token-otp_token': totp(device.bin_key),
+                         'login_view-current_step': 'token'}
+            if idx == 1: # finish TOTP_DIGITS test, start trusted computer test
+                post_vals['token-remember'] = 'on'
+            response = self._post(post_vals)
             self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
             self.assertEqual(device.persistent_id,
                              self.client.session.get(DEVICE_ID_SESSION_KEY))

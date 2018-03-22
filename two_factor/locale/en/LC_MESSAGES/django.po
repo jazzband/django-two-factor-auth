@@ -25,6 +25,11 @@ msgstr "Method"
 msgid "Token"
 msgstr "Token"
 
+#: forms.py:146
+msgid "Remember this device for %s days"
+msgstr "Remember this device for %s days"
+
+#: forms.py:43 forms.py:57 forms.py:110
 #: forms.py:52
 msgid "Entered token is not valid"
 msgstr "Entered token is not valid"
