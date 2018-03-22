@@ -2,6 +2,7 @@ import logging
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
+from datetime import date, datetime, timedelta
 
 import django_otp
 import qrcode
@@ -37,7 +38,6 @@ from ..forms import (
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
-from datetime import datetime, date, timedelta
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
