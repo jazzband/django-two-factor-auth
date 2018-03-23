@@ -108,7 +108,7 @@ class LoginTest(UserMixin, TestCase):
     def test_with_backup_phone(self, mock_signal, fake):
         user = self.create_user()
         #--- third iteration is to test "trust this computer" logic ---#
-        for idx, no_digits in enumerate([6, 8, 8]):
+        for idx, no_digits in enumerate([6, 8, 8, 8]):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
                 user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                            digits=no_digits)
@@ -117,11 +117,13 @@ class LoginTest(UserMixin, TestCase):
                                                      key=random_hex().decode())
 
                 # Backup phones should be listed on the login form
+                if idx == 3: # corrupt the cookie
+                    response.set_cookie('evl', value='corrupt')
                 response = self._post({'auth-username': 'bouke@example.com',
                                        'auth-password': 'secret',
                                        'login_view-current_step': 'auth'})
-                # if login was sent with 'evl' cookie, it should skip token steps
-                if 'evl' in self.client.cookies:
+                # if login was sent with a valid 'evl' cookie, it should skip token steps
+                if 'evl' in self.client.cookies and idx != 3: # not a corrupt cookie
                     self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
                     return
                 else:
@@ -158,7 +160,7 @@ class LoginTest(UserMixin, TestCase):
             # Valid token should be accepted.
             post_vals = {'token-otp_token': totp(device.bin_key),
                          'login_view-current_step': 'token'}
-            if idx == 1: # finish TOTP_DIGITS test, start trusted computer test
+            if idx == 2: # finish TOTP_DIGITS test, start trusted computer test
                 post_vals['token-remember'] = 'on'
             response = self._post(post_vals)
             self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
