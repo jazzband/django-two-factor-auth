@@ -78,3 +78,6 @@ TEMPLATES = [
 TWO_FACTOR_PATCH_ADMIN = False
 
 AUTH_USER_MODEL = os.environ.get('AUTH_USER_MODEL', 'auth.User')
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+DEFAULT_FROM_EMAIL = 'test@test.org'

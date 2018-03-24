@@ -30,8 +30,8 @@ from two_factor.models import get_available_methods
 from two_factor.utils import totp_digits
 
 from ..forms import (
-    AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    EmailForm, PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm,
+    AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, EmailForm,
+    MethodForm, PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm,
     YubiKeyDeviceForm,
 )
 from ..models import EmailDevice, PhoneDevice, get_available_phone_methods

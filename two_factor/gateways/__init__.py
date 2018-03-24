@@ -1,9 +1,8 @@
-from django.utils.translation import ugettext_lazy as _
-
 from django.conf import settings
-from django.utils.module_loading import import_string
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
+from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
 
 
 def get_gateway_class(import_path):

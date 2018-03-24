@@ -2,6 +2,7 @@
 
 from binascii import unhexlify
 
+from django.core import mail
 from django.test import TestCase
 from django.test.utils import modify_settings, override_settings
 from django.urls import reverse
@@ -37,6 +38,7 @@ class SetupTest(UserMixin, TestCase):
     @modify_settings(INSTALLED_APPS={
         'remove': ['otp_yubikey'],
     })
+    @override_settings(TWO_FACTOR_EMAIL_ALLOW=False)
     def test_setup_only_generator_available(self):
         response = self.client.post(
             reverse('two_factor:setup'),
@@ -195,6 +197,44 @@ class SetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].name, 'default')
         self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'sms')
+
+    @override_settings(TWO_FACTOR_EMAIL_TEXT='{token}')
+    def test_setup_email(self):
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertContains(response, 'Method:')
+
+        # assert that if user email empty ask email
+        self.user.email = ''
+        self.user.save()
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'email'})
+        self.assertContains(response, 'Email address:')
+
+        # assert that if user email not empty skip email form
+        self.user.email = 'bouke@example.com'
+        self.user.save()
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'email'})
+        self.assertContains(response, 'Token:')
+
+        # Test that one message has been sent.
+        self.assertEqual(len(mail.outbox), 1)
+
+        token = mail.outbox[0].body
+
+        self.assertIn(str(self.user), mail.outbox[0].alternatives[0][0])
+        self.assertIn(token, mail.outbox[0].alternatives[0][0])
+
+        # assert that tokens are verified
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': '666'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid.']})
+
+        # submitting correct token should finish the setup
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
     def test_already_setup(self):
         self.enable_otp()

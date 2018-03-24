@@ -9,7 +9,8 @@ from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
+    EmailDevice, PhoneDevice, get_available_methods,
+    get_available_phone_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
@@ -76,7 +77,7 @@ class DeviceValidationForm(forms.Form):
         return token
 
     def _post_clean(self):
-        if self.is_valid():
+        if isinstance(self.device, EmailDevice) and self.is_valid():
             self.device.user.save()
 
 
