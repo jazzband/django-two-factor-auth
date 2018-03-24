@@ -12,7 +12,7 @@ class MethodBase:
         """
         return False
 
-    def get_setup_forms(self):
+    def get_setup_forms(self, wizard):
         """
         Return a dict where keys are setup wizard step names, and the values
         the form class matching the step.
@@ -39,7 +39,7 @@ class GeneratorMethod(MethodBase):
     verbose_name = _('Token generator')
     form_path = 'two_factor.forms.TOTPDeviceForm'
 
-    def get_setup_forms(self):
+    def get_setup_forms(self, *args):
         from two_factor.forms import TOTPDeviceForm
 
         return {'generator': TOTPDeviceForm}

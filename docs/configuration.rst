@@ -97,6 +97,21 @@ setting. Then, you may want to configure the following settings:
   multiplied by this factor to define the delay imposed after 1, 2, 3, 4...
   successive failures. Set to ``0`` to disable throttling completely.
 
+Email Gateway
+-------------
+
+``TWO_FACTOR_EMAIL_SUBJECT`` (default: ``'Authentication token email'``)
+  Subject of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_TEXT`` (default: ``'Authentication token for user {user} is {token}.'``)
+  Plain text of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_HTML`` (default: ``True``)
+  Attach to email alternative html message.
+
+  .. hint::
+     Html rendering by django template loader from ``'two_factor/email/email_template.html'``.
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_:

@@ -10,7 +10,7 @@ class PhoneMethodBase(MethodBase):
     def recognize_device(self, device):
         return isinstance(device, PhoneDevice)
 
-    def get_setup_forms(self):
+    def get_setup_forms(self, *args):
         return {self.code: PhoneNumberForm}
 
     def get_device_from_setup_data(self, request, storage_data, **kwargs):

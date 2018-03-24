@@ -449,10 +449,10 @@ class SetupView(IdempotentSessionWizardView):
             self.storage.validated_step_data['method'] = {'method': method_key}
         method = self.get_method()
         if method:
-            form_list.update(method.get_setup_forms())
+            form_list.update(method.get_setup_forms(self))
         else:
             for method in available_methods:
-                form_list.update(method.get_setup_forms())
+                form_list.update(method.get_setup_forms(self))
         if {'sms', 'call'} & set(form_list.keys()):
             form_list['validation'] = DeviceValidationForm
         return form_list
@@ -486,9 +486,8 @@ class SetupView(IdempotentSessionWizardView):
         if method.code == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
             device = form.save()
-
-        # PhoneNumberForm / YubiKeyDeviceForm
-        elif method.code in ('call', 'sms', 'yubikey'):
+        # PhoneNumberForm / YubiKeyDeviceForm / EmailForm
+        elif method.code in ('call', 'sms', 'yubikey', 'email'):
             device = self.get_device()
             device.save()
 
