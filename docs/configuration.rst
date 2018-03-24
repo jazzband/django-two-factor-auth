@@ -11,6 +11,24 @@ General Settings
      The admin currently does not enforce one-time passwords being set for
      admin users.
 
+``TWO_FACTOR_EMAIL_ALLOW`` (default: ``True``)
+  Allow two-factor authorization by email.
+
+  .. note::
+     Requires `EMAIL_BACKEND`_ and `DEFAULT_FROM_EMAIL`_.
+
+``TWO_FACTOR_EMAIL_SUBJECT`` (default: ``'Authentication token email'``)
+  Subject of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_TEXT`` (default: ``'Authentication token for user {user} is {token}.'``)
+  Plain text of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_HTML`` (default: ``True``)
+  Attach to email alternative html message.
+
+  .. hint::
+     Html rendering by django template loader from ``'two_factor/email/email_template.html'``.
+
 ``TWO_FACTOR_CALL_GATEWAY`` (default: ``None``)
   Which gateway to use for making phone calls. Should be set to a module or
   object providing a ``make_call`` method. Currently two gateways are bundled:
@@ -130,6 +148,8 @@ Fake Gateway
 ------------
 .. autoclass:: two_factor.gateways.fake.Fake
 
+.. _`DEFAULT_FROM_EMAIL`: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-DEFAULT_FROM_EMAIL
+.. _`EMAIL_BACKEND`: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-EMAIL_BACKEND
 .. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 .. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 .. _LOGOUT_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url

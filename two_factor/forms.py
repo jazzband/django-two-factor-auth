@@ -31,6 +31,10 @@ class MethodForm(forms.Form):
         self.fields['method'].choices = get_available_methods()
 
 
+class EmailForm(forms.Form):
+    email = forms.EmailField(label=_("Email address"))
+
+
 class PhoneNumberMethodForm(ModelForm):
     number = forms.CharField(label=_("Phone Number"),
                              validators=[validate_international_phonenumber])

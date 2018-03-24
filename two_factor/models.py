@@ -9,7 +9,7 @@ from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
 
-from .gateways import make_call, send_sms
+from .gateways import make_call, send_email, send_sms
 
 try:
     import yubiotp
@@ -23,6 +23,15 @@ PHONE_METHODS = (
     ('call', _('Phone Call')),
     ('sms', _('Text Message')),
 )
+
+
+def get_available_email_methods():
+    methods = []
+    if getattr(settings, 'TWO_FACTOR_EMAIL_ALLOW', True)\
+            and getattr(settings, 'EMAIL_BACKEND', None)\
+            and getattr(settings, 'DEFAULT_FROM_EMAIL', None):
+        methods.append(('email', _('Email message')))
+    return methods
 
 
 def get_available_phone_methods():
@@ -43,6 +52,7 @@ def get_available_yubikey_methods():
 
 def get_available_methods():
     methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_email_methods())
     methods.extend(get_available_phone_methods())
     methods.extend(get_available_yubikey_methods())
     return methods
@@ -53,26 +63,16 @@ def key_validator(*args, **kwargs):
     return hex_validator()(*args, **kwargs)
 
 
-class PhoneDevice(ThrottlingMixin, Device):
-    """
-    Model with phone number and token seed linked to a user.
-    """
+class TwoFactorMixin(models.Model):
     class Meta:
         app_label = 'two_factor'
+        abstract = True
 
-    number = PhoneNumberField()
+    drift_range = ()
     key = models.CharField(max_length=40,
                            validators=[key_validator],
                            default=random_hex,
                            help_text="Hex-encoded secret key")
-    method = models.CharField(max_length=4, choices=PHONE_METHODS,
-                              verbose_name=_('method'))
-
-    def __repr__(self):
-        return '<PhoneDevice(number={!r}, method={!r}>'.format(
-            self.number,
-            self.method,
-        )
 
     @property
     def bin_key(self):
@@ -87,10 +87,49 @@ class PhoneDevice(ThrottlingMixin, Device):
         except ValueError:
             return False
 
-        for drift in range(-5, 1):
+        for drift in self.drift_range:
             if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
                 return True
         return False
+
+    def get_throttle_factor(self):
+        return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
+
+
+class EmailDevice(TwoFactorMixin, ThrottlingMixin, Device):
+    """Model with token seed linked to a user."""
+    drift_range = range(-30, 1)
+
+    def __repr__(self):
+        return '<EmailDevice(email={!r})>'.format(self.user.email)
+
+    def generate_challenge(self):
+        # local import to avoid circular import
+        from two_factor.utils import totp_digits
+
+        """
+        Sends the current TOTP token to `self.number` using `self.method`.
+        """
+        no_digits = totp_digits()
+        token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
+        send_email(device=self, token=token)
+
+
+class PhoneDevice(TwoFactorMixin, ThrottlingMixin, Device):
+    """
+    Model with phone number and token seed linked to a user.
+    """
+    drift_range = range(-5, 1)
+
+    number = PhoneNumberField()
+    method = models.CharField(max_length=4, choices=PHONE_METHODS,
+                              verbose_name=_('method'))
+
+    def __repr__(self):
+        return '<PhoneDevice(number={!r}, method={!r})>'.format(
+            self.number,
+            self.method,
+        )
 
     def generate_challenge(self):
         # local import to avoid circular import
@@ -105,6 +144,3 @@ class PhoneDevice(ThrottlingMixin, Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
-
-    def get_throttle_factor(self):
-        return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)

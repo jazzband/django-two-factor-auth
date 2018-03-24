@@ -24,6 +24,7 @@ class SetupTest(UserMixin, TestCase):
     @modify_settings(INSTALLED_APPS={
         'remove': ['otp_yubikey'],
     })
+    @override_settings(TWO_FACTOR_EMAIL_ALLOW=False)
     def test_setup_only_generator_available(self):
         response = self.client.post(
             reverse('two_factor:setup'),
