@@ -30,6 +30,10 @@ class MethodForm(forms.Form):
         self.fields['method'].choices = get_available_methods()
 
 
+class EmailForm(forms.Form):
+    email = forms.EmailField(label=_("Email address"))
+
+
 class PhoneNumberMethodForm(ModelForm):
     number = forms.CharField(label=_("Phone Number"),
                              validators=[validate_international_phonenumber])
@@ -70,6 +74,10 @@ class DeviceValidationForm(forms.Form):
         if not self.device.verify_token(token):
             raise forms.ValidationError(self.error_messages['invalid_token'])
         return token
+
+    def _post_clean(self):
+        if self.is_valid():
+            self.device.user.save()
 
 
 class YubiKeyDeviceForm(DeviceValidationForm):

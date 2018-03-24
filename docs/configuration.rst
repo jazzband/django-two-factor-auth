@@ -11,6 +11,22 @@ General Settings
      The admin currently does not enforce one-time passwords being set for
      admin users.
 
+``TWO_FACTOR_EMAIL_ALLOW`` (default: ``True``)
+  Allow two-factor authorization by email.
+  .. note::
+     Also need setup ``EMAIL_BACKEND`` and ``DEFAULT_FROM_EMAIL``
+
+``TWO_FACTOR_EMAIL_SUBJECT`` (default: ``'Authentication token email'``)
+  Subject of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_TEXT`` (default: ``'Authentication token for user {user} is {token}.'``)
+  Plain text of email with two factor authentication token.
+
+``TWO_FACTOR_EMAIL_HTML`` (default: ``True``)
+  Attach to email alternative html message.
+  .. note::
+     Html rendering by django template loader from ``'two_factor/email/email_template.html'``
+
 ``TWO_FACTOR_CALL_GATEWAY`` (default: ``None``)
   Which gateway to use for making phone calls. Should be set to a module or
   object providing a ``make_call`` method. Currently two gateways are bundled:
