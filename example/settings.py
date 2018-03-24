@@ -100,6 +100,7 @@ PHONENUMBER_DEFAULT_REGION = 'NL'
 SESSION_ENGINE = 'user_sessions.backends.db'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = None
 
 try:
     from .settings_private import *  # noqa

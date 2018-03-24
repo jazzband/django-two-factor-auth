@@ -31,9 +31,10 @@ from two_factor.utils import totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    EmailForm, PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm,
+    YubiKeyDeviceForm,
 )
-from ..models import PhoneDevice, get_available_phone_methods
+from ..models import EmailDevice, PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
 
@@ -223,6 +224,7 @@ class SetupView(IdempotentSessionWizardView):
         ('welcome', Form),
         ('method', MethodForm),
         ('generator', TOTPDeviceForm),
+        ('email', EmailForm),
         ('sms', PhoneNumberForm),
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
@@ -230,9 +232,10 @@ class SetupView(IdempotentSessionWizardView):
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
+        'email': lambda self: self.get_method() == 'email',
         'call': lambda self: self.get_method() == 'call',
         'sms': lambda self: self.get_method() == 'sms',
-        'validation': lambda self: self.get_method() in ('sms', 'call'),
+        'validation': lambda self: self.get_method() in ('email', 'sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
     }
     idempotent_dict = {
@@ -261,6 +264,11 @@ class SetupView(IdempotentSessionWizardView):
             form_list.pop('method', None)
             method_key, _ = available_methods[0]
             self.storage.validated_step_data['method'] = {'method': method_key}
+
+        if self.request.user.email:
+            self.storage.validated_step_data['email'] = {'email': self.request.user.email}
+            self.idempotent_dict.update(**{'email': False})
+
         return form_list
 
     def render_next_step(self, form, **kwargs):
@@ -293,7 +301,7 @@ class SetupView(IdempotentSessionWizardView):
             device = form.save()
 
         # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('call', 'sms', 'yubikey'):
+        elif self.get_method() in ('email', 'call', 'sms', 'yubikey'):
             device = self.get_device()
             device.save()
 
@@ -331,6 +339,12 @@ class SetupView(IdempotentSessionWizardView):
         kwargs = kwargs or {}
         kwargs['name'] = 'default'
         kwargs['user'] = self.request.user
+
+        if method == 'email':
+            if self.storage.validated_step_data.get('email') and not self.request.user.email:
+                self.request.user.email = self.storage.validated_step_data.get('email').get('email')
+
+            return EmailDevice(key=self.get_key(method), **kwargs)
 
         if method in ('call', 'sms'):
             kwargs['method'] = method
