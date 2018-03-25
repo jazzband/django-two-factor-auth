@@ -131,7 +131,9 @@ class LoginView(IdempotentSessionWizardView):
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
             if 'token-remember' in self.request.POST and \
-                    self.request.POST['token-remember'] == "on":
+                self.request.POST['token-remember'] == "on" or \
+               'backup-remember' in self.request.POST and \
+                self.request.POST['backup-remember'] == "on":
                 login_good_until = str(date.today() +
                     timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
                 response.set_signed_cookie(key='evl', value=login_good_until,
@@ -228,10 +230,12 @@ class LoginView(IdempotentSessionWizardView):
         days, they can skip the token steps.
         """
         end_valid_login = None
+        if not request.COOKIES.get('evl'):
+            return True
         try:
             end_valid_login = request.get_signed_cookie('evl',
                     salt=settings.TWO_FACTOR_SALT)
-        except (BadSignature, SignatureExpired, KeyError) as e:
+        except (BadSignature, SignatureExpired) as e:
             return True
         end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
         if datetime.today() < end_valid_login_dt:
