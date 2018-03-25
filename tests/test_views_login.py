@@ -120,8 +120,7 @@ class LoginTest(UserMixin, TestCase):
             if instruct == 'skip_token_login':
                 self.client.cookies = response.cookies # restore cookies cleared by logout()
             if instruct == 'bad_signature': # corrupt cookie
-                self.client.cookies['evl']._coded_value = self.client.cookies['evl']._value.\
-                        replace(self.client.cookies['evl']._value[:10], '2000-01-01')
+                self.client.cookies['evl'].set('evl', instruct+':'+instruct, instruct+':'+instruct)
             # Backup phones should be listed on the login form
             response = self._post({ 'auth-username': 'bouke@example.com',
                                     'auth-password': 'secret',
@@ -228,8 +227,7 @@ class LoginTest(UserMixin, TestCase):
             if instruct == 'skip_token_login':
                 self.client.cookies = response.cookies # restore cookies cleared by logout()
             if instruct == 'bad_signature': # corrupt cookie
-                self.client.cookies['evl']._coded_value = self.client.cookies['evl']._value.\
-                        replace(self.client.cookies['evl']._value[:10], '2000-01-01')
+                self.client.cookies['evl'].set('evl', instruct+':'+instruct, instruct+':'+instruct)
             # Backup phones should be listed on the login form
             response = self._post({'auth-username': 'bouke@example.com',
                                 'auth-password': 'secret',

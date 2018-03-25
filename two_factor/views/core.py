@@ -131,9 +131,9 @@ class LoginView(IdempotentSessionWizardView):
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
             if 'token-remember' in self.request.POST and \
-                self.request.POST['token-remember'] == "on" or \
-               'backup-remember' in self.request.POST and \
-                self.request.POST['backup-remember'] == "on":
+                    self.request.POST['token-remember'] == "on" or \
+                    'backup-remember' in self.request.POST and \
+                    self.request.POST['backup-remember'] == "on":
                 login_good_until = str(date.today() +
                     timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
                 response.set_signed_cookie(key='evl', value=login_good_until,
