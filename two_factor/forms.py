@@ -78,7 +78,7 @@ class DeviceValidationForm(forms.Form):
 
     def _post_clean(self):
         if isinstance(self.device, EmailDevice) and self.is_valid():
-            self.device.user.save()
+            self.device.user.save(update_fields=['email'])
 
 
 class YubiKeyDeviceForm(DeviceValidationForm):

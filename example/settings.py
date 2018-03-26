@@ -103,6 +103,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = None
 
 try:
-    from example.settings_private import *  # noqa
+    from .settings_private import *  # noqa
 except ImportError:
     pass

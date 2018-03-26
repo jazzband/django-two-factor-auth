@@ -65,19 +65,16 @@ def key_validator(*args, **kwargs):
     return hex_validator()(*args, **kwargs)
 
 
-class EmailDevice(Device):
+class TFADevice(Device):
     class Meta:
         app_label = 'two_factor'
+        abstract = True
 
+    drift_range = []
     key = models.CharField(max_length=40,
                            validators=[key_validator],
                            default=random_hex,
                            help_text="Hex-encoded secret key")
-
-    def __eq__(self, other):
-        if not isinstance(other, PhoneDevice):
-            return False
-        return self.number == other.user.email and self.key == other.key
 
     @property
     def bin_key(self):
@@ -92,7 +89,7 @@ class EmailDevice(Device):
         except ValueError:
             return False
 
-        for drift in range(-5, 1):
+        for drift in self.drift_range:
             if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
                 return True
         return False
@@ -106,21 +103,37 @@ class EmailDevice(Device):
         """
         no_digits = totp_digits()
         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
-        send_email(device=self, token=token)
+        if isinstance(self, EmailDevice):
+            send_email(device=self, token=token)
+        elif isinstance(self, PhoneDevice):
+            if self.method == 'call':
+                make_call(device=self, token=token)
+            else:
+                send_sms(device=self, token=token)
 
 
-class PhoneDevice(Device):
+class EmailDevice(TFADevice):
+    class Meta:
+        app_label = 'two_factor'
+
+    drift_range = range(-30, 1)
+
+    def __eq__(self, other):
+        if not isinstance(other, EmailDevice):
+            return False
+        return self.user == other.user and self.key == other.key
+
+
+class PhoneDevice(TFADevice):
     """
     Model with phone number and token seed linked to a user.
     """
     class Meta:
         app_label = 'two_factor'
 
+    drift_range = range(-5, 1)
+
     number = PhoneNumberField()
-    key = models.CharField(max_length=40,
-                           validators=[key_validator],
-                           default=random_hex,
-                           help_text="Hex-encoded secret key")
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))
 
@@ -136,35 +149,3 @@ class PhoneDevice(Device):
         return self.number == other.number \
             and self.method == other.method \
             and self.key == other.key
-
-    @property
-    def bin_key(self):
-        return unhexlify(self.key.encode())
-
-    def verify_token(self, token):
-        # local import to avoid circular import
-        from two_factor.utils import totp_digits
-
-        try:
-            token = int(token)
-        except ValueError:
-            return False
-
-        for drift in range(-5, 1):
-            if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
-                return True
-        return False
-
-    def generate_challenge(self):
-        # local import to avoid circular import
-        from two_factor.utils import totp_digits
-
-        """
-        Sends the current TOTP token to `self.number` using `self.method`.
-        """
-        no_digits = totp_digits()
-        token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
-        if self.method == 'call':
-            make_call(device=self, token=token)
-        else:
-            send_sms(device=self, token=token)

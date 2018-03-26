@@ -1,1 +1,10 @@
-Your authentication token for user {{ user }} is {{ token }}.
+{% load i18n %}
+
+<p>{% trans "Hello" %},</p>
+<p>
+    {% blocktrans %}
+        Your email address has been given for two-factor authorization on the our website.
+        If you did't do this, just ignore this message.
+    {% endblocktrans %}
+</p>
+<p>{% blocktrans %}Authentication token for user {{ user }} is {{ token }}.{% endblocktrans %}</p>

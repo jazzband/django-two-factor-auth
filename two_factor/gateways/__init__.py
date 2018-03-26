@@ -29,8 +29,12 @@ def send_email(device, token):
         getattr(
             settings,
             'TWO_FACTOR_EMAIL_TEXT',
-            _('Authentication token for user {user} is {token}.')
-        ).format(**{'user': device.user, 'token': token}),
+            _("Hello,\n"
+              "Your email address has been given for two-factor authorization on the our website.\n"
+              "If you did't do this, just ignore this message.\n\n"
+              "Authentication token for user {user} is {token}."
+              ).format(**{'user': device.user, 'token': token}),
+        ),
         getattr(settings, 'DEFAULT_FROM_EMAIL', None),
         [device.user.email, ]
     )
