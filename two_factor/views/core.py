@@ -299,9 +299,13 @@ class SetupView(IdempotentSessionWizardView):
         if self.get_method() == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
             device = form.save()
-
+        elif self.get_method() == 'email':
+            device = self.get_device()
+            device.save()
+            if form_list[2].is_bound:
+                device.user.save(update_fields=['email'])
         # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('email', 'call', 'sms', 'yubikey'):
+        elif self.get_method() in ('call', 'sms', 'yubikey'):
             device = self.get_device()
             device.save()
 

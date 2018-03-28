@@ -76,10 +76,6 @@ class DeviceValidationForm(forms.Form):
             raise forms.ValidationError(self.error_messages['invalid_token'])
         return token
 
-    def _post_clean(self):
-        if isinstance(self.device, EmailDevice) and self.is_valid():
-            self.device.user.save(update_fields=['email'])
-
 
 class YubiKeyDeviceForm(DeviceValidationForm):
     token = forms.CharField(label=_("YubiKey"), widget=forms.PasswordInput())
