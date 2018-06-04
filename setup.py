@@ -14,7 +14,7 @@ setup(
     install_requires=[
         'Django>=1.11',
         'django_otp>=0.3.4,<0.99',
-        'qrcode>=4.0.0,<4.99',
+        'qrcode>=4.0.0,<5.99',
         'django-phonenumber-field>=1.1.0,<1.99',
         'django-formtools',
     ],
