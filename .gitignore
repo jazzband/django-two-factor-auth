@@ -7,3 +7,4 @@ example/settings_private.py
 /.tox/
 /htmlcov/
 /docs/_build/
+.eggs/
