@@ -113,7 +113,7 @@ class LoginView(IdempotentSessionWizardView):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         device = getattr(self.get_user(), 'otp_device', None)
-        if device:
+        if device or self.get_user().otp_exempt:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
         return redirect(redirect_to)

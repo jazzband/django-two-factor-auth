@@ -94,7 +94,7 @@ class TOTPDeviceForm(forms.Form):
     def __init__(self, key, user, metadata=None, **kwargs):
         super(TOTPDeviceForm, self).__init__(**kwargs)
         self.key = key
-        self.tolerance = 1
+        self.tolerance = 10
         self.t0 = 0
         self.step = 30
         self.drift = 0

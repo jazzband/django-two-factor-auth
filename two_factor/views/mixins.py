@@ -68,7 +68,7 @@ class OTPRequiredMixin(object):
             else:
                 return redirect_to_login(request.get_full_path(), self.get_login_url())
 
-        if not request.user.is_verified():
+        if not request.user.is_verified() and not request.user.otp_exempt:
             if self.raise_unverified:
                 raise PermissionDenied()
             elif self.get_verification_url():
