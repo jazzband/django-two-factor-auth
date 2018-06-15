@@ -185,11 +185,18 @@ class EmailAuth(Device):
         message = 'This is your temporary token to log in {}'.format(token)
         recipient = json.loads(self.email.replace("\'","\""))["email"]
 
-        req = requests.post(request_url, auth=('api', key), data={
-            'from': from_email,
-            'to': recipient,
-            'subject': subject,
-            'text': message
-        })
-        print(req.text)
-        print(recipient)
+        # req = requests.post(request_url, auth=('api', key), data={
+        #     'from': from_email,
+        #     'to': recipient,
+        #     'subject': subject,
+        #     'text': message
+        # })
+        # print(req.text)
+        # print(recipient)
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=[recipient],
+        )
