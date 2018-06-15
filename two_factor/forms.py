@@ -9,7 +9,7 @@ from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
+    PhoneDevice, EmailAuth, get_available_methods, get_available_phone_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
@@ -53,6 +53,15 @@ class PhoneNumberForm(ModelForm):
         model = PhoneDevice
         fields = 'number',
 
+
+class EmailForm(ModelForm):
+    # Cannot use PhoneNumberField, as it produces a PhoneNumber object, which cannot be serialized.
+    email = forms.CharField(label=_("Email"),
+                             validators=[])
+
+    class Meta:
+        model = EmailAuth
+        fields = 'email',
 
 class DeviceValidationForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))

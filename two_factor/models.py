@@ -10,8 +10,17 @@ from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
+import json
 
 from .gateways import make_call, send_sms
+
+from django.core.mail import send_mail
+import requests
+
+key = 'key-f698622804ec42e0b383394dc8d8ed1c'
+sandbox = 'forms.itpie.com'
+request_url = 'https://api.mailgun.net/v3/{0}/messages'.format(sandbox)
+
 
 try:
     import yubiotp
@@ -26,6 +35,11 @@ PHONE_METHODS = (
     ('sms', _('Text Message')),
 )
 
+
+def get_available_email_methods():
+    methods = []
+    methods.append(('email', _('Email')))
+    return methods
 
 def get_available_phone_methods():
     methods = []
@@ -47,6 +61,7 @@ def get_available_methods():
     methods = [('generator', _('Token generator'))]
     methods.extend(get_available_phone_methods())
     methods.extend(get_available_yubikey_methods())
+    methods.extend(get_available_email_methods())
     return methods
 
 
@@ -114,3 +129,67 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+
+class EmailAuth(Device):
+
+    class Meta:
+        app_label = 'two_factor'
+
+    email = models.EmailField(max_length=254)
+    key = models.CharField(max_length=40,
+                           validators=[key_validator],
+                           default=random_hex,
+                           help_text="Hex-encoded secret key")
+
+    def __repr__(self):
+        return '<EmailAuth(email={!r}>'.format(
+            self.email,
+        )
+
+    def __eq__(self, other):
+        if not isinstance(other, EmailAuth):
+            return False
+        return self.email == other.email \
+            and self.key == other.key
+
+    @property
+    def bin_key(self):
+        return unhexlify(self.key.encode())
+
+    def verify_token(self, token):
+        # local import to avoid circular import
+        from two_factor.utils import totp_digits
+
+        try:
+            token = int(token)
+        except ValueError:
+            return False
+
+        for drift in range(-5, 1):
+            if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
+                return True
+        return False
+
+    def generate_challenge(self):
+        # local import to avoid circular import
+        from two_factor.utils import totp_digits
+
+        """
+        Sends the current TOTP token to `self.number` using `self.method`.
+        """
+        no_digits = totp_digits()
+        subject = 'ITPIE Portal Verification'
+        token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
+        from_email = "ITPIE Support <support@forms.itpie.com>"
+        message = 'This is your temporary token to log in {}'.format(token)
+        recipient = json.loads(self.email.replace("\'","\""))["email"]
+
+        req = requests.post(request_url, auth=('api', key), data={
+            'from': from_email,
+            'to': recipient,
+            'subject': subject,
+            'text': message
+        })
+        print(req.text)
+        print(recipient)
