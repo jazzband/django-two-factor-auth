@@ -113,7 +113,7 @@ class LoginView(IdempotentSessionWizardView):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         device = getattr(self.get_user(), 'otp_device', None)
-        if device:
+        if device or self.get_user().otp_exempt:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
         return redirect(redirect_to)
@@ -227,6 +227,7 @@ class SetupView(IdempotentSessionWizardView):
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
+        #('email', EmailForm),
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
@@ -234,6 +235,7 @@ class SetupView(IdempotentSessionWizardView):
         'sms': lambda self: self.get_method() == 'sms',
         'validation': lambda self: self.get_method() in ('sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
+        #'email': lambda self: self.get_method() == 'email',
     }
     idempotent_dict = {
         'yubikey': False,
@@ -293,6 +295,10 @@ class SetupView(IdempotentSessionWizardView):
             device = form.save()
 
         # PhoneNumberForm / YubiKeyDeviceForm
+        # elif self.get_method() in ('call', 'sms', 'yubikey', 'email'):
+        #     device = self.get_device()
+        #     device.save()
+
         elif self.get_method() in ('call', 'sms', 'yubikey'):
             device = self.get_device()
             device.save()
@@ -348,6 +354,11 @@ class SetupView(IdempotentSessionWizardView):
             except ValidationService.MultipleObjectsReturned:
                 raise KeyError("Multiple ValidationService found with name 'default'")
             return RemoteYubikeyDevice(**kwargs)
+
+        # if method == 'email':
+        #     kwargs['email'] = self.storage.validated_step_data\
+        #         .get('email')
+        #     return EmailAuth(key=self.get_key(method), **kwargs)
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})

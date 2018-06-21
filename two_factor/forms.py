@@ -8,6 +8,9 @@ from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+# from .models import (
+#     PhoneDevice, EmailAuth, get_available_methods, get_available_phone_methods,
+# )
 from .models import (
     PhoneDevice, get_available_methods, get_available_phone_methods,
 )
@@ -54,6 +57,15 @@ class PhoneNumberForm(ModelForm):
         fields = 'number',
 
 
+# class EmailForm(ModelForm):
+#     # Cannot use PhoneNumberField, as it produces a PhoneNumber object, which cannot be serialized.
+#     email = forms.CharField(label=_("Email"),
+#                              validators=[])
+
+#     class Meta:
+#         model = EmailAuth
+#         fields = 'email',
+
 class DeviceValidationForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
 
@@ -94,7 +106,7 @@ class TOTPDeviceForm(forms.Form):
     def __init__(self, key, user, metadata=None, **kwargs):
         super(TOTPDeviceForm, self).__init__(**kwargs)
         self.key = key
-        self.tolerance = 1
+        self.tolerance = 10
         self.t0 = 0
         self.step = 30
         self.drift = 0
