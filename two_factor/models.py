@@ -36,10 +36,10 @@ PHONE_METHODS = (
 )
 
 
-def get_available_email_methods():
-    methods = []
-    methods.append(('email', _('Email')))
-    return methods
+# def get_available_email_methods():
+#     methods = []
+#     methods.append(('email', _('Email')))
+#     return methods
 
 def get_available_phone_methods():
     methods = []
@@ -61,7 +61,7 @@ def get_available_methods():
     methods = [('generator', _('Token generator'))]
     methods.extend(get_available_phone_methods())
     methods.extend(get_available_yubikey_methods())
-    methods.extend(get_available_email_methods())
+    # methods.extend(get_available_email_methods())
     return methods
 
 
@@ -131,72 +131,72 @@ class PhoneDevice(Device):
             send_sms(device=self, token=token)
 
 
-class EmailAuth(Device):
+# class EmailAuth(Device):
 
-    class Meta:
-        app_label = 'two_factor'
+#     class Meta:
+#         app_label = 'two_factor'
 
-    email = models.EmailField(max_length=254)
-    key = models.CharField(max_length=40,
-                           validators=[key_validator],
-                           default=random_hex,
-                           help_text="Hex-encoded secret key")
+#     email = models.EmailField(max_length=254)
+#     key = models.CharField(max_length=40,
+#                            validators=[key_validator],
+#                            default=random_hex,
+#                            help_text="Hex-encoded secret key")
 
-    def __repr__(self):
-        return '<EmailAuth(email={!r}>'.format(
-            self.email,
-        )
+#     def __repr__(self):
+#         return '<EmailAuth(email={!r}>'.format(
+#             self.email,
+#         )
 
-    def __eq__(self, other):
-        if not isinstance(other, EmailAuth):
-            return False
-        return self.email == other.email \
-            and self.key == other.key
+#     def __eq__(self, other):
+#         if not isinstance(other, EmailAuth):
+#             return False
+#         return self.email == other.email \
+#             and self.key == other.key
 
-    @property
-    def bin_key(self):
-        return unhexlify(self.key.encode())
+#     @property
+#     def bin_key(self):
+#         return unhexlify(self.key.encode())
 
-    def verify_token(self, token):
-        # local import to avoid circular import
-        from two_factor.utils import totp_digits
+#     def verify_token(self, token):
+#         # local import to avoid circular import
+#         from two_factor.utils import totp_digits
 
-        try:
-            token = int(token)
-        except ValueError:
-            return False
+#         try:
+#             token = int(token)
+#         except ValueError:
+#             return False
 
-        for drift in range(-5, 1):
-            if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
-                return True
-        return False
+#         for drift in range(-5, 1):
+#             if totp(self.bin_key, drift=drift, digits=totp_digits()) == token:
+#                 return True
+#         return False
 
-    def generate_challenge(self):
-        # local import to avoid circular import
-        from two_factor.utils import totp_digits
+#     def generate_challenge(self):
+#         # local import to avoid circular import
+#         from two_factor.utils import totp_digits
 
-        """
-        Sends the current TOTP token to `self.number` using `self.method`.
-        """
-        no_digits = totp_digits()
-        subject = 'ITPIE Portal Verification'
-        token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
-        from_email = "ITPIE Support <support@forms.itpie.com>"
-        message = 'This is your temporary token to log in {}'.format(token)
-        recipient = json.loads(self.email.replace("\'","\""))["email"]
+#         """
+#         Sends the current TOTP token to `self.number` using `self.method`.
+#         """
+#         no_digits = totp_digits()
+#         subject = 'ITPIE Portal Verification'
+#         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
+#         from_email = "ITPIE Support <support@forms.itpie.com>"
+#         message = 'This is your temporary token to log in {}'.format(token)
+#         recipient = json.loads(self.email.replace("\'","\""))["email"]
 
-        # req = requests.post(request_url, auth=('api', key), data={
-        #     'from': from_email,
-        #     'to': recipient,
-        #     'subject': subject,
-        #     'text': message
-        # })
-        # print(req.text)
-        # print(recipient)
+#         # req = requests.post(request_url, auth=('api', key), data={
+#         #     'from': from_email,
+#         #     'to': recipient,
+#         #     'subject': subject,
+#         #     'text': message
+#         # })
+#         # print(req.text)
+#         # print(recipient)
 
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=from_email,
-            recipient_list=[recipient],
-        )
+#         send_mail(
+#             subject=subject,
+#             message=message,
+#             from_email=from_email,
+#             recipient_list=[recipient],
+#         )

@@ -31,9 +31,9 @@ from two_factor.utils import totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,EmailForm,
+    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
 )
-from ..models import PhoneDevice, EmailAuth, get_available_phone_methods
+from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
 
@@ -227,7 +227,7 @@ class SetupView(IdempotentSessionWizardView):
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
-        ('email', EmailForm),
+        #('email', EmailForm),
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
@@ -235,7 +235,7 @@ class SetupView(IdempotentSessionWizardView):
         'sms': lambda self: self.get_method() == 'sms',
         'validation': lambda self: self.get_method() in ('sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
-        'email': lambda self: self.get_method() == 'email',
+        #'email': lambda self: self.get_method() == 'email',
     }
     idempotent_dict = {
         'yubikey': False,
@@ -295,7 +295,11 @@ class SetupView(IdempotentSessionWizardView):
             device = form.save()
 
         # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('call', 'sms', 'yubikey', 'email'):
+        # elif self.get_method() in ('call', 'sms', 'yubikey', 'email'):
+        #     device = self.get_device()
+        #     device.save()
+
+        elif self.get_method() in ('call', 'sms', 'yubikey'):
             device = self.get_device()
             device.save()
 
@@ -351,10 +355,10 @@ class SetupView(IdempotentSessionWizardView):
                 raise KeyError("Multiple ValidationService found with name 'default'")
             return RemoteYubikeyDevice(**kwargs)
 
-        if method == 'email':
-            kwargs['email'] = self.storage.validated_step_data\
-                .get('email')
-            return EmailAuth(key=self.get_key(method), **kwargs)
+        # if method == 'email':
+        #     kwargs['email'] = self.storage.validated_step_data\
+        #         .get('email')
+        #     return EmailAuth(key=self.get_key(method), **kwargs)
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})
