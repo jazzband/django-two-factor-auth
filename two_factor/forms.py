@@ -1,5 +1,5 @@
-from binascii import unhexlify
 import json
+from binascii import unhexlify
 from json import JSONDecodeError
 from time import time
 
@@ -9,14 +9,13 @@ from django.utils.translation import ugettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from u2flib_server import u2f
 
 from .models import (
     PhoneDevice, U2FDevice, get_available_methods, get_available_phone_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
-from u2flib_server import u2f
-from django.conf import settings
 
 try:
     from otp_yubikey.models import RemoteYubikeyDevice, YubikeyDevice
@@ -98,7 +97,7 @@ class U2FDeviceForm(DeviceValidationForm):
         self.u2f_device = None
         if request.META['HTTP_X_FORWARDED_HOST']:
             self.appId = '{scheme}://{host}'.format(scheme='https' if self.request.is_secure() else 'http',
-                                       host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
+                                                    host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
         else:
             self.appId = '{scheme}://{host}'.format(
                 scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()).rstrip('/')
@@ -121,7 +120,7 @@ class U2FDeviceForm(DeviceValidationForm):
             if U2FDevice.objects.filter(public_key=self.u2f_device['publicKey']).count() > 0:
                 raise forms.ValidationError("U2F device has already been linked to another user")
         except ValueError as e:
-            raise forms.ValidationError("U2F device could not be verified: "+str(e))
+            raise forms.ValidationError("U2F device could not be verified: " + str(e))
         return response
 
     def save(self):
@@ -216,7 +215,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         self.initial_device = initial_device
         if request.META['HTTP_X_FORWARDED_HOST']:
             self.appId = '{scheme}://{host}'.format(scheme='https' if self.request.is_secure() else 'http',
-                                       host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
+                                                    host=request.META['HTTP_X_FORWARDED_HOST']).rstrip('/')
         else:
             self.appId = '{scheme}://{host}'.format(
                 scheme='https' if self.request.is_secure() else 'http', host=self.request.get_host()).rstrip('/')
@@ -242,6 +241,8 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
                 device, login_counter, _ = u2f.complete_authentication(request, response)
             except (ValueError, TypeError):
                 self.add_error('__all__', 'U2F validation failed -- bad signature.')
+        else:
+            self.clean_otp(self.user)
         return self.cleaned_data
 
 
