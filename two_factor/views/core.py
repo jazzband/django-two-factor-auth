@@ -109,7 +109,8 @@ class LoginView(IdempotentSessionWizardView):
             self.redirect_field_name,
             self.request.GET.get(self.redirect_field_name, '')
         )
-        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
+
+        if not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         device = getattr(self.get_user(), 'otp_device', None)
