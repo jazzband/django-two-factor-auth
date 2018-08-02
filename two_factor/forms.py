@@ -139,9 +139,10 @@ class DisableForm(forms.Form):
 
 
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
-    otp_token = forms.IntegerField(label=_("Token"), min_value=1,
-                                   max_value=int('9' * totp_digits()))
-
+    otp_token = forms.RegexField(label=_("Token"),
+                                 regex=r'^[0-9]*$',
+                                 min_length=totp_digits(),
+                                 max_length=totp_digits())
     otp_token.widget.attrs.update({'autofocus': 'autofocus'})
 
     # Our authentication form has an additional submit button to go to the
