@@ -4,10 +4,12 @@
 ### Added
 - Support for Django 2.1.
 - Support for QRcode library up to 6.
+- Translation: Romanian.
 
 ### Changed
 - Replace `ValidationError` with `SuspiciousOperation` in views.
 - Change the wording in 2FA disable template.
+- Updated translations.
 
 ## 1.7.0 - 2017-12-19
 ### Added
