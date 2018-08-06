@@ -120,7 +120,7 @@ class LoginTest(UserMixin, TestCase):
             if instruct in ( 'skip_token_login', 'signature_expired'):
                 self.client.cookies = response.cookies # restore cookies cleared by logout()
             if instruct == 'bad_signature': # corrupt cookie
-                self.client.cookies['evl'].set('evl', instruct+':'+instruct, instruct+':'+instruct)
+                self.client.cookies['rememberdevice'].set('rememberdevice', instruct+':'+instruct, instruct+':'+instruct)
             # Backup phones should be listed on the login form
             response = self._post({ 'auth-username': 'bouke@example.com',
                                     'auth-password': 'secret',
@@ -128,11 +128,11 @@ class LoginTest(UserMixin, TestCase):
                                     })
 
             if instruct == 'skip_token_login':
-                # if login was sent with a valid 'evl' cookie, it should skip token steps
+                # if login was sent with a valid 'rememberdevice' cookie, it should skip token steps
                 self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
-                evl_cookie = self.client.cookies['evl']
+                remember_cookie = self.client.cookies['rememberdevice']
                 self.client.logout()
-                self.client.cookies['evl'] = evl_cookie # restore cookies cleared by logout()
+                self.client.cookies['rememberdevice'] = remember_cookie # restore cookies cleared by logout()
                 continue
             elif instruct in ('bad_signature', 'signature_expired'):
                 self.assertContains(response, 'Send text message to +31 ** *** **67')
@@ -233,18 +233,18 @@ class LoginTest(UserMixin, TestCase):
             if instruct == 'skip_token_login':
                 self.client.cookies = response.cookies # restore cookies cleared by logout()
             if instruct == 'bad_signature': # corrupt cookie
-                self.client.cookies['evl'].set('evl', instruct+':'+instruct, instruct+':'+instruct)
+                self.client.cookies['rememberdevice'].set('rememberdevice', instruct+':'+instruct, instruct+':'+instruct)
             # Backup phones should be listed on the login form
             response = self._post({'auth-username': 'bouke@example.com',
                                 'auth-password': 'secret',
                                 'login_view-current_step': 'auth'})
 
             if instruct == 'skip_token_login':
-                # if login was sent with a valid 'evl' cookie, it should skip token steps
+                # if login was sent with a valid 'rememberdevice' cookie, it should skip token steps
                 self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
-                evl_cookie = self.client.cookies['evl']
+                remember_cookie = self.client.cookies['rememberdevice']
                 self.client.logout()
-                self.client.cookies['evl'] = evl_cookie # restore cookies cleared by logout()
+                self.client.cookies['rememberdevice'] = remember_cookie # restore cookies cleared by logout()
                 continue
 
             self.assertContains(response, 'Backup Token')

@@ -73,17 +73,13 @@ class LoginView(IdempotentSessionWizardView):
     }
 
     def has_token_step(self):
-        if self.token_required(self.request):
-            return default_device(self.get_user())
-        else:
-            return None
+        return self.token_required(self.request) and \
+               default_device(self.get_user())
 
     def has_backup_step(self):
-        if self.token_required(self.request):
-            return default_device(self.get_user()) and \
-                'token' not in self.storage.validated_step_data
-        else:
-            return None
+        return self.token_required(self.request) and \
+               default_device(self.get_user()) and \
+               'token' not in self.storage.validated_step_data
 
     condition_dict = {
         'token': has_token_step,
@@ -130,17 +126,16 @@ class LoginView(IdempotentSessionWizardView):
         if device:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
-            if 'token-remember' in self.request.POST and \
-                    self.request.POST['token-remember'] == "on" or \
-                    'backup-remember' in self.request.POST and \
-                    self.request.POST['backup-remember'] == "on":
+            step_key = 'backup' if self.has_backup_step() else 'token'
+            form_obj=self.get_form(step=step_key, data=self.storage.get_step_data(step_key))
+            if form_obj['remember'].value() == True:
                 login_good_until = str(date.today() +
                     timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
-                response.set_signed_cookie(key='evl', value=login_good_until,
+                response.set_signed_cookie(key='rememberdevice', value=login_good_until,
                         salt=settings.TWO_FACTOR_SALT,
                         max_age=settings.TWO_FACTOR_TRUSTED_DAYS * (3600 * 24),
-                    expires=login_good_until, path=settings.LOGIN_URL, domain=None,
-                    secure=None, httponly=True)
+                        expires=login_good_until, path=settings.LOGIN_URL, domain=None,
+                        secure=None, httponly=True)
         return response
 
     def get_form_kwargs(self, step=None):
@@ -230,16 +225,16 @@ class LoginView(IdempotentSessionWizardView):
         days, they can skip the token steps.
         """
         end_valid_login = None
-        if not request.COOKIES.get('evl'):
+        if not request.COOKIES.get('rememberdevice'):
             return True
         try:
-            end_valid_login = request.get_signed_cookie('evl',
+            end_valid_login = request.get_signed_cookie('rememberdevice',
                     salt=settings.TWO_FACTOR_SALT)
         except (BadSignature, SignatureExpired) as e:
             return True
         end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
         if datetime.today() < end_valid_login_dt:
-            #--- the cookie is valid and still within {{TWO_FACTOR_TRUSTED_DAYS}} ---#
+            # the cookie is valid and still within {{TWO_FACTOR_TRUSTED_DAYS}}
             return False
         else:
             return True

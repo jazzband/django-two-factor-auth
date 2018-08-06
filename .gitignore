@@ -1,3 +1,4 @@
+.gitignore
 *.py[co]
 example/database.sqlite
 example/settings_private.py
@@ -7,3 +8,9 @@ example/settings_private.py
 /.tox/
 /htmlcov/
 /docs/_build/
+bin/
+lib/
+lib64
+pip-selfcheck.json
+pyvenv.cfg
+share/
