@@ -43,8 +43,8 @@ class TwilioGatewayTest(TestCase):
         response = self.client.get('%s?%s' % (url, urlencode({'locale': 'en-gb'})))
         self.assertContains(response, '<Say language="en-gb">')
 
-        # there is no nl voice
-        response = self.client.get('%s?%s' % (url, urlencode({'locale': 'nl-nl'})))
+        # there is no Frysian voice
+        response = self.client.get('%s?%s' % (url, urlencode({'locale': 'fy-nl'})))
         self.assertContains(response, '<Say language="en">')
 
     @override_settings(

@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='django-two-factor-auth',
-    version='1.7.0',
+    version='1.8.0',
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst').read(),
     author='Bouke Haarsma',
@@ -14,7 +14,7 @@ setup(
     install_requires=[
         'Django>=1.11',
         'django_otp>=0.3.4,<0.99',
-        'qrcode>=4.0.0,<4.99',
+        'qrcode>=4.0.0,<6.99',
         'django-phonenumber-field>=1.1.0,<1.99',
         'django-formtools',
     ],
@@ -30,6 +30,7 @@ setup(
         'Framework :: Django',
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
