@@ -5,7 +5,7 @@
   <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
 
   <p>{% blocktrans %}Congratulations, you've successfully enabled two-factor
-      authentication.{% endblocktrans %}
+      authentication.{% endblocktrans %}</p>
 
   {% if not phone_methods %}
     <p><a href="{% url 'two_factor:profile' %}"

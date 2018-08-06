@@ -108,7 +108,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         # Check if form was refreshed
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
-            raise SuspiciousOperation(_('ManagementForm data is missing or has been tampered.'))
+            raise SuspiciousOperation(_('ManagementForm data is missing or has been tampered with'))
 
         form_current_step = management_form.cleaned_data['current_step']
         if (form_current_step != self.steps.current and
