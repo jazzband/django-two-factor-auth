@@ -143,7 +143,8 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1,
                                    max_value=int('9' * totp_digits()))
     remember = forms.BooleanField(required=False,
-            label=_("Remember this device for %s days") % (str(settings.TWO_FACTOR_TRUSTED_DAYS)))
+                                  label=_("Remember this device for %s days")
+                                  % (str(settings.TWO_FACTOR_TRUSTED_DAYS)))
 
     otp_token.widget.attrs.update({'autofocus': 'autofocus'})
 
