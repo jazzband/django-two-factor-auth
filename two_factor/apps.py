@@ -10,3 +10,6 @@ class TwoFactorConfig(AppConfig):
         from .admin import patch_admin
         if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
             patch_admin()
+        from . import signals
+
+    plugins = ()

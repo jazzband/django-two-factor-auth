@@ -40,6 +40,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='phonedevice',
             name='number',
-            field=two_factor.models.PhoneNumberField(max_length=16, verbose_name='number'),
+            field=models.CharField(max_length=16),
         ),
     ]

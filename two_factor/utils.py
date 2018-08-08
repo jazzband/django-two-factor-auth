@@ -1,13 +1,17 @@
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from django_otp import devices_for_user
-
-from two_factor.models import PhoneDevice
 
 try:
     from urllib.parse import quote, urlencode
 except ImportError:
     from urllib import quote, urlencode
 
+def get_available_methods():
+    methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_phone_methods())
+    methods.extend(get_available_yubikey_methods())
+    return methods
 
 def default_device(user):
     if not user or user.is_anonymous:
@@ -15,13 +19,6 @@ def default_device(user):
     for device in devices_for_user(user):
         if device.name == 'default':
             return device
-
-
-def backup_phones(user):
-    if not user or user.is_anonymous:
-        return PhoneDevice.objects.none()
-    return user.phonedevice_set.filter(name='backup')
-
 
 def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     # For a complete run-through of all the parameters, have a look at the

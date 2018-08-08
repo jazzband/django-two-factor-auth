@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
 from two_factor.views import (
-    BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
+    BackupTokensView, DisableView, LoginView,
+    # PhoneDeleteView, PhoneSetupView,
     ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
 )
 
@@ -31,16 +32,16 @@ core = [
         view=BackupTokensView.as_view(),
         name='backup_tokens',
     ),
-    url(
-        regex=r'^account/two_factor/backup/phone/register/$',
-        view=PhoneSetupView.as_view(),
-        name='phone_create',
-    ),
-    url(
-        regex=r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
-        view=PhoneDeleteView.as_view(),
-        name='phone_delete',
-    ),
+    # url(
+    #     regex=r'^account/two_factor/backup/phone/register/$',
+    #     view=PhoneSetupView.as_view(),
+    #     name='phone_create',
+    # ),
+    # url(
+    #     regex=r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+    #     view=PhoneDeleteView.as_view(),
+    #     name='phone_delete',
+    # ),
 ]
 
 profile = [

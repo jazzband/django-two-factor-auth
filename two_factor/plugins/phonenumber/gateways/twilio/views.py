@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from ...views.utils import class_view_decorator
+from .....views.utils import class_view_decorator
 from .gateway import validate_voice_locale
 
 
