@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 
 class TwoFactorConfig(AppConfig):
@@ -12,4 +13,11 @@ class TwoFactorConfig(AppConfig):
             patch_admin()
         from . import signals
 
-    plugins = ()
+    # plugins = (
+    #     'two_factor.plugins.phonenumber',
+    # )
+
+    def get_two_factor_available_methods(self):
+        return [
+            ('generator', _('Token generator')),
+        ]

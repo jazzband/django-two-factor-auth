@@ -19,6 +19,7 @@ def device_action(device):
     * Send text message to `+31 * ******58`
     * Call number `+31 * ******58`
     """
+    return "N/A"
     assert isinstance(device, PhoneDevice)
     number = mask_phone_number(format_phone_number(device.number))
     if device.method == 'sms':
