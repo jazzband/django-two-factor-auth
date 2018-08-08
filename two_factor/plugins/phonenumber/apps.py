@@ -10,3 +10,11 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     def get_two_factor_available_methods(self):
         from .models import get_available_phone_methods
         return get_available_phone_methods()
+
+    def get_device_setup_form(self, method):
+        from .forms import PhoneNumberForm
+        return PhoneNumberForm
+
+    def get_device_validation_form(self, method):
+        from ...forms import DeviceValidationForm
+        return DeviceValidationForm

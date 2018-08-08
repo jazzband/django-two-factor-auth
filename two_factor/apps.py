@@ -13,11 +13,14 @@ class TwoFactorConfig(AppConfig):
             patch_admin()
         from . import signals
 
-    # plugins = (
-    #     'two_factor.plugins.phonenumber',
-    # )
-
     def get_two_factor_available_methods(self):
         return [
             ('generator', _('Token generator')),
         ]
+
+    def get_device_setup_form(self, method):
+        from .forms import TOTPDeviceForm
+        return TOTPDeviceForm
+
+    def get_device_validation_form(self, method):
+        return None

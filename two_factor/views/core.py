@@ -2,6 +2,7 @@ import logging
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
+from collections import OrderedDict
 
 import django_otp
 import qrcode
@@ -35,7 +36,8 @@ from ..forms import (
 from ..utils import (
     #backup_phones,
     default_device, get_otpauth_url, get_available_methods,
-    totp_digits
+    totp_digits,
+    get_device_setup_form, get_device_validation_form
 )
 
 from .utils import IdempotentSessionWizardView, class_view_decorator
@@ -226,21 +228,15 @@ class SetupView(IdempotentSessionWizardView):
     form_list = (
         ('welcome', Form),
         ('method', MethodForm),
-        ('generator', TOTPDeviceForm),
-        #('sms', PhoneNumberForm),
-        #('call', PhoneNumberForm),
-        ('validation', DeviceValidationForm),
-        ('yubikey', YubiKeyDeviceForm),
+        ('device_setup', Form),
+        ('device_validation', Form),
     )
     condition_dict = {
-        'generator': lambda self: self.get_method() == 'generator',
-        'call': lambda self: self.get_method() == 'call',
-        'sms': lambda self: self.get_method() == 'sms',
-        'validation': lambda self: self.get_method() in ('sms', 'call'),
-        'yubikey': lambda self: self.get_method() == 'yubikey',
+        'method': lambda self: True,
+        'device_validation': lambda self: self.form_list['device_validation']
     }
     idempotent_dict = {
-        'yubikey': False,
+        'device_validation': False,
     }
 
     def get_method(self):
@@ -255,17 +251,26 @@ class SetupView(IdempotentSessionWizardView):
             return redirect(self.success_url)
         return super(SetupView, self).get(request, *args, **kwargs)
 
-    def get_form_list(self):
-        """
-        Check if there is only one method, then skip the MethodForm from form_list
-        """
-        form_list = super(SetupView, self).get_form_list()
-        available_methods = get_available_methods()
-        if len(available_methods) == 1:
-            form_list.pop('method', None)
-            method_key, _ = available_methods[0]
-            self.storage.validated_step_data['method'] = {'method': method_key}
-        return form_list
+    def get_form(self, step=None, data=None, files=None):
+        method = self.get_method()
+        if method:
+            self.form_list['device_setup'] = get_device_setup_form(method)
+            self.form_list['device_validation'] = get_device_validation_form(method)
+        return super().get_form(step, data, files)
+
+    # def get_form_list(self):
+    #     print(self.storage.validated_step_data)
+    #     return super().get_form_list()
+    #     """
+    #     Check if there is only one method, then skip the MethodForm from form_list
+    #     """
+    #     form_list = super().get_form_list()
+    #     available_methods = get_available_methods()
+    #     if len(available_methods) == 1:
+    #         form_list.pop('method', None)
+    #         method_key, _ = available_methods[0]
+    #         self.storage.validated_step_data['method'] = {'method': method_key}
+    #     return form_list
 
     def render_next_step(self, form, **kwargs):
         """
@@ -309,12 +314,12 @@ class SetupView(IdempotentSessionWizardView):
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
-        if step == 'generator':
+        if step == 'device_setup':
             kwargs.update({
                 'key': self.get_key(step),
                 'user': self.request.user,
             })
-        if step in ('validation', 'yubikey'):
+        if step in 'device_validation':
             kwargs.update({
                 'device': self.get_device()
             })

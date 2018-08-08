@@ -9,20 +9,22 @@ except ImportError:
     from urllib import quote, urlencode
 
 def get_available_methods():
-    methods = []
     for app in apps.get_app_configs():
         try:
-            methods += app.get_two_factor_available_methods()
+            for method in app.get_two_factor_available_methods():
+                yield (app.label + '.' + method[0], method[1])
         except AttributeError:
             pass
 
-    # methods = [('generator', _('Token generator'))]
-    # methods.extend(get_available_phone_methods())
-    # methods.extend(get_available_yubikey_methods())
+def get_device_setup_form(method_name):
+    app_name, method = method_name.rsplit('.', 1)
+    app = apps.get_app_config(app_name)
+    return app.get_device_setup_form(method)
 
-    # print(apps.get_app_config('two_factor').plugins)
-
-    return methods
+def get_device_validation_form(method_name):
+    app_name, method = method_name.rsplit('.', 1)
+    app = apps.get_app_config(app_name)
+    return app.get_device_validation_form(method)
 
 def default_device(user):
     if not user or user.is_anonymous:
