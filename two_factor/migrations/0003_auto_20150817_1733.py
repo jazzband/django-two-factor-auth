@@ -7,8 +7,6 @@ import phonenumbers
 from django.contrib.auth import get_user_model
 from django.db import migrations, models
 
-import two_factor.models
-
 logger = logging.getLogger(__name__)
 
 

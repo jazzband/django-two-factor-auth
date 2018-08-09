@@ -31,7 +31,7 @@ from .. import signals
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
     #PhoneNumberForm, PhoneNumberMethodForm,
-    TOTPDeviceForm, YubiKeyDeviceForm,
+    # TOTPDeviceForm, YubiKeyDeviceForm,
 )
 #from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (

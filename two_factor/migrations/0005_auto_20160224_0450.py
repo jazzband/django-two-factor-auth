@@ -7,8 +7,6 @@ import django_otp.util
 from django.conf import settings
 from django.db import migrations, models
 
-import two_factor.models
-
 
 class Migration(migrations.Migration):
 

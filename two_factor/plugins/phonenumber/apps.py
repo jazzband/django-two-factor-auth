@@ -2,8 +2,6 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-# from .models import PhoneDevice
-
 
 class TwoFactorPhoneNumberConfig(AppConfig):
     name = 'two_factor.plugins.phonenumber'
