@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext
 
 from two_factor.middleware.threadlocals import get_current_request
-from two_factor.templatetags.two_factor import mask_phone_number
+from two_factor.plugins.phonenumber.templatetags.phonenumber import mask_phone_number
 
 
 class Messages(object):

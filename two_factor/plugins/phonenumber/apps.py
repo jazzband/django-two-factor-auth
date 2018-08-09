@@ -2,6 +2,8 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+# from .models import PhoneDevice
+
 
 class TwoFactorPhoneNumberConfig(AppConfig):
     name = 'two_factor.plugins.phonenumber'
@@ -18,3 +20,14 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     def get_device_validation_form(self, method):
         from ...forms import DeviceValidationForm
         return DeviceValidationForm
+
+    def get_device_setup_form_kwargs(self, method, user, key, metadata):
+        return {}
+
+    def get_device_validation_form_kwargs(self, method, user, key, metadata, setup):
+        from .models import PhoneDevice
+        device = PhoneDevice(name='default', method=method, user=user, key=key, number=setup['number'])
+        device.generate_challenge()
+        return {
+            'device': device,
+        }

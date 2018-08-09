@@ -7,6 +7,7 @@ from collections import OrderedDict
 import django_otp
 import qrcode
 import qrcode.image.svg
+from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
@@ -241,7 +242,10 @@ class SetupView(IdempotentSessionWizardView):
 
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})
-        return method_data.get('method', None)
+        method = method_data.get('method', None)
+        if not method:
+            return None, None
+        return method.rsplit('.', 1)
 
     def get(self, request, *args, **kwargs):
         """
@@ -252,10 +256,10 @@ class SetupView(IdempotentSessionWizardView):
         return super(SetupView, self).get(request, *args, **kwargs)
 
     def get_form(self, step=None, data=None, files=None):
-        method = self.get_method()
-        if method:
-            self.form_list['device_setup'] = get_device_setup_form(method)
-            self.form_list['device_validation'] = get_device_validation_form(method)
+        app_label, method = self.get_method()
+        if app_label and method:
+            self.form_list['device_setup'] = get_device_setup_form(app_label, method)
+            self.form_list['device_validation'] = get_device_validation_form(app_label, method)
         return super().get_form(step, data, files)
 
     # def get_form_list(self):
@@ -296,38 +300,30 @@ class SetupView(IdempotentSessionWizardView):
         except KeyError:
             pass
 
-        # TOTPDeviceForm
-        if self.get_method() == 'generator':
-            form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
-            device = form.save()
+        #TODO: app.setup_create_device(setup_data, validation_data)
 
-        # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('call', 'sms', 'yubikey'):
-            device = self.get_device()
-            device.save()
-
-        else:
-            raise NotImplementedError("Unknown method '%s'" % self.get_method())
-
+        device = form_list[-1].save()
         django_otp.login(self.request, device)
         return redirect(self.success_url)
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
+        app_label, method = self.get_method()
+        app = app_label and apps.get_app_config(app_label)
         if step == 'device_setup':
-            kwargs.update({
-                'key': self.get_key(step),
-                'user': self.request.user,
-            })
-        if step in 'device_validation':
-            kwargs.update({
-                'device': self.get_device()
-            })
-        metadata = self.get_form_metadata(step)
-        if metadata:
-            kwargs.update({
-                'metadata': metadata,
-            })
+            key = self.get_key(step)
+            metadata = self.get_form_metadata(step)
+            kwargs.update(app.get_device_setup_form_kwargs(method, self.request.user, key, metadata))
+        if step == 'device_validation':
+            key = self.get_key(step)
+            metadata = self.get_form_metadata(step)
+            kwargs.update(app.get_device_validation_form_kwargs(
+                method,
+                self.request.user,
+                key,
+                metadata,
+                self.storage.validated_step_data.get('device_setup', {})
+            ))
         return kwargs
 
     def get_device(self, **kwargs):
@@ -368,6 +364,9 @@ class SetupView(IdempotentSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(form, **kwargs)
+        app_name, method = self.get_method()
+        if app_name and method:
+            context['partial_template_name'] = app_name + '/core/_setup_' + method + '.html'
         if self.steps.current == 'generator':
             key = self.get_key('generator')
             rawkey = unhexlify(key.encode('ascii'))
@@ -440,7 +439,7 @@ class SetupCompleteView(TemplateView):
 
     def get_context_data(self):
         return {
-            'phone_methods': get_available_phone_methods(),
+            'backup_methods': get_available_methods()
         }
 
 

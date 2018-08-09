@@ -16,13 +16,11 @@ def get_available_methods():
         except AttributeError:
             pass
 
-def get_device_setup_form(method_name):
-    app_name, method = method_name.rsplit('.', 1)
+def get_device_setup_form(app_name, method):
     app = apps.get_app_config(app_name)
     return app.get_device_setup_form(method)
 
-def get_device_validation_form(method_name):
-    app_name, method = method_name.rsplit('.', 1)
+def get_device_validation_form(app_name, method):
     app = apps.get_app_config(app_name)
     return app.get_device_validation_form(method)
 

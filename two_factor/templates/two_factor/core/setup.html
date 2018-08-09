@@ -3,6 +3,10 @@
 
 {% block content %}
   <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
+  {% if partial_template_name %}
+    {% include partial_template_name %}
+  {% endif %}
+
   {% if wizard.steps.current == 'welcome' %}
     <p>{% blocktrans %}You are about to take your account security to the
         next level. Follow the steps in this wizard to enable two-factor

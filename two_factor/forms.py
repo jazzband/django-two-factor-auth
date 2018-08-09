@@ -48,6 +48,10 @@ class DeviceValidationForm(forms.Form):
             raise forms.ValidationError(self.error_messages['invalid_token'])
         return token
 
+    def save(self):
+        self.device.save()
+        return self.device
+
 
 class YubiKeyDeviceForm(DeviceValidationForm):
     token = forms.CharField(label=_("YubiKey"), widget=forms.PasswordInput())
