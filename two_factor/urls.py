@@ -3,7 +3,7 @@ from django.conf.urls import url
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView,
     # PhoneDeleteView, PhoneSetupView,
-    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
+    ProfileView, SetupCompleteView, SetupView,
 )
 
 core = [
@@ -16,11 +16,6 @@ core = [
         regex=r'^account/two_factor/setup/$',
         view=SetupView.as_view(),
         name='setup',
-    ),
-    url(
-        regex=r'^account/two_factor/qrcode/$',
-        view=QRGeneratorView.as_view(),
-        name='qr',
     ),
     url(
         regex=r'^account/two_factor/setup/complete/$',
