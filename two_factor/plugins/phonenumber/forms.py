@@ -10,7 +10,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import PhoneDevice, get_available_phone_methods
 from ...utils import totp_digits, get_available_methods
-from ...validators import validate_international_phonenumber
+from .validators import validate_international_phonenumber
 
 class PhoneNumberMethodForm(ModelForm):
     number = forms.CharField(label=_("Phone Number"),

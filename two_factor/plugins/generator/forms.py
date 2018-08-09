@@ -41,6 +41,7 @@ class TOTPDeviceForm(forms.Form):
         validated = False
         t0s = [self.t0]
         key = self.bin_key
+        print(self.key)
         if 'valid_t0' in self.metadata:
             t0s.append(int(time()) - self.metadata['valid_t0'])
         for t0 in t0s:

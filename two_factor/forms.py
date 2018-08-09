@@ -60,8 +60,6 @@ class YubiKeyDeviceForm(DeviceValidationForm):
         return super(YubiKeyDeviceForm, self).clean_token()
 
 
-
-
 class DisableForm(forms.Form):
     understand = forms.BooleanField(label=_("Yes, I am sure"))
 

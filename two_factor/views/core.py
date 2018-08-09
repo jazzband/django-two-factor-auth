@@ -36,7 +36,9 @@ from ..forms import (
 #from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (
     #backup_phones,
-    default_device, get_otpauth_url, get_available_methods,
+    default_device,
+    # get_otpauth_url,
+    get_available_methods,
     totp_digits,
     get_device_setup_form, get_device_validation_form
 )
@@ -234,7 +236,7 @@ class SetupView(IdempotentSessionWizardView):
     )
     condition_dict = {
         'method': lambda self: True,
-        'device_validation': lambda self: self.form_list['device_validation']
+        'device_validation': lambda self: self.form_list['device_validation'],
     }
     idempotent_dict = {
         'device_validation': False,
@@ -262,28 +264,21 @@ class SetupView(IdempotentSessionWizardView):
             self.form_list['device_validation'] = get_device_validation_form(app_label, method)
         return super().get_form(step, data, files)
 
-    # def get_form_list(self):
-    #     print(self.storage.validated_step_data)
-    #     return super().get_form_list()
-    #     """
-    #     Check if there is only one method, then skip the MethodForm from form_list
-    #     """
-    #     form_list = super().get_form_list()
-    #     available_methods = get_available_methods()
-    #     if len(available_methods) == 1:
-    #         form_list.pop('method', None)
-    #         method_key, _ = available_methods[0]
-    #         self.storage.validated_step_data['method'] = {'method': method_key}
-    #     return form_list
-
     def render_next_step(self, form, **kwargs):
         """
         In the validation step, ask the device to generate a challenge.
         """
         next_step = self.steps.next
-        if next_step == 'validation':
+        print(next_step)
+        if next_step == 'device_validation':
+            app_label, method = self.get_method()
+            app = app_label and apps.get_app_config(app_label)
             try:
-                self.get_device().generate_challenge()
+                app.device_validation_generate_challenge(
+                    method,
+                    self.request.user,
+                    self.get_key(),
+                    self.storage.validated_step_data.get('device_setup', {}))
                 kwargs["challenge_succeeded"] = True
             except Exception:
                 logger.exception("Could not generate challenge")
@@ -311,11 +306,11 @@ class SetupView(IdempotentSessionWizardView):
         app_label, method = self.get_method()
         app = app_label and apps.get_app_config(app_label)
         if step == 'device_setup':
-            key = self.get_key(step)
+            key = self.get_key()
             metadata = self.get_form_metadata(step)
             kwargs.update(app.get_device_setup_form_kwargs(method, self.request.user, key, metadata))
         if step == 'device_validation':
-            key = self.get_key(step)
+            key = self.get_key()
             metadata = self.get_form_metadata(step)
             kwargs.update(app.get_device_validation_form_kwargs(
                 method,
@@ -326,57 +321,18 @@ class SetupView(IdempotentSessionWizardView):
             ))
         return kwargs
 
-    def get_device(self, **kwargs):
-        """
-        Uses the data from the setup step and generated key to recreate device.
-
-        Only used for call / sms -- generator uses other procedure.
-        """
-        method = self.get_method()
-        kwargs = kwargs or {}
-        kwargs['name'] = 'default'
-        kwargs['user'] = self.request.user
-
-        if method in ('call', 'sms'):
-            kwargs['method'] = method
-            kwargs['number'] = self.storage.validated_step_data\
-                .get(method, {}).get('number')
-            return PhoneDevice(key=self.get_key(method), **kwargs)
-
-        if method == 'yubikey':
-            kwargs['public_id'] = self.storage.validated_step_data\
-                .get('yubikey', {}).get('token', '')[:-32]
-            try:
-                kwargs['service'] = ValidationService.objects.get(name='default')
-            except ValidationService.DoesNotExist:
-                raise KeyError("No ValidationService found with name 'default'")
-            except ValidationService.MultipleObjectsReturned:
-                raise KeyError("Multiple ValidationService found with name 'default'")
-            return RemoteYubikeyDevice(**kwargs)
-
-    def get_key(self, step):
-        self.storage.extra_data.setdefault('keys', {})
-        if step in self.storage.extra_data['keys']:
-            return self.storage.extra_data['keys'].get(step)
-        key = random_hex(20).decode('ascii')
-        self.storage.extra_data['keys'][step] = key
-        return key
+    def get_key(self):
+        if 'key' not in self.storage.extra_data:
+            self.storage.extra_data['key'] = random_hex(20).decode('ascii')
+        return self.storage.extra_data['key']
 
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(form, **kwargs)
-        app_name, method = self.get_method()
-        if app_name and method:
-            context['partial_template_name'] = app_name + '/core/_setup_' + method + '.html'
-        if self.steps.current == 'generator':
-            key = self.get_key('generator')
-            rawkey = unhexlify(key.encode('ascii'))
-            b32key = b32encode(rawkey).decode('utf-8')
-            self.request.session[self.session_key_name] = b32key
-            context.update({
-                'QR_URL': reverse(self.qrcode_url)
-            })
-        elif self.steps.current == 'validation':
-            context['device'] = self.get_device()
+        app_label, method = self.get_method()
+        if app_label and method:
+            app = apps.get_app_config(app_label)
+            context['partial_template_name'] = app_label + '/core/_setup_' + method + '.html'
+            context.update(app.get_device_setup_context_data(self, form))
         context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
         return context
 
@@ -425,8 +381,6 @@ class BackupTokensView(FormView):
             device.token_set.create(token=StaticToken.random_token())
 
         return redirect(self.success_url)
-
-
 
 
 @class_view_decorator(never_cache)

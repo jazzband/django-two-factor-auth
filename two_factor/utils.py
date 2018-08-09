@@ -8,6 +8,7 @@ try:
 except ImportError:
     from urllib import quote, urlencode
 
+
 def get_available_methods():
     for app in apps.get_app_configs():
         try:
@@ -16,13 +17,16 @@ def get_available_methods():
         except AttributeError:
             pass
 
+
 def get_device_setup_form(app_name, method):
     app = apps.get_app_config(app_name)
     return app.get_device_setup_form(method)
 
+
 def get_device_validation_form(app_name, method):
     app = apps.get_app_config(app_name)
     return app.get_device_validation_form(method)
+
 
 def default_device(user):
     if not user or user.is_anonymous:
@@ -31,31 +35,9 @@ def default_device(user):
         if device.name == 'default':
             return device
 
+
 def backup_devices(user):
     return ()
-
-def get_otpauth_url(accountname, secret, issuer=None, digits=None):
-    # For a complete run-through of all the parameters, have a look at the
-    # specs at:
-    # https://github.com/google/google-authenticator/wiki/Key-Uri-Format
-
-    # quote and urlencode work best with bytes, not unicode strings.
-    accountname = accountname.encode('utf8')
-    issuer = issuer.encode('utf8') if issuer else None
-
-    label = quote(b': '.join([issuer, accountname]) if issuer else accountname)
-
-    # Ensure that the secret parameter is the FIRST parameter of the URI, this
-    # allows Microsoft Authenticator to work.
-    query = [
-        ('secret', secret),
-        ('digits', digits or totp_digits())
-    ]
-
-    if issuer:
-        query.append(('issuer', issuer))
-
-    return 'otpauth://totp/%s?%s' % (label, urlencode(query))
 
 
 # from http://mail.python.org/pipermail/python-dev/2008-January/076194.html

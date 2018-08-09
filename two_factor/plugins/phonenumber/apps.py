@@ -22,10 +22,19 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     def get_device_setup_form_kwargs(self, method, user, key, metadata):
         return {}
 
-    def get_device_validation_form_kwargs(self, method, user, key, metadata, setup):
-        from .models import PhoneDevice
-        device = PhoneDevice(name='default', method=method, user=user, key=key, number=setup['number'])
-        device.generate_challenge()
+    def get_device_validation_form_kwargs(self, method, user, key, metadata, setup_data):
+        device = self.create_device(method, user, key, setup_data)
         return {
             'device': device,
         }
+
+    def get_device_setup_context_data(self, view, form):
+        return {}
+
+    def device_validation_generate_challenge(self, method, user, key, setup_data):
+        device = self.create_device(method, user, key, setup_data)
+        device.generate_challenge()
+
+    def create_device(self, method, user, key, setup_data):
+        from .models import PhoneDevice
+        return PhoneDevice(name='default', method=method, user=user, key=key, number=setup_data['number'])

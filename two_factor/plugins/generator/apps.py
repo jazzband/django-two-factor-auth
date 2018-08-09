@@ -1,6 +1,11 @@
+from binascii import unhexlify
+
 from django.apps import AppConfig
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _
+
+from .utils import get_otpauth_qrcode_image_uri
 
 
 class TwoFactorGeneratorConfig(AppConfig):
@@ -27,3 +32,16 @@ class TwoFactorGeneratorConfig(AppConfig):
 
     def get_device_validation_form_kwargs(self, method, user, key, metadata, setup):
         return {}
+
+    def get_device_setup_context_data(self, view, form):
+        key = view.get_key()
+        return {
+            'QR_URL': self.get_otpauth_qrcode_image_uri(view.request, key)
+        }
+
+    def get_otpauth_qrcode_image_uri(self, request, key):
+        assert isinstance(key, str), 'hex-encoded key expected'
+        accountname = request.user.get_username()
+        secret = unhexlify(key)
+        issuer = get_current_site(request).name
+        return get_otpauth_qrcode_image_uri(accountname, secret, issuer)
