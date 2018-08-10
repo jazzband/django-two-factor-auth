@@ -2,7 +2,6 @@ from django.conf.urls import url
 
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView,
-    # PhoneDeleteView, PhoneSetupView,
     ProfileView, SetupCompleteView, SetupView,
 )
 

@@ -30,16 +30,11 @@ from django_otp.util import random_hex
 from .. import signals
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    #PhoneNumberForm, PhoneNumberMethodForm,
-    # TOTPDeviceForm, YubiKeyDeviceForm,
 )
-#from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (
-    #backup_phones,
     get_method_from_device,
     backup_devices,
     default_device,
-    # get_otpauth_url,
     get_available_methods,
     totp_digits,
     get_device_setup_form, get_device_validation_form
