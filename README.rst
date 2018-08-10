@@ -44,6 +44,15 @@ Installation
 Refer to the `installation instructions`_ in the documentation.
 
 
+Getting help
+============
+
+For general questions regarding this package, please hop over to Stack 
+Overflow. If you think there is an issue with this package; check if the
+issue is already listed (either open or closed), and file an issue if
+it's not.
+
+
 Contribute
 ==========
 * Submit issues to the `issue tracker`_ on Github.
