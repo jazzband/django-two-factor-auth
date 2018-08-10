@@ -1,5 +1,5 @@
 {% extends "two_factor/_base_focus.html" %}
-{% load i18n two_factor %}
+{% load i18n %}
 
 {% block content %}
   <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
@@ -26,11 +26,12 @@
       <p>{% trans "Or, alternatively, use one of your backup methods:" %}</p>
       <p>
         {% for other in other_devices %}
-        <button name="challenge_device" value="{{ other.persistent_id }}"
-                class="btn btn-default btn-block" type="submit">
-          {{ other|device_action }}
-        </button>
-      {% endfor %}</p>
+          <button name="challenge_device" value="{{ other.persistent_id }}"
+                  class="btn btn-default btn-block" type="submit">
+            {{ other.generate_challenge_button_title }}
+          </button>
+        {% endfor %}
+      </p>
     {% endif %}
     {% if backup_tokens %}
       <p>{% trans "As a last resort, you can use a backup token:" %}</p>

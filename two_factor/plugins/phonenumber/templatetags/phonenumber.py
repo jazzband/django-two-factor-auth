@@ -4,8 +4,6 @@ import phonenumbers
 from django import template
 from django.utils.translation import ugettext
 
-from ..models import PhoneDevice
-
 register = template.Library()
 
 phone_mask = re.compile('(?<=.{3})[0-9](?=.{2})')

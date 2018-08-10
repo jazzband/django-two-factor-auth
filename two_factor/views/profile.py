@@ -33,7 +33,7 @@ class ProfileView(TemplateView):
         return {
             'default_device': default_device(self.request.user),
             'default_device_type': default_device(self.request.user).__class__.__name__,
-            'backup_phones': backup_devices(self.request.user),
+            'backup_devices': backup_devices(self.request.user),
             'backup_tokens': backup_tokens,
             # 'available_phone_methods': get_available_phone_methods()
         }

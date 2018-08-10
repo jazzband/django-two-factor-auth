@@ -1,22 +1,22 @@
 from __future__ import absolute_import, division, unicode_literals
 
-import logging
 from binascii import unhexlify
+import logging
+import re
 
+
+from django import template
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
+import phonenumbers
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .gateways import make_call, send_sms
-
-try:
-    import yubiotp
-except ImportError:
-    yubiotp = None
+from .templatetags.phonenumber import mask_phone_number, format_phone_number
 
 
 logger = logging.getLogger(__name__)
@@ -107,3 +107,11 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+    @property
+    def generate_challenge_button_title(self):
+        number = mask_phone_number(format_phone_number(self.number))
+        if self.method == 'sms':
+            return _('Send text message to %s') % number
+        else:
+            return _('Call number %s') % number
