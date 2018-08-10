@@ -17,6 +17,12 @@ class TwoFactorGeneratorConfig(AppConfig):
             ('generator', _('Token generator')),
         ]
 
+    def get_two_factor_backup_devices(self, user):
+        from django_otp.plugins.otp_totp.models import TOTPDevice
+        if not user or user.is_anonymous:
+            return TOTPDevice.objects.none()
+        return user.totpdevice_set.filter(name='backup')
+
     def get_device_setup_form(self, method):
         from .forms import TOTPDeviceForm
         return TOTPDeviceForm

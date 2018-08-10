@@ -37,7 +37,11 @@ def default_device(user):
 
 
 def backup_devices(user):
-    return ()
+    for app in apps.get_app_configs():
+        try:
+            yield from app.get_two_factor_backup_devices(user)
+        except AttributeError:
+            pass
 
 
 # from http://mail.python.org/pipermail/python-dev/2008-January/076194.html

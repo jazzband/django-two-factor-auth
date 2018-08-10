@@ -11,6 +11,12 @@ class TwoFactorPhoneNumberConfig(AppConfig):
         from .models import get_available_phone_methods
         return get_available_phone_methods()
 
+    def get_two_factor_backup_devices(self, user):
+        from .models import PhoneDevice
+        if not user or user.is_anonymous:
+            return PhoneDevice.objects.none()
+        return user.phonedevice_set.filter(name='backup')
+
     def get_device_setup_form(self, method):
         from .forms import PhoneNumberForm
         return PhoneNumberForm
