@@ -150,7 +150,7 @@ class LoginView(IdempotentSessionWizardView):
         if not self.device_cache:
             challenge_device_id = self.request.POST.get('challenge_device', None)
             if challenge_device_id:
-                for device in backup_phones(self.get_user()):
+                for device in backup_devices(self.get_user()):
                     if device.persistent_id == challenge_device_id:
                         self.device_cache = device
                         break

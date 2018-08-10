@@ -58,7 +58,7 @@ class PhoneDevice(Device):
     number = PhoneNumberField()
     key = models.CharField(max_length=40,
                            validators=[key_validator],
-                           default=random_hex,
+                           default=lambda: random_hex().decode('ascii'),
                            help_text="Hex-encoded secret key")
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))
