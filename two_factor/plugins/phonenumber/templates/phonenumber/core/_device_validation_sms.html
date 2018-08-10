@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if challenge_succeeded %}
+  <p>{% blocktrans %}We sent you a text message, please enter the tokens we
+    sent.{% endblocktrans %}</p>
+{% else %}
+  <p class="alert alert-warning" role="alert">{% blocktrans %}We've
+    encountered an issue with the selected authentication method. Please
+    go back and verify that you entered your information correctly, try
+    again, or use a different authentication method instead. If the issue
+    persists, contact the site administrator.{% endblocktrans %}</p>
+{% endif %}

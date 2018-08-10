@@ -269,7 +269,6 @@ class SetupView(IdempotentSessionWizardView):
         In the validation step, ask the device to generate a challenge.
         """
         next_step = self.steps.next
-        print(next_step)
         if next_step == 'device_validation':
             app_label, method = self.get_method()
             app = app_label and apps.get_app_config(app_label)
@@ -329,10 +328,12 @@ class SetupView(IdempotentSessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(form, **kwargs)
         app_label, method = self.get_method()
-        if app_label and method:
+        step = self.steps.current
+        if app_label and method and step in ('device_setup', 'device_validation'):
             app = apps.get_app_config(app_label)
-            context['partial_template_name'] = app_label + '/core/_setup_' + method + '.html'
+            context['partial_template_name'] = app_label + '/core/_' + step + '_' + method + '.html'
             context.update(app.get_device_setup_context_data(self, form))
+        context['method'] = method
         context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
         return context
 
