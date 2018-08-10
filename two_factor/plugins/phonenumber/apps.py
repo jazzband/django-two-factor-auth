@@ -7,6 +7,11 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     name = 'two_factor.plugins.phonenumber'
     verbose_name = "Django Two Factor Authentication – Phone Method"
 
+    def get_method_from_device(self, device):
+        from .models import PhoneDevice
+        if isinstance(device, PhoneDevice):
+            return device.method
+
     def get_two_factor_available_methods(self):
         from .models import get_available_phone_methods
         return get_available_phone_methods()

@@ -9,6 +9,17 @@ except ImportError:
     from urllib import quote, urlencode
 
 
+def get_method_from_device(device):
+    for app in apps.get_app_configs():
+        try:
+            method = app.get_method_from_device(device)
+            if method:
+                return app.label, method
+        except AttributeError:
+            pass
+    return None, None
+
+
 def get_available_methods():
     for app in apps.get_app_configs():
         try:

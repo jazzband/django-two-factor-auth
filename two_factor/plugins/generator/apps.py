@@ -12,6 +12,11 @@ class TwoFactorGeneratorConfig(AppConfig):
     name = 'two_factor.plugins.generator'
     verbose_name = "Django Two Factor Authentication - Generator Method"
 
+    def get_method_from_device(self, device):
+        from django_otp.plugins.otp_totp.models import TOTPDevice
+        if isinstance(device, TOTPDevice):
+            return 'generator'
+
     def get_two_factor_available_methods(self):
         return [
             ('generator', _('Token generator')),

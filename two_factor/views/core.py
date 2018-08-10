@@ -36,6 +36,7 @@ from ..forms import (
 #from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import (
     #backup_phones,
+    get_method_from_device,
     backup_devices,
     default_device,
     # get_otpauth_url,
@@ -169,7 +170,12 @@ class LoginView(IdempotentSessionWizardView):
         either making a phone call or sending a text message.
         """
         if self.steps.current == 'token':
-            self.get_device().generate_challenge()
+            try:
+                self.get_device().generate_challenge()
+                kwargs["challenge_succeeded"] = True
+            except Exception:
+                logger.exception("Could not generate challenge")
+                kwargs["challenge_succeeded"] = False
         return super(LoginView, self).render(form, **kwargs)
 
     def get_user(self):
@@ -190,6 +196,11 @@ class LoginView(IdempotentSessionWizardView):
         context = super(LoginView, self).get_context_data(form, **kwargs)
         if self.steps.current == 'token':
             context['device'] = self.get_device()
+
+            app_label, method = get_method_from_device(self.get_device())
+            if app_label and method:
+                context['partial_template_name'] = app_label + '/core/_device_validation_' + method + '.html'
+
             context['other_devices'] = [
                 phone for phone in backup_devices(self.get_user())
                 if phone != self.get_device()]
