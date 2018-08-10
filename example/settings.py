@@ -97,7 +97,6 @@ LOGGING = {
 
 TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
 TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
-TWO_FACTOR_PATCH_ADMIN = False
 PHONENUMBER_DEFAULT_REGION = 'NL'
 
 SESSION_ENGINE = 'user_sessions.backends.db'
