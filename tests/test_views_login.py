@@ -16,10 +16,12 @@ try:
 except ImportError:
     import mock
 
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36'
+
 
 class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
-        return self.client.post(reverse('two_factor:login'), data=data)
+        return self.client.post(reverse('two_factor:login'), data=data, HTTP_USER_AGENT=USER_AGENT)
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))

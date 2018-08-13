@@ -28,7 +28,8 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.models import get_available_methods
+from two_factor.models import TrustedAgent, get_available_methods
+from two_factor.templatetags.device_format import agent_format
 from two_factor.utils import totp_digits
 
 from ..forms import (
@@ -112,6 +113,7 @@ class LoginView(IdempotentSessionWizardView):
         user = self.get_user()
         if not self.token_required(self.request):
             user.otp_device = self.get_device()
+            user.otp_device.token_step_skipped = True
         login(self.request, user)
 
         redirect_to = self.request.POST.get(
@@ -125,6 +127,8 @@ class LoginView(IdempotentSessionWizardView):
         response = redirect(redirect_to)
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
+            if self.save_trusted_agent(self.request, device):  # True means new device
+                signals.login_alert(sender=__name__, request=self.request)
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
             step_key = 'backup' if self.has_backup_step() else 'token'
@@ -132,12 +136,25 @@ class LoginView(IdempotentSessionWizardView):
             if form_obj['remember'].value() is True:
                 login_good_until = str(date.today() +
                                        timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
+                salt = hash(settings.TWO_FACTOR_SALT + str(user.id) +
+                            agent_format(self.request.META['HTTP_USER_AGENT']))
                 response.set_signed_cookie(key='rememberdevice', value=login_good_until,
-                                           salt=settings.TWO_FACTOR_SALT,
+                                           salt=str(salt),
                                            max_age=settings.TWO_FACTOR_TRUSTED_DAYS * (3600 * 24),
                                            expires=login_good_until, path=settings.LOGIN_URL, domain=None,
                                            secure=None, httponly=True)
         return response
+
+    def save_trusted_agent(self, request, device):
+        # from pprint import pprint
+        # pprint(request.META)
+        (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user,
+                                                                user_agent=request.META['HTTP_USER_AGENT'])
+        trusted.yubi = device if isinstance(device, RemoteYubikeyDevice) else None
+        trusted.phone = device if isinstance(device, PhoneDevice) else None
+        trusted.ip = request.META['REMOTE_ADDR']
+        trusted.save()
+        return created
 
     def get_form_kwargs(self, step=None):
         """
@@ -225,12 +242,18 @@ class LoginView(IdempotentSessionWizardView):
         if this user logged with a token in the last {{TWO_FACTOR_TRUSTED_DAYS}}
         days, they can skip the token steps.
         """
+        user = self.get_user()
+        if not user:
+            return True
         end_valid_login = None
         if not request.COOKIES.get('rememberdevice'):
             return True
+        trusted_agent = self.get_trusted_agent(request, user)
+        if not trusted_agent:
+            return True
         try:
-            end_valid_login = request.get_signed_cookie('rememberdevice',
-                                                        salt=settings.TWO_FACTOR_SALT)
+            salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + agent_format(self.request.META['HTTP_USER_AGENT']))
+            end_valid_login = request.get_signed_cookie('rememberdevice', salt=str(salt))
         except (BadSignature, SignatureExpired):
             return True
         end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
@@ -239,6 +262,13 @@ class LoginView(IdempotentSessionWizardView):
             return False
         else:
             return True
+
+    def get_trusted_agent(self, request, user):
+        try:
+            trusted_agent = TrustedAgent.objects.get(user=user, user_agent=request.META['HTTP_USER_AGENT'])
+        except TrustedAgent.DoesNotExist:
+            trusted_agent = None
+        return trusted_agent
 
 
 @class_view_decorator(never_cache)

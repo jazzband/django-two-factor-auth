@@ -24,6 +24,8 @@ try:
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
 
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36'
+
 
 @unittest.skipUnless(ValidationService, 'No YubiKey support')
 class YubiKeyTest(UserMixin, TestCase):
@@ -89,7 +91,8 @@ class YubiKeyTest(UserMixin, TestCase):
         token = 'cjikftknbiktlitnbltbitdncgvrbgic'
         response = self.client.post(reverse('two_factor:login'),
                                     data={'token-otp_token': token,
-                                          'login_view-current_step': 'token'})
+                                          'login_view-current_step': 'token'},
+                                    HTTP_USER_AGENT=USER_AGENT)
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         verify_token.assert_called_with(token)
 

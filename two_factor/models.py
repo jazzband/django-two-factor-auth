@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
+from otp_yubikey.models import RemoteYubikeyDevice
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .gateways import make_call, send_sms
@@ -114,3 +115,23 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+
+class TrustedAgent(models.Model):
+    """
+    When a login comes in with a skip token cookie, a corresponding
+    TrustedAgent record will need to match both the user id and user_agent.
+    If there is no matching record in the TrustedAgent table,
+    the token step will be required.
+    Stolen lost phones/Yubikeys can be handled by removing them from
+    their respective tables or by removing them from the TrustedAgent table.
+    """
+    user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+                             null=False, on_delete=models.CASCADE)
+    user_agent = models.CharField(null=False, blank=True, max_length=200)
+    yubi = models.ForeignKey(RemoteYubikeyDevice, on_delete=models.CASCADE, null=True)
+    phone = models.ForeignKey(PhoneDevice, on_delete=models.CASCADE, null=True)
+    ip = models.GenericIPAddressField(null=True, blank=True, verbose_name='IP')
+
+    class Meta:
+        unique_together = (('user', 'user_agent'))

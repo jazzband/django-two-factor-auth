@@ -6,7 +6,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 
-from .models import PhoneDevice
+from .models import PhoneDevice, TrustedAgent
 from .utils import monkeypatch_method
 
 
@@ -76,3 +76,4 @@ class PhoneDeviceAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PhoneDevice, PhoneDeviceAdmin)
+admin.site.register(TrustedAgent)

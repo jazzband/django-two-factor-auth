@@ -1,13 +1,30 @@
 import logging
 
 from django.core.exceptions import SuspiciousOperation
+from django.core.mail import EmailMessage
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
 
+from two_factor.templatetags.device_format import agent_format
+
 logger = logging.getLogger(__name__)
+
+
+def login_alerts(request):
+    if request.user.email:
+        email_msg = EmailMessage(
+            'New sign in to your account',
+            'New login from device "' + agent_format(request.META['HTTP_USER_AGENT']) +
+            '" from IP address ' + request.META['REMOTE_ADDR'] +
+            '\n\nYou are getting this email to make sure it was you.',
+            request.user.email,
+            [request.user.email],
+            headers={'Reply-To': request.user.email}
+        )
+        email_msg.send()
 
 
 class ExtraSessionStorage(SessionStorage):
