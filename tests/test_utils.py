@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from six import string_types
 
 import sys
 import unittest
@@ -7,8 +8,8 @@ import unittest
 from django.test import TestCase
 from django.utils import six
 from django.utils.six.moves.urllib.parse import parse_qsl, urlparse
-from django_otp.util import random_hex
 
+from django_otp.util import random_hex
 from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
@@ -107,11 +108,11 @@ class UtilsTest(UserMixin, TestCase):
     def test_random_hex(self):
         # test that returned random_hex_str is string
         h = random_hex_str()
-        self.assertIsInstance(h, str)
+        self.assertIsInstance(h, string_types)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
 
         # Added tests to verify that we can safely remove IF statement from random_hex_str function
         hh = random_hex().decode('utf-8')
-        self.assertIsInstance(hh, str)
+        self.assertIsInstance(hh, string_types)
         self.assertEqual(len(hh), 40)
