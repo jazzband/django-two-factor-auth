@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.utils import six
 from django.utils.six.moves.urllib.parse import parse_qsl, urlparse
 
-from two_factor.models import PhoneDevice
+from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
@@ -102,3 +102,8 @@ class UtilsTest(UserMixin, TestCase):
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
                 self.assertEqual(totp_digits(), no_digits)
+
+    def test_random_hex(self):
+        # test that returned random_hex_str is string
+        h = random_hex_str()
+        self.assertIsInstance(h, str)
