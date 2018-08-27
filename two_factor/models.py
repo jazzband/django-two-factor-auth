@@ -54,11 +54,13 @@ def key_validator(*args, **kwargs):
     """Wraps hex_validator generator, to keep makemigrations happy."""
     return hex_validator()(*args, **kwargs)
 
+
 def random_hex_str():
     h = random_hex()
     if isinstance(h, bytes):
-    	return h.decode('utf-8')
+        return h.decode('utf-8')
     return h
+
 
 class PhoneDevice(Device):
     """
