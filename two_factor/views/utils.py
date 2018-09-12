@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
 from django.utils.decorators import method_decorator
@@ -14,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 def login_alerts(request):
-    if request.user.email:
+    if settings.TWO_FACTOR_NEW_DEV_ALERTS is True and request.user.email:
         email_msg = EmailMessage(
-            'New sign in to your account',
-            'New login from device "' + agent_format(request.META['HTTP_USER_AGENT']) +
-            '" from IP address ' + request.META['REMOTE_ADDR'] +
-            '\n\nYou are getting this email to make sure it was you.',
+            _('New sign in to your account'),
+            _('New login from device "' + agent_format(request.META['HTTP_USER_AGENT'])) +
+            _('" from IP address ') + request.META['REMOTE_ADDR'] +
+            _('\n\nYou are getting this email to make sure it was you.'),
             request.user.email,
             [request.user.email],
             headers={'Reply-To': request.user.email}

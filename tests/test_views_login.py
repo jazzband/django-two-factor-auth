@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.core import mail
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -152,6 +153,9 @@ class LoginTest(UserMixin, TestCase):
                 response = self._post({'token-otp_token': totp(device.bin_key),
                                        'login_view-current_step': 'token',
                                        'token-remember': 'on'})
+            if instruct == 'initial_login':
+                self.assertEqual(mail.outbox[0].subject, 'New sign in to your account')
+
             self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
             self.assertEqual(device.persistent_id,
                              self.client.session.get(DEVICE_ID_SESSION_KEY))

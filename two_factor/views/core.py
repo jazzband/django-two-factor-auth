@@ -113,7 +113,7 @@ class LoginView(IdempotentSessionWizardView):
         user = self.get_user()
         if not self.token_required(self.request):
             user.otp_device = self.get_device()
-            user.otp_device.token_step_skipped = True
+            user.otp_device.name = 'skipped_token'
         login(self.request, user)
 
         redirect_to = self.request.POST.get(
@@ -150,7 +150,7 @@ class LoginView(IdempotentSessionWizardView):
         # pprint(request.META)
         (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user,
                                                                 user_agent=request.META['HTTP_USER_AGENT'])
-        trusted.yubi = device if isinstance(device, RemoteYubikeyDevice) else None
+        trusted.yubi_id = device.id if isinstance(device, RemoteYubikeyDevice) else None
         trusted.phone = device if isinstance(device, PhoneDevice) else None
         trusted.ip = request.META['REMOTE_ADDR']
         trusted.save()
@@ -264,10 +264,18 @@ class LoginView(IdempotentSessionWizardView):
             return True
 
     def get_trusted_agent(self, request, user):
+        """
+        if this device used a token and asked to be "remembered", return trusted_agent record
+        As a secondary precaution, verify that the corresponding 2FA device still exists
+        """
         try:
             trusted_agent = TrustedAgent.objects.get(user=user, user_agent=request.META['HTTP_USER_AGENT'])
+            if trusted_agent.yubi_id is not None and not RemoteYubikeyDevice.objects.filter(id=trusted_agent.yubi_id).exists()\
+                or trusted_agent.phone_id is not None and not PhoneDevice.objects.filter(id=trusted_agent.phone_id).exists():
+                trusted_agent = None
         except TrustedAgent.DoesNotExist:
             trusted_agent = None
+
         return trusted_agent
 
 
