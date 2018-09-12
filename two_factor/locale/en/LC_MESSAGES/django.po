@@ -31,6 +31,10 @@ msgstr "Add Phone Number"
 msgid "Token"
 msgstr "Token"
 
+#: forms.py:146
+msgid "Remember this device for %s days"
+msgstr "Remember this device for %s days"
+
 #: forms.py:61 forms.py:91
 #, fuzzy
 #| msgid "Entered token is not valid"

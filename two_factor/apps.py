@@ -8,5 +8,6 @@ class TwoFactorConfig(AppConfig):
 
     def ready(self):
         from .admin import patch_admin
+        from .signals import login_alert  # noqa: F401
         if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
             patch_admin()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.core import mail
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -16,10 +17,12 @@ try:
 except ImportError:
     import mock
 
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36'
+
 
 class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
-        return self.client.post(reverse('two_factor:login'), data=data)
+        return self.client.post(reverse('two_factor:login'), data=data, HTTP_USER_AGENT=USER_AGENT)
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))
@@ -105,6 +108,97 @@ class LoginTest(UserMixin, TestCase):
         TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
     )
+    def test_with_token_bypass(self, mock_signal, fake):
+        user = self.create_user()
+        no_digits = 6
+        for instruct in ('initial_login', 'skip_token_login', 'bad_signature',
+                         'setup_sign_expired', 'signature_expired'):
+            user.totpdevice_set.create(name='default', key=random_hex().decode(),
+                                       digits=no_digits)
+            device = user.phonedevice_set.create(name='backup', number='+31101234567',
+                                                 method='sms',
+                                                 key=random_hex().decode())
+
+            if instruct in ('skip_token_login', 'signature_expired'):
+                # restore cookies cleared by logout()
+                # need to ignore flake8 error since this is copying cookies from prev response
+                self.client.cookies = response.cookies  # noqa: F821
+            if instruct == 'bad_signature':  # corrupt cookie
+                self.client.cookies['rememberdevice'].set('rememberdevice', instruct + ':' + instruct,
+                                                          instruct + ':' + instruct)
+            # Backup phones should be listed on the login form
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'
+                                   })
+
+            if instruct == 'skip_token_login':
+                # if login was sent with a valid 'rememberdevice' cookie, it should skip token steps
+                self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+                remember_cookie = self.client.cookies['rememberdevice']
+                self.client.logout()
+                self.client.cookies['rememberdevice'] = remember_cookie  # restore cookies cleared by logout()
+                continue
+            elif instruct in ('bad_signature', 'signature_expired'):
+                self.assertContains(response, 'Send text message to +31 ** *** **67')
+
+            self._phone_validation(mock_signal, fake, device, no_digits)
+            if instruct == 'setup_sign_expired':  # setup expired cookie
+                with override_settings(TWO_FACTOR_TRUSTED_DAYS=-1):
+                    response = self._post({'token-otp_token': totp(device.bin_key),
+                                           'login_view-current_step': 'token',
+                                           'token-remember': 'on'})
+            else:
+                # Valid token should be accepted.
+                response = self._post({'token-otp_token': totp(device.bin_key),
+                                       'login_view-current_step': 'token',
+                                       'token-remember': 'on'})
+            if instruct == 'initial_login':
+                self.assertEqual(mail.outbox[0].subject, 'New sign in to your account')
+
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+            self.assertEqual(device.persistent_id,
+                             self.client.session.get(DEVICE_ID_SESSION_KEY))
+
+            # Check that the signal was fired.
+            mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
+            self.client.logout()
+
+    def _phone_validation(self, mock_signal, fake, device, no_digits):
+        # Ask for challenge on invalid device
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'challenge_device': 'MALICIOUS/INPUT/666'})
+        self.assertContains(response, 'Send text message to +31 ** *** **67')
+
+        # Ask for SMS challenge
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'challenge_device': device.persistent_id})
+        self.assertContains(response, 'We sent you a text message')
+        self.assertContains(response, 'Remember this device for')
+        fake.return_value.send_sms.assert_called_with(
+            device=device,
+            token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
+
+        # Ask for phone challenge
+        device.method = 'call'
+        device.save()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'challenge_device': device.persistent_id})
+        self.assertContains(response, 'We are calling your phone right now')
+        self.assertContains(response, 'Remember this device for')
+        fake.return_value.make_call.assert_called_with(
+            device=device,
+            token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
+
+    @mock.patch('two_factor.gateways.fake.Fake')
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
+        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+    )
     def test_with_backup_phone(self, mock_signal, fake):
         user = self.create_user()
         for no_digits in (6, 8):
@@ -121,31 +215,7 @@ class LoginTest(UserMixin, TestCase):
                                        'login_view-current_step': 'auth'})
                 self.assertContains(response, 'Send text message to +31 ** *** **67')
 
-                # Ask for challenge on invalid device
-                response = self._post({'auth-username': 'bouke@example.com',
-                                       'auth-password': 'secret',
-                                       'challenge_device': 'MALICIOUS/INPUT/666'})
-                self.assertContains(response, 'Send text message to +31 ** *** **67')
-
-                # Ask for SMS challenge
-                response = self._post({'auth-username': 'bouke@example.com',
-                                       'auth-password': 'secret',
-                                       'challenge_device': device.persistent_id})
-                self.assertContains(response, 'We sent you a text message')
-                fake.return_value.send_sms.assert_called_with(
-                    device=device,
-                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
-
-                # Ask for phone challenge
-                device.method = 'call'
-                device.save()
-                response = self._post({'auth-username': 'bouke@example.com',
-                                       'auth-password': 'secret',
-                                       'challenge_device': device.persistent_id})
-                self.assertContains(response, 'We are calling your phone right now')
-                fake.return_value.make_call.assert_called_with(
-                    device=device,
-                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
+                self._phone_validation(mock_signal, fake, device, no_digits)
 
             # Valid token should be accepted.
             response = self._post({'token-otp_token': totp(device.bin_key),
@@ -162,32 +232,51 @@ class LoginTest(UserMixin, TestCase):
         user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())
         device = user.staticdevice_set.create(name='backup')
-        device.token_set.create(token='abcdef123')
+        for instruct in ('initial_login', 'skip_token_login', 'bad_signature'):
+            device.token_set.create(token='abcdef123')
 
-        # Backup phones should be listed on the login form
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Backup Token')
+            if instruct == 'skip_token_login':
+                # restore cookies cleared by logout()
+                # need to ignore flake8 error since this is copying cookies from prev response
+                self.client.cookies = response.cookies  # noqa: F821
+            if instruct == 'bad_signature':  # corrupt cookie
+                self.client.cookies['rememberdevice'].set('rememberdevice', instruct + ':' +
+                                                          instruct, instruct + ':' + instruct)
+            # Backup phones should be listed on the login form
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
 
-        # Should be able to go to backup tokens step in wizard
-        response = self._post({'wizard_goto_step': 'backup'})
-        self.assertContains(response, 'backup tokens')
+            if instruct == 'skip_token_login':
+                # if login was sent with a valid 'rememberdevice' cookie, it should skip token steps
+                self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+                remember_cookie = self.client.cookies['rememberdevice']
+                self.client.logout()
+                self.client.cookies['rememberdevice'] = remember_cookie  # restore cookies cleared by logout()
+                continue
 
-        # Wrong codes should not be accepted
-        response = self._post({'backup-otp_token': 'WRONG',
-                               'login_view-current_step': 'backup'})
-        self.assertEqual(response.context_data['wizard']['form'].errors,
-                         {'__all__': ['Invalid token. Please make sure you '
-                                      'have entered it correctly.']})
+            self.assertContains(response, 'Backup Token')
 
-        # Valid token should be accepted.
-        response = self._post({'backup-otp_token': 'abcdef123',
-                               'login_view-current_step': 'backup'})
-        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+            # Should be able to go to backup tokens step in wizard
+            response = self._post({'wizard_goto_step': 'backup'})
+            self.assertContains(response, 'backup tokens')
 
-        # Check that the signal was fired.
-        mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
+            # Wrong codes should not be accepted
+            response = self._post({'backup-otp_token': 'WRONG',
+                                   'login_view-current_step': 'backup'})
+            self.assertEqual(response.context_data['wizard']['form'].errors,
+                             {'__all__': ['Invalid token. Please make sure you '
+                                          'have entered it correctly.']})
+
+            # Valid token should be accepted.
+            response = self._post({'backup-otp_token': 'abcdef123',
+                                   'login_view-current_step': 'backup',
+                                   'backup-remember': 'on'})
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+            # Check that the signal was fired.
+            mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
+            self.client.logout()
 
     @mock.patch('two_factor.views.utils.logger')
     def test_change_password_in_between(self, mock_logger):

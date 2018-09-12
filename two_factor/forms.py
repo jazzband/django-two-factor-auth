@@ -2,8 +2,9 @@ from binascii import unhexlify
 from time import time
 
 from django import forms
+from django.conf import settings
 from django.forms import Form, ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ngettext, ugettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -141,6 +142,11 @@ class DisableForm(forms.Form):
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1,
                                    max_value=int('9' * totp_digits()))
+    remember = forms.BooleanField(required=False,
+                                  label=ngettext("Remember this device for %(days)d day",
+                                                 "Remember this device for %(days)d days",
+                                                 settings.TWO_FACTOR_TRUSTED_DAYS) %
+                                  {'days': settings.TWO_FACTOR_TRUSTED_DAYS})
 
     otp_token.widget.attrs.update({'autofocus': 'autofocus'})
 

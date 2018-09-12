@@ -114,3 +114,25 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+
+class TrustedAgent(models.Model):
+    """
+    When a login comes in with a skip token cookie, a corresponding
+    TrustedAgent record will need to match both the user id and user_agent.
+    If there is no matching record in the TrustedAgent table,
+    the token step will be required, even if it is a valid cookie.
+    Disabling 2FA will clear the TrustedAgent table for that user.
+    Stolen/lost phones can be handled by removing them from the PhoneDevice table.
+    Stolen/lost Yubi devices can be handled by removing them from the
+    Remote YubiKey device table
+    """
+    user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+                             null=False, on_delete=models.CASCADE)
+    user_agent = models.CharField(null=False, blank=True, max_length=200)
+    yubi_id = models.IntegerField(null=True)
+    phone = models.ForeignKey(PhoneDevice, on_delete=models.CASCADE, null=True)
+    ip = models.GenericIPAddressField(null=True, blank=True, verbose_name='IP')
+
+    class Meta:
+        unique_together = (('user', 'user_agent'))
