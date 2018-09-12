@@ -6,9 +6,14 @@ from django.views.generic import FormView, TemplateView
 from django_otp import devices_for_user, user_has_device
 
 from ..forms import DisableForm
-from ..models import get_available_phone_methods
+from ..models import TrustedAgent, get_available_phone_methods
 from ..utils import backup_phones, default_device
 from .utils import class_view_decorator
+
+try:
+    from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
+except ImportError:
+    ValidationService = RemoteYubikeyDevice = None
 
 
 @class_view_decorator(never_cache)
@@ -56,4 +61,6 @@ class DisableView(FormView):
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
+            if isinstance(device, RemoteYubikeyDevice):
+                TrustedAgent.objects.filter(user_id=device.user_id).delete()
         return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))

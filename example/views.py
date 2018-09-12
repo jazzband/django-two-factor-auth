@@ -1,11 +1,12 @@
 from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, resolve_url
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 
 from two_factor.views import OTPRequiredMixin
 from two_factor.views.utils import class_view_decorator
+
+from .forms import UserCreateForm
 
 
 class HomeView(TemplateView):
@@ -14,7 +15,7 @@ class HomeView(TemplateView):
 
 class RegistrationView(FormView):
     template_name = 'registration.html'
-    form_class = UserCreationForm
+    form_class = UserCreateForm
 
     def form_valid(self, form):
         form.save()
