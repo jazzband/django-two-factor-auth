@@ -145,8 +145,6 @@ class LoginView(IdempotentSessionWizardView):
         return response
 
     def save_trusted_agent(self, request, device):
-        # from pprint import pprint
-        # pprint(request.META)
         (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user,
                                                                 user_agent=request.META['HTTP_USER_AGENT'])
         trusted.yubi_id = device.id if RemoteYubikeyDevice is not None and isinstance(device, RemoteYubikeyDevice) else None
@@ -240,6 +238,8 @@ class LoginView(IdempotentSessionWizardView):
         """
         if this user logged with a token in the last {{TWO_FACTOR_TRUSTED_DAYS}}
         days, they can skip the token steps.
+        if HTTP_USER_AGENT does not match the creator of the cookie, the cookie
+        will be ignored and the user will be required to provide a OTP
         """
         user = self.get_user()
         if not user:
@@ -248,7 +248,7 @@ class LoginView(IdempotentSessionWizardView):
         if not request.COOKIES.get('rememberdevice'):
             return True
         trusted_agent = self.get_trusted_agent(request, user)
-        if not trusted_agent:
+        if trusted_agent is None:
             return True
         try:
             salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + agent_format(self.request.META['HTTP_USER_AGENT']))
@@ -269,11 +269,11 @@ class LoginView(IdempotentSessionWizardView):
         """
         try:
             trusted_agent = TrustedAgent.objects.get(user=user, user_agent=request.META['HTTP_USER_AGENT'])
-            if trusted_agent.yubi_id is not None and not RemoteYubikeyDevice.objects.filter(id=trusted_agent.yubi_id).exists()\
-               or trusted_agent.phone_id is not None and not PhoneDevice.objects.filter(id=trusted_agent.phone_id).exists():
-                trusted_agent = None
         except TrustedAgent.DoesNotExist:
-            trusted_agent = None
+            return None
+        # PhoneDevice is not checked for because if it is deleted, all corresponding TrustedAgent rows are also deleted
+        if trusted_agent.yubi_id is not None and not RemoteYubikeyDevice.objects.filter(id=trusted_agent.yubi_id).exists():
+            return None
 
         return trusted_agent
 

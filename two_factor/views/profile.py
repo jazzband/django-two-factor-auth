@@ -61,5 +61,6 @@ class DisableView(FormView):
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
+            # Forget all devices associated with this user
             TrustedAgent.objects.filter(user_id=device.user_id).delete()
         return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))

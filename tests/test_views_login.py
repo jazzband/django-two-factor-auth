@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.core import mail
 from django.shortcuts import resolve_url
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
@@ -22,7 +22,7 @@ except ImportError:
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36'
 
 
-class LoginTest(UserMixin, TestCase):
+class LoginTest(UserMixin, TransactionTestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data, HTTP_USER_AGENT=USER_AGENT)
 
@@ -114,7 +114,7 @@ class LoginTest(UserMixin, TestCase):
         user = self.create_user()
         no_digits = 6
         for instruct in ('initial_login', 'skip_token_login', 'bad_signature',
-                'setup_sign_expired', 'signature_expired', 'missing_trusted_agent'):
+                         'setup_sign_expired', 'signature_expired', 'skip_token_login', 'missing_trusted_agent'):
             user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                        digits=no_digits)
             device = user.phonedevice_set.create(name='backup', number='+31101234567',
