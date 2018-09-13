@@ -8,7 +8,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('otp_yubikey', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('two_factor', '0005_auto_20160224_0450'),
     ]

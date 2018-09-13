@@ -27,10 +27,10 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
-from two_factor import signals
 from two_factor.models import TrustedAgent, get_available_methods
 from two_factor.templatetags.device_format import agent_format
 from two_factor.utils import totp_digits
+from two_factor.views.utils import send_new_device, send_user_verified
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
@@ -128,9 +128,8 @@ class LoginView(IdempotentSessionWizardView):
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
             if self.save_trusted_agent(self.request, device):  # True means new device
-                signals.login_alert(sender=__name__, request=self.request)
-            signals.user_verified.send(sender=__name__, request=self.request,
-                                       user=self.get_user(), device=device)
+                send_new_device(self.request)
+            send_user_verified(self.request, self.get_user(), device)
             step_key = 'backup' if self.has_backup_step() else 'token'
             form_obj = self.get_form(step=step_key, data=self.storage.get_step_data(step_key))
             if form_obj['remember'].value() is True:
@@ -150,7 +149,7 @@ class LoginView(IdempotentSessionWizardView):
         # pprint(request.META)
         (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user,
                                                                 user_agent=request.META['HTTP_USER_AGENT'])
-        trusted.yubi_id = device.id if isinstance(device, RemoteYubikeyDevice) else None
+        trusted.yubi_id = device.id if RemoteYubikeyDevice is not None and isinstance(device, RemoteYubikeyDevice) else None
         trusted.phone = device if isinstance(device, PhoneDevice) else None
         trusted.ip = request.META['REMOTE_ADDR']
         trusted.save()
@@ -271,7 +270,7 @@ class LoginView(IdempotentSessionWizardView):
         try:
             trusted_agent = TrustedAgent.objects.get(user=user, user_agent=request.META['HTTP_USER_AGENT'])
             if trusted_agent.yubi_id is not None and not RemoteYubikeyDevice.objects.filter(id=trusted_agent.yubi_id).exists()\
-                or trusted_agent.phone_id is not None and not PhoneDevice.objects.filter(id=trusted_agent.phone_id).exists():
+               or trusted_agent.phone_id is not None and not PhoneDevice.objects.filter(id=trusted_agent.phone_id).exists():
                 trusted_agent = None
         except TrustedAgent.DoesNotExist:
             trusted_agent = None

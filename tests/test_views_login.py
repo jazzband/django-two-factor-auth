@@ -35,7 +35,7 @@ class LoginTest(UserMixin, TestCase):
         self.assertContains(response, 'Please enter a correct')
         self.assertContains(response, 'and password.')
 
-    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @mock.patch('two_factor.signals.user_verified.send')
     def test_valid_login(self, mock_signal):
         self.create_user()
         response = self._post({'auth-username': 'bouke@example.com',
@@ -75,7 +75,7 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
-    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @mock.patch('two_factor.signals.user_verified.send')
     def test_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
@@ -103,7 +103,7 @@ class LoginTest(UserMixin, TestCase):
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
     @mock.patch('two_factor.gateways.fake.Fake')
-    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @mock.patch('two_factor.signals.user_verified.send')
     @override_settings(
         TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
@@ -194,7 +194,7 @@ class LoginTest(UserMixin, TestCase):
             token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
 
     @mock.patch('two_factor.gateways.fake.Fake')
-    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @mock.patch('two_factor.signals.user_verified.send')
     @override_settings(
         TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
@@ -227,7 +227,7 @@ class LoginTest(UserMixin, TestCase):
             # Check that the signal was fired.
             mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
-    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @mock.patch('two_factor.signals.user_verified.send')
     def test_with_backup_token(self, mock_signal):
         user = self.create_user()
         user.totpdevice_set.create(name='default', key=random_hex().decode())

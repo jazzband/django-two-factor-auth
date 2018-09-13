@@ -14,6 +14,19 @@ from two_factor.templatetags.device_format import agent_format
 logger = logging.getLogger(__name__)
 
 
+def send_new_device(request):
+    # prevent circular imports
+    from two_factor import signals
+    signals.login_alert(sender=None, request=request)
+
+
+def send_user_verified(request, user, device):
+    # prevent circular imports
+    from two_factor import signals
+    signals.user_verified.send(sender=None, request=request,
+                               user=user, device=device)
+
+
 def login_alerts(request):
     if settings.TWO_FACTOR_NEW_DEV_ALERTS is True and request.user.email:
         email_msg = EmailMessage(
