@@ -6,6 +6,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django_otp import devices_for_user
 
+from two_factor.models import TrustedAgent
+
 from .utils import UserMixin
 
 
@@ -28,6 +30,7 @@ class DisableTest(UserMixin, TestCase):
                                     {'understand': '1'})
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
         self.assertEqual(list(devices_for_user(self.user)), [])
+        self.assertEqual(TrustedAgent.objects.filter(user_id=self.user.id).exists(), False)
 
         # cannot disable twice
         response = self.client.get(reverse('two_factor:disable'))

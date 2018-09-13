@@ -10,6 +10,8 @@ from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
 
+from two_factor.models import TrustedAgent
+
 from .utils import UserMixin
 
 try:
@@ -111,8 +113,8 @@ class LoginTest(UserMixin, TestCase):
     def test_with_token_bypass(self, mock_signal, fake):
         user = self.create_user()
         no_digits = 6
-        for instruct in ('initial_login', 'skip_token_login', 'bad_signature',
-                         'setup_sign_expired', 'signature_expired'):
+        for instruct in ('initial_login', 'skip_token_login', 'missing_trusted_agent',
+                         'bad_signature', 'setup_sign_expired', 'signature_expired'):
             user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                        digits=no_digits)
             device = user.phonedevice_set.create(name='backup', number='+31101234567',
@@ -126,6 +128,9 @@ class LoginTest(UserMixin, TestCase):
             if instruct == 'bad_signature':  # corrupt cookie
                 self.client.cookies['rememberdevice'].set('rememberdevice', instruct + ':' + instruct,
                                                           instruct + ':' + instruct)
+            if instruct == 'missing_trusted_agent':
+                TrustedAgent.objects.filter(user_id=user.id).delete()
+
             # Backup phones should be listed on the login form
             response = self._post({'auth-username': 'bouke@example.com',
                                    'auth-password': 'secret',
@@ -153,7 +158,7 @@ class LoginTest(UserMixin, TestCase):
                 response = self._post({'token-otp_token': totp(device.bin_key),
                                        'login_view-current_step': 'token',
                                        'token-remember': 'on'})
-            if instruct == 'initial_login':
+            if instruct in ['initial_login', 'missing_trusted_agent']:
                 self.assertEqual(mail.outbox[0].subject, 'New sign in to your account')
 
             self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))

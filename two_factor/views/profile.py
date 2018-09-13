@@ -61,6 +61,5 @@ class DisableView(FormView):
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
-            if RemoteYubikeyDevice is not None and isinstance(device, RemoteYubikeyDevice):
-                TrustedAgent.objects.filter(user_id=device.user_id).delete()
+            TrustedAgent.objects.filter(user_id=device.user_id).delete()
         return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))
