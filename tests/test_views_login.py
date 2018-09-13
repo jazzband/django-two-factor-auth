@@ -113,8 +113,8 @@ class LoginTest(UserMixin, TestCase):
     def test_with_token_bypass(self, mock_signal, fake):
         user = self.create_user()
         no_digits = 6
-        for instruct in ('initial_login', 'skip_token_login', 'missing_trusted_agent',
-                         'bad_signature', 'setup_sign_expired', 'signature_expired'):
+        for instruct in ('initial_login', 'skip_token_login', 'bad_signature',
+                'setup_sign_expired', 'signature_expired', 'missing_trusted_agent'):
             user.totpdevice_set.create(name='default', key=random_hex().decode(),
                                        digits=no_digits)
             device = user.phonedevice_set.create(name='backup', number='+31101234567',
