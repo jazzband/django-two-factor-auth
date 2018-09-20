@@ -127,7 +127,8 @@ class LoginView(IdempotentSessionWizardView):
         response = redirect(redirect_to)
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
-            if self.save_trusted_agent(self.request, device):  # True means new device
+            user_agent = str(agent_format(self.request.META['HTTP_USER_AGENT']))
+            if self.save_trusted_agent(self.request, device, user_agent):  # True means new device
                 send_new_device(self.request)
             send_user_verified(self.request, self.get_user(), device)
             step_key = 'backup' if self.has_backup_step() else 'token'
@@ -135,8 +136,7 @@ class LoginView(IdempotentSessionWizardView):
             if form_obj['remember'].value() is True:
                 login_good_until = str(date.today() +
                                        timedelta(days=settings.TWO_FACTOR_TRUSTED_DAYS))
-                salt = hash(settings.TWO_FACTOR_SALT + str(user.id) +
-                            agent_format(self.request.META['HTTP_USER_AGENT']))
+                salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + user_agent)
                 response.set_signed_cookie(key='rememberdevice', value=login_good_until,
                                            salt=str(salt),
                                            max_age=settings.TWO_FACTOR_TRUSTED_DAYS * (3600 * 24),
@@ -144,9 +144,8 @@ class LoginView(IdempotentSessionWizardView):
                                            secure=None, httponly=True)
         return response
 
-    def save_trusted_agent(self, request, device):
-        (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user,
-                                                                user_agent=request.META['HTTP_USER_AGENT'])
+    def save_trusted_agent(self, request, device, user_agent):
+        (trusted, created) = TrustedAgent.objects.get_or_create(user=request.user, user_agent=user_agent)
         trusted.yubi_id = device.id if RemoteYubikeyDevice is not None and isinstance(device, RemoteYubikeyDevice) else None
         trusted.phone = device if isinstance(device, PhoneDevice) else None
         trusted.ip = request.META['REMOTE_ADDR']
@@ -251,9 +250,10 @@ class LoginView(IdempotentSessionWizardView):
         if trusted_agent is None:
             return True
         try:
-            salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + agent_format(self.request.META['HTTP_USER_AGENT']))
+            user_agent = str(agent_format(request.META['HTTP_USER_AGENT']))
+            salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + user_agent)
             end_valid_login = request.get_signed_cookie('rememberdevice', salt=str(salt))
-        except (BadSignature, SignatureExpired):
+        except (BadSignature, SignatureExpired) as e:
             return True
         end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
         if datetime.today() < end_valid_login_dt:
@@ -268,7 +268,8 @@ class LoginView(IdempotentSessionWizardView):
         As a secondary precaution, verify that the corresponding 2FA device still exists
         """
         try:
-            trusted_agent = TrustedAgent.objects.get(user=user, user_agent=request.META['HTTP_USER_AGENT'])
+            user_agent = str(agent_format(request.META['HTTP_USER_AGENT']))
+            trusted_agent = TrustedAgent.objects.get(user=user, user_agent=user_agent)
         except TrustedAgent.DoesNotExist:
             return None
         # PhoneDevice is not checked for because if it is deleted, all corresponding TrustedAgent rows are also deleted

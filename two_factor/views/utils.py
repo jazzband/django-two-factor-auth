@@ -31,7 +31,7 @@ def login_alerts(request):
     if settings.TWO_FACTOR_NEW_DEV_ALERTS is True and request.user.email:
         email_msg = EmailMessage(
             _('New sign in to your account'),
-            _('New login from device "' + agent_format(request.META['HTTP_USER_AGENT'])) +
+            _('New login from device "' + str(agent_format(request.META['HTTP_USER_AGENT']))) +
             _('" from IP address ') + request.META['REMOTE_ADDR'] +
             _('\n\nYou are getting this email to make sure it was you.'),
             request.user.email,
