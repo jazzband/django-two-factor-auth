@@ -153,12 +153,19 @@ class LoginTest(UserMixin, TransactionTestCase):
                     response = self._post({'token-otp_token': totp(device.bin_key),
                                            'login_view-current_step': 'token',
                                            'token-remember': 'on'})
+            elif instruct in ['initial_login']:
+                with override_settings(TWO_FACTOR_NEW_DEV_ALERTS=False):
+                    response = self._post({'token-otp_token': totp(device.bin_key),
+                                           'login_view-current_step': 'token',
+                                           'token-remember': 'on'})
+                    self.assertTrue(len(mail.outbox) == 0)
             else:
                 # Valid token should be accepted.
                 response = self._post({'token-otp_token': totp(device.bin_key),
                                        'login_view-current_step': 'token',
                                        'token-remember': 'on'})
-            if instruct in ['initial_login', 'missing_trusted_agent']:
+
+            if instruct in ['missing_trusted_agent']:
                 self.assertEqual(mail.outbox[0].subject, 'New sign in to your account')
 
             self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
