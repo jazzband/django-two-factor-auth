@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from two_factor.templatetags.device_format import agent_format
 
 
