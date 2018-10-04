@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from six import string_types
 
 import sys
 import unittest
@@ -108,11 +107,11 @@ class UtilsTest(UserMixin, TestCase):
     def test_random_hex(self):
         # test that returned random_hex_str is string
         h = random_hex_str()
-        self.assertIsInstance(h, string_types)
+        self.assertIsInstance(h, six.string_types)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
 
         # Added tests to verify that we can safely remove IF statement from random_hex_str function
         hh = random_hex().decode('utf-8')
-        self.assertIsInstance(hh, string_types)
+        self.assertIsInstance(hh, six.string_types)
         self.assertEqual(len(hh), 40)
