@@ -7,8 +7,8 @@ import unittest
 from django.test import TestCase
 from django.utils import six
 from django.utils.six.moves.urllib.parse import parse_qsl, urlparse
-
 from django_otp.util import random_hex
+
 from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
