@@ -56,10 +56,7 @@ def key_validator(*args, **kwargs):
 
 
 def random_hex_str():
-    h = random_hex()
-    if isinstance(h, bytes):
-        return h.decode('utf-8')
-    return h
+    return random_hex().decode('utf-8')
 
 
 class PhoneDevice(Device):
