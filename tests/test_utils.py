@@ -7,6 +7,7 @@ import unittest
 from django.test import TestCase
 from django.utils import six
 from django.utils.six.moves.urllib.parse import parse_qsl, urlparse
+from django_otp.util import random_hex
 
 from two_factor.models import PhoneDevice
 from two_factor.utils import (
@@ -21,18 +22,18 @@ class UtilsTest(UserMixin, TestCase):
         user = self.create_user()
         self.assertEqual(default_device(user), None)
 
-        user.phonedevice_set.create(name='backup', number='+1')
+        user.phonedevice_set.create(name='backup', key=random_hex().decode(), number='+1')
         self.assertEqual(default_device(user), None)
 
-        default = user.phonedevice_set.create(name='default', number='+1')
+        default = user.phonedevice_set.create(name='default', key=random_hex().decode(), number='+1')
         self.assertEqual(default_device(user).pk, default.pk)
 
     def test_backup_phones(self):
         self.assertQuerysetEqual(list(backup_phones(None)),
                                  list(PhoneDevice.objects.none()))
         user = self.create_user()
-        user.phonedevice_set.create(name='default', number='+1')
-        backup = user.phonedevice_set.create(name='backup', number='+1')
+        user.phonedevice_set.create(name='default', key=random_hex().decode(), number='+1')
+        backup = user.phonedevice_set.create(name='backup', key=random_hex().decode(), number='+1')
         phones = backup_phones(user)
 
         self.assertEqual(len(phones), 1)

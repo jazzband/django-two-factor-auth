@@ -113,7 +113,8 @@ class LoginView(IdempotentSessionWizardView):
         user = self.get_user()
         if not self.token_required(self.request):
             user.otp_device = self.get_device()
-            user.otp_device.name = 'skipped_token'
+            if user.otp_device is not None:
+                user.otp_device.name = 'skipped_token'
         login(self.request, user)
 
         redirect_to = self.request.POST.get(
@@ -253,7 +254,7 @@ class LoginView(IdempotentSessionWizardView):
             user_agent = str(agent_format(request.META['HTTP_USER_AGENT']))
             salt = hash(settings.TWO_FACTOR_SALT + str(user.id) + user_agent)
             end_valid_login = request.get_signed_cookie('rememberdevice', salt=str(salt))
-        except (BadSignature, SignatureExpired) as e:
+        except (BadSignature, SignatureExpired):
             return True
         end_valid_login_dt = datetime.strptime(end_valid_login, '%Y-%m-%d')
         if datetime.today() < end_valid_login_dt:
