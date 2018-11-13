@@ -132,7 +132,7 @@ class TrustedAgent(models.Model):
     Remote YubiKey device table
     """
     user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
-                             null=False, on_delete=models.CASCADE)
+                            null=False, on_delete=models.CASCADE)
     user_agent = models.CharField(null=False, blank=True, max_length=200)
     yubi_id = models.IntegerField(null=True)
     phone = models.ForeignKey(PhoneDevice, on_delete=models.CASCADE, null=True)
