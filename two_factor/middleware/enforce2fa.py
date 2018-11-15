@@ -4,14 +4,14 @@ from django.shortcuts import redirect
 from django.urls import resolve, reverse
 
 
-class Enforce2FAMiddleware:
+class Enforce2FAMiddleware(object):
     """Enforce 2FA middleware."""
     def __init__(self, get_response):
         """Initialize the middleware."""
         self.get_response = get_response
 
     def __call__(self, request):
-        """Wrap around actual Admin calls."""
+        """Redirect to two_factor URL if two_factor enforced."""
         response = self.get_response(request)
         if resolve(request.path).app_name == 'two_factor' or (
                 resolve(request.path).url_name == 'logout'):
