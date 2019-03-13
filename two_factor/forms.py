@@ -143,7 +143,10 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
                                  regex=r'^[0-9]*$',
                                  min_length=totp_digits(),
                                  max_length=totp_digits())
-    otp_token.widget.attrs.update({'autofocus': 'autofocus'})
+    otp_token.widget.attrs.update({
+        'autofocus': 'autofocus',
+        'pattern': '[0-9]*', # hint to show numeric keyboard for on-screen keyboards
+    })
 
     # Our authentication form has an additional submit button to go to the
     # backup token form. When the `required` attribute is set on an input
