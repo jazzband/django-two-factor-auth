@@ -7,7 +7,7 @@ from django.utils import translation
 from django.utils.six.moves.urllib.parse import urlencode
 from phonenumber_field.phonenumber import PhoneNumber
 
-from two_factor.gateways.fake import Fake
+from two_factor.gateways.fake import Fake, QueryableFake
 from two_factor.gateways.twilio.gateway import Twilio
 
 try:
@@ -117,3 +117,15 @@ class FakeGatewayTest(TestCase):
             fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             logger.info.assert_called_with(
                 'Fake SMS to %s: "Your token is: %s"', '+123', code)
+
+
+class QueryableFakeGatewayTest(TestCase):
+    def test_gateway(self):
+        fake = QueryableFake()
+
+        for code in ['654321', '87654321']:
+            fake.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            self.assertEqual(fake.call_tokens['+123'].pop(), code)
+
+            fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            self.assertEqual(fake.sms_tokens['+123'].pop(), code)
