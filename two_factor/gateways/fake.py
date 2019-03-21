@@ -49,6 +49,9 @@ class QueryableFake(object):
         >>> from phonenumber_field.phonenumber import PhoneNumber
         >>>
         >>> class MyTestCase(TestCase):
+        ...     def tearDown(self):
+        ...         QueryableFake.reset()
+        ...
         ...     @override_settings(
         ...         TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.QueryableFake',
         ...     )
@@ -67,6 +70,12 @@ class QueryableFake(object):
     """
     sms_tokens = defaultdict(list)
     call_tokens = defaultdict(list)
+
+    @classmethod
+    def clear_all_tokens(cls):
+        cls.sms_tokens = defaultdict(list)
+        cls.call_tokens = defaultdict(list)
+    reset = clear_all_tokens
 
     @classmethod
     def make_call(cls, device, token):

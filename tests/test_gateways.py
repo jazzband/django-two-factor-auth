@@ -120,6 +120,10 @@ class FakeGatewayTest(TestCase):
 
 
 class QueryableFakeGatewayTest(TestCase):
+
+    def tearDown(self):
+        QueryableFake.reset()
+
     def test_gateway(self):
         fake = QueryableFake()
 
@@ -129,3 +133,16 @@ class QueryableFakeGatewayTest(TestCase):
 
             fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             self.assertEqual(fake.sms_tokens['+123'].pop(), code)
+
+    def test_gateway_must_be_reset_between_tests(self):
+        fake = QueryableFake()
+        codes = ['654321', '87654321']
+        for code in codes:
+            fake.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+
+        self.assertEqual(len(fake.call_tokens['+123']), len(codes))
+        self.assertEqual(len(fake.sms_tokens['+123']), len(codes))
+        fake.reset()
+        self.assertEqual(len(fake.call_tokens['+123']), 0)
+        self.assertEqual(len(fake.sms_tokens['+123']), 0)

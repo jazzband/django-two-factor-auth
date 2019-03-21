@@ -20,7 +20,7 @@ General Settings
   * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
     default logger.
   * ``'two_factor.gateways.fake.QueryableFake'``  for testing, recording tokens
-    to the ``QueryableFake`` singleton.
+    to ``QueryableFake.call_tokens``.
 
 ``TWO_FACTOR_SMS_GATEWAY`` (default: ``None``)
   Which gateway to use for sending text messages. Should be set to a module or
@@ -31,7 +31,7 @@ General Settings
   * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
     default logger.
   * ``'two_factor.gateways.fake.QueryableFake'``  for testing, recording tokens
-    to the ``QueryableFake`` singleton.
+    to the ``QueryableFake.sms_tokens``.
 
 ``LOGIN_URL``
   Should point to the login view provided by this application as described in
