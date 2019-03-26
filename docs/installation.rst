@@ -8,6 +8,19 @@ and its dependencies:
 
     $ pip install django-two-factor-auth
 
+This project uses ``django-phonenumber-field`` which requires either ``phonenumbers``
+or ``phonenumberslite`` to be installed. Either manually install a supported version
+using ``pip`` or install ``django-two-factor-auth`` with the extras specified as in
+the below examples:
+
+.. code-block:: console
+
+    $ pip install django-two-factor-auth[phonenumbers]
+
+    OR
+
+    $ pip install django-two-factor-auth[phonenumberslite]
+
 Setup
 -----
 

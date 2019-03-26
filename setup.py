@@ -15,13 +15,15 @@ setup(
         'Django>=1.11',
         'django_otp>=0.6.0,<0.99',
         'qrcode>=4.0.0,<6.99',
-        'django-phonenumber-field>=1.1.0,<1.99',
+        'django-phonenumber-field>=1.1.0,<2.99',
         'django-formtools',
     ],
     extras_require={
         'Call': ['twilio>=6.0'],
         'SMS': ['twilio>=6.0'],
         'YubiKey': ['django-otp-yubikey'],
+        'phonenumbers': ['phonenumbers>=7.0.9,<8.99',],
+        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99',],
     },
     include_package_data=True,
     classifiers=[
