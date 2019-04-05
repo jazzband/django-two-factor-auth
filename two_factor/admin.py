@@ -33,7 +33,7 @@ class AdminSiteOTPRequiredMixin(object):
         """
         redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
 
-        if not redirect_to or not is_safe_url(url=redirect_to, host=request.get_host()):
+        if not redirect_to or not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         return redirect_to_login(redirect_to)
