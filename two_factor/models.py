@@ -80,16 +80,6 @@ class PhoneDevice(Device):
             self.method,
         )
 
-    def __eq__(self, other):
-        if not isinstance(other, PhoneDevice):
-            return False
-        return self.number == other.number \
-            and self.method == other.method \
-            and self.key == other.key
-
-    def __hash__(self):
-        return hash("{!r},{!r},{!r}".format(self.number, self.method, self.key))
-
     @property
     def bin_key(self):
         return unhexlify(self.key.encode())
