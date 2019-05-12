@@ -15,7 +15,7 @@ I use with Django?`_.
 
 django-otp
 ----------
-This project is used for generating one-time passwords. Version 0.3.x and above
+This project is used for generating one-time passwords. Version 0.6.x and above
 are supported.
 
 django-formtools
