@@ -89,6 +89,9 @@ class LoginTest(UserMixin, TestCase):
                          {'__all__': ['Invalid token. Please make sure you '
                                       'have entered it correctly.']})
 
+        # reset throttle because we're not testing that
+        device.throttle_reset()
+
         response = self._post({'token-otp_token': totp(device.bin_key),
                                'login_view-current_step': 'token'})
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
@@ -98,6 +101,25 @@ class LoginTest(UserMixin, TestCase):
 
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
+
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    def test_throttle_with_generator(self, mock_signal):
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex().decode())
+
+        self._post({'auth-username': 'bouke@example.com',
+                    'auth-password': 'secret',
+                    'login_view-current_step': 'auth'})
+
+        # throttle device
+        device.throttle_increment()
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': ['Invalid token. Please make sure you '
+                                      'have entered it correctly.']})
 
     @mock.patch('two_factor.gateways.fake.Fake')
     @mock.patch('two_factor.views.core.signals.user_verified.send')
