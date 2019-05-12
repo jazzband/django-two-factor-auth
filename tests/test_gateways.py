@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import Mock, patch
+from urllib.parse import urlencode
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import translation
-from django.utils.six.moves.urllib.parse import urlencode
 from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
-
-try:
-    from unittest.mock import patch, Mock
-except ImportError:
-    from mock import patch, Mock
 
 
 class TwilioGatewayTest(TestCase):

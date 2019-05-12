@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-import sys
-import unittest
+from urllib.parse import parse_qsl, urlparse
 
 from django.test import TestCase
-from django.utils import six
-from django.utils.six.moves.urllib.parse import parse_qsl, urlparse
 from django_otp.util import random_hex
 
 from two_factor.models import PhoneDevice, random_hex_str
@@ -39,8 +33,6 @@ class UtilsTest(UserMixin, TestCase):
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].pk, backup.pk)
 
-    @unittest.skipIf((3, 2) <= sys.version_info < (3, 3), "Python 3.2's urlparse is broken")
-    @unittest.skipIf(sys.version_info < (2, 7), "Python 2.6 not supported")
     def test_get_otpauth_url(self):
         for num_digits in (6, 8):
             self.assertEqualUrl(
@@ -77,13 +69,6 @@ class UtilsTest(UserMixin, TestCase):
         """
         Asserts whether the URLs are canonically equal.
         """
-        if six.PY2:
-            # See those Chinese characters above? Those are quite difficult
-            # to match against the generated URLs in portable code. True,
-            # this solution is not the nicest, but it works. And it's test
-            # code after all.
-            lhs = lhs.encode('utf8')
-
         lhs = urlparse(lhs)
         rhs = urlparse(rhs)
         self.assertEqual(lhs.scheme, rhs.scheme)
@@ -107,11 +92,11 @@ class UtilsTest(UserMixin, TestCase):
     def test_random_hex(self):
         # test that returned random_hex_str is string
         h = random_hex_str()
-        self.assertIsInstance(h, six.string_types)
+        self.assertIsInstance(h, str)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
 
         # Added tests to verify that we can safely remove IF statement from random_hex_str function
         hh = random_hex().decode('utf-8')
-        self.assertIsInstance(hh, six.string_types)
+        self.assertIsInstance(hh, str)
         self.assertEqual(len(hh), 40)

@@ -13,12 +13,6 @@ env:
 
 matrix:
   include:
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=normal
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=yubikey
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=custom_user
     - python: 3.4
       env: DJANGO=1.11 VARIANT=normal
     - python: 3.4

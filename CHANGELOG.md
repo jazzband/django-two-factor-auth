@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Removed
+- Python 2 support.
 
 ## 1.9.1 - 2019-07-07
 ### Changed

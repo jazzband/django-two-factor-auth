@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.test import TestCase
 from django.urls import reverse
 
@@ -8,7 +6,7 @@ from .utils import UserMixin
 
 class BackupTokensTest(UserMixin, TestCase):
     def setUp(self):
-        super(BackupTokensTest, self).setUp()
+        super().setUp()
         self.create_user()
         self.enable_otp()
         self.login_user()
