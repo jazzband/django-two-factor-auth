@@ -55,7 +55,13 @@ class PhoneSetupTest(UserMixin, TestCase):
         self.assertContains(response, 'We\'ve sent a token to your phone')
         device = response.context_data['wizard']['form'].device
         fake.return_value.make_call.assert_called_with(
-            device=device, token='%06d' % totp(device.bin_key))
+            device=mock.ANY, token='%06d' % totp(device.bin_key))
+
+        args, kwargs = fake.return_value.make_call.call_args
+        submitted_device = kwargs['device']
+        self.assertEqual(submitted_device.number, device.number)
+        self.assertEqual(submitted_device.key, device.key)
+        self.assertEqual(submitted_device.method, device.method)
 
         response = self._post({'phone_setup_view-current_step': 'validation',
                                'validation-token': '123456'})
