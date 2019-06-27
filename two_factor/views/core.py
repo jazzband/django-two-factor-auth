@@ -538,6 +538,9 @@ class QRGeneratorView(View):
         'SVG': 'image/svg+xml; charset=utf-8',
     }
 
+    def get_issuer(self):
+        return get_current_site(self.request).name
+
     def get(self, request, *args, **kwargs):
         # Get the data from the session
         try:
@@ -555,7 +558,7 @@ class QRGeneratorView(View):
             username = self.request.user.username
 
         otpauth_url = get_otpauth_url(accountname=username,
-                                      issuer=get_current_site(self.request).name,
+                                      issuer=self.get_issuer(),
                                       secret=key,
                                       digits=totp_digits())
 
