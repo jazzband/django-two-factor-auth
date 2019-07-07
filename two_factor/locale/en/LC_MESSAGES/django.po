@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
 "PO-Revision-Date: 2013-11-27 20:08+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,7 +112,7 @@ msgstr "Text Message"
 msgid "Token generator"
 msgstr "Token generator"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "method"
 
@@ -511,7 +511,7 @@ msgstr ""
 "+ or 00."
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
+msgid "ManagementForm data is missing or has been tampered with"
 msgstr ""
 
 #~ msgid "Please enter a valid token."

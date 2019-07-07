@@ -5,13 +5,14 @@
 # Translators:
 # Translators:
 # mozillazg <opensource.mozillazg@gmail.com>, 2014
+# phui chen <phui.chen@gmail.com>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:23+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2019-05-17 20:13+0000\n"
+"Last-Translator: phui chen <phui.chen@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/Bouke/django-two-factor-auth/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +27,7 @@ msgstr "方法"
 #: forms.py:34 forms.py:49
 #| msgid "Add Phone Number"
 msgid "Phone Number"
-msgstr ""
+msgstr "电话号码"
 
 #: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
@@ -107,7 +108,7 @@ msgstr "短信"
 msgid "Token generator"
 msgstr "验证码生成器"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "方法"
 
@@ -284,13 +285,13 @@ msgstr "请输入您想被呼叫的电话号码。这个号码将在下一步被
 msgid ""
 "We are calling your phone right now, please enter the\n"
 "          digits you hear."
-msgstr ""
+msgstr "我们现在就将给您致电，请输入您所听到的数字。"
 
 #: templates/two_factor/core/setup.html:32
 msgid ""
 "We sent you a text message, please enter the tokens we\n"
 "          sent."
-msgstr ""
+msgstr "我们已经给您发了一条短信，请输入我们发送的验证码。"
 
 #: templates/two_factor/core/setup.html:36
 msgid ""
@@ -444,7 +445,7 @@ msgid ""
 msgstr "请输入一个有效的电话号码，包含以 + 或 00 开头的国家区号。"
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
+msgid "ManagementForm data is missing or has been tampered with"
 msgstr ""
 
 #~ msgid "Please enter a valid token."

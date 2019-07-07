@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:23+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2018-08-06 14:39+0000\n"
+"Last-Translator: Bogdan Mateescu\n"
 "Language-Team: Romanian (http://www.transifex.com/Bouke/django-two-factor-auth/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr "Metoda"
 #: forms.py:34 forms.py:49
 #| msgid "Add Phone Number"
 msgid "Phone Number"
-msgstr ""
+msgstr "Număr de telefon"
 
 #: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
@@ -108,7 +108,7 @@ msgstr "Mesaj text"
 msgid "Token generator"
 msgstr "Generator de coduri"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "metodă"
 
@@ -285,13 +285,13 @@ msgstr "Introduceți numărul de telefon pe care doriți să fiți apelat.\n    
 msgid ""
 "We are calling your phone right now, please enter the\n"
 "          digits you hear."
-msgstr ""
+msgstr "Vă sunăm pe telefon chiar acum, vă rugăm să introduceți\n        cifrele pe care le auziți."
 
 #: templates/two_factor/core/setup.html:32
 msgid ""
 "We sent you a text message, please enter the tokens we\n"
 "          sent."
-msgstr ""
+msgstr "Un mesaj text cu un cod de verificare tocmai a fost\n        trimis."
 
 #: templates/two_factor/core/setup.html:36
 msgid ""
@@ -300,7 +300,7 @@ msgid ""
 "        go back and verify that you entered your information correctly, try\n"
 "        again, or use a different authentication method instead. If the issue\n"
 "        persists, contact the site administrator."
-msgstr ""
+msgstr "Am\n        întâmpinat o problemă cu metoda de autentificare selectată. Reveniți\n        și verificați dacă ați introdus corect informațiile dvs., încercați\n        din nou, sau utilizați o metodă de autentificare diferită. Dacă problema\n        persistă, contactați administratorul site-ului."
 
 #: templates/two_factor/core/setup.html:43
 msgid ""
@@ -347,7 +347,7 @@ msgstr "Dezactivați verificarea în doi pași"
 msgid ""
 "You are about to disable two-factor authentication. This\n"
 "    weakens your account security, are you sure?"
-msgstr ""
+msgstr "Sunteți pe cale să dezactivați verificarea în doi pași.\n Contul dvs. nu va mai beneficia de securitatea suplimentară\n și veți folosi numai parola pentru a vă conecta. Sunteți sigur?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -382,7 +382,7 @@ msgstr "Numere de telefon de recuperare"
 msgid ""
 "If your primary method is not available, we are able to\n"
 "        send backup tokens to the phone numbers listed below."
-msgstr ""
+msgstr "Dacă metoda dvs. principală nu este disponibilă, vă vom putea\n      trimite codurile de rezervă la numerele de telefon listate mai jos."
 
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
@@ -447,8 +447,8 @@ msgid ""
 msgstr "Te rugăm să introduci un număr de telefon valid, inclusiv codul țarii dvs. începând cu + sau 00."
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
-msgstr ""
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr "Datele din formularul de gestionare lipsesc sau au fost falsificate"
 
 #~ msgid "Please enter a valid token."
 #~ msgstr "Please enter a valid token."

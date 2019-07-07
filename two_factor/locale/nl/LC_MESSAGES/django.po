@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Translators:
-# Bouke Haarsma <bouke@haarsma.eu>, 2018
+# Bouke Haarsma <bouke@haarsma.eu>, 2018-2019
 # Bouke Haarsma <bouke@haarsma.eu>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:39+0000\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2019-07-07 06:31+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
 "Language-Team: Dutch (http://www.transifex.com/Bouke/django-two-factor-auth/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgstr "SMS-bericht"
 msgid "Token generator"
 msgstr "Tokengenerator"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "methode"
 
@@ -245,7 +245,7 @@ msgstr "Je gaat een alternatief telefoonnummer aan je account toevoegen. Dit num
 msgid ""
 "We've sent a token to your phone number. Please\n"
 "        enter the token you've received."
-msgstr "We heb een token verzonden naar jouw telefoonnummer. Voer het token dat je hebt ontvangen."
+msgstr "We heb een token verzonden naar jouw telefoonnummer. Voer het token in dat je hebt ontvangen."
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
@@ -446,8 +446,8 @@ msgid ""
 msgstr "Voer een geldig telefoonnummer in, inclusief landcode en begin met + of 00."
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
-msgstr ""
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr "ManagementForm gegevens missen of zijn mee geknoeid"
 
 #~ msgid "Please enter a valid token."
 #~ msgstr "Please enter a valid token."

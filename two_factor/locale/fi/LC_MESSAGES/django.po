@@ -5,13 +5,14 @@
 # Translators:
 # Translators:
 # Aleksi Häkli <aleksi.hakli@iki.fi>, 2016
+# Mika Mäkelä <mika.m.makela@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:23+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2018-10-16 18:09+0000\n"
+"Last-Translator: Mika Mäkelä <mika.m.makela@gmail.com>\n"
 "Language-Team: Finnish (http://www.transifex.com/Bouke/django-two-factor-auth/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,11 +27,11 @@ msgstr "Tapa"
 #: forms.py:34 forms.py:49
 #| msgid "Add Phone Number"
 msgid "Phone Number"
-msgstr ""
+msgstr "Puhelinnumero"
 
 #: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
-msgstr "Tunnu"
+msgstr "Tunnus"
 
 #: forms.py:61 forms.py:91
 #| msgid "Entered token is not valid"
@@ -107,7 +108,7 @@ msgstr "Tekstiviesti"
 msgid "Token generator"
 msgstr "Tunnusgeneraattori"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "tapa"
 
@@ -346,7 +347,7 @@ msgstr "Poista kaksivaiheinen tunnistautuminen käytöstä."
 msgid ""
 "You are about to disable two-factor authentication. This\n"
 "    weakens your account security, are you sure?"
-msgstr ""
+msgstr "Olet poistamassa kaksivaiheisen tunnistautumisen. Tämä heikentää tilisi turvallisuutta. Haluatko varmasti poistaa?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -445,7 +446,7 @@ msgid ""
 msgstr "Näppäile puhelinnnumero maakoodin kanssa, joka alkaa + tai 00 -merkeillä."
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
+msgid "ManagementForm data is missing or has been tampered with"
 msgstr ""
 
 #~ msgid "Please enter a valid token."

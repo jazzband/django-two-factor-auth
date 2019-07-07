@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Translators:
+# Doryan R, 2019
 # bato <francoisconil@gmail.com>, 2014,2018
 # Michael Mior <michael.mior@gmail.com>, 2014
 # Nils Van Zuijlen <nilsdu29@gmail.com>, 2018
@@ -13,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:23+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2019-02-06 17:43+0000\n"
+"Last-Translator: Doryan R\n"
 "Language-Team: French (http://www.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +31,7 @@ msgstr "Méthode"
 #: forms.py:34 forms.py:49
 #| msgid "Add Phone Number"
 msgid "Phone Number"
-msgstr ""
+msgstr "Numéro de téléphone"
 
 #: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
@@ -111,7 +112,7 @@ msgstr "Message texte"
 msgid "Token generator"
 msgstr "Générateur des jetons"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "méthode"
 
@@ -288,13 +289,13 @@ msgstr "Veuillez entrer le numéro qui sera utilisé pour vous\ncontacter. Ce nu
 msgid ""
 "We are calling your phone right now, please enter the\n"
 "          digits you hear."
-msgstr ""
+msgstr "Nous appelons votre téléphone dès maintenant, veuillez entrer le\nchiffres que vous entendez."
 
 #: templates/two_factor/core/setup.html:32
 msgid ""
 "We sent you a text message, please enter the tokens we\n"
 "          sent."
-msgstr ""
+msgstr "Nous vous avons envoyé un message texte, veuillez entrer les jetons que nous avons envoyer."
 
 #: templates/two_factor/core/setup.html:36
 msgid ""
@@ -303,7 +304,7 @@ msgid ""
 "        go back and verify that you entered your information correctly, try\n"
 "        again, or use a different authentication method instead. If the issue\n"
 "        persists, contact the site administrator."
-msgstr ""
+msgstr "Nous avons\nrencontré un problème avec la méthode d'authentification sélectionnée. S'il vous plaît\nrevenir en arrière et vérifier que vous avez entré vos informations correctement, essayez\nà nouveau, ou utilisez une autre méthode d’authentification. Si le problème\npersiste, contactez l'administrateur du site."
 
 #: templates/two_factor/core/setup.html:43
 msgid ""
@@ -350,7 +351,7 @@ msgstr "Désactiver l'authentification à deux facteurs"
 msgid ""
 "You are about to disable two-factor authentication. This\n"
 "    weakens your account security, are you sure?"
-msgstr ""
+msgstr "Vous êtes sur le point de désactiver l'authentification à deux facteurs. Cela\naffaiblira la sécurité du compte compte, êtes-vous sûr?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -385,7 +386,7 @@ msgstr "Numéros de sauvegarde"
 msgid ""
 "If your primary method is not available, we are able to\n"
 "        send backup tokens to the phone numbers listed below."
-msgstr ""
+msgstr "Si votre méthode principale n’est pas disponible, nous pouvons\nenvoyez des jetons de sauvegarde aux numéros de téléphone indiqués ci-dessous."
 
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
@@ -449,8 +450,8 @@ msgid ""
 msgstr "Veuillez entrer un numéro valide, contenant l'indicateur du pays commençant par + ou 00."
 
 #: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
-msgstr ""
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr "Les données ManagementForm sont manquantes ou ont été falsifiées"
 
 #~ msgid "Please enter a valid token."
 #~ msgstr "Please enter a valid token."
