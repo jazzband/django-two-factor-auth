@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+## 1.9.0 - 2019-07-07
+### Added
+- Support for Django 2.2.
+- Ability to create `PhoneDevice` from Django admin.
+
+### Changed
+- Support for Python 3.7.
+
+### Removed
+- Support for Python 2.7 and 3.4.
+
 ## 1.8.0 - 2018-08-03
 ### Added
 - Support for Django 2.1.
