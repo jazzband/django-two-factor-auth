@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## 1.9.1 - 2019-07-07
+### Changed
+- 1.9.0 got pushed with incorrect changelog, no other changes.
+
 ## 1.9.0 - 2019-07-07
 ### Added
 - Support for Django 2.2.
