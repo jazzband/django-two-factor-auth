@@ -143,8 +143,8 @@ class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
         super(PhoneDeleteTest, self).setUp()
         self.user = self.create_user()
-        self.backup = self.user.phonedevice_set.create(name='backup', method='sms', number='+1')
-        self.default = self.user.phonedevice_set.create(name='default', method='call', number='+1')
+        self.backup = self.user.phonedevice_set.create(name='backup', method='sms', number='+12024561111')
+        self.default = self.user.phonedevice_set.create(name='default', method='call', number='+12024561111')
         self.login_user()
 
     def test_delete(self):
