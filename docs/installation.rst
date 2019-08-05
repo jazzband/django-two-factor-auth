@@ -21,6 +21,11 @@ the below examples:
 
     $ pip install django-two-factor-auth[phonenumberslite]
 
+.. note::
+   django-phonenumber-field v3.0 and above does not support python 2.7 and 3.4,
+   you'll have to install 'django-phonenumber-field<3.0' manually if you're using
+   any of those versions of python.
+
 Setup
 -----
 
