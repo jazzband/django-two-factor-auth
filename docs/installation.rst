@@ -8,6 +8,24 @@ and its dependencies:
 
     $ pip install django-two-factor-auth
 
+This project uses ``django-phonenumber-field`` which requires either ``phonenumbers``
+or ``phonenumberslite`` to be installed. Either manually install a supported version
+using ``pip`` or install ``django-two-factor-auth`` with the extras specified as in
+the below examples:
+
+.. code-block:: console
+
+    $ pip install django-two-factor-auth[phonenumbers]
+
+    OR
+
+    $ pip install django-two-factor-auth[phonenumberslite]
+
+.. note::
+   django-phonenumber-field v3.0 and above does not support python 2.7 and 3.4,
+   you'll have to install 'django-phonenumber-field<3.0' manually if you're using
+   any of those versions of python.
+
 Setup
 -----
 
