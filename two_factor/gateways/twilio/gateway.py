@@ -38,6 +38,11 @@ class Twilio(object):
     ``TWILIO_CALLER_ID``
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
+      
+    Optionally you may set an error message to be displayed incase of error.
+    
+    ``TWILIO_ERROR_MESSAGE``
+      Should be set to a string with a custom text.
 
     .. _Twilio: http://www.twilio.com/
     """
