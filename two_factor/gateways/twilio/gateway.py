@@ -40,7 +40,8 @@ class Twilio(object):
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
 
-    Optionally you may set an error message to be displayed incase of error.
+    Optionally you may set an error message to display in case of error
+    sending a SMS.
 
     ``TWILIO_ERROR_MESSAGE``
       Should be set to a string with a custom text.
