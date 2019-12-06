@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Django Two-Factor Authentication documentation build configuration file,
 # created by sphinx-quickstart on Tue Dec 31 20:34:24 2013.
 #

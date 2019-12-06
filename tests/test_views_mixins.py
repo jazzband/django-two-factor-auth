@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.test import TestCase

@@ -3,7 +3,7 @@ from time import time
 
 from django import forms
 from django.forms import Form, ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -26,7 +26,7 @@ class MethodForm(forms.Form):
                                widget=forms.RadioSelect)
 
     def __init__(self, **kwargs):
-        super(MethodForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.fields['method'].choices = get_available_methods()
 
 
@@ -40,7 +40,7 @@ class PhoneNumberMethodForm(ModelForm):
         fields = 'number', 'method',
 
     def __init__(self, **kwargs):
-        super(PhoneNumberMethodForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.fields['method'].choices = get_available_phone_methods()
 
 
@@ -62,7 +62,7 @@ class DeviceValidationForm(forms.Form):
     }
 
     def __init__(self, device, **args):
-        super(DeviceValidationForm, self).__init__(**args)
+        super().__init__(**args)
         self.device = device
 
     def clean_token(self):
@@ -81,7 +81,7 @@ class YubiKeyDeviceForm(DeviceValidationForm):
 
     def clean_token(self):
         self.device.public_id = self.cleaned_data['token'][:-32]
-        return super(YubiKeyDeviceForm, self).clean_token()
+        return super().clean_token()
 
 
 class TOTPDeviceForm(forms.Form):
@@ -92,7 +92,7 @@ class TOTPDeviceForm(forms.Form):
     }
 
     def __init__(self, key, user, metadata=None, **kwargs):
-        super(TOTPDeviceForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.key = key
         self.tolerance = 1
         self.t0 = 0
@@ -159,7 +159,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         be verified against all devices, it is not limited to the given
         device.
         """
-        super(AuthenticationTokenForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.user = user
 
         # YubiKey generates a OTP of 44 characters (not digits). So if the

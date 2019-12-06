@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from unittest import mock
 
 from django.conf import settings
 from django.shortcuts import resolve_url
@@ -10,11 +10,6 @@ from django_otp.oath import totp
 from django_otp.util import random_hex
 
 from .utils import UserMixin
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 
 class LoginTest(UserMixin, TestCase):
@@ -295,7 +290,7 @@ class LoginTest(UserMixin, TestCase):
 
 class BackupTokensTest(UserMixin, TestCase):
     def setUp(self):
-        super(BackupTokensTest, self).setUp()
+        super().setUp()
         self.create_user()
         self.enable_otp()
         self.login_user()

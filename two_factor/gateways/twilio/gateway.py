@@ -1,18 +1,12 @@
-from __future__ import absolute_import
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import pgettext, ugettext
+from django.utils.translation import gettext, pgettext
 from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
-
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 
 # Supported voice languages, see http://bit.ly/187I5cr
 VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
@@ -58,7 +52,7 @@ class Twilio(object):
                                  url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = ugettext('Your authentication token is %s') % token
+        body = gettext('Your authentication token is %s') % token
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),

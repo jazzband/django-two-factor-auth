@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.test import TestCase
@@ -11,7 +9,7 @@ from .utils import UserMixin
 
 class DisableTest(UserMixin, TestCase):
     def setUp(self):
-        super(DisableTest, self).setUp()
+        super().setUp()
         self.user = self.create_user()
         self.enable_otp()
         self.login_user()

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
+from unittest import mock
 
 import qrcode.image.svg
 from django.test import RequestFactory, TestCase
@@ -10,11 +8,6 @@ from two_factor.utils import get_otpauth_url
 from two_factor.views.core import QRGeneratorView
 
 from .utils import UserMixin
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 
 class CustomQRView(QRGeneratorView):
@@ -27,7 +20,7 @@ class QRTest(UserMixin, TestCase):
     test_img = 'This is a test string that represents a QRCode'
 
     def setUp(self):
-        super(QRTest, self).setUp()
+        super().setUp()
         self.user = self.create_user(username='ⓑỚ𝓾⒦ȩ')
         self.login_user()
 

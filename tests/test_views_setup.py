@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 from binascii import unhexlify
+from unittest import mock
 
 from django.test import TestCase
 from django.test.utils import modify_settings, override_settings
@@ -10,22 +9,10 @@ from django_otp.oath import totp
 
 from .utils import UserMixin
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
-
 
 class SetupTest(UserMixin, TestCase):
     def setUp(self):
-        super(SetupTest, self).setUp()
+        super().setUp()
         self.user = self.create_user()
         self.login_user()
 

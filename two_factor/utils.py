@@ -1,12 +1,9 @@
+from urllib.parse import quote, urlencode
+
 from django.conf import settings
 from django_otp import devices_for_user
 
 from two_factor.models import PhoneDevice
-
-try:
-    from urllib.parse import quote, urlencode
-except ImportError:
-    from urllib import quote, urlencode
 
 
 def default_device(user):

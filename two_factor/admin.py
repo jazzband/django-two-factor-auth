@@ -23,7 +23,7 @@ class AdminSiteOTPRequiredMixin(object):
         Returns True if the given HttpRequest has permission to view
         *at least one* page in the admin site.
         """
-        if not super(AdminSiteOTPRequiredMixin, self).has_permission(request):
+        if not super().has_permission(request):
             return False
         return request.user.is_verified()
 

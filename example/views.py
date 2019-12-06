@@ -25,7 +25,7 @@ class RegistrationCompleteView(TemplateView):
     template_name = 'registration_complete.html'
 
     def get_context_data(self, **kwargs):
-        context = super(RegistrationCompleteView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['login_url'] = resolve_url(settings.LOGIN_URL)
         return context
 

@@ -2,7 +2,7 @@ import re
 
 import phonenumbers
 from django import template
-from django.utils.translation import ugettext
+from django.utils.translation import gettext as _
 
 from ..models import PhoneDevice
 
@@ -53,7 +53,7 @@ def device_action(device):
     assert isinstance(device, PhoneDevice)
     number = mask_phone_number(format_phone_number(device.number))
     if device.method == 'sms':
-        return ugettext('Send text message to %s') % number
+        return _('Send text message to %s') % number
     elif device.method == 'call':
-        return ugettext('Call number %s') % number
+        return _('Call number %s') % number
     raise NotImplementedError('Unknown method: %s' % device.method)
