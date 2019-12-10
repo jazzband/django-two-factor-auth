@@ -16,7 +16,7 @@ setup(
         'django_otp>=0.3.4,<0.99',
         'qrcode>=4.0.0,<6.99',
         'django-phonenumber-field>=1.1.0,<1.99',
-        'django-formtools',
+        'django-formtools<=2.0',
     ],
     extras_require={
         'Call': ['twilio>=6.0'],
