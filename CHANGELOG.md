@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Added
+- Support for Django 3.0.
+
 ### Removed
 - Python 2 support.
 

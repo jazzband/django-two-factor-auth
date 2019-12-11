@@ -4,7 +4,7 @@ Requirements
 Django
 ------
 Modern Django versions are supported. Currently this list includes Django 1.11,
-2.1, and 2.2.
+2.1, 2.2, and 3.0.
 
 Python
 ------
