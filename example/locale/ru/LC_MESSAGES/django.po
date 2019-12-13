@@ -5,13 +5,14 @@
 # Translators:
 # Translators:
 # Mikhail M <malexey1984@gmail.com>, 2017
+# Илья Лихошва <ilyaliko64@gmail.com>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2017-06-12 06:25+0000\n"
-"Last-Translator: Mikhail M <malexey1984@gmail.com>\n"
+"POT-Creation-Date: 2019-07-07 08:46+0200\n"
+"PO-Revision-Date: 2019-08-21 12:57+0000\n"
+"Last-Translator: Илья Лихошва <ilyaliko64@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/Bouke/django-two-factor-auth/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,12 +20,12 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: gateways.py:10
+#: gateways.py:11
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
 msgstr ""
 
-#: gateways.py:16
+#: gateways.py:17
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
 msgstr ""
@@ -63,7 +64,7 @@ msgstr ""
 
 #: templates/_base.html:48 templates/registration_complete.html:9
 msgid "Login"
-msgstr "Логин"
+msgstr "Войти"
 
 #: templates/home.html:4
 msgid "django-two-factor-auth – Demo Application"
@@ -142,6 +143,14 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr ""
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr ""
+
 #: templates/registration_complete.html:5
 msgid "Registration Complete"
 msgstr ""
@@ -156,12 +165,4 @@ msgstr ""
 msgid ""
 "Congratulations, you've made it. You have successfully\n"
 "    enabled two-factor authentication and logged in with your token."
-msgstr ""
-
-#: templates/registration/logged_out.html:5
-msgid "Logged Out"
-msgstr ""
-
-#: templates/registration/logged_out.html:6
-msgid "See you around!"
 msgstr ""

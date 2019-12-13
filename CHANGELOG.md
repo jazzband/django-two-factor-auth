@@ -8,6 +8,9 @@
 ### Removed
 - Python 2 support.
 
+### Changed
+- Updated translations.
+
 ## 1.9.1 - 2019-07-07
 ### Changed
 - 1.9.0 got pushed with incorrect changelog, no other changes.
