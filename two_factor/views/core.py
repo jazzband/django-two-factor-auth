@@ -26,22 +26,16 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.models import get_available_methods
+from two_factor.methods import method_registry
 from two_factor.utils import totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    PhoneNumberMethodForm,
 )
-from ..models import PhoneDevice, get_available_phone_methods
+from ..models import PhoneDevice
 from ..utils import backup_phones, default_device, get_otpauth_url
 from .utils import IdempotentSessionWizardView, class_view_decorator
-
-try:
-    from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
-except ImportError:
-    ValidationService = RemoteYubikeyDevice = None
-
 
 logger = logging.getLogger(__name__)
 
@@ -220,29 +214,39 @@ class SetupView(IdempotentSessionWizardView):
     template_name = 'two_factor/core/setup.html'
     session_key_name = 'django_two_factor-qr_secret_key'
     initial_dict = {}
-    form_list = (
+    form_list = [
         ('welcome', Form),
         ('method', MethodForm),
-        ('generator', TOTPDeviceForm),
-        ('sms', PhoneNumberForm),
-        ('call', PhoneNumberForm),
-        ('validation', DeviceValidationForm),
-        ('yubikey', YubiKeyDeviceForm),
-    )
+        # Other forms are dynamically added in __init__.
+    ]
     condition_dict = {
-        'generator': lambda self: self.get_method() == 'generator',
-        'call': lambda self: self.get_method() == 'call',
-        'sms': lambda self: self.get_method() == 'sms',
-        'validation': lambda self: self.get_method() in ('sms', 'call'),
-        'yubikey': lambda self: self.get_method() == 'yubikey',
+        'generator': lambda self: self.get_method_code() == 'generator',
+        'call': lambda self: self.get_method_code() == 'call',
+        'sms': lambda self: self.get_method_code() == 'sms',
+        'validation': lambda self: self.get_method_code() in ('sms', 'call'),
+        'yubikey': lambda self: self.get_method_code() == 'yubikey',
     }
     idempotent_dict = {
         'yubikey': False,
     }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for method in method_registry.get_methods():
+            self.form_list[method.code] = method.form_class
+        if method_registry.get_phone_methods():
+            if 'validation' in self.form_list:
+                # To be sure that 'validation' always comes last.
+                del self.form_list['validation']
+            self.form_list['validation'] = DeviceValidationForm
+
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})
-        return method_data.get('method', None)
+        return method_registry.get_method(method_data.get('method', None))
+
+    def get_method_code(self):
+        method = self.get_method()
+        return method.code if method else ''
 
     def get(self, request, *args, **kwargs):
         """
@@ -257,10 +261,10 @@ class SetupView(IdempotentSessionWizardView):
         Check if there is only one method, then skip the MethodForm from form_list
         """
         form_list = super().get_form_list()
-        available_methods = get_available_methods()
+        available_methods = method_registry.get_methods()
         if len(available_methods) == 1:
             form_list.pop('method', None)
-            method_key, _ = available_methods[0]
+            method_key = available_methods[0].code
             self.storage.validated_step_data['method'] = {'method': method_key}
         return form_list
 
@@ -288,33 +292,13 @@ class SetupView(IdempotentSessionWizardView):
         except KeyError:
             pass
 
-        # TOTPDeviceForm
-        if self.get_method() == 'generator':
-            form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
-            device = form.save()
-
-        # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('call', 'sms', 'yubikey'):
-            device = self.get_device()
-            device.save()
-
-        else:
-            raise NotImplementedError("Unknown method '%s'" % self.get_method())
+        device = self.get_method().setup_done(self, form_list)
 
         django_otp.login(self.request, device)
         return redirect(self.success_url)
 
     def get_form_kwargs(self, step=None):
-        kwargs = {}
-        if step == 'generator':
-            kwargs.update({
-                'key': self.get_key(step),
-                'user': self.request.user,
-            })
-        if step in ('validation', 'yubikey'):
-            kwargs.update({
-                'device': self.get_device()
-            })
+        kwargs = {'wizard': self} if step not in ['welcome', 'method'] else {}
         metadata = self.get_form_metadata(step)
         if metadata:
             kwargs.update({
@@ -322,33 +306,18 @@ class SetupView(IdempotentSessionWizardView):
             })
         return kwargs
 
-    def get_device(self, **kwargs):
+    def get_device(self):
         """
         Uses the data from the setup step and generated key to recreate device.
 
         Only used for call / sms -- generator uses other procedure.
         """
         method = self.get_method()
-        kwargs = kwargs or {}
-        kwargs['name'] = 'default'
-        kwargs['user'] = self.request.user
-
-        if method in ('call', 'sms'):
-            kwargs['method'] = method
-            kwargs['number'] = self.storage.validated_step_data\
-                .get(method, {}).get('number')
-            return PhoneDevice(key=self.get_key(method), **kwargs)
-
-        if method == 'yubikey':
-            kwargs['public_id'] = self.storage.validated_step_data\
-                .get('yubikey', {}).get('token', '')[:-32]
-            try:
-                kwargs['service'] = ValidationService.objects.get(name='default')
-            except ValidationService.DoesNotExist:
-                raise KeyError("No ValidationService found with name 'default'")
-            except ValidationService.MultipleObjectsReturned:
-                raise KeyError("Multiple ValidationService found with name 'default'")
-            return RemoteYubikeyDevice(**kwargs)
+        method_code = self.get_method_code()
+        key = self.get_key(method_code)
+        return method.get_device(
+            self.request.user, key, self.storage.validated_step_data.get(method_code, {})
+        )
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})
@@ -443,7 +412,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         """
         Start the setup wizard. Redirect if no phone methods available.
         """
-        if not get_available_phone_methods():
+        if not method_registry.get_phone_methods():
             return redirect(self.success_url)
         return super().get(request, *args, **kwargs)
 
@@ -465,10 +434,10 @@ class PhoneSetupView(IdempotentSessionWizardView):
 
     def get_form_kwargs(self, step=None):
         """
-        Provide the device to the DeviceValidationForm.
+        Provide the wizard to the DeviceValidationForm.
         """
         if step == 'validation':
-            return {'device': self.get_device()}
+            return {'wizard': self}
         return {}
 
     def get_device(self, **kwargs):
@@ -518,7 +487,7 @@ class SetupCompleteView(TemplateView):
 
     def get_context_data(self):
         return {
-            'phone_methods': get_available_phone_methods(),
+            'has_phone_methods': bool(method_registry.get_phone_methods()),
         }
 
 

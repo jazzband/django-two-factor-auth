@@ -8,9 +8,8 @@ from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
-)
+from .methods import method_registry
+from .models import PhoneDevice
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
 
@@ -27,7 +26,9 @@ class MethodForm(forms.Form):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = get_available_methods()
+        self.fields['method'].choices = [
+            (m.code, m.verbose_name) for m in method_registry.get_methods()
+        ]
 
 
 class PhoneNumberMethodForm(ModelForm):
@@ -41,7 +42,9 @@ class PhoneNumberMethodForm(ModelForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = get_available_phone_methods()
+        self.fields['method'].choices = [
+            (m.code, m.verbose_name) for m in method_registry.get_phone_methods()
+        ]
 
 
 class PhoneNumberForm(ModelForm):
@@ -53,6 +56,9 @@ class PhoneNumberForm(ModelForm):
         model = PhoneDevice
         fields = 'number',
 
+    def __init__(self, wizard=None, **kwargs):
+        super().__init__(**kwargs)
+
 
 class DeviceValidationForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
@@ -61,9 +67,9 @@ class DeviceValidationForm(forms.Form):
         'invalid_token': _('Entered token is not valid.'),
     }
 
-    def __init__(self, device, **args):
-        super().__init__(**args)
-        self.device = device
+    def __init__(self, wizard=None, **kwargs):
+        super().__init__(**kwargs)
+        self.device = wizard.get_device()
 
     def clean_token(self):
         token = self.cleaned_data['token']
@@ -91,15 +97,15 @@ class TOTPDeviceForm(forms.Form):
         'invalid_token': _('Entered token is not valid.'),
     }
 
-    def __init__(self, key, user, metadata=None, **kwargs):
+    def __init__(self, wizard, metadata=None, **kwargs):
         super().__init__(**kwargs)
-        self.key = key
+        self.key = wizard.get_key('generator')
         self.tolerance = 1
         self.t0 = 0
         self.step = 30
         self.drift = 0
         self.digits = totp_digits()
-        self.user = user
+        self.user = wizard.request.user
         self.metadata = metadata or {}
 
     @property
