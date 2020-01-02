@@ -23,10 +23,9 @@ from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
-from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.models import get_available_methods
+from two_factor.models import get_available_methods, random_hex_str
 from two_factor.utils import totp_digits
 
 from ..forms import (
@@ -354,7 +353,7 @@ class SetupView(IdempotentSessionWizardView):
         self.storage.extra_data.setdefault('keys', {})
         if step in self.storage.extra_data['keys']:
             return self.storage.extra_data['keys'].get(step)
-        key = random_hex(20).decode('ascii')
+        key = random_hex_str(20)
         self.storage.extra_data['keys'][step] = key
         return key
 
@@ -484,7 +483,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         The key is preserved between steps and stored as ascii in the session.
         """
         if self.key_name not in self.storage.extra_data:
-            key = random_hex(20).decode('ascii')
+            key = random_hex_str(20)
             self.storage.extra_data[self.key_name] = key
         return self.storage.extra_data[self.key_name]
 

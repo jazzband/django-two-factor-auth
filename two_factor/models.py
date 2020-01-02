@@ -3,6 +3,7 @@ from binascii import unhexlify
 
 from django.conf import settings
 from django.db import models
+from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
@@ -53,8 +54,9 @@ def key_validator(*args, **kwargs):
     return hex_validator()(*args, **kwargs)
 
 
-def random_hex_str():
-    return random_hex().decode('utf-8')
+def random_hex_str(length=20):
+    # Could be removed once we depend on django_otp > 0.7.5
+    return force_str(random_hex(length=length))
 
 
 class PhoneDevice(Device):

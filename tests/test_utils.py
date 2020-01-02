@@ -1,7 +1,6 @@
 from urllib.parse import parse_qsl, urlparse
 
 from django.test import TestCase
-from django_otp.util import random_hex
 
 from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
@@ -95,8 +94,3 @@ class UtilsTest(UserMixin, TestCase):
         self.assertIsInstance(h, str)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
-
-        # Added tests to verify that we can safely remove IF statement from random_hex_str function
-        hh = random_hex().decode('utf-8')
-        self.assertIsInstance(hh, str)
-        self.assertEqual(len(hh), 40)

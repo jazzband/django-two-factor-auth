@@ -6,9 +6,8 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse, reverse_lazy
 from django_otp.oath import totp
-from django_otp.util import random_hex
 
-from two_factor.models import PhoneDevice
+from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import backup_phones
 from two_factor.validators import validate_international_phonenumber
 from two_factor.views.core import PhoneDeleteView, PhoneSetupView
@@ -177,7 +176,7 @@ class PhoneDeviceTest(UserMixin, TestCase):
     def test_verify(self):
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex().decode())
+                device = PhoneDevice(key=random_hex_str())
                 self.assertFalse(device.verify_token(-1))
                 self.assertFalse(device.verify_token('foobar'))
                 self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
@@ -190,7 +189,7 @@ class PhoneDeviceTest(UserMixin, TestCase):
         """
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex().decode())
+                device = PhoneDevice(key=random_hex_str())
                 self.assertTrue(device.verify_token(str(totp(device.bin_key, digits=no_digits))))
 
     def test_unicode(self):
