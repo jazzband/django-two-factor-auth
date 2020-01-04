@@ -47,18 +47,6 @@ class DeviceValidationForm(forms.Form):
         return token
 
 
-class YubiKeyDeviceForm(DeviceValidationForm):
-    token = forms.CharField(label=_("YubiKey"), widget=forms.PasswordInput())
-
-    error_messages = {
-        'invalid_token': _("The YubiKey could not be verified."),
-    }
-
-    def clean_token(self):
-        self.device.public_id = self.cleaned_data['token'][:-32]
-        return super().clean_token()
-
-
 class TOTPDeviceForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=0, max_value=int('9' * totp_digits()))
 

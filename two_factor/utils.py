@@ -5,11 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django_otp import devices_for_user
 
 from two_factor.plugins.phonenumber.utils import get_available_phone_methods
-
-try:
-    import yubiotp
-except ImportError:
-    yubiotp = None
+from two_factor.plugins.yubikey.utils import get_available_yubikey_methods
 
 USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
 
@@ -63,13 +59,6 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
-
-
-def get_available_yubikey_methods():
-    methods = []
-    if yubiotp and 'otp_yubikey' in settings.INSTALLED_APPS:
-        methods.append(('yubikey', _('YubiKey')))
-    return methods
 
 
 def get_available_methods():

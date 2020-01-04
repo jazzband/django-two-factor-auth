@@ -39,11 +39,12 @@ from two_factor.plugins.phonenumber.models import PhoneDevice
 from two_factor.plugins.phonenumber.utils import (
     backup_phones, get_available_phone_methods,
 )
+from two_factor.plugins.yubikey.forms import YubiKeyDeviceForm
 from two_factor.utils import get_available_methods, totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    TOTPDeviceForm, YubiKeyDeviceForm,
+    TOTPDeviceForm,
 )
 from ..utils import default_device, get_otpauth_url
 from .utils import (
