@@ -4,14 +4,14 @@
 {% block content %}
   <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
 
-  <p>{% blocktrans %}Congratulations, you've successfully enabled two-factor
+  <p>{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
       authentication.{% endblocktrans %}</p>
 
   {% if not phone_methods %}
     <p><a href="{% url 'two_factor:profile' %}"
         class="btn btn-block btn-default">{% trans "Back to Profile" %}</a></p>
   {% else %}
-    <p>{% blocktrans %}However, it might happen that you don't have access to
+    <p>{% blocktrans trimmed %}However, it might happen that you don't have access to
       your primary token device. To enable account recovery, add a phone 
       number.{% endblocktrans %}</p>
 
