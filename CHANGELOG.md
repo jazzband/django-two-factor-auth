@@ -7,7 +7,9 @@
 - default_device utility function now caches the found device on the given user object
 - The phone capability moved to a plugins folder, so if you use that capability
   and want to keep it, you should add `two_factor.plugins.phonenumber` line in
-  your `INSTALLED_APPS` setting.
+  your `INSTALLED_APPS` setting. Additionally, as the `two_factor` templatetags
+  library was only containing phone-related filters, the library was renamed to
+  `phonenumber`.
 
 ### Removed
 - Python 3.5 and 3.6 support

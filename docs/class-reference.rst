@@ -47,8 +47,8 @@ Signals
        The ``HttpRequest`` in which the user was verified.
 
 Template Tags
--------------
-.. automodule:: two_factor.templatetags.two_factor
+--------------
+.. automodule:: two_factor.plugins.phonenumber.templatetags.phonenumber
    :members:
 
 Views
