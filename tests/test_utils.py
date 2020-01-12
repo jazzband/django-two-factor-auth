@@ -4,9 +4,12 @@ from urllib.parse import parse_qsl, urlparse
 from django.contrib.auth.hashers import make_password
 from django.test import TestCase, override_settings
 from django_otp.util import random_hex
+from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.plugins.phonenumber.models import PhoneDevice
-from two_factor.plugins.phonenumber.utils import backup_phones
+from two_factor.plugins.phonenumber.utils import (
+    backup_phones, format_phone_number, mask_phone_number,
+)
 from two_factor.utils import (
     USER_DEFAULT_DEVICE_ATTR_NAME, default_device, get_otpauth_url,
     totp_digits,
@@ -35,17 +38,6 @@ class UtilsTest(UserMixin, TestCase):
         PhoneDevice.objects.all().delete()
         self.assertEqual(default_device(user).pk, default.pk)
         self.assertEqual(getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME).pk, default.pk)
-
-    def test_backup_phones(self):
-        self.assertQuerysetEqual(list(backup_phones(None)),
-                                 list(PhoneDevice.objects.none()))
-        user = self.create_user()
-        user.phonedevice_set.create(name='default', number='+12024561111')
-        backup = user.phonedevice_set.create(name='backup', number='+12024561111')
-        phones = backup_phones(user)
-
-        self.assertEqual(len(phones), 1)
-        self.assertEqual(phones[0].pk, backup.pk)
 
     def test_get_otpauth_url(self):
         for num_digits in (6, 8):
@@ -147,3 +139,30 @@ class UtilsTest(UserMixin, TestCase):
         hmac_with_secret = salted_hmac_sha256("blah", "blah", "my-new-secret")
         hmac_without_secret = salted_hmac_sha256("blah", "blah")
         self.assertNotEqual(hmac_with_secret, hmac_without_secret)
+
+
+class PhoneUtilsTests(UserMixin, TestCase):
+    def test_backup_phones(self):
+        self.assertQuerysetEqual(list(backup_phones(None)),
+                                 list(PhoneDevice.objects.none()))
+        user = self.create_user()
+        user.phonedevice_set.create(name='default', number='+12024561111')
+        backup = user.phonedevice_set.create(name='backup', number='+12024561111')
+        phones = backup_phones(user)
+
+        self.assertEqual(len(phones), 1)
+        self.assertEqual(phones[0].pk, backup.pk)
+
+    def test_mask_phone_number(self):
+        self.assertEqual(mask_phone_number('+41 524 204 242'), '+41 *** *** *42')
+        self.assertEqual(
+            mask_phone_number(PhoneNumber.from_string('+41524204242')),
+            '+41 ** *** ** 42'
+        )
+
+    def test_format_phone_number(self):
+        self.assertEqual(format_phone_number('+41524204242'), '+41 52 420 42 42')
+        self.assertEqual(
+            format_phone_number(PhoneNumber.from_string('+41524204242')),
+            '+41 52 420 42 42'
+        )
