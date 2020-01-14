@@ -1,11 +1,9 @@
-from __future__ import absolute_import, division, unicode_literals
-
 import logging
 from binascii import unhexlify
 
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex

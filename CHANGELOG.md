@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+## 1.10.0 - 2019-12-13
+### Added
+- Support for Django 3.0.
+- Optionally install full or light phonenumbers library.
+
+### Removed
+- Python 2 support.
+
+### Changed
+- Updated translations.
+
 ## 1.9.1 - 2019-07-07
 ### Changed
 - 1.9.0 got pushed with incorrect changelog, no other changes.

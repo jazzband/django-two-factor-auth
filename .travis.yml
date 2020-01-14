@@ -9,16 +9,11 @@ python:
 env:
  - DJANGO=2.1 VARIANT=normal
  - DJANGO=2.2 VARIANT=normal
+ - DJANGO=3.0 VARIANT=normal
  - DJANGO=master VARIANT=normal
 
 matrix:
   include:
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=normal
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=yubikey
-    - python: 2.7
-      env: DJANGO=1.11 VARIANT=custom_user
     - python: 3.4
       env: DJANGO=1.11 VARIANT=normal
     - python: 3.4
@@ -70,10 +65,15 @@ matrix:
     - python: 3.7
       env: DJANGO=2.2 VARIANT=custom_user
 
-    - python: 3.5
-      env: DJANGO=master VARIANT=yubikey
-    - python: 3.5
-      env: DJANGO=master VARIANT=custom_user
+    - python: 3.6
+      env: DJANGO=3.0 VARIANT=yubikey
+    - python: 3.6
+      env: DJANGO=3.0 VARIANT=custom_user
+    - python: 3.7
+      env: DJANGO=3.0 VARIANT=yubikey
+    - python: 3.7
+      env: DJANGO=3.0 VARIANT=custom_user
+
     - python: 3.6
       env: DJANGO=master VARIANT=yubikey
     - python: 3.6
@@ -83,10 +83,14 @@ matrix:
     - python: 3.7
       env: DJANGO=master VARIANT=custom_user
 
-    - python: 3.5
+    - python: 3.6
       env: TOXENV=isort
-    - python: 3.5
+    - python: 3.6
       env: TOXENV=flake8
+
+  exclude:
+    - python: 3.5
+      env: DJANGO=master VARIANT=normal
 
   allow_failures:
     - env: DJANGO=master VARIANT=normal

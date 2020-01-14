@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import os
+from io import StringIO
 
 from django.core.management import CommandError, call_command
 from django.test import TestCase
-from django.utils import six
 from django_otp import devices_for_user
 
 from .utils import UserMixin
@@ -15,8 +13,8 @@ class DisableCommandTest(UserMixin, TestCase):
         return self.assertRaisesMessage(err_type, err_message)
 
     def test_raises(self):
-        stdout = six.StringIO()
-        stderr = six.StringIO()
+        stdout = StringIO()
+        stderr = StringIO()
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
             call_command(
                 'two_factor_disable', 'some_username',
@@ -48,12 +46,12 @@ class StatusCommandTest(UserMixin, TestCase):
         return self.assertRaisesMessage(err_type, err_message)
 
     def setUp(self):
-        super(StatusCommandTest, self).setUp()
+        super().setUp()
         os.environ['DJANGO_COLORS'] = 'nocolor'
 
     def test_raises(self):
-        stdout = six.StringIO()
-        stderr = six.StringIO()
+        stdout = StringIO()
+        stderr = StringIO()
         with self._assert_raises(CommandError, 'User "some_username" does not exist'):
             call_command(
                 'two_factor_status', 'some_username',
@@ -66,11 +64,11 @@ class StatusCommandTest(UserMixin, TestCase):
 
     def test_status_single(self):
         user = self.create_user()
-        stdout = six.StringIO()
+        stdout = StringIO()
         call_command('two_factor_status', 'bouke@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'bouke@example.com: disabled\n')
 
-        stdout = six.StringIO()
+        stdout = StringIO()
         self.enable_otp(user)
         call_command('two_factor_status', 'bouke@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'bouke@example.com: enabled\n')
@@ -78,7 +76,7 @@ class StatusCommandTest(UserMixin, TestCase):
     def test_status_mutiple(self):
         users = [self.create_user(n) for n in ['user0@example.com', 'user1@example.com']]
         self.enable_otp(users[0])
-        stdout = six.StringIO()
+        stdout = StringIO()
         call_command('two_factor_status', 'user0@example.com', 'user1@example.com', stdout=stdout)
         self.assertEqual(stdout.getvalue(), 'user0@example.com: enabled\n'
                                             'user1@example.com: disabled\n')

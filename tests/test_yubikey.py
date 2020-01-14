@@ -1,23 +1,14 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import sys
 import unittest
+from unittest.mock import patch
 
 from django import forms
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import six
 
 from .utils import UserMixin
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -38,16 +29,12 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'setup_view-current_step': 'welcome'})
         self.assertContains(response, 'YubiKey')
 
-        # self.assertRaises is broken on Python 2.7.10. See also
-        # https://bugs.python.org/issue24134 and
-        # https://code.djangoproject.com/ticket/24903.
-        if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
-            # Without ValidationService it won't work
-            with six.assertRaisesRegex(self, KeyError, "No ValidationService "
-                                                       "found with name 'default'"):
-                self.client.post(reverse('two_factor:setup'),
-                                 data={'setup_view-current_step': 'method',
-                                       'method-method': 'yubikey'})
+        # Without ValidationService it won't work
+        with self.assertRaisesMessage(KeyError, "No ValidationService "
+                                                "found with name 'default'"):
+            self.client.post(reverse('two_factor:setup'),
+                             data={'setup_view-current_step': 'method',
+                                   'method-method': 'yubikey'})
 
         # With a ValidationService, should be able to input a YubiKey
         ValidationService.objects.create(name='default', param_sl='', param_timeout='')

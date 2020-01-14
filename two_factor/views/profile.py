@@ -51,7 +51,7 @@ class DisableView(FormView):
     def get(self, request, *args, **kwargs):
         if not user_has_device(self.request.user):
             return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))
-        return super(DisableView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):

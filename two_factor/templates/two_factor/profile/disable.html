@@ -3,7 +3,7 @@
 
 {% block content %}
   <h1>{% block title %}{% trans "Disable Two-factor Authentication" %}{% endblock %}</h1>
-  <p>{% blocktrans %}You are about to disable two-factor authentication. This
+  <p>{% blocktrans trimmed %}You are about to disable two-factor authentication. This
     weakens your account security, are you sure?{% endblocktrans %}</p>
   <form method="post">
     {% csrf_token %}

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import resolve_url
@@ -11,12 +9,12 @@ from two_factor.utils import default_device
 class UserMixin(object):
     @classmethod
     def setUpClass(cls):
-        super(UserMixin, cls).setUpClass()
+        super().setUpClass()
         cls.login_url = resolve_url(settings.LOGIN_URL)
         cls.User = get_user_model()
 
     def setUp(self):
-        super(UserMixin, self).setUp()
+        super().setUp()
         self._passwords = {}
 
     def create_user(self, username='bouke@example.com', password='secret', **kwargs):

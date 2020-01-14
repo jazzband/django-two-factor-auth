@@ -2,7 +2,7 @@ import logging
 
 from django.core.exceptions import SuspiciousOperation
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
@@ -18,12 +18,12 @@ class ExtraSessionStorage(SessionStorage):
     validated_step_data_key = 'validated_step_data'
 
     def init_data(self):
-        super(ExtraSessionStorage, self).init_data()
+        super().init_data()
         self.data[self.validated_step_data_key] = {}
 
     def reset(self):
         if self.prefix in self.request.session:
-            super(ExtraSessionStorage, self).reset()
+            super().reset()
         else:
             self.init_data()
 
@@ -125,7 +125,7 @@ class IdempotentSessionWizardView(SessionWizardView):
                            self.steps.current)
             return self.render_goto_step(self.steps.all[-1])
 
-        return super(IdempotentSessionWizardView, self).post(*args, **kwargs)
+        return super().post(*args, **kwargs)
 
     def process_step(self, form):
         """
@@ -151,7 +151,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         for next_step in keys[key:]:
             self.storage.validated_step_data.pop(next_step, None)
 
-        return super(IdempotentSessionWizardView, self).process_step(form)
+        return super().process_step(form)
 
     def render_done(self, form, **kwargs):
         """

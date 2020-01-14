@@ -84,7 +84,7 @@ class LoginView(IdempotentSessionWizardView):
     redirect_field_name = REDIRECT_FIELD_NAME
 
     def __init__(self, **kwargs):
-        super(LoginView, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.user_cache = None
         self.device_cache = None
 
@@ -97,7 +97,7 @@ class LoginView(IdempotentSessionWizardView):
         if 'challenge_device' in self.request.POST:
             return self.render_goto_step('token')
 
-        return super(LoginView, self).post(*args, **kwargs)
+        return super().post(*args, **kwargs)
 
     def done(self, form_list, **kwargs):
         """
@@ -161,7 +161,7 @@ class LoginView(IdempotentSessionWizardView):
         """
         if self.steps.current == 'token':
             self.get_device().generate_challenge()
-        return super(LoginView, self).render(form, **kwargs)
+        return super().render(form, **kwargs)
 
     def get_user(self):
         """
@@ -178,7 +178,7 @@ class LoginView(IdempotentSessionWizardView):
         """
         Adds user's default and backup OTP devices to the context.
         """
-        context = super(LoginView, self).get_context_data(form, **kwargs)
+        context = super().get_context_data(form, **kwargs)
         if self.steps.current == 'token':
             context['device'] = self.get_device()
             context['other_devices'] = [
@@ -250,13 +250,13 @@ class SetupView(IdempotentSessionWizardView):
         """
         if default_device(self.request.user):
             return redirect(self.success_url)
-        return super(SetupView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_form_list(self):
         """
         Check if there is only one method, then skip the MethodForm from form_list
         """
-        form_list = super(SetupView, self).get_form_list()
+        form_list = super().get_form_list()
         available_methods = get_available_methods()
         if len(available_methods) == 1:
             form_list.pop('method', None)
@@ -276,7 +276,7 @@ class SetupView(IdempotentSessionWizardView):
             except Exception:
                 logger.exception("Could not generate challenge")
                 kwargs["challenge_succeeded"] = False
-        return super(SetupView, self).render_next_step(form, **kwargs)
+        return super().render_next_step(form, **kwargs)
 
     def done(self, form_list, **kwargs):
         """
@@ -359,7 +359,7 @@ class SetupView(IdempotentSessionWizardView):
         return key
 
     def get_context_data(self, form, **kwargs):
-        context = super(SetupView, self).get_context_data(form, **kwargs)
+        context = super().get_context_data(form, **kwargs)
         if self.steps.current == 'generator':
             key = self.get_key('generator')
             rawkey = unhexlify(key.encode('ascii'))
@@ -377,7 +377,7 @@ class SetupView(IdempotentSessionWizardView):
         if hasattr(form, 'metadata'):
             self.storage.extra_data.setdefault('forms', {})
             self.storage.extra_data['forms'][self.steps.current] = form.metadata
-        return super(SetupView, self).process_step(form)
+        return super().process_step(form)
 
     def get_form_metadata(self, step):
         self.storage.extra_data.setdefault('forms', {})
@@ -404,7 +404,7 @@ class BackupTokensView(FormView):
         return self.request.user.staticdevice_set.get_or_create(name='backup')[0]
 
     def get_context_data(self, **kwargs):
-        context = super(BackupTokensView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['device'] = self.get_device()
         return context
 
@@ -445,7 +445,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         """
         if not get_available_phone_methods():
             return redirect(self.success_url)
-        return super(PhoneSetupView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def done(self, form_list, **kwargs):
         """
@@ -461,7 +461,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         next_step = self.steps.next
         if next_step == 'validation':
             self.get_device().generate_challenge()
-        return super(PhoneSetupView, self).render_next_step(form, **kwargs)
+        return super().render_next_step(form, **kwargs)
 
     def get_form_kwargs(self, step=None):
         """
@@ -490,7 +490,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         kwargs.setdefault('cancel_url', resolve_url(self.success_url))
-        return super(PhoneSetupView, self).get_context_data(form, **kwargs)
+        return super().get_context_data(form, **kwargs)
 
 
 @class_view_decorator(never_cache)

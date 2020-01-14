@@ -15,7 +15,7 @@
 
     {% if available_phone_methods %}
       <h2>{% trans "Backup Phone Numbers" %}</h2>
-      <p>{% blocktrans %}If your primary method is not available, we are able to
+      <p>{% blocktrans trimmed %}If your primary method is not available, we are able to
         send backup tokens to the phone numbers listed below.{% endblocktrans %}</p>
       <ul>
         {% for phone in backup_phones %}
@@ -36,9 +36,9 @@
 
     <h2>{% trans "Backup Tokens" %}</h2>
     <p>
-      {% blocktrans %}If you don't have any device with you, you can access
+      {% blocktrans trimmed %}If you don't have any device with you, you can access
         your account using backup tokens.{% endblocktrans %}
-      {% blocktrans count counter=backup_tokens %}
+      {% blocktrans trimmed count counter=backup_tokens %}
         You have only one backup token remaining.
       {% plural %}
         You have {{ counter }} backup tokens remaining.
@@ -48,12 +48,12 @@
           class="btn btn-info">{% trans "Show Codes" %}</a></p>
 
     <h3>{% trans "Disable Two-Factor Authentication" %}</h3>
-    <p>{% blocktrans %}However we strongly discourage you to do so, you can
+    <p>{% blocktrans trimmed %}However we strongly discourage you to do so, you can
       also disable two-factor authentication for your account.{% endblocktrans %}</p>
     <p><a class="btn btn-default" href="{% url 'two_factor:disable' %}">
       {% trans "Disable Two-Factor Authentication" %}</a></p>
   {% else %}
-    <p>{% blocktrans %}Two-factor authentication is not enabled for your
+    <p>{% blocktrans trimmed %}Two-factor authentication is not enabled for your
       account. Enable two-factor authentication for enhanced account
       security.{% endblocktrans %}</p>
     <p><a href="{% url 'two_factor:setup' %}" class="btn btn-primary">

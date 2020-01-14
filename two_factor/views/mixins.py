@@ -79,4 +79,4 @@ class OTPRequiredMixin(object):
                     template='two_factor/core/otp_required.html',
                     status=403,
                 )
-        return super(OTPRequiredMixin, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)

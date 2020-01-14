@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.test import TestCase
@@ -35,7 +33,7 @@ class AdminPatchTest(TestCase):
 class AdminSiteTest(UserMixin, TestCase):
 
     def setUp(self):
-        super(AdminSiteTest, self).setUp()
+        super().setUp()
         self.user = self.create_superuser()
         self.login_user()
 
@@ -48,7 +46,7 @@ class AdminSiteTest(UserMixin, TestCase):
 class OTPAdminSiteTest(UserMixin, TestCase):
 
     def setUp(self):
-        super(OTPAdminSiteTest, self).setUp()
+        super().setUp()
         self.user = self.create_superuser()
         self.login_user()
 
