@@ -7,7 +7,8 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
-from django_otp.util import random_hex
+
+from two_factor.models import random_hex_str
 
 from .utils import UserMixin
 
@@ -71,7 +72,7 @@ class LoginTest(UserMixin, TestCase):
     def test_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex().decode())
+                                            key=random_hex_str())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -101,7 +102,7 @@ class LoginTest(UserMixin, TestCase):
     def test_throttle_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex().decode())
+                                            key=random_hex_str())
 
         self._post({'auth-username': 'bouke@example.com',
                     'auth-password': 'secret',
@@ -126,11 +127,11 @@ class LoginTest(UserMixin, TestCase):
         user = self.create_user()
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                user.totpdevice_set.create(name='default', key=random_hex().decode(),
+                user.totpdevice_set.create(name='default', key=random_hex_str(),
                                            digits=no_digits)
                 device = user.phonedevice_set.create(name='backup', number='+31101234567',
                                                      method='sms',
-                                                     key=random_hex().decode())
+                                                     key=random_hex_str())
 
                 # Backup phones should be listed on the login form
                 response = self._post({'auth-username': 'bouke@example.com',
@@ -177,7 +178,7 @@ class LoginTest(UserMixin, TestCase):
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     def test_with_backup_token(self, mock_signal):
         user = self.create_user()
-        user.totpdevice_set.create(name='default', key=random_hex().decode())
+        user.totpdevice_set.create(name='default', key=random_hex_str())
         device = user.staticdevice_set.create(name='backup')
         device.token_set.create(token='abcdef123')
 
