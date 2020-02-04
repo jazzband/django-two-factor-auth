@@ -1,7 +1,9 @@
 from django import forms
 from django.test import TestCase
 
-from two_factor.validators import validate_international_phonenumber
+from two_factor.plugins.phonenumber.validators import (
+    validate_international_phonenumber,
+)
 
 
 class ValidatorsTest(TestCase):

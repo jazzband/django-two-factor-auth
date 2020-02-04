@@ -8,10 +8,14 @@ from django.urls import reverse, reverse_lazy
 from django_otp.oath import totp
 from django_otp.util import random_hex
 
-from two_factor.models import PhoneDevice
-from two_factor.utils import backup_phones
-from two_factor.validators import validate_international_phonenumber
-from two_factor.views.core import PhoneDeleteView, PhoneSetupView
+from two_factor.plugins.phonenumber.models import PhoneDevice
+from two_factor.plugins.phonenumber.utils import backup_phones
+from two_factor.plugins.phonenumber.validators import (
+    validate_international_phonenumber,
+)
+from two_factor.plugins.phonenumber.views import (
+    PhoneDeleteView, PhoneSetupView,
+)
 
 from .utils import UserMixin
 

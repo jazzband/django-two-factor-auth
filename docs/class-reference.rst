@@ -16,7 +16,7 @@ Decorators
 
 Models
 ------
-.. autoclass:: two_factor.models.PhoneDevice
+.. autoclass:: two_factor.plugins.phonenumber.models.PhoneDevice
 .. autoclass:: django_otp.plugins.otp_static.models.StaticDevice
 .. autoclass:: django_otp.plugins.otp_static.models.StaticToken
 .. autoclass:: django_otp.plugins.otp_totp.models.TOTPDevice
@@ -57,10 +57,10 @@ Views
 .. autoclass:: two_factor.views.SetupView
 .. autoclass:: two_factor.views.SetupCompleteView
 .. autoclass:: two_factor.views.BackupTokensView
-.. autoclass:: two_factor.views.PhoneSetupView
-.. autoclass:: two_factor.views.PhoneDeleteView
 .. autoclass:: two_factor.views.ProfileView
 .. autoclass:: two_factor.views.DisableView
+.. autoclass:: two_factor.plugins.phonenumber.views.PhoneSetupView
+.. autoclass:: two_factor.plugins.phonenumber.views.PhoneDeleteView
 
 View Mixins
 -----------

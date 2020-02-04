@@ -1,8 +1,11 @@
 from django.urls import path
 
+from two_factor.plugins.phonenumber.views import (
+    PhoneDeleteView, PhoneSetupView,
+)
 from two_factor.views import (
-    BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
-    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
+    BackupTokensView, DisableView, LoginView, ProfileView, QRGeneratorView,
+    SetupCompleteView, SetupView,
 )
 
 core = [

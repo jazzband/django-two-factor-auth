@@ -3,17 +3,12 @@ from time import time
 
 from django import forms
 from django.conf import settings
-from django.forms import Form, ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
-)
-from .utils import totp_digits
-from .validators import validate_international_phonenumber
+from .utils import get_available_methods, totp_digits
 
 try:
     from otp_yubikey.models import RemoteYubikeyDevice, YubikeyDevice
@@ -29,30 +24,6 @@ class MethodForm(forms.Form):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.fields['method'].choices = get_available_methods()
-
-
-class PhoneNumberMethodForm(ModelForm):
-    number = forms.CharField(label=_("Phone Number"),
-                             validators=[validate_international_phonenumber])
-    method = forms.ChoiceField(widget=forms.RadioSelect, label=_('Method'))
-
-    class Meta:
-        model = PhoneDevice
-        fields = 'number', 'method',
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.fields['method'].choices = get_available_phone_methods()
-
-
-class PhoneNumberForm(ModelForm):
-    # Cannot use PhoneNumberField, as it produces a PhoneNumber object, which cannot be serialized.
-    number = forms.CharField(label=_("Phone Number"),
-                             validators=[validate_international_phonenumber])
-
-    class Meta:
-        model = PhoneDevice
-        fields = 'number',
 
 
 class DeviceValidationForm(forms.Form):
@@ -146,7 +117,7 @@ class DisableForm(forms.Form):
     understand = forms.BooleanField(label=_("Yes, I am sure"))
 
 
-class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
+class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1,
                                    max_value=int('9' * totp_digits()))
 

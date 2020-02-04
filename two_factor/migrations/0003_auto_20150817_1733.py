@@ -3,8 +3,7 @@ import logging
 import phonenumbers
 from django.contrib.auth import get_user_model
 from django.db import migrations, models
-
-import two_factor.models
+from phonenumber_field.modelfields import PhoneNumberField
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +36,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='phonedevice',
             name='number',
-            field=two_factor.models.PhoneNumberField(max_length=16, verbose_name='number'),
+            field=PhoneNumberField(max_length=16, verbose_name='number'),
         ),
     ]

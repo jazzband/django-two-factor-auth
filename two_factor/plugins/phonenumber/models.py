@@ -1,4 +1,3 @@
-import logging
 from binascii import unhexlify
 
 from django.conf import settings
@@ -9,43 +8,12 @@ from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
 
-from .gateways import make_call, send_sms
-
-try:
-    import yubiotp
-except ImportError:
-    yubiotp = None
-
-
-logger = logging.getLogger(__name__)
+from two_factor.gateways import make_call, send_sms
 
 PHONE_METHODS = (
     ('call', _('Phone Call')),
     ('sms', _('Text Message')),
 )
-
-
-def get_available_phone_methods():
-    methods = []
-    if getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None):
-        methods.append(('call', _('Phone call')))
-    if getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None):
-        methods.append(('sms', _('Text message')))
-    return methods
-
-
-def get_available_yubikey_methods():
-    methods = []
-    if yubiotp and 'otp_yubikey' in settings.INSTALLED_APPS:
-        methods.append(('yubikey', _('YubiKey')))
-    return methods
-
-
-def get_available_methods():
-    methods = [('generator', _('Token generator'))]
-    methods.extend(get_available_phone_methods())
-    methods.extend(get_available_yubikey_methods())
-    return methods
 
 
 def key_validator(*args, **kwargs):
