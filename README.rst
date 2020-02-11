@@ -35,7 +35,7 @@ user. Although the package is optional, it improves account security control
 over ``django.contrib.sessions``.
 
 Compatible with modern Django versions. At the moment of writing that's
-including 1.11, 2.1, 2.2, and 3.0 on Python 3.4, 3.5, 3.6 and 3.7.
+including 1.11, 2.2, and 3.0 on Python 3.5, 3.6, 3.7 and 3.8.
 Documentation is available at `readthedocs.org`_.
 
 
