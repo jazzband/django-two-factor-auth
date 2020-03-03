@@ -19,9 +19,9 @@ setup(
         'django-formtools',
     ],
     extras_require={
-        'Call': ['twilio>=6.0'],
-        'SMS': ['twilio>=6.0'],
-        'YubiKey': ['django-otp-yubikey'],
+        'call': ['twilio>=6.0'],
+        'sms': ['twilio>=6.0'],
+        'yubikey': ['django-otp-yubikey'],
         'phonenumbers': ['phonenumbers>=7.0.9,<8.99',],
         'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99',],
     },
