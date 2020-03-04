@@ -90,7 +90,7 @@ Add the following app to the ``INSTALLED_APPS``:
         'otp_yubikey',
     )
 
-This plugin also requires adding a validation service, through wich YubiKeys
+This plugin also requires adding a validation service, through which YubiKeys
 will be verified. Normally, you'd use the YubiCloud for this. In the Django
 admin, navigate to ``YubiKey validation services`` and add an item. Django
 Two-Factor Authentication will identify the validation service with the
