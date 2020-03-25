@@ -25,6 +25,13 @@ urlpatterns = [
         ),
         name='custom-allowed-success-url-login',
     ),
+    url(
+        regex=r'^account/custom-redirect-authenticated-user-login/$',
+        view=LoginView.as_view(
+            redirect_authenticated_user=True
+        ),
+        name='custom-redirect-authenticated-user-login',
+    ),
 
     url(
         regex=r'^secure/$',
