@@ -14,9 +14,16 @@ urlpatterns = [
         name='logout',
     ),
     url(
-        regex=r'^account/custom-login/$',
+        regex=r'^account/custom-field-name-login/$',
         view=LoginView.as_view(redirect_field_name='next_page'),
-        name='custom-login',
+        name='custom-field-name-login',
+    ),
+    url(
+        regex=r'^account/custom-allowed-success-url-login/$',
+        view=LoginView.as_view(
+            success_url_allowed_hosts={'test.allowed-success-url.com'}
+        ),
+        name='custom-allowed-success-url-login',
     ),
 
     url(

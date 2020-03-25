@@ -62,11 +62,21 @@ class LoginTest(UserMixin, TestCase):
         redirect_url = reverse('two_factor:setup')
         self.create_user()
         response = self.client.post(
-            '%s?%s' % (reverse('custom-login'), 'next_page=' + redirect_url),
+            '%s?%s' % (reverse('custom-field-name-login'), 'next_page=' + redirect_url),
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
+
+    def test_valid_login_with_allowed_external_redirect(self):
+        redirect_url = 'https://test.allowed-success-url.com'
+        self.create_user()
+        response = self.client.post(
+            '%s?%s' % (reverse('custom-allowed-success-url-login'), 'next=' + redirect_url),
+            {'auth-username': 'bouke@example.com',
+             'auth-password': 'secret',
+             'login_view-current_step': 'auth'})
+        self.assertRedirects(response, redirect_url, fetch_redirect_response=False)
 
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     def test_with_generator(self, mock_signal):
