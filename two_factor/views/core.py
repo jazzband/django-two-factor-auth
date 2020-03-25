@@ -13,12 +13,14 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import SuccessURLAllowedHostsMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.forms import Form
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url, url_has_allowed_host_and_scheme
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
@@ -69,6 +71,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         'token': False,
         'backup': False,
     }
+    redirect_authenticated_user = False
 
     def has_token_step(self):
         return default_device(self.get_user())
@@ -210,6 +213,20 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                 DeprecationWarning)
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        if self.redirect_authenticated_user and self.request.user.is_authenticated:
+            redirect_to = self.get_success_url()
+            if redirect_to == self.request.path:
+                raise ValueError(
+                    "Redirection loop for authenticated user detected. Check that "
+                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
+                )
+            return HttpResponseRedirect(redirect_to)
+        return super().dispatch(request, *args, **kwargs)
 
 
 @class_view_decorator(never_cache)
