@@ -90,6 +90,15 @@ class LoginTest(UserMixin, TestCase):
         )
         self.assertRedirects(response, reverse('two_factor:profile'))
 
+    def test_valid_login_with_redirect_authenticated_user_loop(self):
+        redirect_url = reverse('custom-redirect-authenticated-user-login')
+        user = self.create_user()
+        self.client.force_login(user)
+        with self.assertRaises(ValueError):
+            self.client.get(
+                '%s?%s' % (reverse('custom-redirect-authenticated-user-login'), 'next=' + redirect_url),
+            )
+
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     def test_with_generator(self, mock_signal):
         user = self.create_user()
