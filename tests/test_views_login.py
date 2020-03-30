@@ -78,6 +78,17 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url, fetch_redirect_response=False)
 
+    def test_valid_login_with_disallowed_external_redirect(self):
+        redirect_url = 'https://test.disallowed-success-url.com'
+        self.create_user()
+        response = self.client.post(
+            '%s?%s' % (reverse('custom-allowed-success-url-login'), 'next=' + redirect_url),
+            {'auth-username': 'bouke@example.com',
+             'auth-password': 'secret',
+             'login_view-current_step': 'auth'})
+        self.assertRedirects(response, reverse('two_factor:profile'), fetch_redirect_response=False)
+
+
     def test_valid_login_with_redirect_authenticated_user(self):
         user = self.create_user()
         response = self.client.get(
