@@ -116,13 +116,13 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                                        user=self.get_user(), device=device)
         return redirect(redirect_to)
 
-    # Copied from django.conrib.auth.views.LoginView (branch: stable/1.11.x)
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
         return url or resolve_url(settings.LOGIN_REDIRECT_URL)
 
-    # Copied from django.conrib.auth.views.LoginView (branch: stable/1.11.x)
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
     def get_redirect_url(self):
         """Return the user-originating redirect URL if it's safe."""
@@ -218,7 +218,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
 
-    # Copied from django.conrib.auth.views.LoginView  (branch: stable/1.11.x)
+    # Copied from django.conrib.auth.views.LoginView  (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49
     @method_decorator(sensitive_post_parameters())
     @method_decorator(csrf_protect)
