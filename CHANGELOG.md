@@ -1,5 +1,21 @@
 ## [Unreleased]
 
+## 1.11.0 - 2020-03-13
+### Added
+
+*Nothing has been added for this version*
+
+### Removed
+- MiddlewareMixin
+- Python 3.4 support
+- Django 2.1 support
+- `mock` dependency
+
+### Changed
+- `extra_requires` are now listed in lowercase. This is to workaround a bug in `pip`.
+- Use `trimmed` option on `blocktrans` to avoid garbage newlines in translations.
+- `random_hex` from `django_otp` 0.8.0 will always return a `str`, don't try to decode it.
+
 ## 1.10.0 - 2019-12-13
 ### Added
 - Support for Django 3.0.
