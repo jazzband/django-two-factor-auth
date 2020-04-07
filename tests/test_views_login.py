@@ -68,6 +68,26 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, redirect_url)
 
+    def test_valid_login_with_unsafe_redirect(self):
+        redirect_url = "//example.com"
+        self.create_user()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth',
+                               'next': redirect_url})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+
+    @mock.patch('two_factor.views.core.LoginView.get_redirect_url')
+    def test_valid_login_with_overridden_redirect(self, mock_get_redirect_url):
+        redirect_url = "//example.com"
+        mock_get_redirect_url.return_value = redirect_url
+
+        self.create_user()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertRedirects(response, redirect_url, fetch_redirect_response=False)
+
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     def test_with_generator(self, mock_signal):
         user = self.create_user()

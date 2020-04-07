@@ -98,12 +98,10 @@ class LoginView(IdempotentSessionWizardView):
 
         return super().post(*args, **kwargs)
 
-    def done(self, form_list, **kwargs):
+    def get_redirect_url(self):
         """
-        Login the user and redirect to the desired page.
+        Determine the URL to redirect to after login is successful.
         """
-        login(self.request, self.get_user())
-
         redirect_to = self.request.POST.get(
             self.redirect_field_name,
             self.request.GET.get(self.redirect_field_name, '')
@@ -112,11 +110,20 @@ class LoginView(IdempotentSessionWizardView):
         if not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
+        return redirect_to
+
+    def done(self, form_list, **kwargs):
+        """
+        Login the user and redirect to the desired page.
+        """
+        login(self.request, self.get_user())
+
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
-        return redirect(redirect_to)
+
+        return redirect(self.get_redirect_url())
 
     def get_form_kwargs(self, step=None):
         """
