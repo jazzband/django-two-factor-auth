@@ -1,11 +1,13 @@
 from urllib.parse import parse_qsl, urlparse
 
-from django.test import TestCase
+from django.contrib.auth.hashers import make_password
+from django.test import TestCase, override_settings
 
 from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
+from two_factor.views.utils import get_remember_device_cookie, validate_remember_device_cookie
 
 from .utils import UserMixin
 
@@ -94,3 +96,22 @@ class UtilsTest(UserMixin, TestCase):
         self.assertIsInstance(h, str)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_create_and_validate_remember_cookie(self):
+        password = make_password("xx")
+        cookie_value = get_remember_device_cookie(
+            user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
+        )
+        user_pk, password_hash, otp_device_id = validate_remember_device_cookie(
+            cookie_value=cookie_value,
+            user_pk=123,
+            password_hash=password,
+            otp_device_id="SomeModel/33",
+        )
+        self.assertEqual(user_pk, 123)
+        self.assertEqual(password_hash, password)
+        self.assertEqual(otp_device_id, "SomeModel/33")
+

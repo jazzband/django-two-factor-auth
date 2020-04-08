@@ -44,6 +44,10 @@ msgstr ""
 msgid "Yes, I am sure"
 msgstr ""
 
+#: forms.py:176
+msgid "Don't ask again on this device"
+msgstr ""
+
 #: gateways/twilio/gateway.py:55
 #, python-format
 msgid "Your authentication token is %s"

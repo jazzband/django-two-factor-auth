@@ -125,3 +125,73 @@ Fake Gateway
 .. _`Twilio client`: https://pypi.python.org/pypi/twilio
 .. _python-qrcode: https://pypi.python.org/pypi/qrcode
 .. _`the upstream ticket`: https://code.google.com/p/google-authenticator/issues/detail?id=327
+
+Remember Browser
+----------------
+
+During a successful login with a token, the user may choose to remember this browser.
+If the same user logs in again on the same browser, a token will not be requested, as the browser
+serves as a second factor.
+
+The option to remember a browser is deactived by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
+
+The browser will be remembered as long as
+- the login that authorized the browser did not expire,
+- the user did not reset his password, and
+- the device initially used to authorize the browser is still valid.
+
+The browser is remembered by setting a signed 'remember cookie'.
+
+``TWO_FACTOR_REMEMBER_COOKIE_AGE``
+  Age in seconds to remember the browser. The remember cookie will expire after the given time interval
+  and the server will not accept this cookie to remember this browser, user and device any longer.
+
+  If this is set to a positive `int` the user is presented the option to remember the browser when entering the token.
+  If the age is `None`, the user must authenticate with a token option during each login, if a device is setup.
+
+  Default: `None`
+
+``TWO_FACTOR_REMEMBER_COOKIE_PREFIX``
+  Prefix of the remember cookie.
+  It prefixes a uuid4 to allow multiple remember cookies on the same browser for multiple users.
+
+  Default: `'remember-cookie_'`
+
+
+``TWO_FACTOR_REMEMBER_COOKIE_DOMAIN``
+  The domain to be used when setting the remember cookie.
+
+  Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
+
+  Default: `None`
+
+``TWO_FACTOR_REMEMBER_COOKIE_PATH``
+  The path of the remember cookie.
+
+  Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
+
+  Default: `'/'`
+
+``TWO_FACTOR_REMEMBER_COOKIE_SECURE``
+  Whether the remember cookie should be secure (https:// only).
+
+  Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
+
+  Default: `False`
+
+``TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY``
+  Whether to use the non-RFC standard httpOnly flag (IE, FF3+, others)
+
+  Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
+
+  Default: `True`
+
+``TWO_FACTOR_REMEMBER_COOKIE_SAMESITE``
+  Whether to set the flag restricting cookie leaks on cross-site requests.
+  This can be 'Lax', 'Strict', or None to disable the flag.
+
+  Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
+
+  Default: `'Lax'`
+
+

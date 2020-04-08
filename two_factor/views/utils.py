@@ -1,6 +1,9 @@
 import logging
 
+from django.conf import settings
+from django.core import signing
 from django.core.exceptions import SuspiciousOperation
+from django.core.signing import TimestampSigner, b64_encode, JSONSerializer
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
@@ -194,3 +197,33 @@ def class_view_decorator(function_decorator):
         View.dispatch = method_decorator(function_decorator)(View.dispatch)
         return View
     return simple_decorator
+
+def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
+    '''
+    Compile a signed cookie from user_pk, password_hash and otp_device_id,
+    but only return the timestamp and signature, omitting the data.
+    '''
+    sep = TimestampSigner().sep
+    validation_data = [user_pk, password_hash, otp_device_id]
+    signed_data = signing.dumps(validation_data, salt='two_factor.views.utils.remember_device_cookie')
+    data, timestamp, signature = signed_data.split(sep)
+
+    cookie_value = '%s%s%s' % (timestamp, sep, signature)
+
+    return cookie_value
+
+def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_device_id):
+    '''
+    Return true if the cookie_value was returned by get_remember_device_cookie using the same
+    user_pk, password_hash and otp_device_id. Mover the cookie must not be expired.
+    '''
+    sep = TimestampSigner().sep
+
+    obj = [user_pk, password_hash, otp_device_id]
+    data = JSONSerializer().dumps(obj)
+    validation_data_base64d = b64_encode(data).decode()
+
+    test_value = '%s%s%s' % (validation_data_base64d, sep, cookie_value)
+    return signing.loads(test_value,
+                         salt='two_factor.views.utils.remember_device_cookie',
+                         max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE)

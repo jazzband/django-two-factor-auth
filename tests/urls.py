@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
@@ -34,4 +35,5 @@ urlpatterns = [
     ),
     url(r'', include(tf_urls)),
     url(r'', include(tf_twilio_urls)),
+    url(r'^admin/', admin.site.urls),
 ]

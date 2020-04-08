@@ -2,6 +2,7 @@ import logging
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
+from uuid import uuid4
 
 import django_otp
 import qrcode
@@ -11,6 +12,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 from django.forms import Form
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, resolve_url
@@ -21,20 +23,21 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
+from django_otp import devices_for_user
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 
 from two_factor import signals
 from two_factor.models import get_available_methods, random_hex_str
 from two_factor.utils import totp_digits
-
+from .utils import IdempotentSessionWizardView, class_view_decorator, get_remember_device_cookie, \
+    validate_remember_device_cookie
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
     PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
 )
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
-from .utils import IdempotentSessionWizardView, class_view_decorator
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -44,6 +47,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 @class_view_decorator(sensitive_post_parameters())
 @class_view_decorator(never_cache)
@@ -70,11 +74,13 @@ class LoginView(IdempotentSessionWizardView):
     }
 
     def has_token_step(self):
-        return default_device(self.get_user())
+        return default_device(self.get_user()) and \
+               not self.get_remember_agent()
 
     def has_backup_step(self):
         return default_device(self.get_user()) and \
-            'token' not in self.storage.validated_step_data
+               'token' not in self.storage.validated_step_data and \
+               not self.get_remember_agent()
 
     condition_dict = {
         'token': has_token_step,
@@ -86,6 +92,7 @@ class LoginView(IdempotentSessionWizardView):
         super().__init__(**kwargs)
         self.user_cache = None
         self.device_cache = None
+        self.remember_agent_cache = None
 
     def post(self, *args, **kwargs):
         """
@@ -113,10 +120,32 @@ class LoginView(IdempotentSessionWizardView):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         device = getattr(self.get_user(), 'otp_device', None)
+        response = redirect(redirect_to)
+
         if device:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
-        return redirect(redirect_to)
+
+            # Set a remember cookie if activated
+            form_obj = self.get_form(step=self.steps.current, data=self.storage.get_step_data(self.steps.current))
+            if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None) and \
+                    'remember' in form_obj.fields and form_obj['remember'].value():
+                # choose a unique cookie key to remember devices for multiple users in the same browser
+                cookie_key = REMEMBER_COOKIE_PREFIX + str(uuid4())
+                cookie_value = get_remember_device_cookie(user_pk=self.get_user().pk,
+                                                          password_hash=self.get_user().password,
+                                                          otp_device_id=device.persistent_id)
+
+                response.set_cookie(cookie_key, cookie_value,
+                                    max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
+                                    domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
+                                    path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
+                                    secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
+                                    httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
+                                    samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
+                                    )
+
+        return response
 
     def get_form_kwargs(self, step=None):
         """
@@ -198,6 +227,43 @@ class LoginView(IdempotentSessionWizardView):
                 DeprecationWarning)
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
+
+    def get_remember_agent(self):
+        """
+        Returns if a user, browser and device is remembered using the remember cookie.
+        Uses a cached value if called before.
+        """
+        if self.remember_agent_cache is None:
+            self.remember_agent_cache = self._remember_agent()
+        return self.remember_agent_cache
+
+    def _remember_agent(self):
+        """
+        Returns if a user, browser and device is remembered using the remember cookie.
+        """
+        if not getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
+            return False
+
+        user = self.get_user()
+        if user:
+            devices = list(devices_for_user(user))
+            for key, value in self.request.COOKIES.items():
+
+                if key.startswith(REMEMBER_COOKIE_PREFIX):
+                    for device in devices:
+                        try:
+                            if validate_remember_device_cookie(
+                                    value,
+                                    user_pk=user.pk,
+                                    password_hash=user.password,
+                                    otp_device_id=device.persistent_id
+                            ):
+                                user.otp_device = device
+                                return True
+                        except BadSignature:
+                            pass
+
+        return False
 
 
 @class_view_decorator(never_cache)

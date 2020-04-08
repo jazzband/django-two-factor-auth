@@ -8,6 +8,7 @@ from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+from example import settings
 from .models import (
     PhoneDevice, get_available_methods, get_available_phone_methods,
 )
@@ -168,6 +169,14 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         if RemoteYubikeyDevice and YubikeyDevice and \
                 isinstance(initial_device, (RemoteYubikeyDevice, YubikeyDevice)):
             self.fields['otp_token'] = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput())
+
+        # Add a field to remeber this browser.
+        if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
+            self.fields['remember'] = forms.BooleanField(
+                required=False,
+                initial=True,
+                label=_("Don't ask again on this device")
+            )
 
     def clean(self):
         self.clean_otp(self.user)

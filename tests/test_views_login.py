@@ -1,3 +1,4 @@
+from time import sleep
 from unittest import mock
 
 from django.conf import settings
@@ -319,3 +320,141 @@ class BackupTokensTest(UserMixin, TestCase):
         second_set = set([token.token for token in
                          response.context_data['device'].token_set.all()])
         self.assertNotEqual(first_set, second_set)
+
+class RememberLoginTest(UserMixin, TestCase):
+    def _post(self, data=None):
+        return self.client.post(reverse('two_factor:login'), data=data)
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_with_remember(self):
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Login without token
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 200)
+
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_without_remember(self):
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertEqual(0, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=1,
+    )
+    def test_expired(self):
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Wait to expire
+        sleep(1)
+
+        # Login but exired remember cookie
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60*60,
+    )
+    def test_wrong_signature(self):
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        for cookie in self.client.cookies:
+            if cookie.startswith("remember-cookie_"):
+                self.client.cookies[cookie] = '1jMDfq:AdpuRn2Xop71KTBD_1cc9_SKGUM'  # an invalid key
+
+        # Login but exired remember cookie
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+
+
