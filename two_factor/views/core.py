@@ -136,15 +136,24 @@ class LoginView(IdempotentSessionWizardView):
                 cookie_value = get_remember_device_cookie(user_pk=self.get_user().pk,
                                                           password_hash=self.get_user().password,
                                                           otp_device_id=device.persistent_id)
-
-                response.set_cookie(cookie_key, cookie_value,
-                                    max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
-                                    domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
-                                    path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
-                                    secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
-                                    httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
-                                    samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
-                                    )
+                try:
+                    response.set_cookie(cookie_key, cookie_value,
+                                        max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
+                                        domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
+                                        path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
+                                        secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
+                                        httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
+                                        samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
+                                        )
+                except TypeError:
+                    # Legacy for Django 2.1
+                    response.set_cookie(cookie_key, cookie_value,
+                                        max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
+                                        domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
+                                        path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
+                                        secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
+                                        httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
+                                        )
 
         return response
 
