@@ -272,7 +272,6 @@ class LoginView(IdempotentSessionWizardView):
                                 device.throttle_reset()
                                 return True
                         except BadSignature:
-                            pass
                             device.throttle_increment()
         return False
 

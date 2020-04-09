@@ -199,33 +199,37 @@ def class_view_decorator(function_decorator):
     return simple_decorator
 
 def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
-    '''
+    """
     Compile a signed cookie from user_pk, password_hash and otp_device_id,
-    but only return the hashed otp_device_id, encoded timestamp and signature.
-    '''
+    but only return the hashed and signatures and omit the data.
+
+    The cookie is composed of 3 parts:
+    1. A weakly hashed value of otp_device_id.
+    2. A timestamp of signing.
+    3. A hmac signature that signs user_pk, password_hash, otp_device_id and the timestamp.
+    """
     sep = TimestampSigner().sep
 
-    cookie_key = make_password(
+    hasher = SHA1PasswordHasher()
+    cookie_key = hasher.encode(
         otp_device_id + 'two_factor.views.utils.remember_device_cookie.key',
-        hasher=SHA1PasswordHasher()
+        salt=hasher.salt()
     )
 
     validation_data = '%s$%s$%s' % (user_pk, password_hash, otp_device_id)
-
     signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').sign(validation_data)
     data, timestamp, signature = signed_data.split(sep)
     assert data == validation_data
 
     cookie_value = sep.join([cookie_key, timestamp, signature])
-
     return cookie_value
 
 def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_device_id):
-    '''
+    """
     Return true if the cookie_value was returned by get_remember_device_cookie using the same
-    user_pk, password_hash and otp_device_id. Mover the cookie must not be expired.
+    user_pk, password_hash and otp_device_id. Moreover the cookie must not be expired.
     Returning False if the otp_device_id does not match. Otherwise raises an exception.
-    '''
+    """
     sep = TimestampSigner().sep
 
     cookie_key, test_timestamp, test_signature = cookie_value.split(sep)
