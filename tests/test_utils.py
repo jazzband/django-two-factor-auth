@@ -105,13 +105,10 @@ class UtilsTest(UserMixin, TestCase):
         cookie_value = get_remember_device_cookie(
             user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
         )
-        user_pk, password_hash, otp_device_id = validate_remember_device_cookie(
+        assert validate_remember_device_cookie(
             cookie_value=cookie_value,
             user_pk=123,
             password_hash=password,
             otp_device_id="SomeModel/33",
         )
-        self.assertEqual(user_pk, 123)
-        self.assertEqual(password_hash, password)
-        self.assertEqual(otp_device_id, "SomeModel/33")
 

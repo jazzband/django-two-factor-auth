@@ -448,7 +448,7 @@ class RememberLoginTest(UserMixin, TestCase):
 
         for cookie in self.client.cookies:
             if cookie.startswith("remember-cookie_"):
-                self.client.cookies[cookie] = '1jMDfq:AdpuRn2Xop71KTBD_1cc9_SKGUM'  # an invalid key
+                self.client.cookies[cookie] = 'sha1$kuIPGFhDFlXg$b2549736454bc21a948f697e39217894d18d53ef:1jMHfB:EZAltvQzgBlxJN3EKaxcKX5uDjI'  # an invalid key
 
         # Login but exired remember cookie
         response = self._post({'auth-username': 'bouke@example.com',

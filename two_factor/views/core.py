@@ -12,8 +12,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
-from django.forms import Form
+from django.core.signing import BadSignature
+from django.forms import Form, forms
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
@@ -25,6 +25,7 @@ from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
+from django_otp.models import VerifyNotAllowed
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 
 from two_factor import signals
@@ -251,6 +252,15 @@ class LoginView(IdempotentSessionWizardView):
 
                 if key.startswith(REMEMBER_COOKIE_PREFIX):
                     for device in devices:
+                        verify_is_allowed, extra = device.verify_is_allowed()
+                        if not verify_is_allowed:
+                            # Try to match specific conditions we know about.
+                            if ('reason' in extra and extra['reason'] == VerifyNotAllowed.N_FAILED_ATTEMPTS):
+                                raise forms.ValidationError(self.otp_error_messages['n_failed_attempts'] % extra)
+                            if 'error_message' in extra:
+                                raise forms.ValidationError(extra['error_message'])
+                            # Fallback to generic message otherwise.
+                            raise forms.ValidationError(self.otp_error_messages['verification_not_allowed'])
                         try:
                             if validate_remember_device_cookie(
                                     value,
@@ -259,10 +269,11 @@ class LoginView(IdempotentSessionWizardView):
                                     otp_device_id=device.persistent_id
                             ):
                                 user.otp_device = device
+                                device.throttle_reset()
                                 return True
                         except BadSignature:
                             pass
-
+                            device.throttle_increment()
         return False
 
 
