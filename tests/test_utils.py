@@ -7,7 +7,9 @@ from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
-from two_factor.views.utils import get_remember_device_cookie, validate_remember_device_cookie
+from two_factor.views.utils import (
+    get_remember_device_cookie, validate_remember_device_cookie,
+)
 
 from .utils import UserMixin
 

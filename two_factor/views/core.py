@@ -32,14 +32,17 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from two_factor import signals
 from two_factor.models import get_available_methods, random_hex_str
 from two_factor.utils import totp_digits
-from .utils import IdempotentSessionWizardView, class_view_decorator, get_remember_device_cookie, \
-    validate_remember_device_cookie
+
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
     PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
 )
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
+from .utils import (
+    IdempotentSessionWizardView, class_view_decorator,
+    get_remember_device_cookie, validate_remember_device_cookie,
+)
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -50,6 +53,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
+
 
 @class_view_decorator(sensitive_post_parameters())
 @class_view_decorator(never_cache)
@@ -76,13 +80,17 @@ class LoginView(IdempotentSessionWizardView):
     }
 
     def has_token_step(self):
-        return default_device(self.get_user()) and \
-               not self.get_remember_agent()
+        return (
+            default_device(self.get_user()) and
+            not self.get_remember_agent()
+        )
 
     def has_backup_step(self):
-        return default_device(self.get_user()) and \
-               'token' not in self.storage.validated_step_data and \
-               not self.get_remember_agent()
+        return (
+            default_device(self.get_user()) and
+            'token' not in self.storage.validated_step_data and
+            not self.get_remember_agent()
+        )
 
     condition_dict = {
         'token': has_token_step,

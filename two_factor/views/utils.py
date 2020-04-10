@@ -198,6 +198,7 @@ def class_view_decorator(function_decorator):
         return View
     return simple_decorator
 
+
 def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
     """
     Compile a signed cookie from user_pk, password_hash and otp_device_id,
@@ -224,6 +225,7 @@ def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
     cookie_value = sep.join([cookie_key, timestamp, signature])
     return cookie_value
 
+
 def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_device_id):
     """
     Return true if the cookie_value was returned by get_remember_device_cookie using the same
@@ -242,9 +244,10 @@ def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_de
 
     validation_data = '%s$%s$%s' % (user_pk, password_hash, otp_device_id)
 
-    test_value = sep.join([validation_data, test_timestamp,  test_signature])
-    x = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').unsign(
+    test_value = sep.join([validation_data, test_timestamp, test_signature])
+    signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').unsign(
         test_value,
         max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE
     )
+    assert signed_data == validation_data
     return cookie_value
