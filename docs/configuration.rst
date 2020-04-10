@@ -136,7 +136,7 @@ serves as a second factor.
 The option to remember a browser is deactived by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
 
 The browser will be remembered as long as
-- the login that authorized the browser did not expire,
+- the cookie that authorizes the browser did not expire,
 - the user did not reset his password, and
 - the device initially used to authorize the browser is still valid.
 
