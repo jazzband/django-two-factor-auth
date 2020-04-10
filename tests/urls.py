@@ -35,5 +35,4 @@ urlpatterns = [
     ),
     url(r'', include(tf_urls)),
     url(r'', include(tf_twilio_urls)),
-    url(r'^admin/', admin.site.urls),
 ]
