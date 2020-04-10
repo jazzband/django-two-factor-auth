@@ -26,7 +26,6 @@ from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
-from django_otp.models import VerifyNotAllowed
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 
 from two_factor import signals
@@ -267,20 +266,11 @@ class LoginView(IdempotentSessionWizardView):
         if user:
             devices = list(devices_for_user(user))
             for key, value in self.request.COOKIES.items():
-
                 if key.startswith(REMEMBER_COOKIE_PREFIX):
                     for device in devices:
                         verify_is_allowed, extra = device.verify_is_allowed()
-                        if not verify_is_allowed:
-                            # Try to match specific conditions we know about.
-                            if ('reason' in extra and extra['reason'] == VerifyNotAllowed.N_FAILED_ATTEMPTS):
-                                raise forms.ValidationError(self.otp_error_messages['n_failed_attempts'] % extra)
-                            if 'error_message' in extra:
-                                raise forms.ValidationError(extra['error_message'])
-                            # Fallback to generic message otherwise.
-                            raise forms.ValidationError(self.otp_error_messages['verification_not_allowed'])
                         try:
-                            if validate_remember_device_cookie(
+                            if verify_is_allowed and validate_remember_device_cookie(
                                     value,
                                     user_pk=user.pk,
                                     password_hash=user.password,
