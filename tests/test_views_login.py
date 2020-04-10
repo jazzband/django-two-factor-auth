@@ -331,7 +331,7 @@ class RememberLoginTest(UserMixin, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
-    def set_invald_remember_cookie(self):
+    def set_invalid_remember_cookie(self):
         for cookie in self.client.cookies:
             if cookie.startswith("remember-cookie_"):
                 self._restore_remember_cookie_data = dict(name=cookie, value=self.client.cookies[cookie].value)
@@ -459,6 +459,8 @@ class RememberLoginTest(UserMixin, TestCase):
 
     @override_settings(
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+        OTP_HOTP_THROTTLE_FACTOR=60 * 60,
+        OTP_TOTP_THROTTLE_FACTOR=60 * 60,
     )
     def test_remeber_token_throttling(self):
         # Login
@@ -478,7 +480,7 @@ class RememberLoginTest(UserMixin, TestCase):
 
 
         # Login having an invalid remember cookie
-        self.set_invald_remember_cookie()
+        self.set_invalid_remember_cookie()
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
