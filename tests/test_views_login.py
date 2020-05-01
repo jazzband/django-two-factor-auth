@@ -151,16 +151,12 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We sent you a text message')
-                try:
-                    fake.return_value.send_sms.assert_called_with(
-                        device=device,
-                        token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
-                except AssertionError:
-                    # If the token changed between execution and testing, drift 1 token back and check this one
-                    # to avoid random test fails.
-                    fake.return_value.send_sms.assert_called_with(
-                        device=device,
-                        token=str(totp(device.bin_key, digits=no_digits, drift=-1)).zfill(no_digits))
+
+                test_call_kwargs = fake.return_value.send_sms.call_args[1]
+                self.assertEqual(test_call_kwargs['device'], device)
+                self.assertIn(test_call_kwargs['token'],
+                              [str(totp(device.bin_key, digits=no_digits, drift=i)).zfill(no_digits)
+                               for i in [-1, 0]])
 
                 # Ask for phone challenge
                 device.method = 'call'
@@ -169,16 +165,12 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We are calling your phone right now')
-                try:
-                    fake.return_value.make_call.assert_called_with(
-                        device=device,
-                        token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
-                except AssertionError:
-                    # If the token changed between execution and testing, drift 1 token back and check this one
-                    # to avoid random test fails.
-                    fake.return_value.send_sms.assert_called_with(
-                        device=device,
-                        token=str(totp(device.bin_key, digits=no_digits, drift=-1)).zfill(no_digits))
+
+                test_call_kwargs = fake.return_value.make_call.call_args[1]
+                self.assertEqual(test_call_kwargs['device'], device)
+                self.assertIn(test_call_kwargs['token'],
+                              [str(totp(device.bin_key, digits=no_digits, drift=i)).zfill(no_digits)
+                               for i in [-1, 0]])
 
             # Valid token should be accepted.
             response = self._post({'token-otp_token': totp(device.bin_key),
