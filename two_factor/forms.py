@@ -2,15 +2,15 @@ from binascii import unhexlify
 from time import time
 
 from django import forms
+from django.conf import settings
 from django.forms import Form, ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
-from django.conf import settings
 
 from .models import (
-    get_available_methods, get_available_phone_methods, PhoneDevice,
+    PhoneDevice, get_available_methods, get_available_phone_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber

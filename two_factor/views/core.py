@@ -19,8 +19,8 @@ from django.forms import Form
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
-from django.utils.functional import cached_property
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
