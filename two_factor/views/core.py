@@ -18,6 +18,7 @@ from django.forms import Form
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
@@ -101,7 +102,6 @@ class LoginView(IdempotentSessionWizardView):
         super().__init__(**kwargs)
         self.user_cache = None
         self.device_cache = None
-        self.remember_agent_cache = None
 
     def post(self, *args, **kwargs):
         """
@@ -246,18 +246,10 @@ class LoginView(IdempotentSessionWizardView):
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
 
+    @cached_property
     def get_remember_agent(self):
         """
-        Returns if a user, browser and device is remembered using the remember cookie.
-        Uses a cached value if called before.
-        """
-        if self.remember_agent_cache is None:
-            self.remember_agent_cache = self._remember_agent()
-        return self.remember_agent_cache
-
-    def _remember_agent(self):
-        """
-        Returns if a user, browser and device is remembered using the remember cookie.
+        Returns True if a user, browser and device is remembered using the remember cookie.
         """
         if not getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
             return False
