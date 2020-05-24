@@ -82,14 +82,14 @@ class LoginView(IdempotentSessionWizardView):
     def has_token_step(self):
         return (
             default_device(self.get_user()) and
-            not self.get_remember_agent()
+            not self.remember_agent
         )
 
     def has_backup_step(self):
         return (
             default_device(self.get_user()) and
             'token' not in self.storage.validated_step_data and
-            not self.get_remember_agent()
+            not self.remember_agent
         )
 
     condition_dict = {
@@ -247,7 +247,7 @@ class LoginView(IdempotentSessionWizardView):
         return context
 
     @cached_property
-    def get_remember_agent(self):
+    def remember_agent(self):
         """
         Returns True if a user, browser and device is remembered using the remember cookie.
         """
