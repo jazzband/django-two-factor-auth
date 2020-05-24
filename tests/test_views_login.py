@@ -421,6 +421,35 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60*3,
+    )
+    def test_with_remember_label_3_min(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 3 minutes')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60 * 4,
+    )
+    def test_with_remember_label_4_hours(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 4 hours')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60 * 24 * 5,
+    )
+    def test_with_remember_label_5_days(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 5 days')
 
     @override_settings(
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,

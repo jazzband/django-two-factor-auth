@@ -44,8 +44,16 @@ msgstr ""
 msgid "Yes, I am sure"
 msgstr ""
 
-#: forms.py:176
-msgid "Don't ask again on this device"
+#: forms.py:177
+msgid "Don't ask again on this device for %(minutes)i minutes"
+msgstr ""
+
+#: forms.py:180
+msgid "Don't ask again on this device for %(hours)i hours"
+msgstr ""
+
+#: forms.py:183
+msgid "Don't ask again on this device for %(days)i days"
 msgstr ""
 
 #: gateways/twilio/gateway.py:55
