@@ -10,7 +10,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from django.conf import settings
 
 from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
+    get_available_methods, get_available_phone_methods, PhoneDevice,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
