@@ -106,6 +106,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         super().__init__(**kwargs)
         self.user_cache = None
         self.device_cache = None
+        self.cookies_to_delete = []
 
     def post(self, *args, **kwargs):
         """
@@ -116,7 +117,8 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if 'challenge_device' in self.request.POST:
             return self.render_goto_step('token')
 
-        return super().post(*args, **kwargs)
+        response =  super().post(*args, **kwargs)
+        return self.delete_cookies_from_response(response)
 
     def done(self, form_list, **kwargs):
         """
@@ -277,7 +279,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if user:
             devices = list(devices_for_user(user))
             for key, value in self.request.COOKIES.items():
-                if key.startswith(REMEMBER_COOKIE_PREFIX):
+                if key.startswith(REMEMBER_COOKIE_PREFIX) and value:
                     for device in devices:
                         verify_is_allowed, extra = device.verify_is_allowed()
                         try:
@@ -292,7 +294,17 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                                 return True
                         except BadSignature:
                             device.throttle_increment()
+                            # Remove remember cookies with invalid signature to omit unnecessary throttling
+                            self.cookies_to_delete.append(key)
         return False
+
+    def delete_cookies_from_response(self, response):
+        """
+        Deletes the cookies_to_delete in the response
+        """
+        for cookie in self.cookies_to_delete:
+            response.delete_cookie(cookie)
+        return response
 
     # Copied from django.conrib.auth.views.LoginView  (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49

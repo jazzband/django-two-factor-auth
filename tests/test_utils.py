@@ -107,24 +107,25 @@ class UtilsTest(UserMixin, TestCase):
         cookie_value = get_remember_device_cookie(
             user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
         )
-        cookie_value = validate_remember_device_cookie(
+        self.assertEqual(len(cookie_value.split(':')), 3)
+        validation_result = validate_remember_device_cookie(
             cookie_value=cookie_value,
             user_pk=123,
             password_hash=password,
             otp_device_id="SomeModel/33",
         )
-        self.assertEqual(len(cookie_value.split(':')), 3)
+        self.assertTrue(validation_result)
 
     def test_wrong_device_hash(self):
         password = make_password("xx")
         cookie_value = get_remember_device_cookie(
             user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
         )
-        cookie_value =validate_remember_device_cookie(
+        validation_result = validate_remember_device_cookie(
             cookie_value=cookie_value,
             user_pk=123,
             password_hash=password,
             otp_device_id="SomeModel/34",
         )
-        self.assertEqual(cookie_value, False)
+        self.assertFalse(validation_result)
 

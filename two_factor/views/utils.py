@@ -228,9 +228,10 @@ def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
 
 def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_device_id):
     """
-    Return true if the cookie_value was returned by get_remember_device_cookie using the same
+    Returns True if the cookie_value was returned by get_remember_device_cookie using the same
     user_pk, password_hash and otp_device_id. Moreover the cookie must not be expired.
-    Returning False if the otp_device_id does not match. Otherwise raises an exception.
+    Returns False if the otp_device_id does not match.
+    Otherwise raises an exception.
     """
     sep = TimestampSigner().sep
 
@@ -250,4 +251,4 @@ def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_de
         max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE
     )
     assert signed_data == validation_data
-    return cookie_value
+    return True

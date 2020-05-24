@@ -477,6 +477,10 @@ class RememberLoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'auth'})
 
         self.assertContains(response, 'Token:')
+        self.assertFalse(any(
+            key.startswith('remember-cookie_') and cookie.value
+            for key, cookie in self.client.cookies.items()
+        ))
 
     @override_settings(
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60*60,
