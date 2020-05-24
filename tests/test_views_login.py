@@ -240,6 +240,8 @@ class LoginTest(UserMixin, TestCase):
         self.assertEqual(response.context_data['wizard']['form'].errors,
                          {'__all__': ['Invalid token. Please make sure you '
                                       'have entered it correctly.']})
+        # static devices are throttled
+        device.throttle_reset()
 
         # Valid token should be accepted.
         response = self._post({'backup-otp_token': 'abcdef123',
