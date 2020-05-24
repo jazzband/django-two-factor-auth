@@ -117,7 +117,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if 'challenge_device' in self.request.POST:
             return self.render_goto_step('token')
 
-        response =  super().post(*args, **kwargs)
+        response = super().post(*args, **kwargs)
         return self.delete_cookies_from_response(response)
 
     def done(self, form_list, **kwargs):
