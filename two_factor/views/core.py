@@ -10,14 +10,17 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import SuccessURLAllowedHostsMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.forms import Form
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.utils.module_loading import import_string
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DeleteView, FormView, TemplateView
 from django.views.generic.base import View
@@ -47,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 @class_view_decorator(sensitive_post_parameters())
 @class_view_decorator(never_cache)
-class LoginView(IdempotentSessionWizardView):
+class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.
 
@@ -68,6 +71,7 @@ class LoginView(IdempotentSessionWizardView):
         'token': False,
         'backup': False,
     }
+    redirect_authenticated_user = False
 
     def has_token_step(self):
         return default_device(self.get_user())
@@ -104,19 +108,34 @@ class LoginView(IdempotentSessionWizardView):
         """
         login(self.request, self.get_user())
 
-        redirect_to = self.request.POST.get(
-            self.redirect_field_name,
-            self.request.GET.get(self.redirect_field_name, '')
-        )
-
-        if not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
-            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        redirect_to = self.get_success_url()
 
         device = getattr(self.get_user(), 'otp_device', None)
         if device:
             signals.user_verified.send(sender=__name__, request=self.request,
                                        user=self.get_user(), device=device)
         return redirect(redirect_to)
+
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
+    def get_success_url(self):
+        url = self.get_redirect_url()
+        return url or resolve_url(settings.LOGIN_REDIRECT_URL)
+
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
+    def get_redirect_url(self):
+        """Return the user-originating redirect URL if it's safe."""
+        redirect_to = self.request.POST.get(
+            self.redirect_field_name,
+            self.request.GET.get(self.redirect_field_name, '')
+        )
+        url_is_safe = is_safe_url(
+            url=redirect_to,
+            allowed_hosts=self.get_success_url_allowed_hosts(),
+            require_https=self.request.is_secure(),
+        )
+        return redirect_to if url_is_safe else ''
 
     def get_form_kwargs(self, step=None):
         """
@@ -198,6 +217,22 @@ class LoginView(IdempotentSessionWizardView):
                 DeprecationWarning)
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
         return context
+
+    # Copied from django.conrib.auth.views.LoginView  (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        if self.redirect_authenticated_user and self.request.user.is_authenticated:
+            redirect_to = self.get_success_url()
+            if redirect_to == self.request.path:
+                raise ValueError(
+                    "Redirection loop for authenticated user detected. Check that "
+                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
+                )
+            return HttpResponseRedirect(redirect_to)
+        return super().dispatch(request, *args, **kwargs)
 
 
 @class_view_decorator(never_cache)
