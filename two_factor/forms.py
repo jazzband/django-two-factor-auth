@@ -173,13 +173,13 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         # Add a field to remeber this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
             if settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600:
-                minutes = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE/60)
+                minutes = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 60)
                 label = _("Don't ask again on this device for %(minutes)i minutes") % {'minutes': minutes}
-            elif settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600*24:
-                hours = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE/3600)
+            elif settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600 * 24:
+                hours = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 3600)
                 label = _("Don't ask again on this device for %(hours)i hours") % {'hours': hours}
             else:
-                days = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE/3600/24)
+                days = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 3600 / 24)
                 label = _("Don't ask again on this device for %(days)i days") % {'days': days}
 
             self.fields['remember'] = forms.BooleanField(
