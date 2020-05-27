@@ -1,11 +1,12 @@
+import hashlib
 import logging
 
 from django.conf import settings
-from django.contrib.auth.hashers import SHA1PasswordHasher
+from django.contrib.auth.hashers import SHA1PasswordHasher, identify_hasher
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import TimestampSigner
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, gettext_noop
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
@@ -199,6 +200,17 @@ def class_view_decorator(function_decorator):
     return simple_decorator
 
 
+def get_hashed_password_salt(encoded):
+    hasher = identify_hasher(encoded)
+    summary = hasher.safe_summary(encoded)
+    salt = summary[gettext_noop('salt')]
+
+    hashed_salt = hashlib.sha1(
+        (salt + 'two_factor.views.utils.get_hashed_password_salt').encode()
+    ).hexdigest()
+
+    return hashed_salt
+
 def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
     """
     Compile a signed cookie from user_pk, password_hash and otp_device_id,
@@ -216,8 +228,8 @@ def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
         otp_device_id + 'two_factor.views.utils.remember_device_cookie.key',
         salt=hasher.salt()
     )
-
-    validation_data = '%s$%s$%s' % (user_pk, password_hash, otp_device_id)
+    hashed_password_salt = get_hashed_password_salt(password_hash)
+    validation_data = '%s$%s$%s' % (user_pk, hashed_password_salt, otp_device_id)
     signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').sign(validation_data)
     data, timestamp, signature = signed_data.split(sep)
     assert data == validation_data
@@ -243,7 +255,8 @@ def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_de
     ):
         return False
 
-    validation_data = '%s$%s$%s' % (user_pk, password_hash, otp_device_id)
+    hashed_password_salt = get_hashed_password_salt(password_hash)
+    validation_data = '%s$%s$%s' % (user_pk, hashed_password_salt, otp_device_id)
 
     test_value = sep.join([validation_data, test_timestamp, test_signature])
     signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').unsign(
