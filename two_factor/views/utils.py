@@ -211,6 +211,7 @@ def get_hashed_password_salt(encoded):
 
     return hashed_salt
 
+
 def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
     """
     Compile a signed cookie from user_pk, password_hash and otp_device_id,
