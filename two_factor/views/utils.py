@@ -5,13 +5,12 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.hashers import identify_hasher
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature, SignatureExpired
 from django.utils import baseconv
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
-from django.utils.translation import gettext as _, gettext_noop
+from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
