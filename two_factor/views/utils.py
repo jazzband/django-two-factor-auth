@@ -205,18 +205,6 @@ def class_view_decorator(function_decorator):
     return simple_decorator
 
 
-def get_hashed_password_salt(encoded):
-    hasher = identify_hasher(encoded)
-    summary = hasher.safe_summary(encoded)
-    salt = summary[gettext_noop('salt')]
-
-    hashed_salt = hashlib.sha1(
-        (salt + 'two_factor.views.utils.get_hashed_password_salt').encode()
-    ).hexdigest()
-
-    return hashed_salt
-
-
 remember_device_cookie_separator = ':'
 
 
