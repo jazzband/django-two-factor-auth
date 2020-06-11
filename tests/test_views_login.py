@@ -385,9 +385,7 @@ class RememberLoginTest(UserMixin, TestCase):
         for cookie in self.client.cookies:
             if cookie.startswith("remember-cookie_"):
                 self._restore_remember_cookie_data = dict(name=cookie, value=self.client.cookies[cookie].value)
-                self.client.cookies[cookie] = 'sha1$kuIPGFhDFlXg$b2549736454bc21a948f697e39217894d18d53ef:' \
-                                              '1jMHfB:' \
-                                              'EZAltvQzgBlxJN3EKaxcKX5uDjI'  # an invalid key
+                self.client.cookies[cookie] = self.client.cookies[cookie].value[:-5] + "0"*5   # an invalid key
 
     def restore_remember_cookie(self):
         self.client.cookies[self._restore_remember_cookie_data['name']] = self._restore_remember_cookie_data['value']
@@ -500,7 +498,7 @@ class RememberLoginTest(UserMixin, TestCase):
         # Wait to expire
         sleep(1)
 
-        # Login but exired remember cookie
+        # Login but expired remember cookie
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})

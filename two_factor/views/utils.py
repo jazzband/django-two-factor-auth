@@ -1,11 +1,16 @@
+import base64
 import hashlib
+import hmac
 import logging
+import time
 
 from django.conf import settings
-from django.contrib.auth.hashers import SHA1PasswordHasher, identify_hasher
+from django.contrib.auth.hashers import identify_hasher
 from django.core.exceptions import SuspiciousOperation
-from django.core.signing import TimestampSigner
+from django.core.signing import BadSignature, SignatureExpired
+from django.utils import baseconv
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _, gettext_noop
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
@@ -212,57 +217,70 @@ def get_hashed_password_salt(encoded):
     return hashed_salt
 
 
-def get_remember_device_cookie(user_pk, password_hash, otp_device_id):
+remember_device_cookie_separator = ':'
+
+
+def get_remember_device_cookie(user, otp_device_id):
     """
-    Compile a signed cookie from user_pk, password_hash and otp_device_id,
+    Compile a signed cookie from user.pk, user.password and otp_device_id,
     but only return the hashed and signatures and omit the data.
 
     The cookie is composed of 3 parts:
-    1. A weakly hashed value of otp_device_id.
-    2. A timestamp of signing.
-    3. A hmac signature that signs user_pk, password_hash, otp_device_id and the timestamp.
+    1. A timestamp of signing.
+    2. A hashed value of otp_device_id and the timestamp.
+    3. A hashed value of user.pk, user.password, otp_device_id and the timestamp.
     """
-    sep = TimestampSigner().sep
+    timestamp = baseconv.base62.encode(int(time.time()))
+    cookie_key = hash_remember_device_cookie_key(otp_device_id)
+    cookie_value = hash_remember_device_cookie_value(otp_device_id, user, timestamp)
 
-    hasher = SHA1PasswordHasher()
-    cookie_key = hasher.encode(
-        otp_device_id + 'two_factor.views.utils.remember_device_cookie.key',
-        salt=hasher.salt()
-    )
-    hashed_password_salt = get_hashed_password_salt(password_hash)
-    validation_data = '%s$%s$%s' % (user_pk, hashed_password_salt, otp_device_id)
-    signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').sign(validation_data)
-    data, timestamp, signature = signed_data.split(sep)
-    assert data == validation_data
-
-    cookie_value = sep.join([cookie_key, timestamp, signature])
-    return cookie_value
+    cookie = remember_device_cookie_separator.join([timestamp, cookie_key, cookie_value])
+    return cookie
 
 
-def validate_remember_device_cookie(cookie_value, user_pk, password_hash, otp_device_id):
+def validate_remember_device_cookie(cookie, user, otp_device_id):
     """
-    Returns True if the cookie_value was returned by get_remember_device_cookie using the same
-    user_pk, password_hash and otp_device_id. Moreover the cookie must not be expired.
+    Returns True if the cookie was returned by get_remember_device_cookie using the same
+    user.pk, user.password and otp_device_id. Moreover the cookie must not be expired.
     Returns False if the otp_device_id does not match.
     Otherwise raises an exception.
     """
-    sep = TimestampSigner().sep
 
-    cookie_key, test_timestamp, test_signature = cookie_value.split(sep)
+    timestamp, input_cookie_key, input_cookie_value = cookie.split(remember_device_cookie_separator, 3)
 
-    if not SHA1PasswordHasher().verify(
-        otp_device_id + 'two_factor.views.utils.remember_device_cookie.key',
-        cookie_key
-    ):
+    cookie_key = hash_remember_device_cookie_key(otp_device_id)
+    if input_cookie_key != cookie_key:
         return False
 
-    hashed_password_salt = get_hashed_password_salt(password_hash)
-    validation_data = '%s$%s$%s' % (user_pk, hashed_password_salt, otp_device_id)
+    cookie_value = hash_remember_device_cookie_value(otp_device_id, user, timestamp)
+    if input_cookie_value != cookie_value:
+        raise BadSignature('Signature does not match')
 
-    test_value = sep.join([validation_data, test_timestamp, test_signature])
-    signed_data = TimestampSigner(salt='two_factor.views.utils.remember_device_cookie').unsign(
-        test_value,
-        max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE
-    )
-    assert signed_data == validation_data
+    timestamp_int = baseconv.base62.decode(timestamp)
+    age = time.time() - timestamp_int
+    if age > settings.TWO_FACTOR_REMEMBER_COOKIE_AGE:
+        raise SignatureExpired(
+            'Signature age %s > %s seconds' % (age, settings.TWO_FACTOR_REMEMBER_COOKIE_AGE)
+        )
+
     return True
+
+
+def hash_remember_device_cookie_key(otp_device_id):
+    return str(base64.b64encode(force_bytes(otp_device_id)))
+
+
+def hash_remember_device_cookie_value(otp_device_id, user, timestamp):
+    salt = 'two_factor.views.utils.hash_remember_device_cookie_value'
+    value = otp_device_id + str(user.pk) + str(user.password) + timestamp
+    return salted_hmac_sha256(salt, value).hexdigest()
+
+
+# inspired by django.utils.crypto.salted_hmac django versions > 3.1a1
+def salted_hmac_sha256(key_salt, value, secret=None):
+    if secret is None:
+        secret = settings.SECRET_KEY
+    key_salt = force_bytes(key_salt)
+    secret = force_bytes(secret)
+    key = hashlib.sha256(key_salt + secret).digest()
+    return hmac.new(key, msg=force_bytes(value), digestmod=hashlib.sha256)

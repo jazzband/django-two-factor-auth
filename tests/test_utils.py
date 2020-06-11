@@ -1,3 +1,4 @@
+from unittest import mock
 from urllib.parse import parse_qsl, urlparse
 
 from django.contrib.auth.hashers import make_password
@@ -103,28 +104,31 @@ class UtilsTest(UserMixin, TestCase):
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
     )
     def test_create_and_validate_remember_cookie(self):
-        password = make_password("xx")
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
         cookie_value = get_remember_device_cookie(
-            user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
+            user=user, otp_device_id="SomeModel/33"
         )
         self.assertEqual(len(cookie_value.split(':')), 3)
         validation_result = validate_remember_device_cookie(
-            cookie_value=cookie_value,
-            user_pk=123,
-            password_hash=password,
+            cookie=cookie_value,
+            user=user,
             otp_device_id="SomeModel/33",
         )
         self.assertTrue(validation_result)
 
     def test_wrong_device_hash(self):
-        password = make_password("xx")
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
+
         cookie_value = get_remember_device_cookie(
-            user_pk=123, password_hash=password, otp_device_id="SomeModel/33"
+            user=user, otp_device_id="SomeModel/33"
         )
         validation_result = validate_remember_device_cookie(
-            cookie_value=cookie_value,
-            user_pk=123,
-            password_hash=password,
+            cookie=cookie_value,
+            user=user,
             otp_device_id="SomeModel/34",
         )
         self.assertFalse(validation_result)

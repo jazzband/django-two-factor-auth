@@ -141,8 +141,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                     'remember' in form_obj.fields and form_obj['remember'].value():
                 # choose a unique cookie key to remember devices for multiple users in the same browser
                 cookie_key = REMEMBER_COOKIE_PREFIX + str(uuid4())
-                cookie_value = get_remember_device_cookie(user_pk=self.get_user().pk,
-                                                          password_hash=self.get_user().password,
+                cookie_value = get_remember_device_cookie(user=self.get_user(),
                                                           otp_device_id=device.persistent_id)
                 if 'samesite' in cookies.Morsel._reserved:
                     response.set_cookie(cookie_key, cookie_value,
@@ -285,8 +284,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                         try:
                             if verify_is_allowed and validate_remember_device_cookie(
                                     value,
-                                    user_pk=user.pk,
-                                    password_hash=user.password,
+                                    user=user,
                                     otp_device_id=device.persistent_id
                             ):
                                 user.otp_device = device
