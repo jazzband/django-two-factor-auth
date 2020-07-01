@@ -22,6 +22,10 @@ allowing users to authenticate through call, text messages (SMS), by using a
 token generator app like Google Authenticator or a YubiKey_ hardware token
 generator (optional).
 
+.. warning::
+    ⚠️ This package stores the user's passwords in the session in plaintext
+    while logging in. For more information see `issue 239`_.
+
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
 forking the repository and sending some pull requests. The package is
@@ -131,3 +135,5 @@ The project is licensed under the MIT license.
 .. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
 .. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+.. _`issue 239`:
+   https://github.com/Bouke/django-two-factor-auth/issues/239
