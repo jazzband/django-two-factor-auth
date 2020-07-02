@@ -1,4 +1,12 @@
 ## [Unreleased]
+### Added
+- It is possible to set a timeout between a user authenticiating in the LoginView and them needing to re-authenticate. By default this is 10 minutes.
+
+### Removed
+- The final step in the LoginView no longer re-validates a user's credentials
+
+### Changed
+- Security Fix: LoginView no longer stores credentials in plaintext in the session store
 
 ## 1.11.0 - 2020-03-13
 ### Added
