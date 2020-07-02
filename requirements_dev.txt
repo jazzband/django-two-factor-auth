@@ -18,8 +18,6 @@ django-user-sessions
 coverage
 flake8
 tox
-tox-pyenv
-detox
 isort
 
 # Translation
