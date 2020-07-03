@@ -32,5 +32,5 @@ sphinx_rtd_theme
 # Build
 
 wheel
-bumpversion
+bump2version
 twine
