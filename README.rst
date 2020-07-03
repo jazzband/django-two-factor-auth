@@ -6,7 +6,7 @@ Django Two-Factor Authentication
     :alt: Build Status
     :target: https://travis-ci.org/Bouke/django-two-factor-auth
 
-.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg
+.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg?branch=master
     :alt: Build Status
     :target: https://github.com/Bouke/django-two-factor-auth/actions
 
