@@ -1,0 +1,71 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+
+    name: Python ${{ matrix.python-version }}, Django ${{ matrix.django-version }} (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental == 'true' }}
+    strategy:
+      matrix:
+        python-version: ['3.5', '3.6', '3.7', '3.8']
+        django-version: ['2.2', '3.0', master]
+        variant: [normal, yubikey, custom_user]
+        experimental: ['true', 'false']
+        exclude:
+          - python-version: '3.5'
+            django-version: '3.0'
+          - python-version: '3.5'
+            django-version: master
+          - django-version: '2.2'
+            experimental: 'true'
+          - django-version: '3.0'
+            experimental: 'true'
+          - django-version: master
+            experimental: 'false'
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Tox and any other packages
+        run: pip install tox tox-gh-actions codecov
+      - name: Test with tox
+        run: tox
+        env:
+          DJANGO: ${{matrix.django-version}}
+          VARIANT: ${{matrix.variant}}
+      - name: Generate coverage XML report
+        run: coverage xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.0.10
+        env:
+          PYTHON: ${{matrix.python-version}}
+          DJANGO: ${{matrix.django-version}}
+          VARIANT: ${{matrix.variant}}
+        with:
+          fail_ci_if_error: true
+          env_vars: PTYHON,DJANGO,VARIANT
+
+
+  code_quality:
+
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Tox
+        run: pip install tox
+      - name: isort
+        run: tox -e isort
+      - name: flake8
+        run: tox -e flake8

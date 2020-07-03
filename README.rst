@@ -6,6 +6,10 @@ Django Two-Factor Authentication
     :alt: Build Status
     :target: https://travis-ci.org/Bouke/django-two-factor-auth
 
+.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg
+    :alt: Build Status
+    :target: https://github.com/Bouke/django-two-factor-auth/actions
+
 .. image:: https://codecov.io/gh/Bouke/django-two-factor-auth/branch/master/graph/badge.svg
     :alt: Test Coverage
     :target: https://codecov.io/gh/Bouke/django-two-factor-auth
@@ -51,7 +55,7 @@ Refer to the `installation instructions`_ in the documentation.
 Getting help
 ============
 
-For general questions regarding this package, please hop over to Stack 
+For general questions regarding this package, please hop over to Stack
 Overflow. If you think there is an issue with this package; check if the
 issue is already listed (either open or closed), and file an issue if
 it's not.
