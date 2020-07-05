@@ -6,6 +6,10 @@ Django Two-Factor Authentication
     :alt: Build Status
     :target: https://travis-ci.org/Bouke/django-two-factor-auth
 
+.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg?branch=master
+    :alt: Build Status
+    :target: https://github.com/Bouke/django-two-factor-auth/actions
+
 .. image:: https://codecov.io/gh/Bouke/django-two-factor-auth/branch/master/graph/badge.svg
     :alt: Test Coverage
     :target: https://codecov.io/gh/Bouke/django-two-factor-auth
@@ -21,6 +25,10 @@ projects. Inspired by the user experience of Google's Two-Step Authentication,
 allowing users to authenticate through call, text messages (SMS), by using a
 token generator app like Google Authenticator or a YubiKey_ hardware token
 generator (optional).
+
+.. warning::
+    ⚠️ This package stores the user's passwords in the session in plaintext
+    while logging in. For more information see `issue 239`_.
 
 I would love to hear your feedback on this package. If you run into
 problems, please file an issue on GitHub, or contribute to the project by
@@ -47,7 +55,7 @@ Refer to the `installation instructions`_ in the documentation.
 Getting help
 ============
 
-For general questions regarding this package, please hop over to Stack 
+For general questions regarding this package, please hop over to Stack
 Overflow. If you think there is an issue with this package; check if the
 issue is already listed (either open or closed), and file an issue if
 it's not.
@@ -131,3 +139,5 @@ The project is licensed under the MIT license.
 .. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
 .. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+.. _`issue 239`:
+   https://github.com/Bouke/django-two-factor-auth/issues/239
