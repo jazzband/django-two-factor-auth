@@ -75,6 +75,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         'backup': False,
     }
     redirect_authenticated_user = False
+    storage_name = 'two_factor.views.utils.LoginStorage'
 
     def has_token_step(self):
         return default_device(self.get_user())

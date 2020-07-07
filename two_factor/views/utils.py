@@ -34,6 +34,15 @@ class ExtraSessionStorage(SessionStorage):
     def _set_validated_step_data(self, validated_step_data):
         self.data[self.validated_step_data_key] = validated_step_data
 
+    validated_step_data = property(_get_validated_step_data,
+                                   _set_validated_step_data)
+
+
+class LoginStorage(ExtraSessionStorage):
+    """
+    SessionStorage that includes the property 'authenticated_user' for storing
+    backend authenticated users while logging in.
+    """
     def _get_authenticated_user(self):
         # Ensure that both user_pk and user_backend exist in the session
         if not all([self.data.get("user_pk"), self.data.get("user_backend")]):
@@ -51,9 +60,6 @@ class ExtraSessionStorage(SessionStorage):
         # Acquire the PK the same way django's auth middleware does
         self.data["user_pk"] = user._meta.pk.value_to_string(user)
         self.data["user_backend"] = user.backend
-
-    validated_step_data = property(_get_validated_step_data,
-                                   _set_validated_step_data)
 
     authenticated_user = property(_get_authenticated_user,
                                   _set_authenticated_user)
