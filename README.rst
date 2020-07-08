@@ -26,15 +26,10 @@ allowing users to authenticate through call, text messages (SMS), by using a
 token generator app like Google Authenticator or a YubiKey_ hardware token
 generator (optional).
 
-.. warning::
-    ⚠️ This package stores the user's passwords in the session in plaintext
-    while logging in. For more information see `issue 239`_.
-
-I would love to hear your feedback on this package. If you run into
-problems, please file an issue on GitHub, or contribute to the project by
-forking the repository and sending some pull requests. The package is
-translated into English, Dutch and other languages. Please contribute your own
-language using Transifex_.
+If you run into problems, please file an issue on GitHub, or contribute to the
+project by forking the repository and sending some pull requests. The package
+is translated into English, Dutch and other languages. Please contribute your
+own language using Transifex_.
 
 Test drive this app through the online `example app`_, hosted by Heroku_. It
 demos most features except the Twilio integration. The example also includes
