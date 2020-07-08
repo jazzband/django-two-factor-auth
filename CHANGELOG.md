@@ -4,6 +4,7 @@
 
 ### Removed
 - The final step in the LoginView no longer re-validates a user's credentials
+- Django 1.11 support.
 
 ### Changed
 - Security Fix: LoginView no longer stores credentials in plaintext in the session store
