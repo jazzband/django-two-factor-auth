@@ -109,11 +109,15 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         The user can select a particular device to challenge, being the backup
         devices added to the account.
         """
-
         wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
-        if self.expired and self.steps.current != 'auth' and wizard_goto_step != 'auth':
+
+        if wizard_goto_step == 'auth':
+            self.storage.reset()
+
+        if self.expired and self.steps.current != 'auth':
             logger.info("User's authentication flow has timed out. The user "
                         "has been redirected to the initial auth form.")
+            self.storage.reset()
             self.show_timeout_error = True
             return self.render_goto_step('auth')
 
