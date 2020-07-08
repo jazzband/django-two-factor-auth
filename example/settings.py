@@ -101,6 +101,8 @@ SESSION_ENGINE = 'user_sessions.backends.db'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+SILENCED_SYSTEM_CHECKS = ['admin.E410']
+
 try:
     from .settings_private import *  # noqa
 except ImportError:
