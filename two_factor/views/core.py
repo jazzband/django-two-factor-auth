@@ -1,8 +1,8 @@
 import logging
+import time
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
-import time
 
 import django_otp
 import qrcode
