@@ -1,33 +1,34 @@
-# SOME DESCRIPTIVE TITLE.
+# django-two-factor-auth example translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the django-two-factor-auth package.
 # 
 # Translators:
 # Translators:
+# m_aciek <maciej.olko@gmail.com>, 2020
 # Wojciech Banaś, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2016-03-30 08:38+0000\n"
-"Last-Translator: Wojciech Banaś\n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 06:54+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
 "Language-Team: Polish (http://www.transifex.com/Bouke/django-two-factor-auth/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: gateways.py:10
+#: gateways.py:11
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
-msgstr "Fałszywe połączenie do %(number)s: \"Twój Token to: %(token)s\""
+msgstr "Fałszywe połączenie do %(number)s: \"Twój token to: %(token)s\""
 
 #: gateways.py:16
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
-msgstr "Fałszywy SMS do %(number)s: \"Twój Token to: %(token)s\""
+msgstr "Fałszywy SMS do %(number)s: \"Twój token to: %(token)s\""
 
 #: templates/_base.html:20
 msgid "Toggle navigation"
@@ -35,7 +36,7 @@ msgstr "Przełącz nawigację"
 
 #: templates/_base.html:25 templates/two_factor/_base_focus.html:8
 msgid "Demo"
-msgstr "Demonstracyjna"
+msgstr "Demo"
 
 #: templates/_base.html:32
 msgid "Home"
@@ -70,17 +71,14 @@ msgid "django-two-factor-auth – Demo Application"
 msgstr "django-two-factor-auth – Przykładowa aplikacja"
 
 #: templates/home.html:8
-msgid ""
-"Improve Your Security <small>your users will thank\n"
-"    you</small>"
-msgstr "Zwiększ swoje bezpieczeństwo <small>twoi użytkownicy podziękują Tobie</small>"
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr ""
 
 #: templates/home.html:10
 msgid ""
-"Welcome to the example app of\n"
-"      <code>django-two-factor-auth</code>. Use this example to get an\n"
-"    understanding of what the app can do for you."
-msgstr "Witamy w przykładowej aplikacji <code>django-two-factor-auth</code>. Korzystaj z tego przykładu by zrozumieć co ta aplikacja może Ci dać."
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr ""
 
 #: templates/home.html:14
 msgid "Please verify your settings"
@@ -88,11 +86,11 @@ msgstr "Proszę sprawdź swoją konfigurację"
 
 #: templates/home.html:15
 msgid ""
-"Have you provided your Twilio settings in the\n"
-"      <code>settings_private.py</code> file? By doing so, the example app will\n"
-"      be able to call and text you to verify your authentication tokens.\n"
-"      Otherwise, the tokens will be shown on the screen."
-msgstr "Czy wpisałeś konfiguracji twojego Twilio w pliku <code>settings_private.py</code>? W ten sposób przykładowa aplikacja będzie potrafiła dzwonić i wysyłać wiadomości tekstowe do Ciebie, z tokenami uwierzytelniającymi.\nW przeciwnym wypadku, tokeny pojawią się na ekranie."
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr ""
 
 #: templates/home.html:26
 msgid "Next steps:"
@@ -100,39 +98,33 @@ msgstr "Następne kroki:"
 
 #: templates/home.html:28
 #, python-format
-msgid ""
-"Start by <a href=\"%(reg_url)s\">registering</a> an\n"
-"      account."
-msgstr "Zacznij od <a href=\"%(reg_url)s\">rejestracji</a> konta."
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr ""
 
 #: templates/home.html:30
 #, python-format
-msgid ""
-"<a href=\"%(login_url)s\">Login</a> to your account.\n"
-"      "
-msgstr "<a href=\"%(login_url)s\">Zaloguj się</a> na swoje konto."
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr ""
 
 #: templates/home.html:32
 #, python-format
-msgid ""
-"<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
-"      authentication."
-msgstr "<a href=\"%(setup_url)s\">Włącz</a> uwierzytelnianie dwuetapowe."
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr ""
 
 #: templates/home.html:34
 #, python-format
 msgid ""
-"Then, <a href=\"%(logout_url)s\">logout</a> and\n"
-"      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
-"      two-factor authentication at work."
-msgstr "Następnie <a href=\"%(logout_url)s\">wyloguj się</a> i\n<a href=\"%(login_url)s\">zaloguj</a> jeszcze raz do swojego konta, aby zobaczyć jak działa autoryzacja dwuetapowa."
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr ""
 
 #: templates/home.html:37
 #, python-format
 msgid ""
-"At last, you've gained access to the\n"
-"      <a href=\"%(secret_url)s\">secret page</a>! :-)"
-msgstr "Wreszcie otrzymałeś dostęp do <a href=\"%(secret_url)s\">tajnej strony</a>! :-)"
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr ""
 
 #: templates/registration.html:5
 msgid "Registration"
@@ -142,22 +134,6 @@ msgstr "Rejestracja"
 msgid "Register"
 msgstr "Zarejestruj się"
 
-#: templates/registration_complete.html:5
-msgid "Registration Complete"
-msgstr "Rejestracja zakończona"
-
-#: templates/registration_complete.html:6
-msgid ""
-"Congratulations, you've successfully registered an\n"
-"    account."
-msgstr "Gratulacje, udało Ci się zarejestrować konto."
-
-#: templates/secret.html:9
-msgid ""
-"Congratulations, you've made it. You have successfully\n"
-"    enabled two-factor authentication and logged in with your token."
-msgstr "Gratulacje, udało Ci się. Uruchomiłeś uwierzytelnienie dwuskładnikowe i zalogowałeś się za pomocą Twojego tokena."
-
 #: templates/registration/logged_out.html:5
 msgid "Logged Out"
 msgstr "Wylogowano"
@@ -165,3 +141,17 @@ msgstr "Wylogowano"
 #: templates/registration/logged_out.html:6
 msgid "See you around!"
 msgstr "Do zobaczenia!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Rejestracja zakończona"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr ""
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr ""

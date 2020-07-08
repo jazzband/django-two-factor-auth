@@ -1,16 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
+# django-two-factor-auth translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the django-two-factor-auth package.
 # 
 # Translators:
-# Translators:
+# Leonardo Soligo <leosoligo@gmail.com>, 2020
 # vitormazzi <vitormazzi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-03 15:23+0200\n"
-"PO-Revision-Date: 2018-08-03 13:23+0000\n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 06:54+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/Bouke/django-two-factor-auth/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -24,20 +24,18 @@ msgid "Method"
 msgstr "Mecanismo"
 
 #: forms.py:34 forms.py:49
-#| msgid "Add Phone Number"
 msgid "Phone Number"
-msgstr ""
+msgstr "Telefone"
 
 #: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
 msgstr "Código"
 
 #: forms.py:61 forms.py:91
-#| msgid "Entered token is not valid"
 msgid "Entered token is not valid."
 msgstr "O código informado é inválido"
 
-#: forms.py:76 forms.py:170 models.py:42
+#: forms.py:76 forms.py:170 models.py:41
 msgid "YubiKey"
 msgstr "YubiKey"
 
@@ -49,14 +47,14 @@ msgstr "Seu YubiKey não pode ser validado"
 msgid "Yes, I am sure"
 msgstr "Sim, tenho certeza"
 
-#: gateways/twilio/gateway.py:61
+#: gateways/twilio/gateway.py:55
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "Seu código de autenticação é %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:70 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:64 gateways/twilio/views.py:74
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "pt-BR"
@@ -65,9 +63,6 @@ msgstr "pt-BR"
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:39
 #, python-format
-#| msgid ""
-#| "is is %(site_name)s calling. Please enter the following code on r "
-#| "screen:token)s. Repeat: %(token)s."
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
 msgstr "Olá, aqui é o %(site_name)s. Pressione qualquer tecla para continuar."
 
@@ -81,33 +76,30 @@ msgstr "Seu código de acesso é %(token)s. Repetindo: %(token)s. Até logo."
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:48
-#| msgid "You don't have any backup codes yet."
 msgid "You didn't press any keys. Good bye."
 msgstr "Você não pressionou uma tecla. Até logo."
 
-#: models.py:25
+#: models.py:24
 msgid "Phone Call"
 msgstr "Chamada telefônica"
 
-#: models.py:26
+#: models.py:25
 msgid "Text Message"
 msgstr "Mensagem de texto"
 
-#: models.py:33
-#| msgid "Phone Call"
+#: models.py:32
 msgid "Phone call"
 msgstr "Chamada telefônica"
 
-#: models.py:35
-#| msgid "Text Message"
+#: models.py:34
 msgid "Text message"
 msgstr "Mensagem de texto"
 
-#: models.py:47
+#: models.py:46
 msgid "Token generator"
 msgstr "Aplicativo gerador de códigos"
 
-#: models.py:71
+#: models.py:75
 msgid "method"
 msgstr "mecanismo"
 
@@ -131,12 +123,11 @@ msgstr "Códigos reserva"
 
 #: templates/two_factor/core/backup_tokens.html:6
 msgid ""
-"Backup tokens can be used when your primary and backup\n"
-"      phone numbers aren't available. The backup tokens below can be used\n"
-"      for login verification. If you've used up all your backup tokens, you\n"
-"      can generate a new set of backup tokens. Only the backup tokens shown\n"
-"      below will be valid."
-msgstr "Códigos reserva podem ser utilizados quando seu mecanismo principal de geração de códigos não está disponível. Somente os códigos listados abaixo são válidos, e eles podem ser utilizados em qualquer ordem. \n Você pode gerar um novo conjunto de códigos reserva a qualquer momento."
+"Backup tokens can be used when your primary and backup phone numbers aren't "
+"available. The backup tokens below can be used for login verification. If "
+"you've used up all your backup tokens, you can generate a new set of backup "
+"tokens. Only the backup tokens shown below will be valid."
+msgstr ""
 
 #: templates/two_factor/core/backup_tokens.html:18
 msgid "Print these tokens and keep them somewhere safe."
@@ -163,29 +154,25 @@ msgid "Enter your credentials."
 msgstr "Informe suas credenciais"
 
 #: templates/two_factor/core/login.html:11
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"        digits you hear."
-msgstr "Estamos ligando para você neste momento, por favor informe o código que diremos para você."
+#: templates/two_factor/core/setup.html:29
+msgid "We are calling your phone right now, please enter the digits you hear."
+msgstr ""
 
 #: templates/two_factor/core/login.html:14
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"        sent."
-msgstr "Enviamos uma mensagem de texto para você, por favor informe o código enviado."
+#: templates/two_factor/core/setup.html:32
+msgid "We sent you a text message, please enter the tokens we sent."
+msgstr ""
 
 #: templates/two_factor/core/login.html:17
-msgid ""
-"Please enter the tokens generated by your token\n"
-"        generator."
-msgstr "Informe o código gerado por seu aplicativo"
+msgid "Please enter the tokens generated by your token generator."
+msgstr ""
 
 #: templates/two_factor/core/login.html:21
 msgid ""
-"Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. Please\n"
-"      enter one of these backup tokens to login to your account."
-msgstr "Utilize este formulário para se autenticar usando códigos de reserva."
+"Use this form for entering backup tokens for logging in. These tokens have "
+"been generated for you to print and keep safe. Please enter one of these "
+"backup tokens to login to your account."
+msgstr ""
 
 #: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
@@ -196,7 +183,6 @@ msgid "As a last resort, you can use a backup token:"
 msgstr "Como último recurso, utilize um código reserva"
 
 #: templates/two_factor/core/login.html:46
-#| msgid "Backup Tokens"
 msgid "Use Backup Token"
 msgstr "Usar código reserva"
 
@@ -206,17 +192,17 @@ msgstr "Permissão negada"
 
 #: templates/two_factor/core/otp_required.html:7
 msgid ""
-"The page you requested, enforces users to verify using\n"
-"    two-factor authentication for security reasons. You need to enable these\n"
-"    security features in order to access this page."
-msgstr "O recurso solicitado exige que os usuários utilizem a verificação em duas etapas por razões de segurança. Você precisa habilitar esta funcionalidade para ter acesso a esse recurso."
+"The page you requested, enforces users to verify using two-factor "
+"authentication for security reasons. You need to enable these security "
+"features in order to access this page."
+msgstr ""
 
 #: templates/two_factor/core/otp_required.html:11
+#: templates/two_factor/profile/profile.html:56
 msgid ""
-"Two-factor authentication is not enabled for your\n"
-"    account. Enable two-factor authentication for enhanced account\n"
-"    security."
-msgstr "A verificação em duas etapas não está habilitada. Habilite a verificação em duas etapas para aumentar a segurança de sua conta."
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
+msgstr ""
 
 #: templates/two_factor/core/otp_required.html:16
 msgid "Go back"
@@ -235,100 +221,74 @@ msgstr "Adicionar telefone reserva"
 
 #: templates/two_factor/core/phone_register.html:8
 msgid ""
-"You'll be adding a backup phone number to your\n"
-"        account. This number will be used if your primary method of\n"
-"        registration is not available."
-msgstr "Você irá adicionar um telefone reserva a sua conta. Este número poderá ser utilizado se seu mecanismo principal de geração de códigos não estiver disponível."
+"You'll be adding a backup phone number to your account. This number will be "
+"used if your primary method of registration is not available."
+msgstr ""
 
 #: templates/two_factor/core/phone_register.html:12
 msgid ""
-"We've sent a token to your phone number. Please\n"
-"        enter the token you've received."
-msgstr "Enviamos um código para seu telefone. Por favor informe o código enviado."
+"We've sent a token to your phone number. Please enter the token you've "
+"received."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
-"You are about to take your account security to the\n"
-"        next level. Follow the steps in this wizard to enable two-factor\n"
-"        authentication."
-msgstr "Você está prestes a levar a segurança de sua conta para o próximo nível. Siga estes passos para habilitar a verificação em duas etapas."
+"You are about to take your account security to the next level. Follow the "
+"steps in this wizard to enable two-factor authentication."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:11
-msgid ""
-"Please select which authentication method you would\n"
-"        like to use."
-msgstr "Por favor selecione o mecanismo de autenticação que prefere utilizar."
+msgid "Please select which authentication method you would like to use."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:14
 msgid ""
-"To start using a token generator, please use your\n"
-"        smartphone to scan the QR code below. For example, use Google\n"
-"        Authenticator. Then, enter the token generated by the app.\n"
-"        "
-msgstr "Utilize o aplicativo gerador de códigos de segurança em seu smartphone para escanear a imagem abaixo e insira o código gerado pelo aplicativo."
+"To start using a token generator, please use your smartphone to scan the QR "
+"code below. For example, use Google Authenticator. Then, enter the token "
+"generated by the app."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:20
 msgid ""
-"Please enter the phone number you wish to receive the\n"
-"      text messages on. This number will be validated in the next step.\n"
-"      "
-msgstr "Informe o número do telefone que será utilizado para receber as mensagens de texto contendo os códigos de segurança. Este número será validado no próximo passo."
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:24
 msgid ""
-"Please enter the phone number you wish to be called on.\n"
-"      This number will be validated in the next step. "
-msgstr "Informe o número do telefone que será utilizado para receber as chamadas informando os códigos de segurança. Este número será validado no próximo passo."
-
-#: templates/two_factor/core/setup.html:29
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"          digits you hear."
-msgstr ""
-
-#: templates/two_factor/core/setup.html:32
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"          sent."
+"Please enter the phone number you wish to be called on. This number will be "
+"validated in the next step."
 msgstr ""
 
 #: templates/two_factor/core/setup.html:36
 msgid ""
-"We've\n"
-"        encountered an issue with the selected authentication method. Please\n"
-"        go back and verify that you entered your information correctly, try\n"
-"        again, or use a different authentication method instead. If the issue\n"
-"        persists, contact the site administrator."
+"We've encountered an issue with the selected authentication method. Please "
+"go back and verify that you entered your information correctly, try again, "
+"or use a different authentication method instead. If the issue persists, "
+"contact the site administrator."
 msgstr ""
 
 #: templates/two_factor/core/setup.html:43
 msgid ""
-"To identify and verify your YubiKey, please insert a\n"
-"      token in the field below. Your YubiKey will be linked to your\n"
-"      account."
-msgstr "Para identificar e validar seu YubiKey insira um código no campo abaixo. Seu YubiKey será associado a esta conta."
+"To identify and verify your YubiKey, please insert a token in the field "
+"below. Your YubiKey will be linked to your account."
+msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:7
-#| msgid ""
-#| "tulations, you've successfully enabled\n"
-#| "o-factor authentication."
 msgid ""
-"Congratulations, you've successfully enabled two-factor\n"
-"      authentication."
-msgstr "Parabéns, você habilitou a verificação em duas etapas com sucesso."
+"Congratulations, you've successfully enabled two-factor authentication."
+msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:12
 #: templates/two_factor/core/setup_complete.html:19
-#| msgid "Back to profile"
 msgid "Back to Profile"
 msgstr "Voltar para o perfil"
 
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
-"However, it might happen that you don't have access to\n"
-"      your primary token device. To enable account recovery, add a phone \n"
-"      number."
-msgstr "Agora você precisa configurar um gerador de códigos alternativo caso perca o acesso a seu dispositivo principal."
+"However, it might happen that you don't have access to your primary token "
+"device. To enable account recovery, add a phone number."
+msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:21
 #: templates/two_factor/profile/profile.html:34
@@ -340,12 +300,9 @@ msgid "Disable Two-factor Authentication"
 msgstr "Desabilitar a verificação em duas etapas"
 
 #: templates/two_factor/profile/disable.html:6
-#| msgid ""
-#| "e about to disable two-factor authentication. This\n"
-#| "mpromises your account security, are you sure?"
 msgid ""
-"You are about to disable two-factor authentication. This\n"
-"    weakens your account security, are you sure?"
+"You are about to disable two-factor authentication. This weakens your "
+"account security, are you sure?"
 msgstr ""
 
 #: templates/two_factor/profile/disable.html:12
@@ -366,7 +323,6 @@ msgid "Primary method: %(primary)s"
 msgstr "Mecanismo principal: %(primary)s"
 
 #: templates/two_factor/profile/profile.html:13
-#| msgid "Tokens will be generated by your token generator."
 msgid "Tokens will be generated by your YubiKey."
 msgstr "Os códigos serão gerados pelo seu YubiKey"
 
@@ -375,12 +331,9 @@ msgid "Backup Phone Numbers"
 msgstr "Números de telefone reserva"
 
 #: templates/two_factor/profile/profile.html:18
-#| msgid ""
-#| "r primary method is not available, we are able to\n"
-#| "send backup tokens to the phone numbers listed below."
 msgid ""
-"If your primary method is not available, we are able to\n"
-"        send backup tokens to the phone numbers listed below."
+"If your primary method is not available, we are able to send backup tokens "
+"to the phone numbers listed below."
 msgstr ""
 
 #: templates/two_factor/profile/profile.html:28
@@ -389,22 +342,16 @@ msgstr "Remover"
 
 #: templates/two_factor/profile/profile.html:39
 msgid ""
-"If you don't have any device with you, you can access\n"
-"        your account using backup tokens."
-msgstr "Caso seu gerador de códigos não esteja com você, você poderá acessar sua conta usando um dos códigos reserva "
+"If you don't have any device with you, you can access your account using "
+"backup tokens."
+msgstr ""
 
 #: templates/two_factor/profile/profile.html:41
 #, python-format
-msgid ""
-"\n"
-"        You have only one backup token remaining.\n"
-"      "
-msgid_plural ""
-"\n"
-"        You have %(counter)s backup tokens remaining.\n"
-"      "
-msgstr[0] "\nVocê possui somente 1 código reserva"
-msgstr[1] "\nVocê possui %(counter)s códigos reserva restantes"
+msgid "You have only one backup token remaining."
+msgid_plural "You have %(counter)s backup tokens remaining."
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/two_factor/profile/profile.html:48
 msgid "Show Codes"
@@ -417,16 +364,9 @@ msgstr "Desabilitar a verificação em duas etapas"
 
 #: templates/two_factor/profile/profile.html:51
 msgid ""
-"However we strongly discourage you to do so, you can\n"
-"      also disable two-factor authentication for your account."
-msgstr "Você pode desabilitar a verificação em duas etapas, no entanto vale lembrar que a segurança de sua conta será diminuida consideravelmente"
-
-#: templates/two_factor/profile/profile.html:56
-msgid ""
-"Two-factor authentication is not enabled for your\n"
-"      account. Enable two-factor authentication for enhanced account\n"
-"      security."
-msgstr "A verificação em duas etapas não está habilitada para sua conta."
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
+msgstr ""
 
 #: templatetags/two_factor.py:56
 #, python-format
@@ -444,12 +384,10 @@ msgid ""
 " + or 00."
 msgstr "Por favor informe um número de telefone válido, incluindo seu código de país iniciado por \"+\" ou \"00\""
 
-#: views/utils.py:111
-msgid "ManagementForm data is missing or has been tampered."
+#: views/core.py:225
+msgid "Your session has timed out. Please login again."
 msgstr ""
 
-#~ msgid "Please enter a valid token."
-#~ msgstr "Please enter a valid token."
-
-#~ msgid "number"
-#~ msgstr "number"
+#: views/utils.py:139
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr "Dados do ManagementForm estão ausentes ou foram adulterados"

@@ -1,10 +1,10 @@
-# SOME DESCRIPTIVE TITLE.
+# django-two-factor-auth translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the django-two-factor-auth package.
 # 
 # Translators:
-# Translators:
-# Doryan R, 2019
+# Claude Paroz <claude@2xlibre.net>, 2020
+# a270031086f2a0d3514bc0cb507b48f6, 2019
 # bato <francoisconil@gmail.com>, 2014,2018
 # Michael Mior <michael.mior@gmail.com>, 2014
 # Nils Van Zuijlen <nilsdu29@gmail.com>, 2018
@@ -14,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-07 08:46+0200\n"
-"PO-Revision-Date: 2019-02-06 17:43+0000\n"
-"Last-Translator: Doryan R\n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 13:00+0000\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: French (http://www.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +29,6 @@ msgid "Method"
 msgstr "Méthode"
 
 #: forms.py:34 forms.py:49
-#| msgid "Add Phone Number"
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
@@ -38,11 +37,10 @@ msgid "Token"
 msgstr "Jeton"
 
 #: forms.py:61 forms.py:91
-#| msgid "Entered token is not valid"
 msgid "Entered token is not valid."
 msgstr "Le jeton entré est invalide."
 
-#: forms.py:76 forms.py:170 models.py:42
+#: forms.py:76 forms.py:170 models.py:41
 msgid "YubiKey"
 msgstr "YubiKey"
 
@@ -54,14 +52,14 @@ msgstr "La YubiKey n'a pas pu être vérifiée."
 msgid "Yes, I am sure"
 msgstr "Oui, je suis sûr"
 
-#: gateways/twilio/gateway.py:61
+#: gateways/twilio/gateway.py:55
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "Votre jeton d'authentification est %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:70 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:64 gateways/twilio/views.py:74
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "fr"
@@ -70,9 +68,6 @@ msgstr "fr"
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:39
 #, python-format
-#| msgid ""
-#| "is is %(site_name)s calling. Please enter the following code on r "
-#| "screen:token)s. Repeat: %(token)s."
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
 msgstr "Bonjour, ceci est un appel de %(site_name)s. Appuyez sur une touche pour continuer."
 
@@ -86,31 +81,28 @@ msgstr "Votre jeton est %(token)s. Je répète: %(token)s. Au revoir."
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
 #: gateways/twilio/views.py:48
-#| msgid "You don't have any backup codes yet."
 msgid "You didn't press any keys. Good bye."
 msgstr "Vous n'avez appuyé sur aucune touche. Au revoir."
 
-#: models.py:25
+#: models.py:24
 msgid "Phone Call"
 msgstr "Appel téléphonique"
 
-#: models.py:26
+#: models.py:25
 msgid "Text Message"
 msgstr "Message texte"
 
-#: models.py:33
-#| msgid "Phone Call"
+#: models.py:32
 msgid "Phone call"
 msgstr "Appel téléphonique"
 
-#: models.py:35
-#| msgid "Text Message"
+#: models.py:34
 msgid "Text message"
 msgstr "Message texte"
 
-#: models.py:47
+#: models.py:46
 msgid "Token generator"
-msgstr "Générateur des jetons"
+msgstr "Générateur de jetons"
 
 #: models.py:75
 msgid "method"
@@ -132,20 +124,19 @@ msgstr "Suivante"
 #: templates/two_factor/core/backup_tokens.html:5
 #: templates/two_factor/profile/profile.html:37
 msgid "Backup Tokens"
-msgstr "Jetons de sauvegarde"
+msgstr "Jetons de secours"
 
 #: templates/two_factor/core/backup_tokens.html:6
 msgid ""
-"Backup tokens can be used when your primary and backup\n"
-"      phone numbers aren't available. The backup tokens below can be used\n"
-"      for login verification. If you've used up all your backup tokens, you\n"
-"      can generate a new set of backup tokens. Only the backup tokens shown\n"
-"      below will be valid."
-msgstr "Les jetons de secours peuvent être utilisés quand vos numéros\n      de téléphone primaire et de secours ne sont pas disponibles. Les jetons de secours ci-dessous peuvent être utilisés\n      pour la vérification de la connexion. Si vous avez utilisé tous vos jetons de secours, vous\n      pouvez générer une nouvelle série de jetons. Seuls les jetons de secours affichés\n      ci-dessous seront valides."
+"Backup tokens can be used when your primary and backup phone numbers aren't "
+"available. The backup tokens below can be used for login verification. If "
+"you've used up all your backup tokens, you can generate a new set of backup "
+"tokens. Only the backup tokens shown below will be valid."
+msgstr "Les jetons de secours peuvent être utilisés quand vos numéros de téléphone primaire et de secours ne sont pas disponibles. Les jetons de secours ci-dessous peuvent être utilisés pour la vérification de la connexion. Si vous avez utilisé tous vos jetons de secours, vous pouvez générer une nouvelle série de jetons. Seuls les jetons de secours affichés ci-dessous seront valides."
 
 #: templates/two_factor/core/backup_tokens.html:18
 msgid "Print these tokens and keep them somewhere safe."
-msgstr "Imprimer ces jetons et gardez-les en lieu sûr."
+msgstr "Imprimez ces jetons et gardez-les en lieu sûr."
 
 #: templates/two_factor/core/backup_tokens.html:20
 msgid "You don't have any backup codes yet."
@@ -153,7 +144,7 @@ msgstr "Vous n'avez aucun code de secours pour l'instant."
 
 #: templates/two_factor/core/backup_tokens.html:25
 msgid "Back to Account Security"
-msgstr "Retour au securité du compte"
+msgstr "Retour à la sécurité du compte"
 
 #: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
@@ -165,32 +156,28 @@ msgstr "Se connecter"
 
 #: templates/two_factor/core/login.html:8
 msgid "Enter your credentials."
-msgstr "Entrez vos identifiants"
+msgstr "Entrez vos identifiants."
 
 #: templates/two_factor/core/login.html:11
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"        digits you hear."
-msgstr "Nous essayons de vous contacter au numéro fourni à l'instant.\nVeuillez entrer les numéros que vous entendez."
+#: templates/two_factor/core/setup.html:29
+msgid "We are calling your phone right now, please enter the digits you hear."
+msgstr "Nous essayons de vous contacter au numéro fourni à l'instant. Veuillez entrer les numéros que vous entendez."
 
 #: templates/two_factor/core/login.html:14
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"        sent."
-msgstr "Vous avez reçu un SMS, veuillez entrer les jetons\nque nous avons envoyés."
+#: templates/two_factor/core/setup.html:32
+msgid "We sent you a text message, please enter the tokens we sent."
+msgstr "Vous avez reçu un texto (SMS), veuillez entrer les jetons que nous avons envoyés."
 
 #: templates/two_factor/core/login.html:17
-msgid ""
-"Please enter the tokens generated by your token\n"
-"        generator."
-msgstr "Veuillez entrer les jetons générés par votre\ngénérateur de jetons."
+msgid "Please enter the tokens generated by your token generator."
+msgstr "Veuillez entrer les jetons générés par votre générateur de jetons."
 
 #: templates/two_factor/core/login.html:21
 msgid ""
-"Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. Please\n"
-"      enter one of these backup tokens to login to your account."
-msgstr "Utilisez ce formulaire pour entrer des jetons de secours pour vous connecter.\n      Ces jetons ont été générés pour que vous les imprimiez et les gardiez en sécurité. Merci\n      d'entrer un de ces jetons de secours pour vous connecter à votre compte."
+"Use this form for entering backup tokens for logging in. These tokens have "
+"been generated for you to print and keep safe. Please enter one of these "
+"backup tokens to login to your account."
+msgstr "Utilisez ce formulaire pour entrer des jetons de secours pour vous connecter. Ces jetons ont été générés pour que vous les imprimiez et les gardiez en sécurité. Merci d’entrer un de ces jetons de secours pour vous connecter à votre compte."
 
 #: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
@@ -201,9 +188,8 @@ msgid "As a last resort, you can use a backup token:"
 msgstr "En dernier recours, vous pouvez utiliser un jeton de secours :"
 
 #: templates/two_factor/core/login.html:46
-#| msgid "Backup Tokens"
 msgid "Use Backup Token"
-msgstr "Utiliser jeton de sauvegarde"
+msgstr "Utiliser un jeton de secours"
 
 #: templates/two_factor/core/otp_required.html:5
 msgid "Permission Denied"
@@ -211,17 +197,17 @@ msgstr "Permission refusée"
 
 #: templates/two_factor/core/otp_required.html:7
 msgid ""
-"The page you requested, enforces users to verify using\n"
-"    two-factor authentication for security reasons. You need to enable these\n"
-"    security features in order to access this page."
-msgstr "La page que vous avez demandée, force les utilisateurs à s'authentifier en utilisant\n    l'authentification à deux facteurs pour des raisons de sécurité. Vous devez activer ces\n    fonctions de sécurité afin d'accéder à cette page."
+"The page you requested, enforces users to verify using two-factor "
+"authentication for security reasons. You need to enable these security "
+"features in order to access this page."
+msgstr "La page que vous avez demandée force les utilisateurs à s'authentifier en utilisant l’authentification à deux facteurs pour des raisons de sécurité. Vous devez activer ces fonctions de sécurité afin d'accéder à cette page."
 
 #: templates/two_factor/core/otp_required.html:11
+#: templates/two_factor/profile/profile.html:56
 msgid ""
-"Two-factor authentication is not enabled for your\n"
-"    account. Enable two-factor authentication for enhanced account\n"
-"    security."
-msgstr "L'authentification à deux facteurs n'est pas activée pour votre\n    compte. Activez l'authentification à deux facteurs pour augmenter la sécurité de\n    votre compte."
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
+msgstr "L'authentification à deux facteurs n'est pas activée pour votre compte. Activez l'authentification à deux facteurs pour augmenter la sécurité de votre compte."
 
 #: templates/two_factor/core/otp_required.html:16
 msgid "Go back"
@@ -236,104 +222,78 @@ msgstr "Activer l'authentification à deux facteurs"
 
 #: templates/two_factor/core/phone_register.html:5
 msgid "Add Backup Phone"
-msgstr "Ajouter un téléphone de sauvegarde"
+msgstr "Ajouter un téléphone de secours"
 
 #: templates/two_factor/core/phone_register.html:8
 msgid ""
-"You'll be adding a backup phone number to your\n"
-"        account. This number will be used if your primary method of\n"
-"        registration is not available."
-msgstr "Vous allez ajouter un numéro de téléphone de secours à votre\ncompte.Ce numéro sera utilisé si la méthode que vous avez utilisée pour\nvous inscrire n'est pas disponible."
+"You'll be adding a backup phone number to your account. This number will be "
+"used if your primary method of registration is not available."
+msgstr "Vous allez ajouter un numéro de téléphone de secours à votre compte. Ce numéro sera utilisé si la méthode que vous avez utilisée pour vous inscrire n'est pas disponible."
 
 #: templates/two_factor/core/phone_register.html:12
 msgid ""
-"We've sent a token to your phone number. Please\n"
-"        enter the token you've received."
-msgstr "Nous vous avons envoyé un jeton par téléphone.\nVeuillez entrer le jeton que vous avez reçu."
+"We've sent a token to your phone number. Please enter the token you've "
+"received."
+msgstr "Nous vous avons envoyé un jeton par téléphone. Veuillez entrer le jeton que vous avez reçu."
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
-"You are about to take your account security to the\n"
-"        next level. Follow the steps in this wizard to enable two-factor\n"
-"        authentication."
-msgstr "Vous êtes sur le point d'augmenter la sécurité de \nvotre compte. Suivez les étapes de cet assistant pour activer\nl'authentification à deux facteurs "
+"You are about to take your account security to the next level. Follow the "
+"steps in this wizard to enable two-factor authentication."
+msgstr "Vous êtes sur le point d'augmenter la sécurité de votre compte. Suivez les étapes de cet assistant pour activer l’authentification à deux facteurs."
 
 #: templates/two_factor/core/setup.html:11
-msgid ""
-"Please select which authentication method you would\n"
-"        like to use."
-msgstr "Veuillez choisir votre méthode d'authentification\npréférée"
+msgid "Please select which authentication method you would like to use."
+msgstr "Veuillez choisir la méthode d’authentification que vous souhaitez utiliser."
 
 #: templates/two_factor/core/setup.html:14
 msgid ""
-"To start using a token generator, please use your\n"
-"        smartphone to scan the QR code below. For example, use Google\n"
-"        Authenticator. Then, enter the token generated by the app.\n"
-"        "
-msgstr "Pour utiliser un générateur de jetons, veuillez scanner\nle code QR si dessous avec votre téléphone. Utilisez Google\nAuthenticator par exemple. Ensuite, entrez le jeton généré par l'application"
+"To start using a token generator, please use your smartphone to scan the QR "
+"code below. For example, use Google Authenticator. Then, enter the token "
+"generated by the app."
+msgstr "Pour utiliser un générateur de jetons, veuillez scanner le code QR ci-dessous avec votre téléphone. Utilisez par exemple Google Authenticator. Ensuite, entrez le jeton généré par l'application."
 
 #: templates/two_factor/core/setup.html:20
 msgid ""
-"Please enter the phone number you wish to receive the\n"
-"      text messages on. This number will be validated in the next step.\n"
-"      "
-msgstr "Veuillez entrer le numéro qui sera utilisé pour recevoir\ndes SMS. Ce numéro sera validé à la prochaine étape."
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
+msgstr "Veuillez entrer le numéro qui sera utilisé pour recevoir des SMS. Ce numéro sera validé à la prochaine étape."
 
 #: templates/two_factor/core/setup.html:24
 msgid ""
-"Please enter the phone number you wish to be called on.\n"
-"      This number will be validated in the next step. "
-msgstr "Veuillez entrer le numéro qui sera utilisé pour vous\ncontacter. Ce numéro sera validé à la prochaine étape."
-
-#: templates/two_factor/core/setup.html:29
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"          digits you hear."
-msgstr "Nous appelons votre téléphone dès maintenant, veuillez entrer le\nchiffres que vous entendez."
-
-#: templates/two_factor/core/setup.html:32
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"          sent."
-msgstr "Nous vous avons envoyé un message texte, veuillez entrer les jetons que nous avons envoyer."
+"Please enter the phone number you wish to be called on. This number will be "
+"validated in the next step."
+msgstr "Veuillez entrer le numéro qui sera utilisé pour vous contacter. Ce numéro sera validé à la prochaine étape."
 
 #: templates/two_factor/core/setup.html:36
 msgid ""
-"We've\n"
-"        encountered an issue with the selected authentication method. Please\n"
-"        go back and verify that you entered your information correctly, try\n"
-"        again, or use a different authentication method instead. If the issue\n"
-"        persists, contact the site administrator."
-msgstr "Nous avons\nrencontré un problème avec la méthode d'authentification sélectionnée. S'il vous plaît\nrevenir en arrière et vérifier que vous avez entré vos informations correctement, essayez\nà nouveau, ou utilisez une autre méthode d’authentification. Si le problème\npersiste, contactez l'administrateur du site."
+"We've encountered an issue with the selected authentication method. Please "
+"go back and verify that you entered your information correctly, try again, "
+"or use a different authentication method instead. If the issue persists, "
+"contact the site administrator."
+msgstr "Nous avons rencontré un problème avec la méthode d’authentification sélectionnée. S'il vous plaît, revenez en arrière et vérifiez que vous avez entré vos informations correctement, essayez à nouveau, ou utilisez une autre méthode d’authentification. Si le problème persiste, contactez l’administrateur du site."
 
 #: templates/two_factor/core/setup.html:43
 msgid ""
-"To identify and verify your YubiKey, please insert a\n"
-"      token in the field below. Your YubiKey will be linked to your\n"
-"      account."
-msgstr "Pour identifier et vérifier votre YubiKey, merci d'insérer un\n      jeton dans le champ ci-dessous. Votre YubiKey sera liée à votre\n      compte."
+"To identify and verify your YubiKey, please insert a token in the field "
+"below. Your YubiKey will be linked to your account."
+msgstr "Pour identifier et vérifier votre YubiKey, merci de saisir un jeton dans le champ ci-dessous. Votre YubiKey sera liée à votre compte."
 
 #: templates/two_factor/core/setup_complete.html:7
-#| msgid ""
-#| "tulations, you've successfully enabled\n"
-#| "o-factor authentication."
 msgid ""
-"Congratulations, you've successfully enabled two-factor\n"
-"      authentication."
-msgstr "Félicitations, vous avez activé avec succès l'authentification à\n      deux facteurs."
+"Congratulations, you've successfully enabled two-factor authentication."
+msgstr "Félicitations, vous avez activé l’authentification à deux facteurs avec succès."
 
 #: templates/two_factor/core/setup_complete.html:12
 #: templates/two_factor/core/setup_complete.html:19
-#| msgid "Back to profile"
 msgid "Back to Profile"
 msgstr "Retour au profil"
 
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
-"However, it might happen that you don't have access to\n"
-"      your primary token device. To enable account recovery, add a phone \n"
-"      number."
-msgstr "Cependant, il peut arriver que vous n'ayez pas accès à\n      votre appareil principal. Pour activer la récupération de compte, ajoutez un numéro de \n      téléphone."
+"However, it might happen that you don't have access to your primary token "
+"device. To enable account recovery, add a phone number."
+msgstr "Cependant, il peut arriver que vous n’ayez pas accès à votre appareil principal. Pour activer la récupération de compte, ajoutez un numéro de téléphone."
 
 #: templates/two_factor/core/setup_complete.html:21
 #: templates/two_factor/profile/profile.html:34
@@ -345,13 +305,10 @@ msgid "Disable Two-factor Authentication"
 msgstr "Désactiver l'authentification à deux facteurs"
 
 #: templates/two_factor/profile/disable.html:6
-#| msgid ""
-#| "e about to disable two-factor authentication. This\n"
-#| "mpromises your account security, are you sure?"
 msgid ""
-"You are about to disable two-factor authentication. This\n"
-"    weakens your account security, are you sure?"
-msgstr "Vous êtes sur le point de désactiver l'authentification à deux facteurs. Cela\naffaiblira la sécurité du compte compte, êtes-vous sûr?"
+"You are about to disable two-factor authentication. This weakens your "
+"account security, are you sure?"
+msgstr "Vous êtes sur le point de désactiver l'authentification à deux facteurs. Cela affaiblira la sécurité du compte, en êtes-vous sûr ?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -371,22 +328,18 @@ msgid "Primary method: %(primary)s"
 msgstr "Méthode principale: %(primary)s"
 
 #: templates/two_factor/profile/profile.html:13
-#| msgid "Tokens will be generated by your token generator."
 msgid "Tokens will be generated by your YubiKey."
 msgstr "Des jetons vont être générés par votre YubiKey."
 
 #: templates/two_factor/profile/profile.html:17
 msgid "Backup Phone Numbers"
-msgstr "Numéros de sauvegarde"
+msgstr "Numéros de téléphone de secours"
 
 #: templates/two_factor/profile/profile.html:18
-#| msgid ""
-#| "r primary method is not available, we are able to\n"
-#| "send backup tokens to the phone numbers listed below."
 msgid ""
-"If your primary method is not available, we are able to\n"
-"        send backup tokens to the phone numbers listed below."
-msgstr "Si votre méthode principale n’est pas disponible, nous pouvons\nenvoyez des jetons de sauvegarde aux numéros de téléphone indiqués ci-dessous."
+"If your primary method is not available, we are able to send backup tokens "
+"to the phone numbers listed below."
+msgstr "Si la méthode principale que vous avez utilisée pour vous inscrire n'est pas disponible, nous pouvons envoyer des jetons de secours aux numéros de téléphone ci-dessous."
 
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
@@ -394,22 +347,16 @@ msgstr "Désinscrire"
 
 #: templates/two_factor/profile/profile.html:39
 msgid ""
-"If you don't have any device with you, you can access\n"
-"        your account using backup tokens."
-msgstr "Si vous n'avez aucun appareil sur vous, vous pouvez accéder à votre\ncompte en utilisant des jetons de secours."
+"If you don't have any device with you, you can access your account using "
+"backup tokens."
+msgstr "Si vous n'avez aucun appareil sur vous, vous pouvez accéder à votre compte en utilisant des jetons de secours."
 
 #: templates/two_factor/profile/profile.html:41
 #, python-format
-msgid ""
-"\n"
-"        You have only one backup token remaining.\n"
-"      "
-msgid_plural ""
-"\n"
-"        You have %(counter)s backup tokens remaining.\n"
-"      "
-msgstr[0] "\nVous n'avez plus qu'un jeton de secours restant."
-msgstr[1] "\n        Vous avez %(counter)s jetons de secours restants."
+msgid "You have only one backup token remaining."
+msgid_plural "You have %(counter)s backup tokens remaining."
+msgstr[0] "Il ne vous reste plus qu’un jeton de secours."
+msgstr[1] "Il vous reste %(counter)s jetons de secours."
 
 #: templates/two_factor/profile/profile.html:48
 msgid "Show Codes"
@@ -422,16 +369,9 @@ msgstr "Désactiver l'authentification à deux facteurs"
 
 #: templates/two_factor/profile/profile.html:51
 msgid ""
-"However we strongly discourage you to do so, you can\n"
-"      also disable two-factor authentication for your account."
-msgstr "Bien que cela soit fortement déconseillé, vous pouvez\naussi désactiver l'authentification à deux facteurs pour votre compte."
-
-#: templates/two_factor/profile/profile.html:56
-msgid ""
-"Two-factor authentication is not enabled for your\n"
-"      account. Enable two-factor authentication for enhanced account\n"
-"      security."
-msgstr "L'authentification à deux facteurs n'est pas activée pour votre\n      compte. Activez l'authentification à deux facteurs pour améliorer la sécurité\n      de votre compte."
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
+msgstr "Bien que cela soit fortement déconseillé, vous pouvez aussi désactiver l'authentification à deux facteurs pour votre compte."
 
 #: templatetags/two_factor.py:56
 #, python-format
@@ -449,12 +389,10 @@ msgid ""
 " + or 00."
 msgstr "Veuillez entrer un numéro valide, contenant l'indicateur du pays commençant par + ou 00."
 
-#: views/utils.py:111
+#: views/core.py:225
+msgid "Your session has timed out. Please login again."
+msgstr "Votre session a expiré. Veuillez vous reconnecter."
+
+#: views/utils.py:139
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr "Les données ManagementForm sont manquantes ou ont été falsifiées"
-
-#~ msgid "Please enter a valid token."
-#~ msgstr "Please enter a valid token."
-
-#~ msgid "number"
-#~ msgstr "number"
