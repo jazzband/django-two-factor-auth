@@ -1,3 +1,4 @@
+import json
 from unittest import mock
 
 from django.conf import settings
@@ -396,6 +397,19 @@ class LoginTest(UserMixin, TestCase):
 
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
+
+    def test_no_password_in_session(self):
+        self.create_user()
+        self.enable_otp()
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        session_contents = json.dumps(list(self.client.session.items()))
+
+        self.assertNotIn('secret', session_contents)
 
 
 class BackupTokensTest(UserMixin, TestCase):
