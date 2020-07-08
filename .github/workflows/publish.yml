@@ -19,7 +19,7 @@ jobs:
         id: vars
         run: |
           [[ ! $GITHUB_REF == refs/tags/* ]] && echo ::set-output name=version::$(git describe --tags | sed -r 's/-(.*?)-(.*?)$/.dev\1/g') || true
-          [[ $GITHUB_REF == refs/tags/* ]] && echo ::set-output name=version::${GITHUB_REF#refs/*/test-} || true
+          [[ $GITHUB_REF == refs/tags/* ]] && echo ::set-output name=version::${GITHUB_REF#refs/*/} || true
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
