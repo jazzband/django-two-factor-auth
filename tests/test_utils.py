@@ -9,7 +9,8 @@ from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
 from two_factor.views.utils import (
-    get_remember_device_cookie, validate_remember_device_cookie, salted_hmac_sha256,
+    get_remember_device_cookie, salted_hmac_sha256,
+    validate_remember_device_cookie,
 )
 
 from .utils import UserMixin
