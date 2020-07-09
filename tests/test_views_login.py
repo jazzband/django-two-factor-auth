@@ -1,5 +1,5 @@
-from time import sleep
 import json
+from time import sleep
 from unittest import mock
 
 from django.conf import settings
