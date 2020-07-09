@@ -1,6 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
+# django-two-factor-auth example translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the django-two-factor-auth package.
 # 
 # Translators:
 # Translators:
@@ -9,17 +9,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-13 08:01+0100\n"
-"PO-Revision-Date: 2014-01-15 09:12+0000\n"
-"Last-Translator: mozillazg <opensource.mozillazg@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/django-two-factor-auth/language/zh_CN/)\n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 06:54+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Bouke/django-two-factor-auth/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: gateways.py:10
+#: gateways.py:11
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
 msgstr "呼叫 %(number)s: \"Your token is: %(token)s\""
@@ -70,17 +70,14 @@ msgid "django-two-factor-auth – Demo Application"
 msgstr "django-two-factor-auth – 示例应用"
 
 #: templates/home.html:8
-msgid ""
-"Improve Your Security <small>your users will thank\n"
-"    you</small>"
-msgstr "提高您的安全性 <small>您的用户会感谢您的</small>"
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr ""
 
 #: templates/home.html:10
 msgid ""
-"Welcome to the example app of\n"
-"      <code>django-two-factor-auth</code>. Use this example to get an\n"
-"    understanding of what the app can do for you."
-msgstr "欢迎来到 <code>django-two-factor-auth</code> 示例应用。通过使用这个示例站点您可以更好的理解我们的应用能为你实现哪些功能。"
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr ""
 
 #: templates/home.html:14
 msgid "Please verify your settings"
@@ -88,11 +85,11 @@ msgstr "请验证您的设置"
 
 #: templates/home.html:15
 msgid ""
-"Have you provided your Twilio settings in the\n"
-"      <code>settings_private.py</code> file? By doing so, the example app will\n"
-"      be able to call and text you to verify your authentication tokens.\n"
-"      Otherwise, the tokens will be shown on the screen."
-msgstr "您有在 <code>settings_private.py</code> 文件中配好 Twilio 相关的配置项吗？配好后，示例应用就可以通过呼叫您或给您发短信的方式来验证您的授权验证码了。否则，验证码将被直接显示在屏幕上。"
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr ""
 
 #: templates/home.html:26
 msgid "Next steps:"
@@ -100,39 +97,33 @@ msgstr "下一步："
 
 #: templates/home.html:28
 #, python-format
-msgid ""
-"Start by <a href=\"%(reg_url)s\">registering</a> an\n"
-"      account."
-msgstr "从 <a href=\"%(reg_url)s\">注册</a> 账户开始。"
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr ""
 
 #: templates/home.html:30
 #, python-format
-msgid ""
-"<a href=\"%(login_url)s\">Login</a> to your account.\n"
-"      "
-msgstr "<a href=\"%(login_url)s\">登录</a> 账户。\n      "
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr ""
 
 #: templates/home.html:32
 #, python-format
-msgid ""
-"<a href=\"%(setup_url)s\">Enable</a> two-factor\n"
-"      authentication."
-msgstr "<a href=\"%(setup_url)s\">启动</a> 两步验证。"
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr ""
 
 #: templates/home.html:34
 #, python-format
 msgid ""
-"Then, <a href=\"%(logout_url)s\">logout</a> and\n"
-"      <a href=\"%(login_url)s\">login</a> once more to your account to see\n"
-"      two-factor authentication at work."
-msgstr "然后，<a href=\"%(logout_url)s\">退出</a> 再\n      <a href=\"%(login_url)s\">登录</a> 多试几次以便确认两步验证功能是否生效。"
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr ""
 
 #: templates/home.html:37
 #, python-format
 msgid ""
-"At last, you've gained access to the\n"
-"      <a href=\"%(secret_url)s\">secret page</a>! :-)"
-msgstr "最后，您获得了访问 <a href=\"%(secret_url)s\">私密页面</a> 的权限！<(=⌒_⌒=)>"
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr ""
 
 #: templates/registration.html:5
 msgid "Registration"
@@ -142,22 +133,6 @@ msgstr "注册"
 msgid "Register"
 msgstr "注册"
 
-#: templates/registration_complete.html:5
-msgid "Registration Complete"
-msgstr "注册完成"
-
-#: templates/registration_complete.html:6
-msgid ""
-"Congratulations, you've successfully registered an\n"
-"    account."
-msgstr "恭喜，您成功注册了一个账户。"
-
-#: templates/secret.html:9
-msgid ""
-"Congratulations, you've made it. You have successfully\n"
-"    enabled two-factor authentication and logged in with your token."
-msgstr "恭喜，您做到了。您成功启用了两步验证并成功使用验证码进行登录。"
-
 #: templates/registration/logged_out.html:5
 msgid "Logged Out"
 msgstr "已退出"
@@ -165,3 +140,17 @@ msgstr "已退出"
 #: templates/registration/logged_out.html:6
 msgid "See you around!"
 msgstr "拜拜！ 〽(ㄒ〰ㄒ=)>"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "注册完成"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr ""
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr ""

@@ -73,6 +73,13 @@ General Settings
      `the upstream ticket`_). Don't set this option to 8 unless all of your
      users use a 8 digit compatible token generator app.
 
+``TWO_FACTOR_LOGIN_TIMEOUT`` (default ``600``)
+  The number of seconds between a user successfully passing the "authentication"
+  step (usually by entering a valid username and password) and them having to
+  restart the login flow and re-authenticate. This ensures that users can't sit
+  indefinately in a state of having entered their password successfully but not
+  having passed two factor authentication. Set to ``0`` to disable.
+
 ``PHONENUMBER_DEFAULT_REGION`` (default: ``None``)
   The default region for parsing phone numbers. If your application's primary
   audience is a certain country, setting the region to that country allows

@@ -1,4 +1,5 @@
 from time import sleep
+import json
 from unittest import mock
 
 from django.conf import settings
@@ -89,6 +90,100 @@ class LoginTest(UserMixin, TestCase):
              'login_view-current_step': 'auth'})
         self.assertRedirects(response, reverse('two_factor:profile'), fetch_redirect_response=False)
 
+    @mock.patch('two_factor.views.core.time')
+    def test_valid_login_primary_key_stored(self, mock_time):
+        mock_time.time.return_value = 12345.12
+        user = self.create_user()
+        user.totpdevice_set.create(name='default',
+                                   key=random_hex_str())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
+        self.assertEqual(
+            self.client.session['wizard_login_view']['user_backend'],
+            'django.contrib.auth.backends.ModelBackend')
+        self.assertEqual(self.client.session['wizard_login_view']['authentication_time'], 12345)
+
+    @mock.patch('two_factor.views.core.time')
+    def test_valid_login_post_auth_session_clear_of_form_data(self, mock_time):
+        mock_time.time.return_value = 12345.12
+        user = self.create_user()
+        user.totpdevice_set.create(name='default',
+                                   key=random_hex_str())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
+        self.assertEqual(self.client.session['wizard_login_view']['step'], 'token')
+        self.assertEqual(self.client.session['wizard_login_view']['step_data'], {'auth': None})
+        self.assertEqual(self.client.session['wizard_login_view']['step_files'], {'auth': {}})
+        self.assertEqual(self.client.session['wizard_login_view']['validated_step_data'], {})
+
+    @mock.patch('two_factor.views.core.logger')
+    @mock.patch('two_factor.views.core.time')
+    def test_valid_login_expired(self, mock_time, mock_logger):
+        mock_time.time.return_value = 12345.12
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
+        self.assertEqual(
+            self.client.session['wizard_login_view']['user_backend'],
+            'django.contrib.auth.backends.ModelBackend')
+        self.assertEqual(self.client.session['wizard_login_view']['authentication_time'], 12345)
+
+        mock_time.time.return_value = 20345.12
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'Token:')
+        self.assertContains(response, 'Password:')
+        self.assertContains(response, 'Your session has timed out. Please login again.')
+
+        # Check that a message was logged.
+        mock_logger.info.assert_called_with(
+            "User's authentication flow has timed out. The user "
+            "has been redirected to the initial auth form.")
+
+    @override_settings(TWO_FACTOR_LOGIN_TIMEOUT=0)
+    @mock.patch('two_factor.views.core.time')
+    def test_valid_login_no_timeout(self, mock_time):
+        mock_time.time.return_value = 12345.12
+        user = self.create_user()
+        device = user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
+        self.assertEqual(
+            self.client.session['wizard_login_view']['user_backend'],
+            'django.contrib.auth.backends.ModelBackend')
+        self.assertEqual(self.client.session['wizard_login_view']['authentication_time'], 12345)
+
+        mock_time.time.return_value = 20345.12
+
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(self.client.session['_auth_user_id'], str(user.pk))
 
     def test_valid_login_with_redirect_authenticated_user(self):
         user = self.create_user()
@@ -259,35 +354,6 @@ class LoginTest(UserMixin, TestCase):
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
     @mock.patch('two_factor.views.utils.logger')
-    def test_change_password_in_between(self, mock_logger):
-        """
-        When the password of the user is changed while trying to login, should
-        not result in errors. Refs #63.
-        """
-        user = self.create_user()
-        self.enable_otp()
-
-        response = self._post({'auth-username': 'bouke@example.com',
-                               'auth-password': 'secret',
-                               'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
-
-        # Now, the password is changed. When the form is submitted, the
-        # credentials should be checked again. If that's the case, the
-        # login form should note that the credentials are invalid.
-        user.set_password('secret2')
-        user.save()
-        response = self._post({'login_view-current_step': 'token'})
-        self.assertContains(response, 'Please enter a correct')
-        self.assertContains(response, 'and password.')
-
-        # Check that a message was logged.
-        mock_logger.warning.assert_called_with(
-            "Current step '%s' is no longer valid, returning to last valid "
-            "step in the wizard.",
-            'token')
-
-    @mock.patch('two_factor.views.utils.logger')
     def test_reset_wizard_state(self, mock_logger):
         self.create_user()
         self.enable_otp()
@@ -338,6 +404,19 @@ class LoginTest(UserMixin, TestCase):
 
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
+
+    def test_no_password_in_session(self):
+        self.create_user()
+        self.enable_otp()
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        session_contents = json.dumps(list(self.client.session.items()))
+
+        self.assertNotIn('secret', session_contents)
 
 
 class BackupTokensTest(UserMixin, TestCase):
