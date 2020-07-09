@@ -2,6 +2,7 @@ from binascii import unhexlify
 from time import time
 
 from django import forms
+from django.conf import settings
 from django.forms import Form, ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPAuthenticationFormMixin
@@ -168,6 +169,24 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
         if RemoteYubikeyDevice and YubikeyDevice and \
                 isinstance(initial_device, (RemoteYubikeyDevice, YubikeyDevice)):
             self.fields['otp_token'] = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput())
+
+        # Add a field to remeber this browser.
+        if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
+            if settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600:
+                minutes = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 60)
+                label = _("Don't ask again on this device for %(minutes)i minutes") % {'minutes': minutes}
+            elif settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600 * 24:
+                hours = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 3600)
+                label = _("Don't ask again on this device for %(hours)i hours") % {'hours': hours}
+            else:
+                days = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 3600 / 24)
+                label = _("Don't ask again on this device for %(days)i days") % {'days': days}
+
+            self.fields['remember'] = forms.BooleanField(
+                required=False,
+                initial=True,
+                label=label
+            )
 
     def clean(self):
         self.clean_otp(self.user)

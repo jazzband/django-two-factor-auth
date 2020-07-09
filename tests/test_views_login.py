@@ -1,4 +1,5 @@
 import json
+from time import sleep
 from unittest import mock
 
 from django.conf import settings
@@ -287,9 +288,12 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We sent you a text message')
-                fake.return_value.send_sms.assert_called_with(
-                    device=device,
-                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
+
+                test_call_kwargs = fake.return_value.send_sms.call_args[1]
+                self.assertEqual(test_call_kwargs['device'], device)
+                self.assertIn(test_call_kwargs['token'],
+                              [str(totp(device.bin_key, digits=no_digits, drift=i)).zfill(no_digits)
+                               for i in [-1, 0]])
 
                 # Ask for phone challenge
                 device.method = 'call'
@@ -298,9 +302,12 @@ class LoginTest(UserMixin, TestCase):
                                        'auth-password': 'secret',
                                        'challenge_device': device.persistent_id})
                 self.assertContains(response, 'We are calling your phone right now')
-                fake.return_value.make_call.assert_called_with(
-                    device=device,
-                    token=str(totp(device.bin_key, digits=no_digits)).zfill(no_digits))
+
+                test_call_kwargs = fake.return_value.make_call.call_args[1]
+                self.assertEqual(test_call_kwargs['device'], device)
+                self.assertIn(test_call_kwargs['token'],
+                              [str(totp(device.bin_key, digits=no_digits, drift=i)).zfill(no_digits)
+                               for i in [-1, 0]])
 
             # Valid token should be accepted.
             response = self._post({'token-otp_token': totp(device.bin_key),
@@ -442,3 +449,222 @@ class BackupTokensTest(UserMixin, TestCase):
         second_set = set([token.token for token in
                          response.context_data['device'].token_set.all()])
         self.assertNotEqual(first_set, second_set)
+
+@override_settings(ROOT_URLCONF='tests.urls_admin')
+class RememberLoginTest(UserMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.device = self.user.totpdevice_set.create(name='default',
+                                            key=random_hex_str())
+    def _post(self, data=None):
+        return self.client.post(reverse('two_factor:login'), data=data)
+
+    def set_invalid_remember_cookie(self):
+        for cookie in self.client.cookies:
+            if cookie.startswith("remember-cookie_"):
+                self._restore_remember_cookie_data = dict(name=cookie, value=self.client.cookies[cookie].value)
+                self.client.cookies[cookie] = self.client.cookies[cookie].value[:-5] + "0"*5   # an invalid key
+
+    def restore_remember_cookie(self):
+        self.client.cookies[self._restore_remember_cookie_data['name']] = self._restore_remember_cookie_data['value']
+
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_with_remember(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Login without token
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60*3,
+    )
+    def test_with_remember_label_3_min(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 3 minutes')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60 * 4,
+    )
+    def test_with_remember_label_4_hours(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 4 hours')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60 * 24 * 5,
+    )
+    def test_with_remember_label_5_days(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'ask again on this device for 5 days')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_without_remember(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(self.device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertEqual(0, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=1,
+    )
+    def test_expired(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        # Wait to expire
+        sleep(1)
+
+        # Login but expired remember cookie
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+        self.assertFalse(any(
+            key.startswith('remember-cookie_') and cookie.value
+            for key, cookie in self.client.cookies.items()
+        ))
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60*60,
+    )
+    def test_wrong_signature(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        response = self._post({'token-otp_token': totp(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+        response = self.client.get('/secure/raises/')
+        self.assertEqual(response.status_code, 403)
+
+        self.set_invalid_remember_cookie()
+
+        # Login but exired remember cookie
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertContains(response, 'Token:')
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+        OTP_HOTP_THROTTLE_FACTOR=60 * 60,
+        OTP_TOTP_THROTTLE_FACTOR=60 * 60,
+    )
+    def test_remeber_token_throttling(self):
+        # Login
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        # Enter token
+        response = self._post({'token-otp_token': totp(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
+
+        # Logout
+        self.client.get(reverse('logout'))
+
+
+        # Login having an invalid remember cookie
+        self.set_invalid_remember_cookie()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        # Login with valid remember cookie but throttled
+        self.client = self.client_class()
+        self.restore_remember_cookie()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        # Reset throttling
+        self.device.throttle_reset()
+
+        # Login with valid remember cookie
+        self.client = self.client_class()
+        self.restore_remember_cookie()
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+
+
+
+

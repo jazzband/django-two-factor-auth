@@ -1,10 +1,16 @@
+from unittest import mock
 from urllib.parse import parse_qsl, urlparse
 
-from django.test import TestCase
+from django.contrib.auth.hashers import make_password
+from django.test import TestCase, override_settings
 
 from two_factor.models import PhoneDevice, random_hex_str
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
+)
+from two_factor.views.utils import (
+    get_remember_device_cookie, salted_hmac_sha256,
+    validate_remember_device_cookie,
 )
 
 from .utils import UserMixin
@@ -94,3 +100,41 @@ class UtilsTest(UserMixin, TestCase):
         self.assertIsInstance(h, str)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
+
+    @override_settings(
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_create_and_validate_remember_cookie(self):
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
+        cookie_value = get_remember_device_cookie(
+            user=user, otp_device_id="SomeModel/33"
+        )
+        self.assertEqual(len(cookie_value.split(':')), 3)
+        validation_result = validate_remember_device_cookie(
+            cookie=cookie_value,
+            user=user,
+            otp_device_id="SomeModel/33",
+        )
+        self.assertTrue(validation_result)
+
+    def test_wrong_device_hash(self):
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
+
+        cookie_value = get_remember_device_cookie(
+            user=user, otp_device_id="SomeModel/33"
+        )
+        validation_result = validate_remember_device_cookie(
+            cookie=cookie_value,
+            user=user,
+            otp_device_id="SomeModel/34",
+        )
+        self.assertFalse(validation_result)
+
+    def test_salted_hmac_sha256(self):
+        hmac_with_secret = salted_hmac_sha256("blah", "blah", "my-new-secret")
+        hmac_without_secret = salted_hmac_sha256("blah", "blah")
+        self.assertNotEqual(hmac_with_secret, hmac_without_secret)
