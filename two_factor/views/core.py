@@ -275,25 +275,24 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
             return False
 
         user = self.get_user()
-        if user:
-            devices = list(devices_for_user(user))
-            for key, value in self.request.COOKIES.items():
-                if key.startswith(REMEMBER_COOKIE_PREFIX) and value:
-                    for device in devices:
-                        verify_is_allowed, extra = device.verify_is_allowed()
-                        try:
-                            if verify_is_allowed and validate_remember_device_cookie(
-                                    value,
-                                    user=user,
-                                    otp_device_id=device.persistent_id
-                            ):
-                                user.otp_device = device
-                                device.throttle_reset()
-                                return True
-                        except BadSignature:
-                            device.throttle_increment()
-                            # Remove remember cookies with invalid signature to omit unnecessary throttling
-                            self.cookies_to_delete.append(key)
+        devices = list(devices_for_user(user))
+        for key, value in self.request.COOKIES.items():
+            if key.startswith(REMEMBER_COOKIE_PREFIX) and value:
+                for device in devices:
+                    verify_is_allowed, extra = device.verify_is_allowed()
+                    try:
+                        if verify_is_allowed and validate_remember_device_cookie(
+                                value,
+                                user=user,
+                                otp_device_id=device.persistent_id
+                        ):
+                            user.otp_device = device
+                            device.throttle_reset()
+                            return True
+                    except BadSignature:
+                        device.throttle_increment()
+                        # Remove remember cookies with invalid signature to omit unnecessary throttling
+                        self.cookies_to_delete.append(key)
         return False
 
     def delete_cookies_from_response(self, response):

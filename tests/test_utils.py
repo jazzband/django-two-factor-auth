@@ -9,7 +9,7 @@ from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
 from two_factor.views.utils import (
-    get_remember_device_cookie, validate_remember_device_cookie,
+    get_remember_device_cookie, validate_remember_device_cookie, salted_hmac_sha256,
 )
 
 from .utils import UserMixin
@@ -133,3 +133,7 @@ class UtilsTest(UserMixin, TestCase):
         )
         self.assertFalse(validation_result)
 
+    def test_salted_hmac_sha256(self):
+        hmac_with_secret = salted_hmac_sha256("blah", "blah", "my-new-secret")
+        hmac_without_secret = salted_hmac_sha256("blah", "blah")
+        self.assertNotEqual(hmac_with_secret, hmac_without_secret)

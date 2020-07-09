@@ -136,11 +136,17 @@ serves as a second factor.
 The option to remember a browser is deactived by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
 
 The browser will be remembered as long as
+
 - the cookie that authorizes the browser did not expire,
-- the user did not reset his password, and
+- the user did not reset the password, and
 - the device initially used to authorize the browser is still valid.
 
 The browser is remembered by setting a signed 'remember cookie'.
+
+In order to invalidate remebered browsers after password resets,
+the package relies on the `password` field of the `User` model.
+Please consider this in case you do not use the `password` field
+e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
 
 ``TWO_FACTOR_REMEMBER_COOKIE_AGE``
   Age in seconds to remember the browser. The remember cookie will expire after the given time interval
