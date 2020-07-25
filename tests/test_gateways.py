@@ -1,6 +1,7 @@
 from unittest.mock import Mock, patch
 from urllib.parse import urlencode
 
+from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -9,6 +10,7 @@ from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
+from two_factor.middleware.threadlocals import get_current_request
 
 
 class TwilioGatewayTest(TestCase):
@@ -75,6 +77,39 @@ class TwilioGatewayTest(TestCase):
                 client.return_value.calls.create.assert_called_with(
                     from_='+456', to='+123', method='GET', timeout=15,
                     url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-gb' % code)
+
+    @override_settings(
+        TWILIO_ACCOUNT_SID='SID',
+        TWILIO_AUTH_TOKEN='TOKEN',
+        TWILIO_CALLER_ID='+456',
+        TWILIO_ERROR_MESSAGE='Error sending SMS'
+    )
+    @patch('two_factor.gateways.twilio.gateway.Client')
+    def test_gateway_error_handled(self, client):
+        twilio = Twilio()
+        client.assert_called_with('SID', 'TOKEN')
+
+        client.return_value.messages.create.side_effect = Mock(side_effect=Exception('Test'))
+        code = '123456'
+        twilio.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+        request = get_current_request()
+        storage = get_messages(request)
+        assert 'Error sending SMS' in [str(message) for message in storage]
+
+    @override_settings(
+        TWILIO_ACCOUNT_SID='SID',
+        TWILIO_AUTH_TOKEN='TOKEN',
+        TWILIO_CALLER_ID='+456',
+    )
+    @patch('two_factor.gateways.twilio.gateway.Client')
+    def test_gateway_error_not_handled(self, client):
+        twilio = Twilio()
+        client.assert_called_with('SID', 'TOKEN')
+
+        client.return_value.messages.create.side_effect = Mock(side_effect=Exception('Test'))
+        with self.assertRaises(Exception):
+            code = '123456'
+            twilio.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
 
     @override_settings(
         TWILIO_ACCOUNT_SID='SID',

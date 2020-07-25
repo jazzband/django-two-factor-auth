@@ -1,6 +1,7 @@
 from urllib.parse import urlencode
 
 from django.conf import settings
+from django.contrib import messages
 from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import gettext, pgettext
@@ -33,6 +34,12 @@ class Twilio(object):
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
 
+    Optionally you may set an error message to display in case of error
+    sending a SMS.
+
+    ``TWILIO_ERROR_MESSAGE``
+      Should be set to a string with a custom text.
+
     .. _Twilio: http://www.twilio.com/
     """
     def __init__(self):
@@ -52,11 +59,19 @@ class Twilio(object):
                                  url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = gettext('Your authentication token is %s') % token
-        self.client.messages.create(
-            to=device.number.as_e164,
-            from_=getattr(settings, 'TWILIO_CALLER_ID'),
-            body=body)
+        body = ugettext('Your authentication token is %s') % token
+        try:
+            self.client.messages.create(
+                to=device.number.as_e164,
+                from_=getattr(settings, 'TWILIO_CALLER_ID'),
+                body=body)
+        except Exception:
+            twilio_error_message = getattr(settings, 'TWILIO_ERROR_MESSAGE', None)
+            if twilio_error_message:
+                request = get_current_request()
+                messages.add_message(request, messages.ERROR, twilio_error_message)
+            else:
+                raise
 
 
 def validate_voice_locale(locale):
