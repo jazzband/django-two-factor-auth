@@ -7,7 +7,7 @@ docs:
 	open docs/_build/html/index.html
 
 flake8:
-	flake8 --ignore=W999 two_factor example tests
+	tox -e flake8,isort
 
 example:
 	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \

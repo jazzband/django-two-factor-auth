@@ -26,7 +26,7 @@ class QRTest(UserMixin, TestCase):
 
     def test_without_secret(self):
         response = self.client.get(reverse('two_factor:qr'))
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     @mock.patch('qrcode.make')
     def test_with_secret(self, mockqrcode):
@@ -54,9 +54,9 @@ class QRTest(UserMixin, TestCase):
                             secret=self.test_secret, issuer="testserver"),
             image_factory=default_factory)
         mockimg.save.assert_called_with(mock.ANY)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.content.decode('utf-8'), self.test_img)
-        self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), self.test_img)
+        self.assertEqual(response['Content-Type'], 'image/svg+xml; charset=utf-8')
 
     @mock.patch('qrcode.make')
     def test_custom_issuer(self, mockqrcode):
@@ -88,6 +88,6 @@ class QRTest(UserMixin, TestCase):
                             secret=self.test_secret, issuer="Custom Test Issuer"),
             image_factory=default_factory)
         mockimg.save.assert_called_with(mock.ANY)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.content.decode('utf-8'), self.test_img)
-        self.assertEquals(response['Content-Type'], 'image/svg+xml; charset=utf-8')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), self.test_img)
+        self.assertEqual(response['Content-Type'], 'image/svg+xml; charset=utf-8')
