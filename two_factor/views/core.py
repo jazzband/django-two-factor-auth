@@ -334,6 +334,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                 "review the URL and update your settings.",
                 DeprecationWarning)
             context['cancel_url'] = resolve_url(settings.LOGOUT_URL)
+        context.update({self.redirect_field_name: self.get_redirect_url()})
         return context
 
     @cached_property
