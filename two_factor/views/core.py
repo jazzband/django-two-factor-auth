@@ -3,7 +3,6 @@ import time
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
-from http import cookies
 from uuid import uuid4
 
 import django_otp
@@ -167,24 +166,14 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                 cookie_key = REMEMBER_COOKIE_PREFIX + str(uuid4())
                 cookie_value = get_remember_device_cookie(user=self.get_user(),
                                                           otp_device_id=device.persistent_id)
-                if 'samesite' in cookies.Morsel._reserved:
-                    response.set_cookie(cookie_key, cookie_value,
-                                        max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
-                                        domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
-                                        path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
-                                        secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
-                                        httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
-                                        samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
-                                        )
-                else:
-                    # Backwards compatibility for Django < 2.1a1
-                    response.set_cookie(cookie_key, cookie_value,
-                                        max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
-                                        domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
-                                        path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
-                                        secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
-                                        httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
-                                        )
+                response.set_cookie(cookie_key, cookie_value,
+                                    max_age=settings.TWO_FACTOR_REMEMBER_COOKIE_AGE,
+                                    domain=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_DOMAIN', None),
+                                    path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
+                                    secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
+                                    httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
+                                    samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
+                                    )
 
         return response
 
