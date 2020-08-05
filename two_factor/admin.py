@@ -5,6 +5,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 from .models import PhoneDevice
 from .utils import monkeypatch_method
@@ -30,8 +32,23 @@ class AdminSiteOTPRequiredMixin(object):
     def login(self, request, extra_context=None):
         """
         Redirects to the site login page for the given HttpRequest.
+        If user has admin permissions but 2FA not setup, then redirect to
+            2FA setup page.
         """
         redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
+
+        # if user (is_active and is_staff)
+        if request.method == "GET" and self.has_permission(request):
+
+            # if user has 2FA setup, go to admin homepage
+            if request.user.is_verified():
+                index_path = reverse("admin:index", current_app=self.name)
+
+            # 2FA not setup. redirect to 2FA setup page
+            else:
+                index_path = reverse("two_factor:setup", current_app=self.name)
+
+            return HttpResponseRedirect(index_path)
 
         if not redirect_to or not is_safe_url(url=redirect_to, allowed_hosts=[request.get_host()]):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
