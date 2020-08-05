@@ -3,8 +3,8 @@ Class Reference
 
 Admin Site
 ----------
-.. autoclass:: two_factor.admin.AdminSiteOTPRequired
-.. autoclass:: two_factor.admin.AdminSiteOTPRequiredMixin
+.. autoclass:: two_factor.admin.TwoFactorAdminSite
+.. autoclass:: two_factor.admin.TwoFactorAdminSiteMixin
 
 Decorators
 ----------
