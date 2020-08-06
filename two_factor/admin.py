@@ -1,12 +1,13 @@
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import resolve_url
-from django.utils.http import is_safe_url
-from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import resolve_url
+from django.urls import reverse
+from django.utils.http import is_safe_url
 
 from .models import PhoneDevice
 from .utils import monkeypatch_method
@@ -35,10 +36,11 @@ class AdminSiteOTPRequiredMixin(object):
         If user has admin permissions but 2FA not setup, then redirect to
             2FA setup page.
         """
+        # redirect to admin page after login
         redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
 
         # if user (is_active and is_staff)
-        if request.method == "GET" and self.has_permission(request):
+        if request.method == "GET" and AdminSite().has_permission(request):
 
             # if user has 2FA setup, go to admin homepage
             if request.user.is_verified():

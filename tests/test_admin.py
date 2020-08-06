@@ -1,10 +1,9 @@
 from django.conf import settings
-from django.shortcuts import resolve_url
+from django.shortcuts import resolve_url, reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from two_factor.admin import patch_admin, unpatch_admin
-
 from .utils import UserMixin
 
 
@@ -44,6 +43,11 @@ class AdminSiteTest(UserMixin, TestCase):
 
 @override_settings(ROOT_URLCONF='tests.urls_otp_admin')
 class OTPAdminSiteTest(UserMixin, TestCase):
+    """
+    otp_admin is admin console that needs OTP for access.
+    Only admin users (is_staff and is_active)
+        with OTP can access it.
+    """
 
     def setUp(self):
         super().setUp()
@@ -51,14 +55,18 @@ class OTPAdminSiteTest(UserMixin, TestCase):
         self.login_user()
 
     def test_otp_admin_without_otp(self):
+        """
+        if user has admin permissions (is_staff and is_active)
+        but doesnt have OTP setup, redirect the user to OTP setup page
+        """
         response = self.client.get('/otp_admin/', follow=True)
-        redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)
+        redirect_to = reverse('two_factor:setup')
         self.assertRedirects(response, redirect_to)
 
     @override_settings(LOGIN_URL='two_factor:login')
     def test_otp_admin_without_otp_named_url(self):
         response = self.client.get('/otp_admin/', follow=True)
-        redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)
+        redirect_to = reverse('two_factor:setup')
         self.assertRedirects(response, redirect_to)
 
     def test_otp_admin_with_otp(self):
