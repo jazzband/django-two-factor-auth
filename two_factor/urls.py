@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path
 
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
@@ -6,51 +6,51 @@ from two_factor.views import (
 )
 
 core = [
-    re_path(
-        r'^account/login/$',
+    path(
+        'account/login/',
         LoginView.as_view(),
         name='login',
     ),
-    re_path(
-        r'^account/two_factor/setup/$',
+    path(
+        'account/two_factor/setup/',
         SetupView.as_view(),
         name='setup',
     ),
-    re_path(
-        r'^account/two_factor/qrcode/$',
+    path(
+        'account/two_factor/qrcode/',
         QRGeneratorView.as_view(),
         name='qr',
     ),
-    re_path(
-        r'^account/two_factor/setup/complete/$',
+    path(
+        'account/two_factor/setup/complete/',
         SetupCompleteView.as_view(),
         name='setup_complete',
     ),
-    re_path(
-        r'^account/two_factor/backup/tokens/$',
+    path(
+        'account/two_factor/backup/tokens/',
         BackupTokensView.as_view(),
         name='backup_tokens',
     ),
-    re_path(
-        r'^account/two_factor/backup/phone/register/$',
+    path(
+        'account/two_factor/backup/phone/register/',
         PhoneSetupView.as_view(),
         name='phone_create',
     ),
-    re_path(
-        r'^account/two_factor/backup/phone/unregister/(?P<pk>\d+)/$',
+    path(
+        'account/two_factor/backup/phone/unregister/<int:pk>/',
         PhoneDeleteView.as_view(),
         name='phone_delete',
     ),
 ]
 
 profile = [
-    re_path(
-        r'^account/two_factor/$',
+    path(
+        'account/two_factor/',
         ProfileView.as_view(),
         name='profile',
     ),
-    re_path(
-        r'^account/two_factor/disable/$',
+    path(
+        'account/two_factor/disable/',
         DisableView.as_view(),
         name='disable',
     ),
