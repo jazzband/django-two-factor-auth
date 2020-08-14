@@ -100,7 +100,7 @@ Next, add additional urls to your config:
     # urls.py
     from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
     urlpatterns = [
-        url(r'', include(tf_twilio_urls)),
+        path('', include(tf_twilio_urls)),
         ...
     ]
 

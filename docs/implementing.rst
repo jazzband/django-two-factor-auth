@@ -81,7 +81,7 @@ with this. In your ``urls.py``::
     admin.site.__class__ = AdminSiteOTPRequired
 
     urlpatterns = [
-        url(r'^admin/', admin.site.urls),
+        path('admin/', admin.site.urls),
         ...
     ]
 
