@@ -4,35 +4,33 @@
 <head>
   <title>{% block title %}{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
   {% block content_wrapper %}
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-light" role="navigation">
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">{% trans "Toggle navigation" %}</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+          <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="navbar-toggler-icon"></span>
           </button>
           <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
+          <ul class="navbar-nav">
             <li class="{% block nav_home %}{% endblock %}">
                 <a href="{% url 'home' %}">{% trans "Home" %}</a></li>
             <li class="{% block nav_secret %}{% endblock %}">
                 <a href="{% url 'secret' %}">{% trans "Secret Page" %}</a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
+          <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
               <li><a>{{ user }}
-                {% if user.otp_device %}<span class="glyphicon glyphicon-lock"></span>{% endif %}
+                {% if user.otp_device %}🔒{% endif %}
               </a></li>
               <li class="{% block nav_profile %}{% endblock %}">
                   <a href="{% url 'two_factor:profile' %}">{% trans "Account Security" %}</a></li>
@@ -53,8 +51,6 @@
       {% block content %}{% endblock %}
     </div>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
   {% endblock %}
 </body>
 </html>

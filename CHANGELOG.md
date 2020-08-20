@@ -1,3 +1,8 @@
+## Unreleased
+
+### Changed
+- The templates are now based on Bootstrap 4.
+
 ## 1.12 - 2020-07-08
 ### Added
 - It is possible to set a timeout between a user authenticiating in the
