@@ -2,7 +2,8 @@ from django.urls import path
 
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
-    ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
+    ProfileView, QRGeneratorView, ResetSetupGeneratorOrYubikeyView, ResetSetupPhoneOrGeneratorView,
+    ResetSetupPhoneOrYubikeyView, SetupCompleteView, SetupView,
 )
 
 core = [
@@ -25,6 +26,21 @@ core = [
         'account/two_factor/setup/complete/',
         SetupCompleteView.as_view(),
         name='setup_complete',
+    ),
+    path(
+        'account/two_factor/setup/reset/1/',
+        view=ResetSetupGeneratorOrYubikeyView.as_view(),
+        name='setup_reset_generator_or_yubikey',
+    ),
+    path(
+        'account/two_factor/setup/reset/2/',
+        view=ResetSetupPhoneOrYubikeyView.as_view(),
+        name='setup_reset_phone_or_yubikey',
+    ),
+    path(
+        'account/two_factor/setup/reset/3/',
+        view=ResetSetupPhoneOrGeneratorView.as_view(),
+        name='setup_reset_phone_or_generator',
     ),
     path(
         'account/two_factor/backup/tokens/',
@@ -55,5 +71,4 @@ profile = [
         name='disable',
     ),
 ]
-
 urlpatterns = (core + profile, 'two_factor')

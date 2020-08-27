@@ -52,7 +52,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'user_sessions',
@@ -64,11 +64,9 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_totp',
     'two_factor',
     'example',
-
     'debug_toolbar',
     'bootstrapform'
-)
-
+]
 
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'two_factor:login'
