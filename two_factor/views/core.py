@@ -39,14 +39,14 @@ from two_factor.utils import totp_digits
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    PhoneNumberForm, PhoneNumberMethodForm, ResetGeneratorOrYubikeyMethodForm, ResetPhoneOrGeneratorMethodForm,
+    ResetPhoneOrYubikeyMethodForm, TOTPDeviceForm, YubiKeyDeviceForm
 )
 from ..models import PhoneDevice, get_available_phone_methods
 from ..utils import backup_phones, default_device, get_otpauth_url
-from .utils import (
+from .utils import (CustomSessionWizardView,
     IdempotentSessionWizardView, class_view_decorator,
-    get_remember_device_cookie, validate_remember_device_cookie,
-)
+    get_remember_device_cookie, validate_remember_device_cookie)
 
 try:
     from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
@@ -381,7 +381,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
-class SetupView(IdempotentSessionWizardView):
+class SetupView(IdempotentSessionWizardView, CustomSessionWizardView):
     """
     View for handling OTP setup using a wizard.
 
@@ -418,10 +418,6 @@ class SetupView(IdempotentSessionWizardView):
         'yubikey': False,
     }
 
-    def get_method(self):
-        method_data = self.storage.validated_step_data.get('method', {})
-        return method_data.get('method', None)
-
     def get(self, request, *args, **kwargs):
         """
         Start the setup wizard. Redirect if already enabled.
@@ -442,20 +438,6 @@ class SetupView(IdempotentSessionWizardView):
             self.storage.validated_step_data['method'] = {'method': method_key}
         return form_list
 
-    def render_next_step(self, form, **kwargs):
-        """
-        In the validation step, ask the device to generate a challenge.
-        """
-        next_step = self.steps.next
-        if next_step == 'validation':
-            try:
-                self.get_device().generate_challenge()
-                kwargs["challenge_succeeded"] = True
-            except Exception:
-                logger.exception("Could not generate challenge")
-                kwargs["challenge_succeeded"] = False
-        return super().render_next_step(form, **kwargs)
-
     def done(self, form_list, **kwargs):
         """
         Finish the wizard. Save all forms and redirect.
@@ -465,7 +447,6 @@ class SetupView(IdempotentSessionWizardView):
             del self.request.session[self.session_key_name]
         except KeyError:
             pass
-
         # TOTPDeviceForm
         if self.get_method() == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
@@ -528,38 +509,11 @@ class SetupView(IdempotentSessionWizardView):
                 raise KeyError("Multiple ValidationService found with name 'default'")
             return RemoteYubikeyDevice(**kwargs)
 
-    def get_key(self, step):
-        self.storage.extra_data.setdefault('keys', {})
-        if step in self.storage.extra_data['keys']:
-            return self.storage.extra_data['keys'].get(step)
-        key = random_hex_str(20)
-        self.storage.extra_data['keys'][step] = key
-        return key
-
-    def get_context_data(self, form, **kwargs):
-        context = super().get_context_data(form, **kwargs)
-        if self.steps.current == 'generator':
-            key = self.get_key('generator')
-            rawkey = unhexlify(key.encode('ascii'))
-            b32key = b32encode(rawkey).decode('utf-8')
-            self.request.session[self.session_key_name] = b32key
-            context.update({
-                'QR_URL': reverse(self.qrcode_url)
-            })
-        elif self.steps.current == 'validation':
-            context['device'] = self.get_device()
-        context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
-        return context
-
     def process_step(self, form):
         if hasattr(form, 'metadata'):
             self.storage.extra_data.setdefault('forms', {})
             self.storage.extra_data['forms'][self.steps.current] = form.metadata
         return super().process_step(form)
-
-    def get_form_metadata(self, step):
-        self.storage.extra_data.setdefault('forms', {})
-        return self.storage.extra_data['forms'].get(step, None)
 
 
 @class_view_decorator(never_cache)
@@ -698,6 +652,270 @@ class SetupCompleteView(TemplateView):
         return {
             'phone_methods': get_available_phone_methods(),
         }
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(login_required)
+class ResetSetupGeneratorOrYubikeyView(IdempotentSessionWizardView, CustomSessionWizardView):
+    """
+    View for changing the two-factor authentication method from phone number to token generator or yubikey.
+    """
+    template_name = 'two_factor/core/setup_reset_generator_or_yubikey.html'
+    success_url = settings.LOGIN_REDIRECT_URL
+    qrcode_url = 'two_factor:qr'
+    session_key_name = 'django_two_factor-qr_secret_key'
+
+    form_list = (
+        ('method', ResetGeneratorOrYubikeyMethodForm),
+        ('generator', TOTPDeviceForm),
+        ('yubikey', YubiKeyDeviceForm)
+    )
+
+    condition_dict = {
+        'generator': lambda self: self.get_method() == 'generator',
+        'yubikey': lambda self: self.get_method() == 'yubikey',
+    }
+    idempotent_dict = {
+        'yubikey': False,
+    }
+
+    def done(self, form_list, **kwargs):
+        """
+        Finish the wizard. Save all forms and redirect.
+        """
+        # Remove secret key used for QR code generation
+        self.delete_previous_device()
+
+        form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
+        device = form.save()
+
+        django_otp.login(self.request, device)
+        return redirect(self.success_url)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = {}
+        if step == 'generator':
+            kwargs.update({
+                'key': self.get_key(step),
+                'user': self.request.user,
+            })
+        if step == 'yubikey':
+            kwargs.update({
+                'device': self.get_device()
+            })
+        metadata = self.get_form_metadata(step)
+        if metadata:
+            kwargs.update({
+                'metadata': metadata,
+            })
+        return kwargs
+
+    def get_device(self, **kwargs):
+        """
+        Uses the data from the setup step and generated key to recreate device.
+
+        Only used for call / sms -- generator uses other procedure.
+        """
+        method = self.get_method()
+        kwargs = kwargs or {}
+        kwargs['name'] = 'default'
+        kwargs['user'] = self.request.user
+
+        if method == 'yubikey':
+            kwargs['public_id'] = self.storage.validated_step_data\
+                .get('yubikey', {}).get('token', '')[:-32]
+            try:
+                kwargs['service'] = ValidationService.objects.get(name='default')
+            except ValidationService.DoesNotExist:
+                raise KeyError("No ValidationService found with name 'default'")
+            except ValidationService.MultipleObjectsReturned:
+                raise KeyError("Multiple ValidationService found with name 'default'")
+            return RemoteYubikeyDevice(**kwargs)
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form, **kwargs)
+        if self.steps.current == 'generator':
+            key = self.get_key('generator')
+            rawkey = unhexlify(key.encode('ascii'))
+            b32key = b32encode(rawkey).decode('utf-8')
+            self.request.session[self.session_key_name] = b32key
+            context.update({
+                'QR_URL': reverse(self.qrcode_url)
+            })
+        context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
+        return context
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(login_required)
+class ResetSetupPhoneOrYubikeyView(IdempotentSessionWizardView, CustomSessionWizardView):
+    """
+    View for changing the two-factor authentication method from token generator to phone number or yubikey.
+    """
+    template_name = 'two_factor/core/setup_reset_phone_or_yubikey.html'
+    success_url = settings.LOGIN_REDIRECT_URL
+
+    form_list = (
+        ('method', ResetPhoneOrYubikeyMethodForm),
+        ('sms', PhoneNumberForm),
+        ('call', PhoneNumberForm),
+        ('validation', DeviceValidationForm),
+        ('yubikey', YubiKeyDeviceForm),
+    )
+    condition_dict = {
+        'call': lambda self: self.get_method() == 'call',
+        'sms': lambda self: self.get_method() == 'sms',
+        'validation': lambda self: self.get_method() in ('sms', 'call'),
+        'yubikey': lambda self: self.get_method() == 'yubikey',
+    }
+    idempotent_dict = {
+        'yubikey': False,
+    }
+    key_name = 'key'
+
+    def done(self, form_list, **kwargs):
+        """
+        Finish the wizard. Save all forms and redirect.
+        """
+        self.delete_previous_device()
+
+        device = self.get_device()
+        device.save()
+
+        django_otp.login(self.request, device)
+        return redirect(self.success_url)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = {}
+        if step in ('validation', 'yubikey'):
+            kwargs.update({
+                'device': self.get_device()
+            })
+        metadata = self.get_form_metadata(step)
+        if metadata:
+            kwargs.update({
+                'metadata': metadata,
+            })
+        return kwargs
+
+    def get_device(self, **kwargs):
+        """
+        Uses the data from the setup step and generated key to recreate device.
+
+        Only used for call / sms -- generator uses other procedure.
+        """
+        method = self.get_method()
+        kwargs = kwargs or {}
+        kwargs['name'] = 'default'
+        kwargs['user'] = self.request.user
+
+        if method in ('call', 'sms'):
+            kwargs['method'] = method
+            kwargs['number'] = self.storage.validated_step_data\
+                .get(method, {}).get('number')
+            return PhoneDevice(key=self.get_key(method), **kwargs)
+
+        if method == 'yubikey':
+            kwargs['public_id'] = self.storage.validated_step_data\
+                .get('yubikey', {}).get('token', '')[:-32]
+            try:
+                kwargs['service'] = ValidationService.objects.get(name='default')
+            except ValidationService.DoesNotExist:
+                raise KeyError("No ValidationService found with name 'default'")
+            except ValidationService.MultipleObjectsReturned:
+                raise KeyError("Multiple ValidationService found with name 'default'")
+            return RemoteYubikeyDevice(**kwargs)
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form, **kwargs)
+        if self.steps.current == 'validation':
+            context['device'] = self.get_device()
+        context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
+        return context
+
+
+class ResetSetupPhoneOrGeneratorView(IdempotentSessionWizardView, CustomSessionWizardView):
+    """
+    View for changing the two-factor authentication method from yubikey to phone number or phone.
+    """
+
+    success_url = settings.LOGIN_REDIRECT_URL
+
+    template_name = 'two_factor/core/setup_reset_phone_or_generator.html'
+    form_list = (
+        ('method', ResetPhoneOrGeneratorMethodForm),
+        ('generator', TOTPDeviceForm),
+        ('sms', PhoneNumberForm),
+        ('call', PhoneNumberForm),
+        ('validation', DeviceValidationForm),
+    )
+    condition_dict = {
+        'generator': lambda self: self.get_method() == 'generator',
+        'call': lambda self: self.get_method() == 'call',
+        'sms': lambda self: self.get_method() == 'sms',
+        'validation': lambda self: self.get_method() in ('sms', 'call'),
+    }
+
+    def done(self, form_list, **kwargs):
+        """
+        Finish the wizard. Save all forms and redirect.
+        """
+        self.delete_previous_device()
+        # Remove secret key used for QR code generation
+        try:
+            del self.request.session[self.session_key_name]
+        except KeyError:
+            pass
+        # TOTPDeviceForm
+        if self.get_method() == 'generator':
+            form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
+            device = form.save()
+
+        # PhoneNumberForm
+        elif self.get_method() in ('call', 'sms'):
+            device = self.get_device()
+            device.save()
+
+        else:
+            raise NotImplementedError("Unknown method '%s'" % self.get_method())
+
+        django_otp.login(self.request, device)
+        return redirect(self.success_url)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = {}
+        if step == 'generator':
+            kwargs.update({
+                'key': self.get_key(step),
+                'user': self.request.user,
+            })
+        if step == 'validation':
+            kwargs.update({
+                'device': self.get_device()
+            })
+        metadata = self.get_form_metadata(step)
+        if metadata:
+            kwargs.update({
+                'metadata': metadata,
+            })
+        return kwargs
+
+    def get_device(self, **kwargs):
+        """
+        Uses the data from the setup step and generated key to recreate device.
+
+        Only used for call / sms -- generator uses other procedure.
+        """
+        method = self.get_method()
+        kwargs = kwargs or {}
+        kwargs['name'] = 'default'
+        kwargs['user'] = self.request.user
+
+        if method in ('call', 'sms'):
+            kwargs['method'] = method
+            kwargs['number'] = self.storage.validated_step_data\
+                .get(method, {}).get('number')
+            return PhoneDevice(key=self.get_key(method), **kwargs)
 
 
 @class_view_decorator(never_cache)

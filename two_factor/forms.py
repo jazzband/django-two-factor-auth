@@ -10,7 +10,8 @@ from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
+    PhoneDevice, get_available_methods, get_available_phone_methods, get_generator_or_phone_methods,
+    get_generator_or_yubikey_methods, get_phone_or_yubikey_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
@@ -29,6 +30,33 @@ class MethodForm(forms.Form):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.fields['method'].choices = get_available_methods()
+
+
+class ResetPhoneOrYubikeyMethodForm(forms.Form):
+    method = forms.ChoiceField(label=_("Method"),
+                               widget=forms.RadioSelect)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['method'].choices = get_phone_or_yubikey_methods()
+
+
+class ResetGeneratorOrYubikeyMethodForm(forms.Form):
+    method = forms.ChoiceField(label=_("Method"),
+                               widget=forms.RadioSelect)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['method'].choices = get_generator_or_yubikey_methods()
+
+
+class ResetPhoneOrGeneratorMethodForm(forms.Form):
+    method = forms.ChoiceField(label=_("Method"),
+                               widget=forms.RadioSelect)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['method'].choices = get_generator_or_phone_methods()
 
 
 class PhoneNumberMethodForm(ModelForm):

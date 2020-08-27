@@ -49,6 +49,24 @@ def get_available_methods():
     return methods
 
 
+def get_phone_or_yubikey_methods():
+    methods = get_available_phone_methods()
+    methods.extend(get_available_yubikey_methods())
+    return methods
+
+
+def get_generator_or_yubikey_methods():
+    methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_yubikey_methods())
+    return methods
+
+
+def get_generator_or_phone_methods():
+    methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_phone_methods())
+    return methods
+
+
 def key_validator(*args, **kwargs):
     """Wraps hex_validator generator, to keep makemigrations happy."""
     return hex_validator()(*args, **kwargs)

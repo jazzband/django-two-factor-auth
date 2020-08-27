@@ -4,10 +4,14 @@ import hmac
 import logging
 import time
 
+from base64 import b32encode
+from binascii import unhexlify
+
 from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature, SignatureExpired
+from django_otp import devices_for_user, user_has_device
 from django.utils import baseconv
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
@@ -15,6 +19,10 @@ from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
+from django.shortcuts import resolve_url
+from django.urls import reverse
+
+from two_factor.models import random_hex_str
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +88,13 @@ class IdempotentSessionWizardView(SessionWizardView):
     """
     storage_name = 'two_factor.views.utils.ExtraSessionStorage'
     idempotent_dict = {}
+
+    def delete_previous_device(self):
+        # Delete the previous device associated to the user if you want to change device
+        if user_has_device(self.request.user):
+            devices = devices_for_user(self.request.user)
+            for current_device in devices:
+                current_device.delete()
 
     def is_step_visible(self, step):
         """
@@ -217,6 +232,53 @@ class IdempotentSessionWizardView(SessionWizardView):
         done_response = self.done(final_form_list, **kwargs)
         self.storage.reset()
         return done_response
+
+
+class CustomSessionWizardView(SessionWizardView):
+    def get_method(self):
+        method_data = self.storage.validated_step_data.get('method', {})
+        return method_data.get('method', None)
+
+    def render_next_step(self, form, **kwargs):
+        """
+        In the validation step, ask the device to generate a challenge.
+        """
+        next_step = self.steps.next
+        if next_step == 'validation':
+            try:
+                self.get_device().generate_challenge()
+                kwargs["challenge_succeeded"] = True
+            except Exception:
+                logger.exception("Could not generate challenge")
+                kwargs["challenge_succeeded"] = False
+        return super().render_next_step(form, **kwargs)
+
+    def get_key(self, step):
+        self.storage.extra_data.setdefault('keys', {})
+        if step in self.storage.extra_data['keys']:
+            return self.storage.extra_data['keys'].get(step)
+        key = random_hex_str(20)
+        self.storage.extra_data['keys'][step] = key
+        return key
+
+    def get_form_metadata(self, step):
+        self.storage.extra_data.setdefault('forms', {})
+        return self.storage.extra_data['forms'].get(step, None)
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form, **kwargs)
+        if self.steps.current == 'generator':
+            key = self.get_key('generator')
+            rawkey = unhexlify(key.encode('ascii'))
+            b32key = b32encode(rawkey).decode('utf-8')
+            self.request.session[self.session_key_name] = b32key
+            context.update({
+                'QR_URL': reverse(self.qrcode_url)
+            })
+        elif self.steps.current == 'validation':
+            context['device'] = self.get_device()
+        context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
+        return context
 
 
 def class_view_decorator(function_decorator):
