@@ -64,7 +64,7 @@ class TwilioGatewayTest(TestCase):
 
             client.return_value.messages.create.assert_called_with(
                 to='+123',
-                body=getattr(settings,'TWILIO_MESSAGE').format(code),
+                body=getattr(settings, 'TWILIO_MESSAGE').format(code),
                 from_='+456'
             )
 
