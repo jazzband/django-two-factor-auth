@@ -1,0 +1,114 @@
+Metadata-Version: 2.1
+Name: django-formtools
+Version: 2.2
+Summary: A set of high-level abstractions for Django forms
+Home-page: https://django-formtools.readthedocs.io/en/latest/
+Author: Django Software Foundation
+Author-email: foundation@djangoproject.com
+License: BSD
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 1.11
+Classifier: Framework :: Django :: 2.0
+Classifier: Framework :: Django :: 2.1
+Classifier: Framework :: Django :: 2.2
+Classifier: Framework :: Django :: 3.0
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Topic :: Internet :: WWW/HTTP
+Requires-Dist: Django (>=1.11)
+
+================
+django-formtools
+================
+
+.. image:: https://jazzband.co/static/img/badge.svg
+    :alt: Jazzband
+    :target: https://jazzband.co/
+
+.. image:: https://img.shields.io/pypi/v/django-formtools.svg
+    :alt: PyPI version
+    :target: https://pypi.org/project/django-formtools/
+
+.. image:: https://img.shields.io/pypi/pyversions/django-formtools.svg
+    :alt: Supported Python versions
+    :target: https://pypi.org/project/django-formtools/
+
+.. image:: https://img.shields.io/travis/jazzband/django-formtools/master.svg
+    :alt: TravisCI Build Status
+    :target: https://travis-ci.org/jazzband/django-formtools
+
+.. image:: https://img.shields.io/coveralls/jazzband/django-formtools/master.svg
+    :alt: Coveralls Test Coverage
+    :target: https://coveralls.io/r/jazzband/django-formtools?branch=master
+
+Django's "formtools" is a set of high-level abstractions for Django forms.
+Currently for form previews and multi-step forms.
+
+This code used to live in Django proper -- in ``django.contrib.formtools``
+-- but was separated into a standalone package in Django 1.8 to keep the
+framework's core clean.
+
+For a full list of available formtools, see
+https://django-formtools.readthedocs.io/
+
+django-formtools can also be found on and installed from the Python
+Package Index: https://pypi.python.org/pypi/django-formtools
+
+To get more help:
+
+* Join the #django channel on irc.freenode.net. Lots of helpful people hang out
+  there. Read the archives at https://botbot.me/freenode/django/.
+
+* Join the django-users mailing list, or read the archives, at
+  https://groups.google.com/group/django-users.
+
+Contributing to django-formtools
+--------------------------------
+
+See ``CONTRIBUTING.rst`` for information about contributing patches to
+``django-formtools``.
+
+Running tests is as simple as `installing Tox`__ and running it in the root
+Git clone directory::
+
+    $ git clone https://github.com/jazzband/django-formtools
+    [..]
+    $ cd django-formtools
+    $ tox
+    [..]
+      congratulations :)
+
+The previous command will run the tests in different combinations of Python
+(if available) and Django versions. To see the full list of combinations use
+the ``-l`` option::
+
+    $ tox -l
+    ...
+    py35-django-AB
+    py35-django-master
+
+You can run each environment with the ``-e`` option::
+
+    $ tox -e py35-django-AB  # runs the tests only on Python 3.5 and Django A.B.x
+
+Optionally you can also specify a country whose tests you want to run::
+
+    $ COUNTRY=us tox
+
+And combine both options::
+
+    $ COUNTRY=us tox -e py35-django-AB
+
+__ https://tox.readthedocs.io/en/latest/install.html
+
+

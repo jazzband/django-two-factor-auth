@@ -1,0 +1,64 @@
+# This file is distributed under the same license as the Django package.
+# 
+# Translators:
+# Branko Kokanovic <branko@kokanovic.org>, 2018
+# Jannis Leidel <jannis@leidel.info>, 2011
+# Janos Guljas <janos@resenje.org>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: django-formtools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-25 09:31-0500\n"
+"PO-Revision-Date: 2018-12-02 21:27+0000\n"
+"Last-Translator: Branko Kokanovic <branko@kokanovic.org>\n"
+"Language-Team: Serbian (http://www.transifex.com/django/django-formtools/language/sr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: apps.py:7
+msgid "Form Tools"
+msgstr "Алатке за формуларе"
+
+#: templates/formtools/form.html:6
+msgid "Please correct the following errors"
+msgstr "Исправите наведене грешке"
+
+#: templates/formtools/form.html:6 templates/formtools/preview.html:24
+msgid "Submit"
+msgstr "Пошаљи"
+
+#: templates/formtools/form.html:13 templates/formtools/preview.html:34
+msgid "Preview"
+msgstr "Преглед"
+
+#: templates/formtools/preview.html:6
+msgid "Preview your submission"
+msgstr "Преглед пре слања"
+
+#: templates/formtools/preview.html:17
+#, python-format
+msgid "Security hash: %(hash_value)s"
+msgstr "Безбедоносни хеш: %(hash_value)s"
+
+#: templates/formtools/preview.html:27
+msgid "Or edit it again"
+msgstr "Или га измените опет"
+
+#: templates/formtools/wizard/wizard_form.html:16
+msgid "first step"
+msgstr "први корак"
+
+#: templates/formtools/wizard/wizard_form.html:17
+msgid "prev step"
+msgstr "претходни корак"
+
+#: templates/formtools/wizard/wizard_form.html:19
+msgid "submit"
+msgstr "пошаљи"
+
+#: wizard/views.py:276
+msgid "ManagementForm data is missing or has been tampered."
+msgstr "ManagementForm подаци недостају или су неправилно мењани."

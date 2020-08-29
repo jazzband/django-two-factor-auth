@@ -1,0 +1,79 @@
+Metadata-Version: 2.1
+Name: django-otp
+Version: 0.9.4
+Summary: A pluggable framework for adding two-factor authentication to Django using one-time passwords.
+Home-page: https://github.com/django-otp/django-otp
+Author: Peter Sagerson
+Author-email: psagers@ignorare.net
+License: BSD
+Project-URL: Documentation, https://django-otp-official.readthedocs.io/
+Project-URL: Source, https://github.com/django-otp/django-otp
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: django (>=1.11)
+Provides-Extra: qrcode
+Requires-Dist: qrcode ; extra == 'qrcode'
+
+django-otp
+==========
+
+.. image:: https://img.shields.io/pypi/v/django-otp?color=blue
+   :target: https://pypi.org/project/django-otp/
+   :alt: PyPI
+.. image:: https://img.shields.io/readthedocs/django-otp-official
+   :target: https://django-otp-official.readthedocs.io/
+   :alt: Documentation
+.. image:: https://img.shields.io/badge/github-django--otp-green
+   :target: https://github.com/django-otp/django-otp
+   :alt: Source
+
+This project makes it easy to add support for `one-time passwords
+<http://en.wikipedia.org/wiki/One-time_password>`_ (OTPs) to Django. It can be
+integrated at various levels, depending on how much customization is required.
+It integrates with ``django.contrib.auth``, although it is not a Django
+authentication backend. The primary target is developers wishing to incorporate
+OTPs into their Django projects as a form of `two-factor authentication
+<http://en.wikipedia.org/wiki/Two-factor_authentication>`_.
+
+Several simple OTP plugins are included and more are available separately. This
+package also includes an implementation of OATH `HOTP
+<http://tools.ietf.org/html/rfc4226>`_ and `TOTP
+<http://tools.ietf.org/html/rfc6238>`_ for convenience, as these are standard
+OTP algorithms used by multiple plugins.
+
+If you're looking for a higher-level or more opinionated solution, you might be
+interested in `django-two-factor-auth
+<https://github.com/Bouke/django-two-factor-auth>`_.
+
+Status
+------
+
+This project is stable and maintained, but is no longer actively used by the
+author. Well-formed pull requests are welcome. Anyone interested in taking over
+aspects of the project should `contact me <https://github.com/psagers>`_.
+
+.. end-of-doc-include
+
+Development
+-----------
+
+Development dependencies are defined in the Pipfile; use `pipenv`_ to set up a
+suitable shell.
+
+The tests in tox.ini cover a representative sample of supported Python and
+Django versions, as well as running `flake8`_ and `isort`_ for linting and style
+consistency. Please run `tox` before checking in and sending a pull request.
+
+
+.. _pipenv: https://pipenv.readthedocs.io/en/latest/
+.. _flake8: https://pypi.org/project/flake8/
+.. _isort: https://pypi.org/project/isort/
+
+

@@ -52,7 +52,7 @@ class Twilio(object):
                                  url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = gettext('Your authentication token is %s') % token
+        body = getattr(settings, 'TWILIO_ACCOUNT_SID','Your authentication token is {}').format(token)
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),

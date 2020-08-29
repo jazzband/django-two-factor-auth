@@ -1,0 +1,41 @@
+{% extends "user_sessions/_base.html" %}
+{% load user_sessions i18n %}
+
+{% block content %}
+  {% trans "<em>unknown on unknown</em>" as unknown_on_unknown %}
+  {% trans "<em>unknown</em>" as unknown %}
+
+  <h1>{% trans "Active Sessions" %}</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{% trans "Location" %}</th>
+        <th>{% trans "Device" %}</th>
+        <th>{% trans "Last Activity" %}</th>
+      </tr>
+    </thead>
+    {% for object in object_list %}
+      <tr {% if object.session_key == session_key %}class="active"{% endif %}>
+        <td>{{ object.ip|location|default_if_none:unknown|safe }} <small>({{ object.ip }})</small></td>
+        <td>{{ object.user_agent|device|default_if_none:unknown_on_unknown|safe }}</td>
+        <td>
+          {% if object.session_key == session_key %}
+            {% blocktrans with time=object.last_activity|timesince %}{{ time }} ago (this session){% endblocktrans %}
+          {% else %}
+            {% blocktrans with time=object.last_activity|timesince %}{{ time }} ago{% endblocktrans %}
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  {% if object_list.count > 1 %}
+    <form method="post" action="{% url 'user_sessions:session_delete_other' %}">
+      {% csrf_token %}
+      <p>{% blocktrans %}You can also end all other sessions but the current.
+        This will log you out on all other devices.{% endblocktrans %}</p>
+      <button type="submit" class="btn btn-default btn-warning">{% trans "End All Other Sessions" %}</button>
+    </form>
+  {% endif %}
+{% endblock %}

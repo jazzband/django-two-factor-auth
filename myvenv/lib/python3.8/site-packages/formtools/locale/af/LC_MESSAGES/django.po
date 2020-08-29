@@ -1,0 +1,62 @@
+# This file is distributed under the same license as the Django package.
+# 
+# Translators:
+# F Wolff <friedel@translate.org.za>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: django-formtools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-25 09:31-0500\n"
+"PO-Revision-Date: 2019-06-09 17:52+0000\n"
+"Last-Translator: F Wolff <friedel@translate.org.za>\n"
+"Language-Team: Afrikaans (http://www.transifex.com/django/django-formtools/language/af/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: af\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:7
+msgid "Form Tools"
+msgstr "Vormgereeedsksap"
+
+#: templates/formtools/form.html:6
+msgid "Please correct the following errors"
+msgstr "Korrigeer asb. die volgende foute"
+
+#: templates/formtools/form.html:6 templates/formtools/preview.html:24
+msgid "Submit"
+msgstr "Dien in"
+
+#: templates/formtools/form.html:13 templates/formtools/preview.html:34
+msgid "Preview"
+msgstr "Voorskou"
+
+#: templates/formtools/preview.html:6
+msgid "Preview your submission"
+msgstr "Voorskou van indiening"
+
+#: templates/formtools/preview.html:17
+#, python-format
+msgid "Security hash: %(hash_value)s"
+msgstr "Sekuriteitshutswaarde: %(hash_value)s"
+
+#: templates/formtools/preview.html:27
+msgid "Or edit it again"
+msgstr "Of redigeer dit weer"
+
+#: templates/formtools/wizard/wizard_form.html:16
+msgid "first step"
+msgstr "eerste stap"
+
+#: templates/formtools/wizard/wizard_form.html:17
+msgid "prev step"
+msgstr "vorige stap"
+
+#: templates/formtools/wizard/wizard_form.html:19
+msgid "submit"
+msgstr "dien in"
+
+#: wizard/views.py:276
+msgid "ManagementForm data is missing or has been tampered."
+msgstr "Data van ManagementForm ontbreek of is mee gepeuter."

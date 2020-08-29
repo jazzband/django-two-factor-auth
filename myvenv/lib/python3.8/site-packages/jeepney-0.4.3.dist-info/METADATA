@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: jeepney
+Version: 0.4.3
+Summary: Low-level, pure Python DBus protocol wrapper.
+Home-page: https://gitlab.com/takluyver/jeepney
+License: UNKNOWN
+Author: Thomas Kluyver
+Author-email: thomas@kluyver.me.uk
+Requires-Python: >=3.5
+Description-Content-Type: text/x-rst
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Desktop Environment
+Requires-Dist: testpath ; extra == "dev"
+Project-URL: Documentation, https://jeepney.readthedocs.io/en/latest/
+Provides-Extra: dev
+
+This is a low-level, pure Python DBus protocol client. It has an `I/O-free
+<https://sans-io.readthedocs.io/>`__ core, and integration modules for different
+event loops.
+
+DBus is an inter-process communication system, mainly used in Linux.
+
+`Jeepney docs on Readthedocs <https://jeepney.readthedocs.io/en/latest/>`__
+
+This project is experimental, and there are a
+number of `more mature Python DBus bindings <https://www.freedesktop.org/wiki/Software/DBusBindings/#python>`__.
+

@@ -46,6 +46,7 @@ class TwilioGatewayTest(TestCase):
         TWILIO_ACCOUNT_SID='SID',
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
+        TWILIO_MESSAGE='CUSTOM TWILIO MESSAGE.YOUR TOKEN IS {}'
     )
     @patch('two_factor.gateways.twilio.gateway.Client')
     def test_gateway(self, client):
@@ -60,7 +61,7 @@ class TwilioGatewayTest(TestCase):
 
             twilio.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             client.return_value.messages.create.assert_called_with(
-                to='+123', body='Your authentication token is %s' % code, from_='+456')
+                to='+123', body='CUSTOM TWILIO MESSAGE.YOUR TOKEN IS %s' % code, from_='+456')
 
             client.return_value.calls.create.reset_mock()
             with translation.override('en-gb'):

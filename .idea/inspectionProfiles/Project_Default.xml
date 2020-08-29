@@ -1,0 +1,56 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="v-on:click" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="JupyterKernelInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyInterpreterInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyMethodMayBeStaticInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="14">
+            <item index="0" class="java.lang.String" itemvalue="oauth2client" />
+            <item index="1" class="java.lang.String" itemvalue="mysql-python" />
+            <item index="2" class="java.lang.String" itemvalue="ipython" />
+            <item index="3" class="java.lang.String" itemvalue="requests-oauth2" />
+            <item index="4" class="java.lang.String" itemvalue="requests" />
+            <item index="5" class="java.lang.String" itemvalue="oauth2" />
+            <item index="6" class="java.lang.String" itemvalue="requests-oauthlib" />
+            <item index="7" class="java.lang.String" itemvalue="social-auth-app-django" />
+            <item index="8" class="java.lang.String" itemvalue="Django" />
+            <item index="9" class="java.lang.String" itemvalue="oauthlib" />
+            <item index="10" class="java.lang.String" itemvalue="python-social-auth" />
+            <item index="11" class="java.lang.String" itemvalue="djangorestframework" />
+            <item index="12" class="java.lang.String" itemvalue="oauth" />
+            <item index="13" class="java.lang.String" itemvalue="django-enumfields" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E501" />
+          <option value="W391" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="StandardJS" enabled="true" level="ERROR" enabled_by_default="true" />
+  </profile>
+</component>

@@ -1,0 +1,4 @@
+[console_scripts]
+bump2version = bumpversion.cli:main
+bumpversion = bumpversion.cli:main
+

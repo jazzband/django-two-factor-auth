@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Kunda, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: django-user-sessions\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-19 07:30+0200\n"
+"PO-Revision-Date: 2017-08-03 14:58+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"Language-Team: Hebrew (http://www.transifex.com/Bouke/django-user-sessions/language/he/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:20
+msgid "Is Valid"
+msgstr "תקף"
+
+#: admin.py:25
+msgid "Active"
+msgstr "פעיל"
+
+#: admin.py:26
+msgid "Expired"
+msgstr "פג תוקף"
+
+#: admin.py:37
+msgid "Owner"
+msgstr "בעל"
+
+#: admin.py:42
+msgid "Self"
+msgstr "עצמי"
+
+#: models.py:37
+msgid "session key"
+msgstr "מפתח אירוע"
+
+#: models.py:39
+msgid "session data"
+msgstr "נתוני אירוע"
+
+#: models.py:40
+msgid "expiry date"
+msgstr "תאריך תפוגה"
+
+#: models.py:44
+msgid "session"
+msgstr "אירוע"
+
+#: models.py:45
+msgid "sessions"
+msgstr "אירועים"
+
+#: templates/user_sessions/session_list.html:5
+msgid "<em>unknown on unknown</em>"
+msgstr ""
+
+#: templates/user_sessions/session_list.html:6
+msgid "<em>unknown</em>"
+msgstr ""
+
+#: templates/user_sessions/session_list.html:8
+msgid "Active Sessions"
+msgstr "אירועים פעילים"
+
+#: templates/user_sessions/session_list.html:13
+msgid "Location"
+msgstr "מִקוּם"
+
+#: templates/user_sessions/session_list.html:14
+msgid "Device"
+msgstr "מכשיר"
+
+#: templates/user_sessions/session_list.html:15
+msgid "Last Activity"
+msgstr "פעילות האחרונה"
+
+#: templates/user_sessions/session_list.html:16
+#: templates/user_sessions/session_list.html:34
+#: templates/user_sessions/session_list.html:36
+msgid "End Session"
+msgstr "סיים אירוע"
+
+#: templates/user_sessions/session_list.html:25
+#, python-format
+msgid "%(time)s ago (this session)"
+msgstr "לפני %(time)s (אירוע זה)"
+
+#: templates/user_sessions/session_list.html:27
+#, python-format
+msgid "%(time)s ago"
+msgstr "לפני %(time)s"
+
+#: templates/user_sessions/session_list.html:47
+msgid ""
+"You can also end all other sessions but the current.\n"
+"        This will log you out on all other devices."
+msgstr ""
+
+#: templates/user_sessions/session_list.html:49
+msgid "End All Other Sessions"
+msgstr ""
+
+#: templatetags/user_sessions.py:20
+msgid "Chrome"
+msgstr "Google Chrome"
+
+#: templatetags/user_sessions.py:21
+msgid "Safari"
+msgstr "Safari"
+
+#: templatetags/user_sessions.py:22
+msgid "Firefox"
+msgstr "Firefox"
+
+#: templatetags/user_sessions.py:23
+msgid "Opera"
+msgstr "Opera"
+
+#: templatetags/user_sessions.py:24
+msgid "Internet Explorer"
+msgstr "Internet Explorer"
+
+#: templatetags/user_sessions.py:27
+msgid "Android"
+msgstr "Android"
+
+#: templatetags/user_sessions.py:28
+msgid "Linux"
+msgstr "Linux"
+
+#: templatetags/user_sessions.py:29
+msgid "iPhone"
+msgstr "iPhone"
+
+#: templatetags/user_sessions.py:30
+msgid "iPad"
+msgstr "iPad"
+
+#: templatetags/user_sessions.py:31
+msgid "OS X Mavericks"
+msgstr ""
+
+#: templatetags/user_sessions.py:32
+msgid "OS X Yosemite"
+msgstr ""
+
+#: templatetags/user_sessions.py:33
+msgid "OS X El Capitan"
+msgstr ""
+
+#: templatetags/user_sessions.py:34
+msgid "macOS Sierra"
+msgstr ""
+
+#: templatetags/user_sessions.py:35
+msgid "OS X"
+msgstr "OS X"
+
+#: templatetags/user_sessions.py:36
+msgid "Windows XP"
+msgstr "Windows XP"
+
+#: templatetags/user_sessions.py:37
+msgid "Windows Vista"
+msgstr "Windows Vista"
+
+#: templatetags/user_sessions.py:38
+msgid "Windows 7"
+msgstr "Windows 7"
+
+#: templatetags/user_sessions.py:39
+msgid "Windows 8"
+msgstr "Windows 8"
+
+#: templatetags/user_sessions.py:40
+msgid "Windows 8.1"
+msgstr "Windows 8.1"
+
+#: templatetags/user_sessions.py:41
+msgid "Windows 10"
+msgstr ""
+
+#: templatetags/user_sessions.py:42
+msgid "Windows"
+msgstr "Windows"
+
+#: templatetags/user_sessions.py:74
+#, python-format
+msgid "%(browser)s on %(device)s"
+msgstr "%(browser)s על %(device)s"

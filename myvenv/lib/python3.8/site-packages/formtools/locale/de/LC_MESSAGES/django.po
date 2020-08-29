@@ -1,0 +1,65 @@
+# This file is distributed under the same license as the Django package.
+#
+# Translators:
+# André Hagenbruch, 2012
+# Jannis Leidel <jannis@leidel.info>, 2011,2014
+# Jannis Vajen, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: django-formtools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-25 09:31-0500\n"
+"PO-Revision-Date: 2014-10-06 19:50+0000\n"
+"Last-Translator: Jannis Leidel <jannis@leidel.info>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/django-formtools/"
+"language/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:7
+msgid "Form Tools"
+msgstr "Formular-Tools"
+
+#: templates/formtools/form.html:6
+msgid "Please correct the following errors"
+msgstr "Bitte folgende Fehler korrigieren"
+
+#: templates/formtools/form.html:6 templates/formtools/preview.html:24
+msgid "Submit"
+msgstr "Absenden"
+
+#: templates/formtools/form.html:13 templates/formtools/preview.html:34
+msgid "Preview"
+msgstr "Vorschau"
+
+#: templates/formtools/preview.html:6
+msgid "Preview your submission"
+msgstr "Vorschau einblenden"
+
+#: templates/formtools/preview.html:17
+#, python-format
+msgid "Security hash: %(hash_value)s"
+msgstr "Sicherheitswert: %(hash_value)s"
+
+#: templates/formtools/preview.html:27
+msgid "Or edit it again"
+msgstr "Oder erneut bearbeiten"
+
+#: templates/formtools/wizard/wizard_form.html:16
+msgid "first step"
+msgstr "Erster Schritt"
+
+#: templates/formtools/wizard/wizard_form.html:17
+msgid "prev step"
+msgstr "Vorheriger Schritt"
+
+#: templates/formtools/wizard/wizard_form.html:19
+msgid "submit"
+msgstr "Abschicken"
+
+#: wizard/views.py:276
+msgid "ManagementForm data is missing or has been tampered."
+msgstr "ManagementForm-Daten fehlen oder wurden manipuliert."

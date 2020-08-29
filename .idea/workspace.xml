@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="48e492f5-adb9-46b2-a49c-cab21def5ecb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/tests/test_gateways.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_gateways.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/two_factor/gateways/twilio/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/two_factor/gateways/twilio/gateway.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" module-name="django-two-factor-auth-fork" is-module-sdk="true">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+    <option name="myUseModuleSdk" value="true" />
+    <option name="myModuleName" value="django-two-factor-auth-fork" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1fgiz7wxAMmH7lgnj3qLUW2vlh4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+  </component>
+  <component name="RunManager" selected="Python.test_gateways">
+    <configuration name="Test: tests.test_admin.AdminSiteTest" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="django-two-factor-auth-fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="tests.test_admin.AdminSiteTest" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test: tests.test_admin.OTPAdminSiteTest" type="DjangoTestsConfigurationType">
+      <module name="django-two-factor-auth-fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="tests.test_admin.OTPAdminSiteTest" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_gateways" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_gateways.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="django-two-factor-auth-fork" type="Python.DjangoServer" factoryName="Django server">
+      <module name="django-two-factor-auth-fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests in test_admin.py" type="tests" factoryName="Unittests" nameIsGenerated="true">
+      <module name="django-two-factor-auth-fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_pattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_admin.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Django Server.django-two-factor-auth-fork" />
+      <item itemvalue="Django tests.Test: tests.test_admin.OTPAdminSiteTest" />
+      <item itemvalue="Django tests.Test: tests.test_admin.AdminSiteTest" />
+      <item itemvalue="Python.test_gateways" />
+      <item itemvalue="Python tests.Unittests in test_admin.py" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test_gateways" />
+        <item itemvalue="Django tests.Test: tests.test_admin.AdminSiteTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="48e492f5-adb9-46b2-a49c-cab21def5ecb" name="Default Changelist" comment="" />
+      <created>1596646395108</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1596646395108</updated>
+      <workItem from="1596646396280" duration="1998000" />
+      <workItem from="1596672762291" duration="2089000" />
+      <workItem from="1596674863441" duration="10233000" />
+      <workItem from="1596692028103" duration="2567000" />
+      <workItem from="1596728355701" duration="3745000" />
+      <workItem from="1597187738937" duration="40000" />
+      <workItem from="1597208583173" duration="21232000" />
+      <workItem from="1597418031213" duration="229000" />
+      <workItem from="1598040724417" duration="1167000" />
+      <workItem from="1598058753110" duration="1059000" />
+      <workItem from="1598205347965" duration="2095000" />
+      <workItem from="1598668513614" duration="1009000" />
+      <workItem from="1598669869746" duration="2053000" />
+      <workItem from="1598671937365" duration="834000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1027" y="1710" width="546" height="539" key="#All_Test" timestamp="1597264586601">
+      <screen x="320" y="1440" width="1920" height="1080" />
+    </state>
+    <state x="942" y="360" width="666" height="718" key="#All_Test/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732013187" />
+    <state x="1027" y="1710" width="546" height="539" key="#All_Test/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264586601" />
+    <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_admin.AdminSiteTest" timestamp="1596729251215">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_admin.AdminSiteTest/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596729251215" />
+    <state x="707" y="290" width="666" height="541" key="#Test:_tests.test_admin.OTPAdminSiteTest" timestamp="1597387599230">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_admin.OTPAdminSiteTest/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596731913316" />
+    <state x="1027" y="1710" width="546" height="539" key="#Test:_tests.test_admin.OTPAdminSiteTest/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264074393" />
+    <state x="707" y="290" width="666" height="541" key="#Test:_tests.test_admin.OTPAdminSiteTest/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597387599230" />
+    <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_views_mixins.OTPRequiredMixinTest" timestamp="1596675061937">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_views_mixins.OTPRequiredMixinTest/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596675061937" />
+    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598671820986">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598671820986" />
+    <state x="900" y="1661" key="#com.intellij.execution.impl.EditConfigurationsDialog/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264583433" />
+    <state x="100" y="98" width="2360" height="1242" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1596693917622">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="100" y="98" width="2360" height="1242" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596693917622" />
+    <state x="942" y="380" width="666" height="677" key="#test_gateways" timestamp="1598672546289">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="942" y="380" width="666" height="677" key="#test_gateways/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598672546289" />
+    <state width="956" height="500" key="DebuggerActiveHint" timestamp="1596693744594">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state width="956" height="500" key="DebuggerActiveHint/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596693744594" />
+    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl" timestamp="1598672006317">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="587" y="389" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1598206583381" />
+    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598672006317" />
+    <state x="1058" y="1750" width="609" height="484" key="FileChooserDialogImpl/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1596646537258" />
+    <state x="587" y="389" key="FileChooserDialogImpl/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417882443" />
+    <state width="616" height="901" key="GridCell.Tab.0.bottom" timestamp="1597417883996">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="616" height="901" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
+    <state width="616" height="901" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
+    <state width="616" height="901" key="GridCell.Tab.0.center" timestamp="1597417883996">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.0.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="616" height="901" key="GridCell.Tab.0.center/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
+    <state width="616" height="901" key="GridCell.Tab.0.center/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
+    <state width="616" height="901" key="GridCell.Tab.0.left" timestamp="1597417883996">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.0.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="616" height="901" key="GridCell.Tab.0.left/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
+    <state width="616" height="901" key="GridCell.Tab.0.left/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
+    <state width="616" height="901" key="GridCell.Tab.0.right" timestamp="1597417883996">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.0.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="616" height="901" key="GridCell.Tab.0.right/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
+    <state width="616" height="901" key="GridCell.Tab.0.right/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
+    <state width="763" height="901" key="GridCell.Tab.1.bottom" timestamp="1597417883994">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="642" height="901" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
+    <state width="763" height="901" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
+    <state width="763" height="901" key="GridCell.Tab.1.center" timestamp="1597417883994">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.1.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="642" height="901" key="GridCell.Tab.1.center/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
+    <state width="763" height="901" key="GridCell.Tab.1.center/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
+    <state width="763" height="901" key="GridCell.Tab.1.left" timestamp="1597417883994">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.1.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="642" height="901" key="GridCell.Tab.1.left/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
+    <state width="763" height="901" key="GridCell.Tab.1.left/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
+    <state width="763" height="901" key="GridCell.Tab.1.right" timestamp="1597417883994">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="862" height="1288" key="GridCell.Tab.1.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="642" height="901" key="GridCell.Tab.1.right/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
+    <state width="763" height="901" key="GridCell.Tab.1.right/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
+    <state x="577" y="286" key="SettingsEditor" timestamp="1597417766420">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="769" y="354" key="SettingsEditor/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596728485343" />
+    <state x="577" y="286" key="SettingsEditor/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417766420" />
+    <state x="100" y="98" width="2360" height="1242" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1598672524378">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="100" y="98" width="2360" height="1242" key="com.intellij.history.integration.ui.views.FileHistoryDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598672524378" />
+    <state x="1333" y="348" width="1092" height="720" key="find.popup" timestamp="1598671672326">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="1333" y="348" width="1092" height="720" key="find.popup/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598671672326" />
+    <state x="940" y="1701" width="1199" height="540" key="find.popup/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597265420455" />
+    <state x="620" y="281" width="1199" height="527" key="find.popup/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597386729130" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Test__tests_test_admin_AdminSiteTest.coverage" NAME="Test: tests.test_admin.AdminSiteTest Coverage Results" MODIFIED="1596729252222" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$All_Test.coverage" NAME="All Test Coverage Results" MODIFIED="1597264587725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Test__tests_test_admin_OTPAdminSiteTest.coverage" NAME="Test: tests.test_admin.OTPAdminSiteTest Coverage Results" MODIFIED="1597383396358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Unittests_in_test_admin_py.coverage" NAME="Unittests in test_admin.py Coverage Results" MODIFIED="1596681397123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+  </component>
+</project>
