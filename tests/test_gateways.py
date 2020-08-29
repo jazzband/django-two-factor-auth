@@ -1,7 +1,7 @@
 from unittest.mock import Mock, patch
 from urllib.parse import urlencode
 
-from django.conf import settings
+from django.template.loader import render_to_string
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -47,12 +47,12 @@ class TwilioGatewayTest(TestCase):
         TWILIO_ACCOUNT_SID='SID',
         TWILIO_AUTH_TOKEN='TOKEN',
         TWILIO_CALLER_ID='+456',
-        TWILIO_MESSAGE='CUSTOM TWILIO MESSAGE.YOUR TOKEN IS {}',
     )
     @patch('two_factor.gateways.twilio.gateway.Client')
     def test_gateway(self, client):
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
+        sms_message = 'Hi\nThis is xyz.com'
 
         for code in ['654321', '054321', '87654321', '07654321']:
             twilio.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
@@ -60,11 +60,18 @@ class TwilioGatewayTest(TestCase):
                 from_='+456', to='+123', method='GET', timeout=15,
                 url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-us' % code)
 
-            twilio.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            twilio.send_sms(
+                device=Mock(number=PhoneNumber.from_string('+123')),
+                token=code,
+                sms_message=sms_message
+            )
 
             client.return_value.messages.create.assert_called_with(
                 to='+123',
-                body=getattr(settings, 'TWILIO_MESSAGE').format(code),
+                body=render_to_string(
+                    'two_factor/twilio/sms_message.html',
+                    {'token': code, 'sms_message': sms_message}
+                ),
                 from_='+456'
             )
 
@@ -103,6 +110,37 @@ class TwilioGatewayTest(TestCase):
             twilio = Twilio()
             with translation.override('ar'):
                 twilio.make_call(device=Mock(number='+123'), token='654321')
+
+    @override_settings(
+        TWILIO_ACCOUNT_SID='SID',
+        TWILIO_AUTH_TOKEN='TOKEN',
+        TWILIO_CALLER_ID='+456',
+    )
+    @patch('two_factor.gateways.twilio.gateway.Client')
+    def test_twilio_blank_sms_message(self, client):
+        """
+        test twilio sms message content when a blank message is passed
+        to the sms_message.html template
+        """
+        twilio = Twilio()
+        client.assert_called_with('SID', 'TOKEN')
+        sms_message = ''
+        code = '654321'
+
+        twilio.send_sms(
+            device=Mock(number=PhoneNumber.from_string('+123')),
+            token=code,
+            sms_message=sms_message
+        )
+
+        client.return_value.messages.create.assert_called_with(
+            to='+123',
+            body=render_to_string(
+                'two_factor/twilio/sms_message.html',
+                {'token': code, 'sms_message': sms_message}
+            ),
+            from_='+456'
+        )
 
 
 class FakeGatewayTest(TestCase):
