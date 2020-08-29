@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48e492f5-adb9-46b2-a49c-cab21def5ecb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/django-two-factor-auth-fork.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/django-two-factor-auth-fork.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_gateways.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_gateways.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/two_factor/gateways/twilio/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/two_factor/gateways/twilio/gateway.py" afterDir="false" />
     </list>
@@ -31,7 +34,7 @@
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.selected.package.standard" value="" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.test_gateways">
     <configuration name="Test: tests.test_admin.AdminSiteTest" type="DjangoTestsConfigurationType" temporary="true">
@@ -75,17 +78,17 @@
       <method v="2" />
     </configuration>
     <configuration name="test_gateways" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="django-two-factor-auth-fork" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_gateways.py" />
       <option name="PARAMETERS" value="" />
@@ -172,7 +175,7 @@
       <workItem from="1598205347965" duration="2095000" />
       <workItem from="1598668513614" duration="1009000" />
       <workItem from="1598669869746" duration="2053000" />
-      <workItem from="1598671937365" duration="834000" />
+      <workItem from="1598671937365" duration="3769000" />
     </task>
     <servers />
   </component>
@@ -199,82 +202,82 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="942" y="360" width="666" height="718" key="#Test:_tests.test_views_mixins.OTPRequiredMixinTest/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596675061937" />
-    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598671820986">
+    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598680055277">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598671820986" />
+    <state x="1148" y="344" key="#com.intellij.execution.impl.EditConfigurationsDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680055277" />
     <state x="900" y="1661" key="#com.intellij.execution.impl.EditConfigurationsDialog/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264583433" />
     <state x="100" y="98" width="2360" height="1242" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1596693917622">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="100" y="98" width="2360" height="1242" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596693917622" />
-    <state x="942" y="380" width="666" height="677" key="#test_gateways" timestamp="1598672546289">
+    <state x="942" y="380" width="666" height="677" key="#test_gateways" timestamp="1598680001666">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state x="942" y="380" width="666" height="677" key="#test_gateways/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598672546289" />
+    <state x="942" y="380" width="666" height="677" key="#test_gateways/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680001666" />
     <state width="956" height="500" key="DebuggerActiveHint" timestamp="1596693744594">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="956" height="500" key="DebuggerActiveHint/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596693744594" />
-    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl" timestamp="1598672006317">
+    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl" timestamp="1598680051466">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="587" y="389" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1598206583381" />
-    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598672006317" />
+    <state x="783" y="495" width="674" height="484" key="FileChooserDialogImpl/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680051466" />
     <state x="1058" y="1750" width="609" height="484" key="FileChooserDialogImpl/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1596646537258" />
     <state x="587" y="389" key="FileChooserDialogImpl/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417882443" />
-    <state width="616" height="901" key="GridCell.Tab.0.bottom" timestamp="1597417883996">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.bottom" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="616" height="901" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
     <state width="616" height="901" key="GridCell.Tab.0.bottom/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
-    <state width="616" height="901" key="GridCell.Tab.0.center" timestamp="1597417883996">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.center" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.0.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="616" height="901" key="GridCell.Tab.0.center/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
     <state width="616" height="901" key="GridCell.Tab.0.center/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
-    <state width="616" height="901" key="GridCell.Tab.0.left" timestamp="1597417883996">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.left" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.0.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="616" height="901" key="GridCell.Tab.0.left/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
     <state width="616" height="901" key="GridCell.Tab.0.left/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
-    <state width="616" height="901" key="GridCell.Tab.0.right" timestamp="1597417883996">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.right" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.0.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.0.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="616" height="901" key="GridCell.Tab.0.right/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264654033" />
     <state width="616" height="901" key="GridCell.Tab.0.right/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883996" />
-    <state width="763" height="901" key="GridCell.Tab.1.bottom" timestamp="1597417883994">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.bottom" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="642" height="901" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
     <state width="763" height="901" key="GridCell.Tab.1.bottom/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
-    <state width="763" height="901" key="GridCell.Tab.1.center" timestamp="1597417883994">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.center" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.1.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.center/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="642" height="901" key="GridCell.Tab.1.center/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
     <state width="763" height="901" key="GridCell.Tab.1.center/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
-    <state width="763" height="901" key="GridCell.Tab.1.left" timestamp="1597417883994">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.left" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.1.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.left/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="642" height="901" key="GridCell.Tab.1.left/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
     <state width="763" height="901" key="GridCell.Tab.1.left/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
-    <state width="763" height="901" key="GridCell.Tab.1.right" timestamp="1597417883994">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.right" timestamp="1598680159407">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state width="862" height="1288" key="GridCell.Tab.1.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596732168660" />
+    <state width="1023" height="1289" key="GridCell.Tab.1.right/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598680159407" />
     <state width="642" height="901" key="GridCell.Tab.1.right/320.1440.1920.1080/0.0.2560.1440@320.1440.1920.1080" timestamp="1597264409615" />
     <state width="763" height="901" key="GridCell.Tab.1.right/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417883994" />
-    <state x="577" y="286" key="SettingsEditor" timestamp="1597417766420">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state x="769" y="354" width="1546" height="730" key="SettingsEditor" timestamp="1598679948630">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state x="769" y="354" key="SettingsEditor/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1596728485343" />
+    <state x="769" y="354" width="1546" height="730" key="SettingsEditor/320.1440.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1598679948630" />
     <state x="577" y="286" key="SettingsEditor/320.1440.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597417766420" />
     <state x="100" y="98" width="2360" height="1242" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1598672524378">
       <screen x="0" y="0" width="2560" height="1440" />
@@ -289,6 +292,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Test__tests_test_admin_AdminSiteTest.coverage" NAME="Test: tests.test_admin.AdminSiteTest Coverage Results" MODIFIED="1596729252222" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$test_gateways.coverage" NAME="test_gateways Coverage Results" MODIFIED="1598680068584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$All_Test.coverage" NAME="All Test Coverage Results" MODIFIED="1597264587725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Test__tests_test_admin_OTPAdminSiteTest.coverage" NAME="Test: tests.test_admin.OTPAdminSiteTest Coverage Results" MODIFIED="1597383396358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/django_two_factor_auth_fork$Unittests_in_test_admin_py.coverage" NAME="Unittests in test_admin.py Coverage Results" MODIFIED="1596681397123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
