@@ -62,7 +62,6 @@ class Twilio(object):
             'two_factor/twilio/sms_message.html',
             {'token': token, 'sms_message': sms_message}
         )
-        print(f'body={body}')
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
