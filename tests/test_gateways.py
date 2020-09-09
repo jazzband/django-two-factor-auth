@@ -52,7 +52,6 @@ class TwilioGatewayTest(TestCase):
     def test_gateway(self, client):
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
-        sms_message = 'Hi\nThis is xyz.com'
 
         for code in ['654321', '054321', '87654321', '07654321']:
             twilio.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
