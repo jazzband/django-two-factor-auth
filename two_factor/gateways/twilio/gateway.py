@@ -53,14 +53,13 @@ class Twilio(object):
                                  from_=getattr(settings, 'TWILIO_CALLER_ID'),
                                  url=uri, method='GET', timeout=15)
 
-    def send_sms(self, device, token, sms_message):
+    def send_sms(self, device, token):
         """
-        send sms using custom TWILIO_MESSAGE from settings.py
-        :params sms_message: message to send with Twilio sms
+        send sms using template 'two_factor/twilio/sms_message.html'
         """
         body = render_to_string(
             'two_factor/twilio/sms_message.html',
-            {'token': token, 'sms_message': sms_message}
+            {'token': token}
         )
         self.client.messages.create(
             to=device.number.as_e164,

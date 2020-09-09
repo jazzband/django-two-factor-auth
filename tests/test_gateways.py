@@ -62,15 +62,14 @@ class TwilioGatewayTest(TestCase):
 
             twilio.send_sms(
                 device=Mock(number=PhoneNumber.from_string('+123')),
-                token=code,
-                sms_message=sms_message
+                token=code
             )
 
             client.return_value.messages.create.assert_called_with(
                 to='+123',
                 body=render_to_string(
                     'two_factor/twilio/sms_message.html',
-                    {'token': code, 'sms_message': sms_message}
+                    {'token': code}
                 ),
                 from_='+456'
             )
@@ -124,20 +123,18 @@ class TwilioGatewayTest(TestCase):
         """
         twilio = Twilio()
         client.assert_called_with('SID', 'TOKEN')
-        sms_message = ''
         code = '654321'
 
         twilio.send_sms(
             device=Mock(number=PhoneNumber.from_string('+123')),
-            token=code,
-            sms_message=sms_message
+            token=code
         )
 
         client.return_value.messages.create.assert_called_with(
             to='+123',
             body=render_to_string(
                 'two_factor/twilio/sms_message.html',
-                {'token': code, 'sms_message': sms_message}
+                {'token': code}
             ),
             from_='+456'
         )
