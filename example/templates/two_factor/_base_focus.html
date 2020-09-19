@@ -2,11 +2,9 @@
 {% load i18n %}
 
 {% block content_wrapper %}
-  <nav class="navbar navbar-light" role="navigation">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
-      </div>
+      <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
     </div>
   </nav>
 
