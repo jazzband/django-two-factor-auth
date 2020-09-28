@@ -2,17 +2,15 @@
 {% load i18n %}
 
 {% block content_wrapper %}
-  <nav class="navbar navbar-default" role="navigation">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
     <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
-      </div>
+      <a class="navbar-brand" href="{% url 'home' %}">{% trans "Demo" %}</a>
     </div>
   </nav>
 
   <div class="container">
     <div class="row">
-      <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+      <div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3">
         {% include "_messages.html" %}
         {% block content %}{% endblock %}
       </div>
