@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
+from django.utils.functional import lazy
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
-from django_otp import devices_for_user, user_has_device
+from django_otp import devices_for_user
+from django_otp.decorators import otp_required
 
 from ..forms import DisableForm
 from ..models import get_available_phone_methods
@@ -39,21 +41,22 @@ class ProfileView(TemplateView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(login_required)
 class DisableView(FormView):
     """
     View for disabling two-factor for a user's account.
     """
     template_name = 'two_factor/profile/disable.html'
-    success_url = None
+    success_url = lazy(resolve_url, str)(settings.LOGIN_REDIRECT_URL)
     form_class = DisableForm
 
-    def get(self, request, *args, **kwargs):
-        if not user_has_device(self.request.user):
-            return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))
-        return super().get(request, *args, **kwargs)
+    def dispatch(self, *args, **kwargs):
+        # We call otp_required here because we want to use self.success_url as
+        # the login_url. Using it as a class decorator would make it difficult
+        # for users who wish to override this property
+        fn = otp_required(super().dispatch, login_url=self.success_url, redirect_field_name=None)
+        return fn(*args, **kwargs)
 
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
             device.delete()
-        return redirect(self.success_url or resolve_url(settings.LOGIN_REDIRECT_URL))
+        return redirect(self.success_url)
