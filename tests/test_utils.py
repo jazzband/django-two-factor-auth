@@ -3,8 +3,9 @@ from urllib.parse import parse_qsl, urlparse
 
 from django.contrib.auth.hashers import make_password
 from django.test import TestCase, override_settings
+from django_otp.util import random_hex
 
-from two_factor.models import PhoneDevice, random_hex_str
+from two_factor.models import PhoneDevice
 from two_factor.utils import (
     backup_phones, default_device, get_otpauth_url, totp_digits,
 )
@@ -95,8 +96,8 @@ class UtilsTest(UserMixin, TestCase):
                 self.assertEqual(totp_digits(), no_digits)
 
     def test_random_hex(self):
-        # test that returned random_hex_str is string
-        h = random_hex_str()
+        # test that returned random_hex is string
+        h = random_hex()
         self.assertIsInstance(h, str)
         # hex string must be 40 characters long. If cannot be longer, because CharField max_length=40
         self.assertEqual(len(h), 40)
