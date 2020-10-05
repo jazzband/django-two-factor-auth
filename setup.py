@@ -13,7 +13,7 @@ setup(
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
         'Django>=2.2',
-        'django_otp>=0.6.0,<0.99',
+        'django_otp>=0.8.0',
         'qrcode>=4.0.0,<6.99',
         'django-phonenumber-field>=1.1.0,<3.99',
         'django-formtools',
@@ -32,6 +32,7 @@ setup(
         'Framework :: Django',
         'Framework :: Django :: 2.2',
         'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

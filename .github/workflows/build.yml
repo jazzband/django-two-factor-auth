@@ -11,17 +11,21 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.5', '3.6', '3.7', '3.8']
-        django-version: ['2.2', '3.0', master]
+        django-version: ['2.2', '3.0', '3.1', master]
         variant: [normal, yubikey, custom_user]
         experimental: ['true', 'false']
         exclude:
           - python-version: '3.5'
             django-version: '3.0'
           - python-version: '3.5'
+            django-version: '3.1'
+          - python-version: '3.5'
             django-version: master
           - django-version: '2.2'
             experimental: 'true'
           - django-version: '3.0'
+            experimental: 'true'
+          - django-version: '3.1'
             experimental: 'true'
           - django-version: master
             experimental: 'false'
