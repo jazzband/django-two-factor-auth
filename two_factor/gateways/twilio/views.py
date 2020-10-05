@@ -80,5 +80,5 @@ class TwilioCallApp(View):
             # Build the prompt. The numbers have to be clearly pronounced,
             # this is by creating a string like "1. 2. 3. 4. 5. 6.", this way
             # Twilio reads the numbers one by one.
-            'token': '. '.join(self.kwargs['token']) if self.request.method == 'POST' else '',
+            'token': '. '.join(str(self.kwargs['token'])) if self.request.method == 'POST' else '',
         }
