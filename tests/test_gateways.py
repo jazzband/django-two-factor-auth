@@ -109,34 +109,7 @@ class TwilioGatewayTest(TestCase):
             with translation.override('ar'):
                 twilio.make_call(device=Mock(number='+123'), token='654321')
 
-    @override_settings(
-        TWILIO_ACCOUNT_SID='SID',
-        TWILIO_AUTH_TOKEN='TOKEN',
-        TWILIO_CALLER_ID='+456',
-    )
-    @patch('two_factor.gateways.twilio.gateway.Client')
-    def test_twilio_blank_sms_message(self, client):
-        """
-        test twilio sms message content when a blank message is passed
-        to the sms_message.html template
-        """
-        twilio = Twilio()
-        client.assert_called_with('SID', 'TOKEN')
-        code = '654321'
 
-        twilio.send_sms(
-            device=Mock(number=PhoneNumber.from_string('+123')),
-            token=code
-        )
-
-        client.return_value.messages.create.assert_called_with(
-            to='+123',
-            body=render_to_string(
-                'two_factor/twilio/sms_message.html',
-                {'token': code}
-            ),
-            from_='+456'
-        )
 
 
 class FakeGatewayTest(TestCase):
