@@ -110,8 +110,6 @@ class TwilioGatewayTest(TestCase):
                 twilio.make_call(device=Mock(number='+123'), token='654321')
 
 
-
-
 class FakeGatewayTest(TestCase):
     @patch('two_factor.gateways.fake.logger')
     def test_gateway(self, logger):
