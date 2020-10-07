@@ -1,9 +1,10 @@
 from urllib.parse import urlencode
 
 from django.conf import settings
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import gettext, pgettext
+from django.utils.translation import pgettext
 from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
@@ -35,6 +36,7 @@ class Twilio(object):
 
     .. _Twilio: http://www.twilio.com/
     """
+
     def __init__(self):
         self.client = Client(getattr(settings, 'TWILIO_ACCOUNT_SID'),
                              getattr(settings, 'TWILIO_AUTH_TOKEN'))
@@ -52,7 +54,13 @@ class Twilio(object):
                                  url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = gettext('Your authentication token is %s') % token
+        """
+        send sms using template 'two_factor/twilio/sms_message.html'
+        """
+        body = render_to_string(
+            'two_factor/twilio/sms_message.html',
+            {'token': token}
+        )
         self.client.messages.create(
             to=device.number.as_e164,
             from_=getattr(settings, 'TWILIO_CALLER_ID'),
