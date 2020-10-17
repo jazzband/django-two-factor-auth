@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Translators:
+# Kevin Nakasaki <kevin.nakasaki@gmail.com>, 2020
 # Leonardo Soligo <leosoligo@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-08 08:49+0200\n"
-"PO-Revision-Date: 2020-07-08 06:54+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"PO-Revision-Date: 2020-08-11 00:10+0000\n"
+"Last-Translator: Kevin Nakasaki <kevin.nakasaki@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/Bouke/django-two-factor-auth/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -71,13 +72,13 @@ msgstr "django-two-factor-auth – Aplicativo de demonstração"
 
 #: templates/home.html:8
 msgid "Improve Your Security <small>your users will thank you</small>"
-msgstr ""
+msgstr "Aprimore sua segurança <small> seus usuários vão lhe agradecer </small>"
 
 #: templates/home.html:10
 msgid ""
 "Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
 "example to get an understanding of what the app can do for you."
-msgstr ""
+msgstr "Bem-vindo ao app de exemplo do <code>django-two-factor-auth</code>. Use este exemplo para entender o quê o aplicativo pode fazer por você."
 
 #: templates/home.html:14
 msgid "Please verify your settings"
@@ -89,7 +90,7 @@ msgid ""
 "<code>settings_private.py</code> file? By doing so, the example app will be "
 "able to call and text you to verify your authentication tokens. Otherwise, "
 "the tokens will be shown on the screen."
-msgstr ""
+msgstr "Você forneceu suas configurações do Twilio no arquivo <code>settings_private.py</code>? Ao fazer isso, o aplicativo de exemplo será capaz de ligar e enviar uma mensagem para você verificar seus códigos de autenticação. Caso contrário, os códigos serão mostrados na tela."
 
 #: templates/home.html:26
 msgid "Next steps:"
@@ -98,17 +99,17 @@ msgstr "Próximos passos:"
 #: templates/home.html:28
 #, python-format
 msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
-msgstr ""
+msgstr "Comece <a href=\"%(reg_url)s\">registrando</a> uma conta."
 
 #: templates/home.html:30
 #, python-format
 msgid "<a href=\"%(login_url)s\">Login</a> to your account."
-msgstr ""
+msgstr "<a href=\"%(login_url)s\">Conecte-se</a> à sua conta."
 
 #: templates/home.html:32
 #, python-format
 msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
-msgstr ""
+msgstr "<a href=\"%(setup_url)s\">Habilite</a> a verificação em duas etapas."
 
 #: templates/home.html:34
 #, python-format
@@ -116,14 +117,14 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and <a "
 "href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
 " authentication at work."
-msgstr ""
+msgstr "Em seguida, <a href=\"%(logout_url)s\">desconecte</a> e <a href=\"%(login_url)s\">conecte</a> mais uma vez à sua conta para ver a verificação em duas etapas funcionando."
 
 #: templates/home.html:37
 #, python-format
 msgid ""
 "At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
 "page</a>! :-)"
-msgstr ""
+msgstr "Finalmente você ganhou acesso à <a href=\"%(secret_url)s\">página secreta</a>! :-)"
 
 #: templates/registration.html:5
 msgid "Registration"
@@ -147,10 +148,10 @@ msgstr "Cadastro Completo"
 
 #: templates/registration_complete.html:6
 msgid "Congratulations, you've successfully registered an account."
-msgstr ""
+msgstr "Parabéns, você registrou uma conta com sucesso."
 
 #: templates/secret.html:9
 msgid ""
 "Congratulations, you've made it. You have successfully enabled two-factor "
 "authentication and logged in with your token."
-msgstr ""
+msgstr "Parabéns, você conseguiu. Você habilitou com sucesso a verificação em duas etapas e se conectou usando o seu código."
