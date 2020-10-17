@@ -27,7 +27,7 @@
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
-    <input type="submit" value="" class="hidden" />
+    <input type="submit" value="" class="d-none" />
 
     {% if other_devices %}
       <p>{% trans "Or, alternatively, use one of your backup phones:" %}</p>
