@@ -4,6 +4,7 @@
 - The templates are now based on Bootstrap 4.
 - `DisableView` now checks user has verified before disabling two-factor on
   their account
+- Inline CSS has been removed  to allow stricter Content Security Policies.
 
 ## 1.12 - 2020-07-08
 ### Added
