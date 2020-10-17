@@ -24,7 +24,7 @@
             <form method="post" action="{% url 'two_factor:phone_delete' phone.id %}"
                   onsubmit="return confirm('Are you sure?')">
               {% csrf_token %}
-              <button class="btn btn-xs btn-warning"
+              <button class="btn btn-sm btn-warning"
                       type="submit">{% trans "Unregister" %}</button>
             </form>
           </li>
@@ -50,7 +50,7 @@
     <h3>{% trans "Disable Two-Factor Authentication" %}</h3>
     <p>{% blocktrans trimmed %}However we strongly discourage you to do so, you can
       also disable two-factor authentication for your account.{% endblocktrans %}</p>
-    <p><a class="btn btn-default" href="{% url 'two_factor:disable' %}">
+    <p><a class="btn btn-secondary" href="{% url 'two_factor:disable' %}">
       {% trans "Disable Two-Factor Authentication" %}</a></p>
   {% else %}
     <p>{% blocktrans trimmed %}Two-factor authentication is not enabled for your
