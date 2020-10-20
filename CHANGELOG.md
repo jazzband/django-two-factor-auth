@@ -5,6 +5,7 @@
 - `DisableView` now checks user has verified before disabling two-factor on
   their account
 - Inline CSS has been removed  to allow stricter Content Security Policies.
+- Change "Back to Profile" to "Back to Account Security"
 
 ## 1.12 - 2020-07-08
 ### Added
