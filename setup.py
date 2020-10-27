@@ -12,7 +12,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=2.2',
+        'Django>=1.11',
         'django_otp>=0.8.0',
         'qrcode>=4.0.0,<6.99',
         'django-phonenumber-field>=1.1.0,<3.99',
