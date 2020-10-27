@@ -1,20 +1,23 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
-<head>
-  <title>{% block title %}{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <div class="alert alert-success"><p class="container">Provide a template named
-    <code>two_factor/_base.html</code> to style this page and remove this message.</p></div>
-
-  {% block content_wrapper %}
-    <div class="container">
-      {% block content %}{% endblock %}
-    </div>
-  {% endblock %}
-</body>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/2fa.css' %}">
+    </head>
+    <body>
+        {% block content_wrapper %}
+            <div class="base">
+                <div class="container">
+                    <div class="header">{% block header %}Kieskompas admin{% endblock header %}</div>
+                        <div class="content">
+                            {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </body>
 </html>

@@ -1,9 +1,9 @@
-{% extends "two_factor/_base_focus.html" %}
+{% extends "two_factor/_base.html" %}
 {% load i18n two_factor %}
 
-{% block content %}
-  <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
+{% block header %}{% trans "Login to the Kieskompas admin" %}{% endblock header %}
 
+{% block content %}
   {% if wizard.steps.current == 'auth' %}
     <p>{% blocktrans %}Enter your credentials.{% endblocktrans %}</p>
   {% elif wizard.steps.current == 'token' %}
@@ -48,5 +48,8 @@
     {% endif %}
 
     {% include "two_factor/_wizard_actions.html" %}
+
+
+    <p>{% trans "If you can not login without an error message, please click the setup button in order to setup the two factor authentication." %}</p>
   </form>
 {% endblock %}
