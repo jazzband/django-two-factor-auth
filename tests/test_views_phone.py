@@ -47,6 +47,9 @@ class PhoneSetupTest(UserMixin, TestCase):
                                'setup-number': '+31101234567',
                                'setup-method': 'call'})
         self.assertContains(response, 'We\'ve sent a token to your phone')
+        self.assertContains(response, 'autofocus="autofocus"')
+        self.assertContains(response, 'inputmode="numeric"')
+        self.assertContains(response, 'autocomplete="one-time-code"')
         device = response.context_data['wizard']['form'].device
         fake.return_value.make_call.assert_called_with(
             device=mock.ANY, token='%06d' % totp(device.bin_key))
