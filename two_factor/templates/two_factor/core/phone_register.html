@@ -17,7 +17,7 @@
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
-    <div style="margin-left: -9999px"><input type="submit" value=""/></div>
+    <input type="submit" value="" class="d-none" />
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>

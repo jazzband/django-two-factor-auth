@@ -63,7 +63,7 @@ Add the routes to your project url configuration:
 
     from two_factor.urls import urlpatterns as tf_urls
     urlpatterns = [
-       url(r'', include(tf_urls)),
+       path('', include(tf_urls)),
         ...
     ]
 

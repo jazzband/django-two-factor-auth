@@ -8,3 +8,5 @@ example/settings_private.py
 /htmlcov/
 /docs/_build/
 .eggs/
+
+.idea/

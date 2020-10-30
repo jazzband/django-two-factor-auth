@@ -3,7 +3,6 @@ from binascii import unhexlify
 
 from django.conf import settings
 from django.db import models
-from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 from django_otp.oath import totp
@@ -54,11 +53,6 @@ def key_validator(*args, **kwargs):
     return hex_validator()(*args, **kwargs)
 
 
-def random_hex_str(length=20):
-    # Could be removed once we depend on django_otp > 0.7.5
-    return force_str(random_hex(length=length))
-
-
 class PhoneDevice(Device):
     """
     Model with phone number and token seed linked to a user.
@@ -69,7 +63,7 @@ class PhoneDevice(Device):
     number = PhoneNumberField()
     key = models.CharField(max_length=40,
                            validators=[key_validator],
-                           default=random_hex_str,
+                           default=random_hex,
                            help_text="Hex-encoded secret key")
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))

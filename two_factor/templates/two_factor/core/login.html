@@ -27,14 +27,14 @@
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
-    <div style="margin-left: -9999px"><input type="submit" value=""/></div>
+    <input type="submit" value="" class="d-none" />
 
     {% if other_devices %}
       <p>{% trans "Or, alternatively, use one of your backup phones:" %}</p>
       <p>
         {% for other in other_devices %}
         <button name="challenge_device" value="{{ other.persistent_id }}"
-                class="btn btn-default btn-block" type="submit">
+                class="btn btn-secondary btn-block" type="submit">
           {{ other|device_action }}
         </button>
       {% endfor %}</p>
@@ -43,7 +43,7 @@
       <p>{% trans "As a last resort, you can use a backup token:" %}</p>
       <p>
         <button name="wizard_goto_step" type="submit" value="backup"
-                class="btn btn-default btn-block">{% trans "Use Backup Token" %}</button>
+                class="btn btn-secondary btn-block">{% trans "Use Backup Token" %}</button>
       </p>
     {% endif %}
 

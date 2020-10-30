@@ -1,3 +1,12 @@
+## Unreleased
+
+### Changed
+- The templates are now based on Bootstrap 4.
+- `DisableView` now checks user has verified before disabling two-factor on
+  their account
+- Inline CSS has been removed  to allow stricter Content Security Policies.
+- Change "Back to Profile" to "Back to Account Security"
+
 ## 1.12 - 2020-07-08
 ### Added
 - It is possible to set a timeout between a user authenticiating in the

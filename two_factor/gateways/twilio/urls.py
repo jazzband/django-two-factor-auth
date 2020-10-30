@@ -1,10 +1,10 @@
-from django.urls import re_path
+from django.urls import path
 
 from .views import TwilioCallApp
 
 urlpatterns = ([
-    re_path(
-        r'^twilio/inbound/two_factor/(?P<token>\d+)/$',
+    path(
+        'twilio/inbound/two_factor/<int:token>/',
         TwilioCallApp.as_view(),
         name='call_app',
     ),

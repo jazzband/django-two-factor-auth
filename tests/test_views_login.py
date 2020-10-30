@@ -9,8 +9,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
-
-from two_factor.models import random_hex_str
+from django_otp.util import random_hex
 
 from .utils import UserMixin
 
@@ -95,7 +94,7 @@ class LoginTest(UserMixin, TestCase):
         mock_time.time.return_value = 12345.12
         user = self.create_user()
         user.totpdevice_set.create(name='default',
-                                   key=random_hex_str())
+                                   key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -113,7 +112,7 @@ class LoginTest(UserMixin, TestCase):
         mock_time.time.return_value = 12345.12
         user = self.create_user()
         user.totpdevice_set.create(name='default',
-                                   key=random_hex_str())
+                                   key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -132,7 +131,7 @@ class LoginTest(UserMixin, TestCase):
         mock_time.time.return_value = 12345.12
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex_str())
+                                            key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -165,7 +164,7 @@ class LoginTest(UserMixin, TestCase):
         mock_time.time.return_value = 12345.12
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex_str())
+                                            key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -210,7 +209,7 @@ class LoginTest(UserMixin, TestCase):
     def test_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex_str())
+                                            key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -240,7 +239,7 @@ class LoginTest(UserMixin, TestCase):
     def test_throttle_with_generator(self, mock_signal):
         user = self.create_user()
         device = user.totpdevice_set.create(name='default',
-                                            key=random_hex_str())
+                                            key=random_hex())
 
         self._post({'auth-username': 'bouke@example.com',
                     'auth-password': 'secret',
@@ -265,11 +264,11 @@ class LoginTest(UserMixin, TestCase):
         user = self.create_user()
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                user.totpdevice_set.create(name='default', key=random_hex_str(),
+                user.totpdevice_set.create(name='default', key=random_hex(),
                                            digits=no_digits)
                 device = user.phonedevice_set.create(name='backup', number='+31101234567',
                                                      method='sms',
-                                                     key=random_hex_str())
+                                                     key=random_hex())
 
                 # Backup phones should be listed on the login form
                 response = self._post({'auth-username': 'bouke@example.com',
@@ -322,7 +321,7 @@ class LoginTest(UserMixin, TestCase):
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     def test_with_backup_token(self, mock_signal):
         user = self.create_user()
-        user.totpdevice_set.create(name='default', key=random_hex_str())
+        user.totpdevice_set.create(name='default', key=random_hex())
         device = user.staticdevice_set.create(name='backup')
         device.token_set.create(token='abcdef123')
 
@@ -475,7 +474,7 @@ class RememberLoginTest(UserMixin, TestCase):
         super().setUp()
         self.user = self.create_user()
         self.device = self.user.totpdevice_set.create(name='default',
-                                            key=random_hex_str())
+                                            key=random_hex())
 
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
