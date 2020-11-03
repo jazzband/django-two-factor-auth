@@ -173,7 +173,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                                     path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
                                     secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
                                     httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
-                                    samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
+                                    # samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
                                     )
 
         return response
