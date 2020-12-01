@@ -4,7 +4,7 @@ from binascii import unhexlify
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_otp.models import Device
+from django_otp.models import Device, ThrottlingMixin
 from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
@@ -53,7 +53,7 @@ def key_validator(*args, **kwargs):
     return hex_validator()(*args, **kwargs)
 
 
-class PhoneDevice(Device):
+class PhoneDevice(ThrottlingMixin, Device):
     """
     Model with phone number and token seed linked to a user.
     """
@@ -105,3 +105,6 @@ class PhoneDevice(Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+    def get_throttle_factor(self):
+        return getattr(settings, 'OTP_HOTP_THROTTLE_FACTOR', 1)
