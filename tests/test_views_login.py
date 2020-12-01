@@ -675,7 +675,7 @@ class RememberLoginTest(UserMixin, TestCase):
         TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
     )
-    def test_issue_397(self, mock_signal, fake):
+    def test_phonedevice_with_remember_cookie(self, mock_signal, fake):
         self.user.totpdevice_set.first().delete()
         device = self.user.phonedevice_set.create(name='default', number='+31101234567',
                                              method='sms',)

@@ -107,4 +107,4 @@ class PhoneDevice(ThrottlingMixin, Device):
             send_sms(device=self, token=token)
 
     def get_throttle_factor(self):
-        return getattr(settings, 'OTP_HOTP_THROTTLE_FACTOR', 1)
+        return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
