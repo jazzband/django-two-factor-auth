@@ -29,17 +29,17 @@ core = [
     ),
     path(
         'account/two_factor/setup/reset/1/',
-        view=ResetSetupGeneratorOrYubikeyView.as_view(),
+        ResetSetupGeneratorOrYubikeyView.as_view(),
         name='setup_reset_generator_or_yubikey',
     ),
     path(
         'account/two_factor/setup/reset/2/',
-        view=ResetSetupPhoneOrYubikeyView.as_view(),
+        ResetSetupPhoneOrYubikeyView.as_view(),
         name='setup_reset_phone_or_yubikey',
     ),
     path(
         'account/two_factor/setup/reset/3/',
-        view=ResetSetupPhoneOrGeneratorView.as_view(),
+        ResetSetupPhoneOrGeneratorView.as_view(),
         name='setup_reset_phone_or_generator',
     ),
     path(
