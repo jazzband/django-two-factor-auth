@@ -58,6 +58,9 @@ class PhoneNumberForm(ModelForm):
 class DeviceValidationForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
 
+    token.widget.attrs.update({'autofocus': 'autofocus',
+                               'inputmode': 'numeric',
+                               'autocomplete': 'one-time-code'})
     error_messages = {
         'invalid_token': _('Entered token is not valid.'),
     }
@@ -87,6 +90,10 @@ class YubiKeyDeviceForm(DeviceValidationForm):
 
 class TOTPDeviceForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=0, max_value=int('9' * totp_digits()))
+
+    token.widget.attrs.update({'autofocus': 'autofocus',
+                               'inputmode': 'numeric',
+                               'autocomplete': 'one-time-code'})
 
     error_messages = {
         'invalid_token': _('Entered token is not valid.'),
@@ -143,7 +150,9 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, Form):
     otp_token = forms.IntegerField(label=_("Token"), min_value=1,
                                    max_value=int('9' * totp_digits()))
 
-    otp_token.widget.attrs.update({'autofocus': 'autofocus'})
+    otp_token.widget.attrs.update({'autofocus': 'autofocus',
+                                   'inputmode': 'numeric',
+                                   'autocomplete': 'one-time-code'})
 
     # Our authentication form has an additional submit button to go to the
     # backup token form. When the `required` attribute is set on an input
