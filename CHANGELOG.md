@@ -1,11 +1,31 @@
 ## Unreleased
 
 ### Changed
-- The templates are now based on Bootstrap 4.
+- Change "Back to Profile" to "Back to Account Security"
+
+## 1.13.0
+
+### Added
+- User can request that two-factor authentication be skipped the next time they
+  log in on that particular device
+- Django 3.1 support
+- SMS message can now be customised by using a template
+
+### Changed
+- Simplified `re_path()` to `path()` in URLConf
+- Templates are now based on Bootstrap 4.
 - `DisableView` now checks user has verified before disabling two-factor on
   their account
-- Inline CSS has been removed  to allow stricter Content Security Policies.
-- Change "Back to Profile" to "Back to Account Security"
+- Inline CSS has been replaced to allow stricter Content Security Policies.
+
+### Removed
+- Upper limit on django-otp dependency
+- Obsolete IE<9 workarounds
+- Workarounds for older versions of django-otp
+
+## 1.12.1 - 2020-07-08
+
+*No code changes for this version*
 
 ## 1.12 - 2020-07-08
 ### Added
