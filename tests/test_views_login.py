@@ -670,3 +670,40 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+
+    @mock.patch('two_factor.gateways.fake.Fake')
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake',
+        TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
+        TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
+    )
+    def test_phonedevice_with_remember_cookie(self, mock_signal, fake):
+        self.user.totpdevice_set.first().delete()
+        device = self.user.phonedevice_set.create(name='default', number='+31101234567',
+                                             method='sms',)
+
+        # Ask for SMS challenge
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'We sent you a text message')
+
+        test_call_kwargs = fake.return_value.send_sms.call_args[1]
+        self.assertEqual(test_call_kwargs['device'], device)
+
+        # Valid token should be accepted.
+        response = self._post({'token-otp_token': totp(device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+        # Logout
+        self.client.get(reverse('logout'))
+
+        # Ask for SMS challenge
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
