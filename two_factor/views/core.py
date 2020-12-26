@@ -153,7 +153,6 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         current_step_data = self.storage.get_step_data(self.steps.current)
         remember = bool(current_step_data and current_step_data.get('token-remember') == 'on')
 
-
         login(self.request, self.get_user())
 
         redirect_to = self.get_success_url()
