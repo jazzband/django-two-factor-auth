@@ -689,5 +689,3 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
-
-
