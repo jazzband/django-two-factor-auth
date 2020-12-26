@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-04 16:05+0100\n"
+"POT-Creation-Date: 2020-10-17 21:19+0100\n"
 "PO-Revision-Date: 2013-11-27 20:08+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,54 +16,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: forms.py:24 forms.py:36
+#: forms.py:25 forms.py:37
 msgid "Method"
 msgstr ""
 
-#: forms.py:34 forms.py:49
+#: forms.py:35 forms.py:50
 msgid "Phone Number"
 msgstr ""
 
-#: forms.py:58 forms.py:88 forms.py:142 forms.py:178
+#: forms.py:59 forms.py:89 forms.py:143 forms.py:197
 msgid "Token"
 msgstr ""
 
-#: forms.py:61 forms.py:91
+#: forms.py:62 forms.py:92
 msgid "Entered token is not valid."
 msgstr ""
 
-#: forms.py:76 forms.py:170 models.py:40
+#: forms.py:77 forms.py:171 models.py:40
 msgid "YubiKey"
 msgstr ""
 
-#: forms.py:79
+#: forms.py:80
 msgid "The YubiKey could not be verified."
 msgstr ""
 
-#: forms.py:138
+#: forms.py:139
 msgid "Yes, I am sure"
 msgstr ""
 
 #: forms.py:177
+#, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
 msgstr ""
 
 #: forms.py:180
+#, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
 msgstr ""
 
 #: forms.py:183
-msgid "Don't ask again on this device for %(days)i days"
-msgstr ""
-
-#: gateways/twilio/gateway.py:55
 #, python-format
-msgid "Your authentication token is %s"
+msgid "Don't ask again on this device for %(days)i days"
 msgstr ""
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:64 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:72 gateways/twilio/views.py:74
 msgctxt "twilio_locale"
 msgid "en"
 msgstr ""
@@ -108,7 +106,7 @@ msgstr ""
 msgid "Token generator"
 msgstr ""
 
-#: models.py:73
+#: models.py:69
 msgid "method"
 msgstr ""
 
@@ -117,11 +115,11 @@ msgid "Cancel"
 msgstr ""
 
 #: templates/two_factor/_wizard_actions.html:10
-#: templates/two_factor/_wizard_actions.html:13
+#: templates/two_factor/_wizard_actions.html:12
 msgid "Back"
 msgstr ""
 
-#: templates/two_factor/_wizard_actions.html:15
+#: templates/two_factor/_wizard_actions.html:14
 msgid "Next"
 msgstr ""
 
@@ -376,6 +374,11 @@ msgid ""
 "authentication for your account."
 msgstr ""
 
+#: templates/two_factor/twilio/sms_message.html:2
+#, python-format
+msgid "Your OTP token is %(token)s"
+msgstr ""
+
 #: templatetags/two_factor.py:56
 #, python-format
 msgid "Send text message to %s"
@@ -392,6 +395,10 @@ msgid ""
 "+ or 00."
 msgstr ""
 
-#: views/utils.py:111
+#: views/core.py:262
+msgid "Your session has timed out. Please login again."
+msgstr ""
+
+#: views/utils.py:147
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr ""

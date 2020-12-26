@@ -30,6 +30,9 @@ class SetupTest(UserMixin, TestCase):
             data={'setup_view-current_step': 'welcome'})
 
         self.assertContains(response, 'Token:')
+        self.assertContains(response, 'autofocus="autofocus"')
+        self.assertContains(response, 'inputmode="numeric"')
+        self.assertContains(response, 'autocomplete="one-time-code"')
         session = self.client.session
         self.assertIn('django_two_factor-qr_secret_key', session.keys())
 

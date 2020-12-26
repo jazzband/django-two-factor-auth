@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Translators:
+# Fabio Caccamo <fabio.caccamo@gmail.com>, 2020
 # yakky <i.spalletti@nephila.it>, 2016
 # Luca De Sano <luca.desano@gmail.com>, 2016
 # Paolo Giustiniani <paolo.giustiniani@cri.it>, 2016
@@ -12,8 +13,8 @@ msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-08 08:49+0200\n"
-"PO-Revision-Date: 2020-07-08 06:54+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"PO-Revision-Date: 2020-08-03 09:01+0000\n"
+"Last-Translator: Fabio Caccamo <fabio.caccamo@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Bouke/django-two-factor-auth/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,12 +25,12 @@ msgstr ""
 #: gateways.py:11
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
-msgstr "E' in corso una simulazione di chiamata al numero %(number)s: \"Il tuo token è: %(token)s\""
+msgstr "È in corso una simulazione di chiamata al numero %(number)s: \"Il tuo token è: %(token)s\""
 
 #: gateways.py:16
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
-msgstr "E' in corso una simulazione di messaggio al numero %(number)s: \"Il tuo token è: %(token)s\""
+msgstr "È in corso una simulazione di messaggio al numero %(number)s: \"Il tuo token è: %(token)s\""
 
 #: templates/_base.html:20
 msgid "Toggle navigation"

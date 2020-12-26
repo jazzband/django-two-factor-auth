@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-04 15:57+0100\n"
+"POT-Creation-Date: 2020-10-17 21:19+0100\n"
 "PO-Revision-Date: 2013-11-20 09:58+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,31 +27,27 @@ msgstr ""
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
 msgstr ""
 
-#: templates/_base.html:20
-msgid "Toggle navigation"
-msgstr ""
-
-#: templates/_base.html:25 templates/two_factor/_base_focus.html:8
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
 msgid "Demo"
 msgstr ""
 
-#: templates/_base.html:32
+#: templates/_base.html:26
 msgid "Home"
 msgstr ""
 
-#: templates/_base.html:34 templates/secret.html:7
+#: templates/_base.html:29 templates/secret.html:7
 msgid "Secret Page"
 msgstr ""
 
-#: templates/_base.html:42
+#: templates/_base.html:39
 msgid "Account Security"
 msgstr ""
 
-#: templates/_base.html:44
+#: templates/_base.html:41
 msgid "Sessions"
 msgstr ""
 
-#: templates/_base.html:45
+#: templates/_base.html:43
 msgid "Logout"
 msgstr ""
 
@@ -59,7 +55,7 @@ msgstr ""
 msgid "Not logged in"
 msgstr ""
 
-#: templates/_base.html:48 templates/registration_complete.html:9
+#: templates/_base.html:50 templates/registration_complete.html:9
 msgid "Login"
 msgstr ""
 
