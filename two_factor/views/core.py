@@ -148,6 +148,12 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         """
         Login the user and redirect to the desired page.
         """
+
+        # Check if remember cookie should be set after login
+        current_step_data = self.storage.get_step_data(self.steps.current)
+        remember = bool(current_step_data and current_step_data.get('token-remember') == 'on')
+
+
         login(self.request, self.get_user())
 
         redirect_to = self.get_success_url()
@@ -160,9 +166,8 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                                        user=self.get_user(), device=device)
 
             # Set a remember cookie if activated
-            form_obj = self.get_form(step=self.steps.current, data=self.storage.get_step_data(self.steps.current))
-            if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None) and \
-                    'remember' in form_obj.fields and form_obj['remember'].value():
+
+            if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None) and remember:
                 # choose a unique cookie key to remember devices for multiple users in the same browser
                 cookie_key = REMEMBER_COOKIE_PREFIX + str(uuid4())
                 cookie_value = get_remember_device_cookie(user=self.get_user(),

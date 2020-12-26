@@ -417,6 +417,28 @@ class LoginTest(UserMixin, TestCase):
 
         self.assertNotIn('secret', session_contents)
 
+    def test_login_different_user_with_otp_on_existing_session(self):
+            self.create_user()
+            vedran_user = self.create_user(username='vedran@example.com')
+            device = vedran_user.totpdevice_set.create(name='default',
+                                                key=random_hex())
+
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertRedirects(response,
+                                 resolve_url(settings.LOGIN_REDIRECT_URL))
+
+            response = self._post({'auth-username': 'vedran@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertContains(response, 'Token:')
+            response = self._post({'token-otp_token': totp(device.bin_key),
+                                   'login_view-current_step': 'token',
+                                   'token-remember': 'on'})
+            self.assertRedirects(response,
+                                 resolve_url(settings.LOGIN_REDIRECT_URL))
+
 
 class BackupTokensTest(UserMixin, TestCase):
     def setUp(self):
@@ -667,3 +689,5 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
         self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+
+
