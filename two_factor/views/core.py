@@ -27,23 +27,24 @@ from django.utils.translation import gettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DeleteView, FormView, TemplateView
+from django.views.generic import DeleteView, FormView, ListView, TemplateView
 from django.views.generic.base import View
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
+from django_otp.plugins.otp_totp.models import TOTPDevice 
 from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.models import get_available_methods
-from two_factor.utils import totp_digits
+from two_factor.models import get_available_methods, WebauthnDevice
+from two_factor.utils import totp_digits, device_from_persistent_id
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, WebauthnDeviceForm, YubiKeyDeviceForm,
 )
 from ..models import PhoneDevice, get_available_phone_methods
-from ..utils import backup_phones, default_device, get_otpauth_url
+from ..utils import backup_phones, default_device, get_otpauth_url, devices_for_user
 from .utils import (
     IdempotentSessionWizardView, class_view_decorator,
     get_remember_device_cookie, validate_remember_device_cookie,
@@ -153,6 +154,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         current_step_data = self.storage.get_step_data(self.steps.current)
         remember = bool(current_step_data and current_step_data.get('token-remember') == 'on')
 
+        self.request.session.pop('form_device', None) 
         login(self.request, self.get_user())
 
         redirect_to = self.get_success_url()
@@ -215,6 +217,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
             return {
                 'user': self.get_user(),
                 'initial_device': self.get_device(step),
+                'request': self.request,
             }
         return {}
 
@@ -273,18 +276,45 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if not self.device_cache:
             challenge_device_id = self.request.POST.get('challenge_device', None)
             if challenge_device_id:
-                for device in backup_phones(self.get_user()):
-                    if device.persistent_id == challenge_device_id:
-                        self.device_cache = device
-                        break
+                self.device_cache = device_from_persistent_id(
+                    self.get_user(), challenge_device_id, self.get_other_devices()
+                )
+
             if step == 'backup':
                 try:
                     self.device_cache = self.get_user().staticdevice_set.get(name='backup')
                 except StaticDevice.DoesNotExist:
                     pass
+
             if not self.device_cache:
-                self.device_cache = default_device(self.get_user())
+                if self.request.session.get('form_device'):
+                    self.device_cache = device_from_persistent_id(self.get_user(), self.request.session['form_device'])
+                else:
+                    self.device_cache = default_device(self.get_user())
+
+            self.request.session['form_device'] = self.device_cache.persistent_id
+
         return self.device_cache
+
+    def get_other_devices(self, main_device=None):
+        user = self.get_user()
+
+        other_devices = [
+            phone for phone in backup_phones(self.get_user())
+            if phone != main_device
+        ]
+
+        if not isinstance(main_device, WebauthnDevice):
+            # It is enough to list one webauthn device, since the login form will work on all of them,
+            # not just one at a time
+            webauthn_device = user.webauthn_keys.first()
+            if webauthn_device:
+                other_devices.append(webauthn_device)
+
+        if not isinstance(main_device, TOTPDevice):
+            other_devices += list(user.totpdevice_set.all())
+
+        return other_devices
 
     def render(self, form=None, **kwargs):
         """
@@ -311,9 +341,8 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         context = super().get_context_data(form, **kwargs)
         if self.steps.current == 'token':
             context['device'] = self.get_device()
-            context['other_devices'] = [
-                phone for phone in backup_phones(self.get_user())
-                if phone != self.get_device()]
+            context['other_devices'] = self.get_other_devices(main_device=context['device'])
+
             try:
                 context['backup_tokens'] = self.get_user().staticdevice_set\
                     .get(name='backup').token_set.count()
@@ -411,6 +440,7 @@ class SetupView(IdempotentSessionWizardView):
         ('call', PhoneNumberForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
+        ('webauthn', WebauthnDeviceForm),
     )
     condition_dict = {
         'generator': lambda self: self.get_method() == 'generator',
@@ -418,22 +448,16 @@ class SetupView(IdempotentSessionWizardView):
         'sms': lambda self: self.get_method() == 'sms',
         'validation': lambda self: self.get_method() in ('sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
+        'webauthn': lambda self: self.get_method() == 'webauthn',
     }
     idempotent_dict = {
         'yubikey': False,
+        'webauthn': False,
     }
 
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})
         return method_data.get('method', None)
-
-    def get(self, request, *args, **kwargs):
-        """
-        Start the setup wizard. Redirect if already enabled.
-        """
-        if default_device(self.request.user):
-            return redirect(self.success_url)
-        return super().get(request, *args, **kwargs)
 
     def get_form_list(self):
         """
@@ -476,6 +500,11 @@ class SetupView(IdempotentSessionWizardView):
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
             device = form.save()
 
+        # WebauthnDeviceForm
+        elif self.get_method() == 'webauthn':
+            form = [form for form in form_list if isinstance(form, WebauthnDeviceForm)][0]
+            device = form.save()
+
         # PhoneNumberForm / YubiKeyDeviceForm
         elif self.get_method() in ('call', 'sms', 'yubikey'):
             device = self.get_device()
@@ -498,6 +527,12 @@ class SetupView(IdempotentSessionWizardView):
             kwargs.update({
                 'device': self.get_device()
             })
+        if step == 'webauthn':
+            kwargs.update({
+                'user': self.request.user,
+                'request': self.request,
+            })
+
         metadata = self.get_form_metadata(step)
         if metadata:
             kwargs.update({
@@ -524,7 +559,7 @@ class SetupView(IdempotentSessionWizardView):
 
         if method == 'yubikey':
             kwargs['public_id'] = self.storage.validated_step_data\
-                .get('yubikey', {}).get('token', '')[:-32]
+                .get(method, {}).get('token', '')[:-32]
             try:
                 kwargs['service'] = ValidationService.objects.get(name='default')
             except ValidationService.DoesNotExist:
@@ -750,3 +785,27 @@ class QRGeneratorView(View):
         resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(login_required)
+class ManageKeysView(ListView):
+    template_name = 'two_factor/core/manage_keys.html'
+
+    def get_queryset(self):
+        return devices_for_user(self.request.user)
+
+    def post(self, request):
+        assert 'delete' in request.POST
+        device = device_from_persistent_id(request.user, request.POST['persistent_id'])
+        device.delete()
+
+        other_devices_same_type = type(device).objects.devices_for_user(request.user, confirmed=None)
+        if other_devices_same_type.filter(name='default').count() == 0 and other_devices_same_type.count() > 0:
+            new_default_device = other_devices_same_type.first()
+            new_default_device.name = 'default'
+            new_default_device.save()
+
+        if django_otp.user_has_device(request.user, confirmed=None):
+            return HttpResponseRedirect(reverse('two_factor:manage_keys'))
+        return HttpResponseRedirect(reverse('two_factor:profile'))

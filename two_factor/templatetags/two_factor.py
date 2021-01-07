@@ -3,8 +3,9 @@ import re
 import phonenumbers
 from django import template
 from django.utils.translation import gettext as _
+from django_otp.plugins.otp_totp.models import TOTPDevice 
 
-from ..models import PhoneDevice
+from ..models import PhoneDevice, WebauthnDevice
 
 register = template.Library()
 
@@ -50,10 +51,17 @@ def device_action(device):
     * Send text message to `+31 * ******58`
     * Call number `+31 * ******58`
     """
-    assert isinstance(device, PhoneDevice)
-    number = mask_phone_number(format_phone_number(device.number))
-    if device.method == 'sms':
-        return _('Send text message to %s') % number
-    elif device.method == 'call':
-        return _('Call number %s') % number
+    if isinstance(device, PhoneDevice):
+        number = mask_phone_number(format_phone_number(device.number))
+        if device.method == 'sms':
+            return _('Send text message to %s') % number
+        elif device.method == 'call':
+            return _('Call number %s') % number
+
+    if isinstance(device, TOTPDevice):
+        return _('Insert a token from your TOTP device')
+
+    if isinstance(device, WebauthnDevice):
+        return _('Use one of your WebAuthn-compatible devices')
+
     raise NotImplementedError('Unknown method: %s' % device.method)

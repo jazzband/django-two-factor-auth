@@ -45,7 +45,7 @@
       account.{% endblocktrans %}</p>
   {% endif %}
 
-  <form action="" method="post">{% csrf_token %}
+  <form action="" method="post" id="authn-form" class="container-forms">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
@@ -53,4 +53,33 @@
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+
+  {{ form.media }}
+  <script>
+    var options = {{ wizard.form.registration_request|default:'null'|safe }};
+    if (options != null) {
+      options.challenge = str2ab(options.challenge);
+      for (var i = 0; i < options.excludeCredentials.length; i++) {
+        options.excludeCredentials[i].id = str2ab(options.excludeCredentials[i].id);
+      }
+      options.user.id = str2ab(options.user.id);
+
+      navigator.credentials.create({
+        publicKey: options
+      }).then((credential) => {
+        var r = credential.response;
+        var registerResponse = {
+          id: credential.id,
+          clientDataJSON: ab2str(r.clientDataJSON),
+          attestationObject: ab2str(r.attestationObject)
+        };
+        form = document.forms[0];
+        response = document.querySelector('[name=webauthn-token]');
+        response.value = JSON.stringify(registerResponse);
+        form.submit();
+      }, (reason) => {
+        console.error("Registration error: ", reason);
+      });
+    }
+  </script>
 {% endblock %}

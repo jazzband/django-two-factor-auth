@@ -2,3 +2,4 @@ include *.rst LICENSE
 prune two_factor/locale
 recursive-include two_factor/locale *
 recursive-include two_factor/templates *
+recursive-include two_factor/static *

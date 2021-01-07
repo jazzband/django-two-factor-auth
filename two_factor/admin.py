@@ -6,7 +6,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 
-from .models import PhoneDevice
+from .models import PhoneDevice, WebauthnDevice
 from .utils import monkeypatch_method
 
 
@@ -75,4 +75,10 @@ class PhoneDeviceAdmin(admin.ModelAdmin):
     raw_id_fields = ('user',)
 
 
+class WebauthnDeviceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'created_at', 'last_used_at', 'confirmed')
+    raw_id_fields = ('user',)
+
+
 admin.site.register(PhoneDevice, PhoneDeviceAdmin)
+admin.site.register(WebauthnDevice, WebauthnDeviceAdmin)

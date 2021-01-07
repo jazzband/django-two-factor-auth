@@ -1,7 +1,7 @@
 from django.urls import path
 
 from two_factor.views import (
-    BackupTokensView, DisableView, LoginView, PhoneDeleteView, PhoneSetupView,
+    BackupTokensView, DisableView, LoginView, ManageKeysView, PhoneDeleteView, PhoneSetupView,
     ProfileView, QRGeneratorView, SetupCompleteView, SetupView,
 )
 
@@ -40,6 +40,11 @@ core = [
         'account/two_factor/backup/phone/unregister/<int:pk>/',
         PhoneDeleteView.as_view(),
         name='phone_delete',
+    ),
+    path(
+        'account/two_factor/manage_keys/',
+        ManageKeysView.as_view(),
+        name='manage_keys',
     ),
 ]
 

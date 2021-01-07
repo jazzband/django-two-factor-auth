@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Added
+- WebAuthn support
+
 ### Changed
 - Change "Back to Profile" to "Back to Account Security"
 

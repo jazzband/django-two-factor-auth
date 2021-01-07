@@ -42,7 +42,7 @@ def get_available_yubikey_methods():
 
 
 def get_available_methods():
-    methods = [('generator', _('Token generator'))]
+    methods = [('generator', _('Token generator')), ('webauthn', _('WebAuthn'))]
     methods.extend(get_available_phone_methods())
     methods.extend(get_available_yubikey_methods())
     return methods
@@ -108,3 +108,26 @@ class PhoneDevice(ThrottlingMixin, Device):
 
     def get_throttle_factor(self):
         return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
+
+
+class WebauthnDevice(Device):
+    """
+    Model for Webauthn authentication
+    """
+    class Meta:
+        app_label = 'two_factor'
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='webauthn_keys', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True)
+
+    public_key = models.TextField(unique=True)
+    key_handle = models.TextField()
+    sign_count = models.IntegerField()
+
+    def to_json(self):
+        return {
+            'publicKey': self.public_key,
+            'keyHandle': self.key_handle,
+            'version': 'WEBAUTHN',
+        }

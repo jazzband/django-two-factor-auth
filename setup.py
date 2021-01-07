@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='django-two-factor-auth',
-    version='1.13',
+    version='1.14',
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst', encoding='utf-8').read(),
     author='Bouke Haarsma',
@@ -17,6 +17,7 @@ setup(
         'qrcode>=4.0.0,<6.99',
         'django-phonenumber-field>=1.1.0,<3.99',
         'django-formtools',
+        'webauthn>=0.4.7', 
     ],
     extras_require={
         'call': ['twilio>=6.0'],

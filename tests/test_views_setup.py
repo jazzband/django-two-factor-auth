@@ -1,5 +1,5 @@
 from binascii import unhexlify
-from unittest import mock
+from unittest import mock, skip
 
 from django.test import TestCase
 from django.test.utils import modify_settings, override_settings
@@ -11,6 +11,15 @@ from .utils import UserMixin
 
 
 class SetupTest(UserMixin, TestCase):
+
+    def assertContains(self, response, text, count=None, status_code=200, msg_prefix='', html=False):
+        try:
+            return super().assertContains(response, text, count=None, status_code=200, msg_prefix='', html=False)
+        except:
+            print(response.content)
+            print(text)
+            raise
+
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
@@ -21,6 +30,7 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Follow the steps in this wizard to '
                                       'enable two-factor')
 
+    @skip('Now we never have only one method: WebAuthN is also available, alongside TOTP generator') 
     @modify_settings(INSTALLED_APPS={
         'remove': ['otp_yubikey'],
     })
@@ -190,14 +200,15 @@ class SetupTest(UserMixin, TestCase):
         self.enable_otp()
         self.login_user()
         response = self.client.get(reverse('two_factor:setup'))
-        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+        # [sp] we now support setup of multiple tokens
+        self.assertContains(response, 'Enable Two-Factor Authentication')
 
     def test_no_double_login(self):
         """
         Activating two-factor authentication for ones account, should
         automatically mark the session as being OTP verified. Refs #44.
         """
-        self.test_setup_only_generator_available()
+        self.test_setup_generator_with_multi_method()
         device = self.user.totpdevice_set.all()[0]
 
         self.assertEqual(device.persistent_id,
