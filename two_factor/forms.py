@@ -121,8 +121,8 @@ class WebauthnDeviceForm(forms.Form):
             key_format = webauthn_utils.get_response_key_format(response)
 
             self.webauthn_device_info = dict(
-                keyHandle=credentials.credential_id,
-                publicKey=credentials.public_key,
+                keyHandle=credentials.credential_id.decode('utf-8'),
+                publicKey=credentials.public_key.decode('utf-8'),
                 signCount=credentials.sign_count,
                 format=key_format,
             )
