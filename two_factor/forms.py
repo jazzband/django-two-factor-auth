@@ -80,7 +80,14 @@ class DeviceValidationForm(forms.Form):
 
 
 class WebauthnDeviceForm(forms.Form):
-    token = forms.CharField(label=_("WebAuthn Token"), widget=forms.PasswordInput(attrs={'autofocus': 'autofocus'}))
+    token = forms.CharField(
+        label=_("WebAuthn Token"),
+        widget=forms.PasswordInput(attrs={
+            'autofocus': 'autofocus',
+            'inputmode': 'none',
+            'autocomplete': 'one-time-code',
+        })
+    )
 
     class Media:
         js = ('js/webauthn_utils.js', )

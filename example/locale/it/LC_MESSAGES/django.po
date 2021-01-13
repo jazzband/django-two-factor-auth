@@ -26,16 +26,12 @@ msgstr ""
 #: gateways.py:11
 #, python-format
 msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
-msgstr ""
-"È in corso una simulazione di chiamata al numero %(number)s: \"Il tuo token "
-"è: %(token)s\""
+msgstr "È in corso una simulazione di chiamata al numero %(number)s: \"Il tuo token è: %(token)s\""
 
 #: gateways.py:16
 #, python-format
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
-msgstr ""
-"È in corso una simulazione di messaggio al numero %(number)s: \"Il tuo token "
-"è: %(token)s\""
+msgstr "È in corso una simulazione di messaggio al numero %(number)s: \"Il tuo token è: %(token)s\""
 
 #: templates/_base.html:15 templates/two_factor/_base_focus.html:7
 msgid "Demo"
@@ -93,10 +89,10 @@ msgstr "Per favore verificare le tue impostazioni"
 
 #: templates/home.html:15
 msgid ""
-"Have you provided your Twilio settings in the <code>settings_private.py</"
-"code> file? By doing so, the example app will be able to call and text you "
-"to verify your authentication tokens. Otherwise, the tokens will be shown on "
-"the screen."
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
 msgstr ""
 "Hai inserito le impostazioni di Twilio nel file <code>settings_private.py</"
 "code>? Una volta che le avrai inserite l'applicazione di esempio sarà in "
@@ -125,9 +121,9 @@ msgstr "<a href=\"%(setup_url)s\">Abilita</a> la doppia autenticazione."
 #: templates/home.html:34
 #, python-format
 msgid ""
-"Then, <a href=\"%(logout_url)s\">logout</a> and <a href=\"%(login_url)s"
-"\">login</a> once more to your account to see two-factor authentication at "
-"work."
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
 msgstr ""
 "Adesso effettua il <a href=\"%(logout_url)s\">logout</a> e il <a href="
 "\"%(login_url)s\">login</a> di nuovo per vedere la two-factor-authentication "
@@ -136,8 +132,8 @@ msgstr ""
 #: templates/home.html:37
 #, python-format
 msgid ""
-"At last, you've gained access to the <a href=\"%(secret_url)s\">secret page</"
-"a>! :-)"
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
 msgstr ""
 "Finalmente, hai ottenuto l'accesso alla <a href=\"%(secret_url)s\">pagina "
 "segreta</a>! :-)"

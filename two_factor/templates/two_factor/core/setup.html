@@ -45,7 +45,7 @@
       account.{% endblocktrans %}</p>
   {% endif %}
 
-  <form action="" method="post" id="authn-form" class="container-forms">{% csrf_token %}
+  <form action="" method="post" id="auth-form" class="container-forms">{% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
