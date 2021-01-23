@@ -50,8 +50,8 @@ Refer to the `installation instructions`_ in the documentation.
 Getting help
 ============
 
-For general questions regarding this package, please hop over to Stack
-Overflow. If you think there is an issue with this package; check if the
+For general questions regarding this package, please hop over to `Stack Overflow`_.
+If you think there is an issue with this package; check if the
 issue is already listed (either open or closed), and file an issue if
 it's not.
 
@@ -131,6 +131,8 @@ The project is licensed under the MIT license.
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
 .. _`installation instructions`:
    http://django-two-factor-auth.readthedocs.io/en/stable/installation.html
+.. _`Stack Overflow`:
+   https://stackoverflow.com/questions/tagged/django-two-factor-auth
 .. _Yubikey: https://www.yubico.com/products/yubikey-hardware/
 .. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
