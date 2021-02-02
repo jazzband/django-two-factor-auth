@@ -110,7 +110,7 @@ class PhoneDevice(ThrottlingMixin, Device):
         return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
 
 
-class WebauthnDevice(Device):
+class WebauthnDevice(ThrottlingMixin, Device):
     """
     Model for Webauthn authentication
     """
@@ -131,3 +131,6 @@ class WebauthnDevice(Device):
             'keyHandle': self.key_handle,
             'version': 'WEBAUTHN',
         }
+
+    def get_throttle_factor(self):
+        return getattr(settings, 'TWO_FACTOR_WEBAUTHN_THROTTLE_FACTOR', 1)
