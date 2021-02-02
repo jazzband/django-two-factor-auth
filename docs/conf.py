@@ -58,7 +58,7 @@ copyright = '2014, Bouke Haarsma'
 #
 
 # The full version, including alpha/beta/rc tags.
-release = '1.14.dev1'
+release = '1.14.dev2'
 
 # The short X.Y version.
 version = '.'.join(release.split('.')[0:2])
