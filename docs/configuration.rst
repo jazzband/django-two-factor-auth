@@ -29,6 +29,15 @@ General Settings
   * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
     default logger.
 
+``TWO_FACTOR_EMAIL_GATEWAY`` (default: ``None``)
+  Which gateway to use for sending email messages. Should be set to a module or
+  object providing a ``send_email`` method. Currently two gateways are bundled:
+
+  * ``'two_factor.gateways.email.Email'`` for sending real emails using core Django
+  lib.
+  * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
+    default logger.
+
 ``LOGIN_URL``
   Should point to the login view provided by this application as described in
   setup. This login view handles password authentication followed by a one-time
@@ -125,6 +134,11 @@ Additionally, you need to enable the ``ThreadLocals`` middleware:
 
 
 .. autoclass:: two_factor.gateways.twilio.gateway.Twilio
+
+Email Gateway
+--------------
+.. autoclass:: two_factor.gateways.email.Email
+
 
 Fake Gateway
 ------------

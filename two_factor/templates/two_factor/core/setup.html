@@ -23,6 +23,10 @@
   {% elif wizard.steps.current == 'call' %}
     <p>{% blocktrans trimmed %}Please enter the phone number you wish to be called on.
       This number will be validated in the next step. {% endblocktrans %}</p>
+  {% elif wizard.steps.current == 'email' %}
+      <p>{% blocktrans trimmed %}Please enter the email address you wish to to receive the
+      auth token on.
+      This email will be validated in the next step.{% endblocktrans %}</p>
   {% elif wizard.steps.current == 'validation' %}
     {% if challenge_succeeded %}
       {% if device.method == 'call' %}
@@ -31,6 +35,9 @@
       {% elif device.method == 'sms' %}
         <p>{% blocktrans trimmed %}We sent you a text message, please enter the tokens we
           sent.{% endblocktrans %}</p>
+      {% elif device.method == 'email' %}
+        <p>{% blocktrans trimmed %}We sent you an email, please enter the tokens we
+        sent.{% endblocktrans %}</p>
       {% endif %}
     {% else %}
       <p class="alert alert-warning" role="alert">{% blocktrans trimmed %}We've

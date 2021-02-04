@@ -10,7 +10,8 @@ from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .models import (
-    PhoneDevice, get_available_methods, get_available_phone_methods,
+    EmailDevice, PhoneDevice, get_available_methods,
+    get_available_phone_methods,
 )
 from .utils import totp_digits
 from .validators import validate_international_phonenumber
@@ -53,6 +54,14 @@ class PhoneNumberForm(ModelForm):
     class Meta:
         model = PhoneDevice
         fields = 'number',
+
+
+class EmailForm(ModelForm):
+    email = forms.CharField(label=_("Email"))
+
+    class Meta:
+        model = EmailDevice
+        fields = 'email',
 
 
 class DeviceValidationForm(forms.Form):

@@ -5,9 +5,9 @@ from django.contrib.auth.hashers import make_password
 from django.test import TestCase, override_settings
 from django_otp.util import random_hex
 
-from two_factor.models import PhoneDevice
 from two_factor.utils import (
-    backup_phones, default_device, get_otpauth_url, totp_digits,
+    backup_devices, backup_phones, default_device, get_otpauth_url,
+    totp_digits,
 )
 from two_factor.views.utils import (
     get_remember_device_cookie, salted_hmac_sha256,
@@ -29,8 +29,7 @@ class UtilsTest(UserMixin, TestCase):
         self.assertEqual(default_device(user).pk, default.pk)
 
     def test_backup_phones(self):
-        self.assertQuerysetEqual(list(backup_phones(None)),
-                                 list(PhoneDevice.objects.none()))
+        self.assertQuerysetEqual(list(backup_phones(None)), [])
         user = self.create_user()
         user.phonedevice_set.create(name='default', number='+12024561111')
         backup = user.phonedevice_set.create(name='backup', number='+12024561111')
@@ -38,6 +37,17 @@ class UtilsTest(UserMixin, TestCase):
 
         self.assertEqual(len(phones), 1)
         self.assertEqual(phones[0].pk, backup.pk)
+
+    def test_backup_devices(self):
+        self.assertListEqual(backup_devices(None), [])
+
+        user = self.create_user()
+        user.phonedevice_set.create(name='default', number='+12024561111')
+        backup_phone = user.phonedevice_set.create(name='backup', number='+12024561111')
+        backup_email = user.emaildevice_set.create(name='backup', email='test@email.com')
+        devices = backup_devices(user)
+
+        self.assertCountEqual([d.id for d in devices], [backup_phone.pk, backup_email.pk])
 
     def test_get_otpauth_url(self):
         for num_digits in (6, 8):

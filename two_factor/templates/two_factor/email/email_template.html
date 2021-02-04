@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<p>
+{% blocktrans %}
+    Your email address has been given for two-factor authorization on the our website.
+    If you did't do this, just ignore this message.
+{% endblocktrans %}
+</p>
+<p>{% blocktrans %}Authentication token is {{ token }}.{% endblocktrans %}</p>
+

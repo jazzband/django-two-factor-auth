@@ -39,13 +39,17 @@ from two_factor.models import get_available_methods
 from two_factor.utils import totp_digits
 
 from ..forms import (
-    AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
-    PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm, YubiKeyDeviceForm,
+    AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, EmailForm,
+    MethodForm, PhoneNumberForm, PhoneNumberMethodForm, TOTPDeviceForm,
+    YubiKeyDeviceForm,
 )
-from ..models import PhoneDevice, get_available_phone_methods
-from ..utils import backup_phones, default_device, get_otpauth_url
+from ..models import (
+    EmailDevice, PhoneDevice, get_available_email_methods,
+    get_available_phone_methods,
+)
+from ..utils import backup_devices, default_device, get_otpauth_url
 from .utils import (
-    IdempotentSessionWizardView, class_view_decorator,
+    DeviceSetupView, IdempotentSessionWizardView, class_view_decorator,
     get_remember_device_cookie, validate_remember_device_cookie,
 )
 
@@ -273,7 +277,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if not self.device_cache:
             challenge_device_id = self.request.POST.get('challenge_device', None)
             if challenge_device_id:
-                for device in backup_phones(self.get_user()):
+                for device in backup_devices(self.get_user()):
                     if device.persistent_id == challenge_device_id:
                         self.device_cache = device
                         break
@@ -312,8 +316,8 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         if self.steps.current == 'token':
             context['device'] = self.get_device()
             context['other_devices'] = [
-                phone for phone in backup_phones(self.get_user())
-                if phone != self.get_device()]
+                device for device in backup_devices(self.get_user())
+                if device != self.get_device()]
             try:
                 context['backup_tokens'] = self.get_user().staticdevice_set\
                     .get(name='backup').token_set.count()
@@ -409,6 +413,7 @@ class SetupView(IdempotentSessionWizardView):
         ('generator', TOTPDeviceForm),
         ('sms', PhoneNumberForm),
         ('call', PhoneNumberForm),
+        ('email', EmailForm),
         ('validation', DeviceValidationForm),
         ('yubikey', YubiKeyDeviceForm),
     )
@@ -416,7 +421,8 @@ class SetupView(IdempotentSessionWizardView):
         'generator': lambda self: self.get_method() == 'generator',
         'call': lambda self: self.get_method() == 'call',
         'sms': lambda self: self.get_method() == 'sms',
-        'validation': lambda self: self.get_method() in ('sms', 'call'),
+        'email': lambda self: self.get_method() == 'email',
+        'validation': lambda self: self.get_method() in ('email', 'sms', 'call'),
         'yubikey': lambda self: self.get_method() == 'yubikey',
     }
     idempotent_dict = {
@@ -445,6 +451,7 @@ class SetupView(IdempotentSessionWizardView):
             form_list.pop('method', None)
             method_key, _ = available_methods[0]
             self.storage.validated_step_data['method'] = {'method': method_key}
+
         return form_list
 
     def render_next_step(self, form, **kwargs):
@@ -477,7 +484,7 @@ class SetupView(IdempotentSessionWizardView):
             device = form.save()
 
         # PhoneNumberForm / YubiKeyDeviceForm
-        elif self.get_method() in ('call', 'sms', 'yubikey'):
+        elif self.get_method() in ('call', 'sms', 'yubikey', 'email'):
             device = self.get_device()
             device.save()
 
@@ -509,12 +516,17 @@ class SetupView(IdempotentSessionWizardView):
         """
         Uses the data from the setup step and generated key to recreate device.
 
-        Only used for call / sms -- generator uses other procedure.
+        Only used for `device` methods (call/sms/email/yubikey) -- generator uses other procedure.
         """
         method = self.get_method()
         kwargs = kwargs or {}
         kwargs['name'] = 'default'
         kwargs['user'] = self.request.user
+
+        if method == 'email':
+            kwargs['email'] = self.storage.validated_step_data \
+                .get(method, {}).get('email')
+            return EmailDevice(key=self.get_key(method), **kwargs)
 
         if method in ('call', 'sms'):
             kwargs['method'] = method
@@ -605,7 +617,7 @@ class BackupTokensView(FormView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
-class PhoneSetupView(IdempotentSessionWizardView):
+class PhoneSetupView(DeviceSetupView):
     """
     View for configuring a phone number for receiving tokens.
 
@@ -615,65 +627,18 @@ class PhoneSetupView(IdempotentSessionWizardView):
     numbers can be used for verification.
     """
     template_name = 'two_factor/core/phone_register.html'
-    success_url = settings.LOGIN_REDIRECT_URL
     form_list = (
         ('setup', PhoneNumberMethodForm),
         ('validation', DeviceValidationForm),
     )
-    key_name = 'key'
+    device_class = PhoneDevice
 
-    def get(self, request, *args, **kwargs):
+    def is_device_allowed(self):
         """
-        Start the setup wizard. Redirect if no phone methods available.
+        Check if any phone methods allowed
+        :return: bool
         """
-        if not get_available_phone_methods():
-            return redirect(self.success_url)
-        return super().get(request, *args, **kwargs)
-
-    def done(self, form_list, **kwargs):
-        """
-        Store the device and redirect to profile page.
-        """
-        self.get_device(user=self.request.user, name='backup').save()
-        return redirect(self.success_url)
-
-    def render_next_step(self, form, **kwargs):
-        """
-        In the validation step, ask the device to generate a challenge.
-        """
-        next_step = self.steps.next
-        if next_step == 'validation':
-            self.get_device().generate_challenge()
-        return super().render_next_step(form, **kwargs)
-
-    def get_form_kwargs(self, step=None):
-        """
-        Provide the device to the DeviceValidationForm.
-        """
-        if step == 'validation':
-            return {'device': self.get_device()}
-        return {}
-
-    def get_device(self, **kwargs):
-        """
-        Uses the data from the setup step and generated key to recreate device.
-        """
-        kwargs = kwargs or {}
-        kwargs.update(self.storage.validated_step_data.get('setup', {}))
-        return PhoneDevice(key=self.get_key(), **kwargs)
-
-    def get_key(self):
-        """
-        The key is preserved between steps and stored as ascii in the session.
-        """
-        if self.key_name not in self.storage.extra_data:
-            key = random_hex(20)
-            self.storage.extra_data[self.key_name] = key
-        return self.storage.extra_data[self.key_name]
-
-    def get_context_data(self, form, **kwargs):
-        kwargs.setdefault('cancel_url', resolve_url(self.success_url))
-        return super().get_context_data(form, **kwargs)
+        return len(get_available_phone_methods()) > 0
 
 
 @class_view_decorator(never_cache)
@@ -693,6 +658,42 @@ class PhoneDeleteView(DeleteView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(otp_required)
+class EmailSetupView(DeviceSetupView):
+    """
+    View for configuring an email address for receiving tokens.
+    """
+    template_name = 'two_factor/core/email_register.html'
+    form_list = (
+        ('setup', EmailForm),
+        ('validation', DeviceValidationForm),
+    )
+    device_class = EmailDevice
+
+    def is_device_allowed(self):
+        """
+        Check if any email methods allowed
+        :return: bool
+        """
+        return len(get_available_email_methods()) > 0
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(otp_required)
+class EmailDeleteView(DeleteView):
+    """
+    View for removing a phone number used for verification.
+    """
+    success_url = settings.LOGIN_REDIRECT_URL
+
+    def get_queryset(self):
+        return self.request.user.emaildevice_set.filter(name='backup')
+
+    def get_success_url(self):
+        return resolve_url(self.success_url)
+
+
+@class_view_decorator(never_cache)
+@class_view_decorator(otp_required)
 class SetupCompleteView(TemplateView):
     """
     View congratulation the user when OTP setup has completed.
@@ -702,6 +703,7 @@ class SetupCompleteView(TemplateView):
     def get_context_data(self):
         return {
             'phone_methods': get_available_phone_methods(),
+            'email_methods': get_available_email_methods()
         }
 
 

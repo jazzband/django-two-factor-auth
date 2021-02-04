@@ -1,6 +1,7 @@
 from unittest.mock import Mock, patch
 from urllib.parse import urlencode
 
+from django.core import mail
 from django.template.loader import render_to_string
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -8,6 +9,7 @@ from django.urls import reverse
 from django.utils import translation
 from phonenumber_field.phonenumber import PhoneNumber
 
+from two_factor.gateways.email import Email
 from two_factor.gateways.fake import Fake
 from two_factor.gateways.twilio.gateway import Twilio
 
@@ -123,3 +125,48 @@ class FakeGatewayTest(TestCase):
             fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             logger.info.assert_called_with(
                 'Fake SMS to %s: "Your token is: %s"', '+123', code)
+
+            fake.send_email(device=Mock(email='test@example.com'), token=code)
+            logger.info.assert_called_with(
+                'Fake email to %s: "Your token is: %s"', 'test@example.com', code)
+
+
+class EmailGatewayTest(TestCase):
+
+    def test_gateway(self):
+        gateway = Email()
+
+        for code in ['654321', '87654321']:
+            mail.outbox = []
+            gateway.send_email(device=Mock(email='test@example.com'), token=code)
+
+            message = mail.outbox[0]
+            self.assertEqual(message.subject, 'Authentication token email')
+            self.assertEqual(message.to[0], 'test@example.com')
+            self.assertEqual(message.body, render_to_string(
+                'two_factor/email/otp_message.html',
+                {'token': code}
+            ))
+            self.assertEqual(message.alternatives[0], (render_to_string(
+                'two_factor/email/email_template.html',
+                {'token': code}), 'text/html'))
+
+    @override_settings(
+        TWO_FACTOR_EMAIL_SUBJECT='Test subject'
+    )
+    def test_custom_subject(self):
+        gateway = Email()
+
+        gateway.send_email(device=Mock(email='test@example.com'), token='123456')
+        message = mail.outbox[0]
+        self.assertEqual(message.subject, 'Test subject')
+
+    @override_settings(
+        TWO_FACTOR_EMAIL_HTML=False
+    )
+    def test_html_version_skip(self):
+        gateway = Email()
+
+        gateway.send_email(device=Mock(email='test@example.com'), token='123456')
+        message = mail.outbox[0]
+        self.assertEqual(message.alternatives, [])

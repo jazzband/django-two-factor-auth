@@ -20,6 +20,13 @@ def backup_phones(user):
     return user.phonedevice_set.filter(name='backup')
 
 
+def backup_devices(user):
+    if not user or user.is_anonymous:
+        return []
+    return list(user.emaildevice_set.filter(name='backup')) + \
+        list(user.phonedevice_set.filter(name='backup'))
+
+
 def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     # For a complete run-through of all the parameters, have a look at the
     # specs at:

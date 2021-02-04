@@ -33,3 +33,7 @@ class Fake(object):
     @staticmethod
     def send_sms(device, token):
         logger.info('Fake SMS to %s: "Your token is: %s"', device.number.as_e164, token)
+
+    @staticmethod
+    def send_email(device, token):
+        logger.info('Fake email to %s: "Your token is: %s"', device.email, token)

@@ -159,6 +159,7 @@ class SetupTest(UserMixin, TestCase):
 
         response = self._post(data={'setup_view-current_step': 'sms',
                                     'sms-number': '+31101234567'})
+
         self.assertContains(response, 'Token:')
         self.assertContains(response, 'We sent you a text message')
 
@@ -185,6 +186,45 @@ class SetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].name, 'default')
         self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'sms')
+
+    @mock.patch('two_factor.gateways.fake.Fake')
+    @override_settings(TWO_FACTOR_EMAIL_GATEWAY='two_factor.gateways.fake.Fake')
+    def test_setup_email(self, fake):
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertContains(response, 'Method:')
+
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'email'})
+        self.assertContains(response, 'Email:')
+
+        response = self._post(data={'setup_view-current_step': 'email',
+                                    'email-email': 'test@example.com'})
+
+        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'We sent you an email')
+
+        # assert that the token was send to the gateway
+        self.assertEqual(
+            fake.return_value.method_calls,
+            [mock.call.send_email(device=mock.ANY, token=mock.ANY)]
+        )
+
+        # assert that tokens are verified
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': '666'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid.']})
+
+        # submitting correct token should finish the setup
+        token = fake.return_value.send_email.call_args[1]['token']
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+
+        emails = self.user.emaildevice_set.all()
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].name, 'default')
+        self.assertEqual(emails[0].email, 'test@example.com')
 
     def test_already_setup(self):
         self.enable_otp()

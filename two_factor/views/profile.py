@@ -8,8 +8,8 @@ from django_otp import devices_for_user
 from django_otp.decorators import otp_required
 
 from ..forms import DisableForm
-from ..models import get_available_phone_methods
-from ..utils import backup_phones, default_device
+from ..models import get_available_email_methods, get_available_phone_methods
+from ..utils import backup_devices, default_device
 from .utils import class_view_decorator
 
 
@@ -34,9 +34,10 @@ class ProfileView(TemplateView):
         return {
             'default_device': default_device(self.request.user),
             'default_device_type': default_device(self.request.user).__class__.__name__,
-            'backup_phones': backup_phones(self.request.user),
+            'backup_devices': backup_devices(self.request.user),
             'backup_tokens': backup_tokens,
-            'available_phone_methods': get_available_phone_methods()
+            'available_phone_methods': get_available_phone_methods(),
+            'available_email_methods': get_available_email_methods()
         }
 
 

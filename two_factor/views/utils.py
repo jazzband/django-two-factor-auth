@@ -8,10 +8,12 @@ from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature, SignatureExpired
+from django.shortcuts import redirect, resolve_url
 from django.utils import baseconv
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
+from django_otp.util import random_hex
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
@@ -217,6 +219,77 @@ class IdempotentSessionWizardView(SessionWizardView):
         done_response = self.done(final_form_list, **kwargs)
         self.storage.reset()
         return done_response
+
+
+class DeviceSetupView(IdempotentSessionWizardView):
+    """
+    Base view that allows to setup 2FA device
+    """
+    template_name = ''
+    success_url = settings.LOGIN_REDIRECT_URL
+    key_name = 'key'
+    device_class = None
+    form_list = ()
+
+    def get(self, request, *args, **kwargs):
+        """
+        Start the setup wizard. Redirect if device setup not allowed.
+        """
+        if not self.is_device_allowed():
+            return redirect(self.success_url)
+        return super().get(request, *args, **kwargs)
+
+    def done(self, form_list, **kwargs):
+        """
+        Store the device and redirect to profile page.
+        """
+        self.get_device(user=self.request.user, name='backup').save()
+        return redirect(self.success_url)
+
+    def render_next_step(self, form, **kwargs):
+        """
+        In the validation step, ask the device to generate a challenge.
+        """
+        next_step = self.steps.next
+        if next_step == 'validation':
+            self.get_device().generate_challenge()
+        return super().render_next_step(form, **kwargs)
+
+    def get_form_kwargs(self, step=None):
+        """
+        Provide the device to the DeviceValidationForm.
+        """
+        if step == 'validation':
+            return {'device': self.get_device()}
+        return {}
+
+    def get_device(self, **kwargs):
+        """
+        Uses the data from the setup step and generated key to recreate device.
+        """
+        kwargs = kwargs or {}
+        kwargs.update(self.storage.validated_step_data.get('setup', {}))
+        return self.device_class(key=self.get_key(), **kwargs)
+
+    def get_key(self):
+        """
+        The key is preserved between steps and stored as ascii in the session.
+        """
+        if self.key_name not in self.storage.extra_data:
+            key = random_hex(20)
+            self.storage.extra_data[self.key_name] = key
+        return self.storage.extra_data[self.key_name]
+
+    def get_context_data(self, form, **kwargs):
+        kwargs.setdefault('cancel_url', resolve_url(self.success_url))
+        return super().get_context_data(form, **kwargs)
+
+    def is_device_allowed(self):
+        """
+        Is device setup allowed or not
+        :return: bool
+        """
+        return True
 
 
 def class_view_decorator(function_decorator):
