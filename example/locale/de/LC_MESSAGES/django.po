@@ -72,13 +72,14 @@ msgstr "django-two-factor-auth – Demo-Applikation"
 
 #: templates/home.html:8
 msgid "Improve Your Security <small>your users will thank you</small>"
-msgstr ""
+msgstr "Steigern Sie Ihre Sicherheit <small>Ihre Benutzer werden es danken</small>"
 
 #: templates/home.html:10
 msgid ""
 "Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
 "example to get an understanding of what the app can do for you."
-msgstr ""
+msgstr "Willkommen zur Beispiel App von <code>django-two-factor-auth</code>. Benutzen Sie "
+"dieses Beispiel um ein Verständnis für die Funktion der App zu gewinnen."
 
 #: templates/home.html:14
 msgid "Please verify your settings"
@@ -99,17 +100,17 @@ msgstr "Nächste Schritte:"
 #: templates/home.html:28
 #, python-format
 msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
-msgstr ""
+msgstr "Beginnen Sie damit einen Account zu <a href=\"%(reg_url)s\">registrieren</a>."
 
 #: templates/home.html:30
 #, python-format
 msgid "<a href=\"%(login_url)s\">Login</a> to your account."
-msgstr ""
+msgstr "In Ihren Account <a href=\"%(login_url)s\">einloggen</a>."
 
 #: templates/home.html:32
 #, python-format
 msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
-msgstr ""
+msgstr "Two-Factor Authentifizierung <a href=\"%(setup_url)s\">einschalten</a> ."
 
 #: templates/home.html:34
 #, python-format
@@ -148,10 +149,11 @@ msgstr "Registrierung abgeschlossen"
 
 #: templates/registration_complete.html:6
 msgid "Congratulations, you've successfully registered an account."
-msgstr ""
+msgstr "Herzlichen Glückwunsch, Sie haben erfolgreich einen Account registriert."
 
 #: templates/secret.html:9
 msgid ""
 "Congratulations, you've made it. You have successfully enabled two-factor "
 "authentication and logged in with your token."
-msgstr ""
+msgstr "Glückwunsch, Sie haben es geschafft. Sie haben erfolgtreich Zweifaktoren "
+"Authentifizierung aktiert und sind mit ihrem Token eingeloggt."
