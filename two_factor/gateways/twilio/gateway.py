@@ -34,6 +34,11 @@ class Twilio(object):
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
 
+    ``TWILIO_MESSAGING_SERVICE_SID``
+      Can be set to a Twilio Messaging Service for SMS. This service can wrap multiple
+      phone numbers and choose one depending on the destination country.
+      When left empty the ``TWILIO_CALLER_ID`` will be used as sender ID.
+
     .. _Twilio: http://www.twilio.com/
     """
 
@@ -61,10 +66,16 @@ class Twilio(object):
             'two_factor/twilio/sms_message.html',
             {'token': token}
         )
+        messaging_service_sid = getattr(settings, 'TWILIO_MESSAGING_SERVICE_SID', None)
+        if messaging_service_sid is not None:
+            sender_kwargs = {'messaging_service_sid': messaging_service_sid}
+        else:
+            sender_kwargs = {'from_': getattr(settings, 'TWILIO_CALLER_ID')}
+
         self.client.messages.create(
             to=device.number.as_e164,
-            from_=getattr(settings, 'TWILIO_CALLER_ID'),
-            body=body)
+            body=body,
+            **sender_kwargs)
 
 
 def validate_voice_locale(locale):
