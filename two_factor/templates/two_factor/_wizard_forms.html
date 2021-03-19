@@ -1,12 +1,8 @@
-{% load sniplates %}
-
-{% load_widgets form="sniplates/form.html" %}
-
 {{ wizard.management_form }}
 {{ wizard.form.non_field_errors }}
 
 {% for field in wizard.form %}
     <div class="form-field">
-        {% form_field field %}
+        {{ field }}
     </div>
 {% endfor %}
