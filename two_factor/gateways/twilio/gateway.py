@@ -66,16 +66,17 @@ class Twilio(object):
             'two_factor/twilio/sms_message.html',
             {'token': token}
         )
+        send_kwargs = {
+            'to': device.number.as_e164,
+            'body': body
+        }
         messaging_service_sid = getattr(settings, 'TWILIO_MESSAGING_SERVICE_SID', None)
         if messaging_service_sid is not None:
-            sender_kwargs = {'messaging_service_sid': messaging_service_sid}
+            send_kwargs['messaging_service_sid'] = messaging_service_sid
         else:
-            sender_kwargs = {'from_': getattr(settings, 'TWILIO_CALLER_ID')}
+            send_kwargs['from_'] = getattr(settings, 'TWILIO_CALLER_ID')
 
-        self.client.messages.create(
-            to=device.number.as_e164,
-            body=body,
-            **sender_kwargs)
+        self.client.messages.create(**send_kwargs)
 
 
 def validate_voice_locale(locale):
