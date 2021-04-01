@@ -5,30 +5,13 @@ on: [push]
 jobs:
   build:
 
-    name: Python ${{ matrix.python-version }}, Django ${{ matrix.django-version }} (${{ matrix.variant }})
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.experimental == 'true' }}
     strategy:
       matrix:
-        python-version: ['3.5', '3.6', '3.7', '3.8']
-        django-version: ['2.2', '3.0', '3.1', master]
-        variant: [normal, yubikey, custom_user]
-        experimental: ['true', 'false']
-        exclude:
-          - python-version: '3.5'
-            django-version: '3.0'
-          - python-version: '3.5'
-            django-version: '3.1'
-          - python-version: '3.5'
-            django-version: master
-          - django-version: '2.2'
-            experimental: 'true'
-          - django-version: '3.0'
-            experimental: 'true'
-          - django-version: '3.1'
-            experimental: 'true'
-          - django-version: master
-            experimental: 'false'
+        python-version: ['3.5', '3.6', '3.7', '3.8', '3.9']
+    env:
+      COVERAGE_OPTIONS: "-a"
 
     steps:
       - uses: actions/checkout@v2
@@ -40,20 +23,15 @@ jobs:
         run: pip install tox tox-gh-actions codecov
       - name: Test with tox
         run: tox
-        env:
-          DJANGO: ${{matrix.django-version}}
-          VARIANT: ${{matrix.variant}}
       - name: Generate coverage XML report
         run: coverage xml
       - name: Codecov
         uses: codecov/codecov-action@v1.0.10
         env:
           PYTHON: ${{matrix.python-version}}
-          DJANGO: ${{matrix.django-version}}
-          VARIANT: ${{matrix.variant}}
         with:
           fail_ci_if_error: true
-          env_vars: PTYHON,DJANGO,VARIANT
+          env_vars: PTYHON
 
 
   code_quality:

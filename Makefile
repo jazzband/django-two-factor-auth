@@ -11,31 +11,31 @@ flake8:
 
 example:
 	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \
-		django-admin.py runserver
+		django-admin runserver
 
 test:
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
-		django-admin.py test ${TARGET}
+		django-admin test ${TARGET}
 
 migrations:
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
-		django-admin.py makemigrations two_factor
+		django-admin makemigrations two_factor
 
 coverage:
 	coverage erase
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
 		coverage run ---parallel --source=two_factor \
-		`which django-admin.py` test ${TARGET}
+		`which django-admin` test ${TARGET}
 	coverage combine
 	coverage html
 	coverage report --precision=2
 
 tx-pull:
 	tx pull -a
-	cd two_factor; django-admin.py compilemessages
-	cd example; django-admin.py compilemessages
+	cd two_factor; django-admin compilemessages
+	cd example; django-admin compilemessages
 
 tx-push:
-	cd two_factor; django-admin.py makemessages -l en
-	cd example; django-admin.py makemessages -l en
+	cd two_factor; django-admin makemessages -l en
+	cd example; django-admin makemessages -l en
 	tx push -s
