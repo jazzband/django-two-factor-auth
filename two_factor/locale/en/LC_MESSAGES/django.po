@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-17 21:19+0100\n"
+"POT-Creation-Date: 2021-04-01 17:05+0100\n"
 "PO-Revision-Date: 2013-11-27 20:08+0000\n"
 "Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,44 +24,44 @@ msgstr ""
 msgid "Phone Number"
 msgstr ""
 
-#: forms.py:59 forms.py:89 forms.py:143 forms.py:197
+#: forms.py:59 forms.py:92 forms.py:150 forms.py:206
 msgid "Token"
 msgstr ""
 
-#: forms.py:62 forms.py:92
+#: forms.py:65 forms.py:99
 msgid "Entered token is not valid."
 msgstr ""
 
-#: forms.py:77 forms.py:171 models.py:40
+#: forms.py:80 forms.py:180 models.py:40
 msgid "YubiKey"
 msgstr ""
 
-#: forms.py:80
+#: forms.py:83
 msgid "The YubiKey could not be verified."
 msgstr ""
 
-#: forms.py:139
+#: forms.py:146
 msgid "Yes, I am sure"
 msgstr ""
 
-#: forms.py:177
+#: forms.py:186
 #, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
 msgstr ""
 
-#: forms.py:180
+#: forms.py:189
 #, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
 msgstr ""
 
-#: forms.py:183
+#: forms.py:192
 #, python-format
 msgid "Don't ask again on this device for %(days)i days"
 msgstr ""
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:72 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:74
 msgctxt "twilio_locale"
 msgid "en"
 msgstr ""
@@ -145,6 +145,8 @@ msgid "You don't have any backup codes yet."
 msgstr ""
 
 #: templates/two_factor/core/backup_tokens.html:25
+#: templates/two_factor/core/setup_complete.html:12
+#: templates/two_factor/core/setup_complete.html:19
 msgid "Back to Account Security"
 msgstr ""
 
@@ -285,11 +287,6 @@ msgstr ""
 msgid "Congratulations, you've successfully enabled two-factor authentication."
 msgstr ""
 
-#: templates/two_factor/core/setup_complete.html:12
-#: templates/two_factor/core/setup_complete.html:19
-msgid "Back to Profile"
-msgstr ""
-
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
 "However, it might happen that you don't have access to your primary token "
@@ -395,7 +392,7 @@ msgid ""
 "+ or 00."
 msgstr ""
 
-#: views/core.py:262
+#: views/core.py:266
 msgid "Your session has timed out. Please login again."
 msgstr ""
 
