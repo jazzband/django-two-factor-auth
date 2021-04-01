@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 1.13.1
+
+### Add
+- Support Twilio Messaging Service SID
+- Add autofocus, autocomplete one-time-code and inputmode numeric to token input fields
+
 ### Changed
 - Change "Back to Profile" to "Back to Account Security"
 
