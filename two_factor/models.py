@@ -78,7 +78,7 @@ class PhoneDevice(ThrottlingMixin, Device):
     def bin_key(self):
         return unhexlify(self.key.encode())
 
-    def vaalidate_token(self, token):
+    def validate_token(self, token):
         # local import to avoid circular import
         from two_factor.utils import totp_digits
 
@@ -95,7 +95,7 @@ class PhoneDevice(ThrottlingMixin, Device):
     def verify_token(self, token):
         verify_allowed, _ = self.verify_is_allowed()
         if verify_allowed:
-            verified = self.vaalidate_token(token)
+            verified = self.validate_token(token)
 
             if verified:
                 self.throttle_reset(commit=False)
