@@ -1,3 +1,4 @@
+import time
 from binascii import unhexlify
 from unittest import mock
 
@@ -86,6 +87,7 @@ class SetupTest(UserMixin, TestCase):
                   'generator-token': '123456'})
         self.assertEqual(response.context_data['wizard']['form'].errors,
                          {'token': ['Entered token is not valid.']})
+        time.sleep(1)
 
         key = response.context_data['keys'].get('generator')
         bin_key = unhexlify(key.encode())
@@ -134,6 +136,7 @@ class SetupTest(UserMixin, TestCase):
                                     'validation-token': '666'})
         self.assertEqual(response.context_data['wizard']['form'].errors,
                          {'token': ['Entered token is not valid.']})
+        time.sleep(1)
 
         # submitting correct token should finish the setup
         token = fake.return_value.make_call.call_args[1]['token']

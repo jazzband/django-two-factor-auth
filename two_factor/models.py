@@ -78,7 +78,7 @@ class PhoneDevice(ThrottlingMixin, Device):
     def bin_key(self):
         return unhexlify(self.key.encode())
 
-    def verify_token(self, token):
+    def vaalidate_token(self, token):
         # local import to avoid circular import
         from two_factor.utils import totp_digits
 
@@ -92,6 +92,20 @@ class PhoneDevice(ThrottlingMixin, Device):
                 return True
         return False
 
+    def verify_token(self, token):
+        verify_allowed, _ = self.verify_is_allowed()
+        if verify_allowed:
+            verified = self.vaalidate_token(token)
+
+            if verified:
+                self.throttle_reset(commit=False)
+            else:
+                self.throttle_increment(commit=False)
+        else:
+            verified = False
+
+        return verified
+
     def generate_challenge(self):
         # local import to avoid circular import
         from two_factor.utils import totp_digits
@@ -99,6 +113,10 @@ class PhoneDevice(ThrottlingMixin, Device):
         """
         Sends the current TOTP token to `self.number` using `self.method`.
         """
+        verify_allowed, _ = self.verify_is_allowed()
+        if not verify_allowed:
+            return None
+
         no_digits = totp_digits()
         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
         if self.method == 'call':
