@@ -49,4 +49,10 @@
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+  {% url 'admin_password_reset' as password_reset_url %}
+  {% if password_reset_url %}
+    <div class="password-reset-link">
+      <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+    </div>
+  {% endif %}
 {% endblock %}
