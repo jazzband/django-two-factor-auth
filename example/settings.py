@@ -46,6 +46,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -105,7 +106,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SILENCED_SYSTEM_CHECKS = ['admin.E410']
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 try:
     from .settings_private import *  # noqa
 except ImportError:
     pass
+
+
