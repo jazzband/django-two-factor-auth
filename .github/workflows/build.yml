@@ -20,6 +20,8 @@ jobs:
           - python-version: '3.5'
             django-version: '3.1'
           - python-version: '3.5'
+            django-version: '3.2'
+          - python-version: '3.5'
             django-version: master
           - django-version: '2.2'
             experimental: 'true'
