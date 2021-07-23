@@ -1,4 +1,10 @@
-<table class="mb-3">
-  {{ wizard.management_form }}
-  {{ wizard.form }}
-</table>
+{{ wizard.management_form }}
+{{ wizard.form.non_field_errors }}
+
+{% for field in wizard.form %}
+    <div class="form-field {% if field.errors %}form-field--error{% endif %}">
+        {{ field.errors }}
+        <label>{{ field.label }}</label>
+        {{ field }}
+    </div>
+{% endfor %}

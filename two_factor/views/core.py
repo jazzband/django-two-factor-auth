@@ -154,7 +154,6 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         remember = bool(current_step_data and current_step_data.get('token-remember') == 'on')
 
         login(self.request, self.get_user())
-
         redirect_to = self.get_success_url()
 
         device = getattr(self.get_user(), 'otp_device', None)
@@ -177,7 +176,7 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
                                     path=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PATH', '/'),
                                     secure=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SECURE', False),
                                     httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
-                                    samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
+                                    # samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
                                     )
 
         return response

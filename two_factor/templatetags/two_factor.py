@@ -11,6 +11,12 @@ register = template.Library()
 phone_mask = re.compile('(?<=.{3})[0-9](?=.{2})')
 
 
+@register.simple_tag
+def template_dir(this_object, its_name=""):
+    output = dir(this_object)
+    return "<pre>" + str(its_name) + " " + str(output) + "</pre>"
+
+
 @register.filter
 def mask_phone_number(number):
     """

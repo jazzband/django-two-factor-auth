@@ -1,21 +1,21 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='django-two-factor-auth',
-    version='1.13',
+    name='maykin-django-two-factor-auth',
+    version='2.0.0',
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst', encoding='utf-8').read(),
     author='Bouke Haarsma',
     author_email='bouke@haarsma.eu',
-    url='https://github.com/Bouke/django-two-factor-auth',
-    download_url='https://pypi.python.org/pypi/django-two-factor-auth',
+    url='https://github.com/MaykinMedia/django-two-factor-auth',
+    download_url='https://pypi.python.org/pypi/maykin-django-two-factor-auth',
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
     install_requires=[
-        'Django>=2.2',
-        'django_otp>=0.8.0',
+        'Django>=2.2.0,<4.0.0',
+        'django_otp>=1.0.0.<2.0.0',
         'qrcode>=4.0.0,<6.99',
-        'django-phonenumber-field>=1.1.0,<6',
+        'django-phonenumber-field>=5.0.0,<6.0.0',
         'django-formtools',
     ],
     extras_require={

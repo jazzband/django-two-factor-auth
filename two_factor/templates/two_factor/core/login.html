@@ -1,9 +1,13 @@
-{% extends "two_factor/_base_focus.html" %}
+{% extends "two_factor/_base.html" %}
 {% load i18n two_factor %}
 
-{% block content %}
-  <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
+{% block nav-global %}{% endblock %}
+{% block django_admin_index_menu %}{% endblock %}
+{% block breadcrumbs %}{% endblock %}
 
+{% block header %}{% trans "Login" %}{% endblock header %}
+
+{% block content %}
   {% if wizard.steps.current == 'auth' %}
     <p>{% blocktrans %}Enter your credentials.{% endblocktrans %}</p>
   {% elif wizard.steps.current == 'token' %}
@@ -49,4 +53,10 @@
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+  {% url 'admin_password_reset' as password_reset_url %}
+  {% if password_reset_url %}
+    <div class="password-reset-link">
+      <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+    </div>
+  {% endif %}
 {% endblock %}

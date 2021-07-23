@@ -1,5 +1,7 @@
-{% extends "two_factor/_base_focus.html" %}
+{% extends "two_factor/_base.html" %}
 {% load i18n %}
+
+{% block header %}{% trans "Setup" %}{% endblock header %}
 
 {% block content %}
   <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
