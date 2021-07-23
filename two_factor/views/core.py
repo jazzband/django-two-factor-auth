@@ -149,7 +149,6 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         Login the user and redirect to the desired page.
         """
         login(self.request, self.get_user())
-
         redirect_to = self.get_success_url()
 
         device = getattr(self.get_user(), 'otp_device', None)

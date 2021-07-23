@@ -6,7 +6,7 @@ and its dependencies:
 
 .. code-block:: console
 
-    $ pip install django-two-factor-auth
+    $ pip install maykin-django-two-factor-auth
 
 This project uses ``django-phonenumber-field`` which requires either ``phonenumbers``
 or ``phonenumberslite`` to be installed. Either manually install a supported version
@@ -15,11 +15,11 @@ the below examples:
 
 .. code-block:: console
 
-    $ pip install django-two-factor-auth[phonenumbers]
+    $ pip install maykin-django-two-factor-auth[phonenumbers]
 
     OR
 
-    $ pip install django-two-factor-auth[phonenumberslite]
+    $ pip install maykin-django-two-factor-auth[phonenumberslite]
 
 Setup
 -----
@@ -30,10 +30,11 @@ Add the following apps to the ``INSTALLED_APPS``:
 
     INSTALLED_APPS = (
         ...
-        'django_otp',
-        'django_otp.plugins.otp_static',
-        'django_otp.plugins.otp_totp',
-        'two_factor',
+        "django_otp",
+        "django_otp.plugins.otp_static",
+        "django_otp.plugins.otp_totp",
+        "two_factor",
+        "django.contrib.admin",
     )
 
 Add the ``django-otp`` middleware to your ``MIDDLEWARE``. Make sure
@@ -47,6 +48,14 @@ it comes after ``AuthenticationMiddleware``:
         'django_otp.middleware.OTPMiddleware',
         ...
     )
+
+admin
+-----
+
+For the admin this is all that needs to happen.
+
+Setup for custom login page
+---------------------------
 
 Point to the new login pages in your ``settings.py``:
 

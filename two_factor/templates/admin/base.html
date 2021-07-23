@@ -1,0 +1,7 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block userlinks %}
+    <a href="{% url 'admin:two_factor:profile' %}">{% translate 'View profile' %}</a> /
+    {{ block.super }}
+{% endblock %}

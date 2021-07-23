@@ -1,0 +1,11 @@
+{% load i18n two_factor %}
+{{ wizard.management_form }}
+{{ wizard.form.non_field_errors }}
+
+{% for field in wizard.form %}
+    <div class="form-row {% if field.errors %}form-row--error{% endif %}">
+        {{ field.errors }}
+        <label class="required" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+    </div>
+{% endfor %}

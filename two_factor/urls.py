@@ -7,37 +7,37 @@ from two_factor.views import (
 
 core = [
     url(
-        r'^account/login/$',
+        r'^two_factor/login/$',
         LoginView.as_view(),
         name='login',
     ),
     url(
-        r'^account/two_factor/setup/$',
+        r'^two_factor/setup/$',
         SetupView.as_view(),
         name='setup',
     ),
     url(
-        r'^account/two_factor/qrcode/$',
+        r'^two_factor/qrcode/$',
         QRGeneratorView.as_view(),
         name='qr',
     ),
     url(
-        r'^account/two_factor/setup/complete/$',
+        r'^two_factor/setup/complete/$',
         SetupCompleteView.as_view(),
         name='setup_complete',
     ),
     url(
-        r'^account/two_factor/backup/tokens/$',
+        r'^two_factor/backup/tokens/$',
         BackupTokensView.as_view(),
         name='backup_tokens',
     ),
     url(
-        r'^account/two_factor/backup/phone/register/$',
+        r'^two_factor/backup/phone/register/$',
         PhoneSetupView.as_view(),
         name='phone_create',
     ),
     url(
-        r'^account/two_factor/backup/phone/unregister/<int:pk>/$',
+        r'^two_factor/backup/phone/unregister/<int:pk>/$',
         PhoneDeleteView.as_view(),
         name='phone_delete',
     ),
@@ -45,12 +45,12 @@ core = [
 
 profile = [
     url(
-        r'^account/two_factor/$',
+        r'^two_factor/$',
         ProfileView.as_view(),
         name='profile',
     ),
     url(
-        r'^account/two_factor/disable/$',
+        r'^two_factor/disable/$',
         DisableView.as_view(),
         name='disable',
     ),
