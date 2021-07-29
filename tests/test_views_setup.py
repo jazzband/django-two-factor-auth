@@ -35,6 +35,8 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'autocomplete="one-time-code"')
         session = self.client.session
         self.assertIn('django_two_factor-qr_secret_key', session.keys())
+        self.assertEqual(len(response.context_data['key']), 39)
+        self.assertEqual(len(response.context_data['key'].split()), 8)
 
         response = self.client.post(
             reverse('two_factor:setup'),
