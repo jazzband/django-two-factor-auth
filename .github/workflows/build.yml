@@ -26,11 +26,10 @@ jobs:
       - name: Generate coverage XML report
         run: coverage xml
       - name: Codecov
-        uses: codecov/codecov-action@v1.0.10
+        uses: codecov/codecov-action@v2.0.3
         env:
           PYTHON: ${{matrix.python-version}}
         with:
-          fail_ci_if_error: true
           env_vars: PTYHON
 
 

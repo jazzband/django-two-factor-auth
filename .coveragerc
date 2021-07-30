@@ -3,6 +3,8 @@ branch = True
 source =
     tests
     two_factor
+omit =
+    */migrations/*
 
 [report]
 exclude_lines =
