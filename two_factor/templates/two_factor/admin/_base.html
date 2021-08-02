@@ -1,23 +1,11 @@
+{% extends "admin/base_site.html" %}
 {% load static i18n %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/2fa.css' %}">
-    </head>
-    <body>
-        {% block content_wrapper %}
-            <div class="base">
-                <div class="container">
-                    <div class="header">{% block header %}{% trans "2 Factor authentication" %}{% endblock header %}</div>
-                        <div class="content">
-                            {% block content %}{% endblock %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endblock %}
-    </body>
-</html>
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}">
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+{% block breadcrumbs %}{% endblock %}
