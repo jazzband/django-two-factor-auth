@@ -59,6 +59,3 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
-
-
-def should_display_dropdown_menu(request): return import_string("django_admin_index.utils.should_display_dropdown_menu") and request.user.is_verified()
