@@ -8,7 +8,6 @@
 {% block header %}{% trans "Setup" %}{% endblock header %}
 
 {% block content %}
-  <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
   {% if wizard.steps.current == 'welcome' %}
     <p>{% blocktrans trimmed %}You are about to take your account security to the
         next level. Follow the steps in this wizard to enable two-factor

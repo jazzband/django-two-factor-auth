@@ -10,7 +10,7 @@ from django.utils.http import is_safe_url
 from django.utils.translation import ugettext
 
 from .models import PhoneDevice
-from .views import BackupTokensView, LoginView, ProfileView, SetupView, SetupCompleteView, DisableView
+from .views import BackupTokensView, LoginView, ProfileView, SetupView, SetupCompleteView, DisableView, QRGeneratorView
 
 
 class AdminLoginView(LoginView):
@@ -70,6 +70,7 @@ class AdminSetupView(SetupView):
         'validation': 'two_factor/admin/_wizard_form_validation.html',
         'yubikey': 'two_factor/admin/_wizard_form_yubikey.html',
     }
+    qrcode_url = 'admin:two_factor:qr'
     redirect_url = 'admin:two_factor:profile'
     success_url = 'admin:two_factor:setup_complete'
     template_name = 'two_factor/admin/setup.html'
@@ -167,13 +168,13 @@ class AdminSiteOTPMixin(object):
             return update_wrapper(wrapper, view)
 
         urlpatterns_2fa = [
+            url(r'^qrcode/$', QRGeneratorView.as_view(), name='qr'),
             url(r'^profile/$', wrap(self.two_factor_profile), name='profile'),
             url(r'^profile/disable/$', wrap(self.two_factor_disable), name='disable'),
             url(r'^setup/$', self.two_factor_setup, name='setup'),
             url(r'^setup-complete/$', self.two_factor_setup_complete, name='setup_complete'),
             url(r'^backup/tokens/$', wrap(self.two_factor_backup_tokens), name='backup_tokens'),
         ]
-
         urlpatterns = [
             url(r'^two_factor/', include((urlpatterns_2fa, "two_factor"), namespace='two_factor'))
         ]

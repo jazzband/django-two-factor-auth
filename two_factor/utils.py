@@ -2,7 +2,6 @@ from urllib.parse import quote, urlencode
 
 from django.conf import settings
 from django_otp import devices_for_user
-from django.utils.module_loading import import_string
 
 from two_factor.models import PhoneDevice
 
