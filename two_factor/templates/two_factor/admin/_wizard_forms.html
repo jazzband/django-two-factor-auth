@@ -3,7 +3,7 @@
 {{ wizard.form.non_field_errors }}
 
 {% for field in wizard.form %}
-    <div class="form-row {% if field.errors %}form-row--error{% endif %}">
+    <div class="form-row {% if field.errors %}form-row--error{% endif %} {% if wizard.steps.current == 'generator' %} centered-text {% endif %}">
         {{ field.errors }}
         <label class="required" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}

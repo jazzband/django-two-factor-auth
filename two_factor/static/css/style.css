@@ -1,2 +1,15 @@
-.button-with-padding{padding: 10px 15px !important;}
-.actions-buttons{text-align: center; padding: 1em 0 0 0}
+.button-with-padding {
+    padding: 10px 15px !important;
+}
+.actions-buttons {
+    text-align: center;
+    padding: 1em 0 0 0
+}
+.centered-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.centered-text {
+    text-align: center;
+}
