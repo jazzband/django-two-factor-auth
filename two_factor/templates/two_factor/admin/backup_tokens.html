@@ -2,7 +2,6 @@
 {% load i18n %}
 
 {% block content %}
-  <h1>{% block title %}{% trans "Backup Tokens" %}{% endblock %}</h1>
   <p>{% blocktrans trimmed %}Backup tokens can be used when your primary and backup
       phone numbers aren't available. The backup tokens below can be used
       for login verification. If you've used up all your backup tokens, you
@@ -21,8 +20,9 @@
   {% endif %}
 
   <form method="post">{% csrf_token %}{{ form }}
-    <a href="{% url 'admin:two_factor:profile'%}"
-       class="float-right btn btn-link">{% trans "Back to Account Security" %}</a>
-    <button class="btn btn-primary" type="submit">{% trans "Generate Tokens" %}</button>
+      <div class="actions-buttons">
+          <a href="{% url 'admin:two_factor:profile'%}">{% trans "Back to Account Security" %}</a>
+          <button class="button button-with-padding" type="submit">{% trans "Generate Tokens" %}</button>
+      </div>
   </form>
 {% endblock %}

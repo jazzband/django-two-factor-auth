@@ -12,9 +12,9 @@
             </a>
       {% endif %}
       {% if wizard.steps.prev %}
-        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="button back-button">{% trans "Back" %}</button>
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="button button-with-padding">{% trans "Back" %}</button>
       {% else %}
-        <button disabled name="" type="button" class="button back-button">{% trans "Back" %}</button>
+        <button disabled name="" type="button" class="button button-with-padding">{% trans "Back" %}</button>
       {% endif %}
       {% comment %} <a href="{% url 'two_factor:setup' %}" class="btn btn-default">{% trans "Setup" %}</a> {% endcomment %}
       <input type="submit" value="{% trans "Next" %}">
