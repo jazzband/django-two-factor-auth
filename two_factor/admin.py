@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import redirect, resolve_url
+from django.shortcuts import resolve_url
 from django.urls import reverse
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext
@@ -58,6 +58,7 @@ admin_login_view = AdminLoginView.as_view()
 class AdminSetupCompleteView(SetupCompleteView):
     template_name = 'two_factor/admin/setup_complete.html'
 
+
 admin_setup_complete_view = AdminSetupCompleteView.as_view()
 
 
@@ -95,6 +96,7 @@ class AdminSetupView(SetupView):
             return redirect_to
         return super(AdminSetupView, self).get_redirect_url()
 
+
 admin_setup_view = AdminSetupView.as_view()
 
 
@@ -111,6 +113,7 @@ class AdminBackupTokensView(BackupTokensView):
         })
         return context
 
+
 admin_backup_tokens_view = AdminBackupTokensView.as_view()
 
 
@@ -124,6 +127,7 @@ class AdminProfileView(ProfileView):
             'title': ugettext("Account Security"),
         })
         return context
+
 
 admin_profile_view = AdminProfileView.as_view()
 
@@ -199,6 +203,7 @@ class AdminSiteOTPMixin(object):
     def two_factor_backup_tokens(self, request):
         return admin_backup_tokens_view(request)
 
+
 class AdminSiteOTP(AdminSiteOTPMixin, AdminSite):
     """
     AdminSite using OTP login.
@@ -211,6 +216,7 @@ class AdminSiteOTPRequired(AdminSiteOTPMixin, AdminSiteOTPRequiredMixin, AdminSi
     AdminSite enforcing OTP verified staff users.
     """
     pass
+
 
 __default_admin_site__ = None
 
