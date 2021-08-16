@@ -10,7 +10,10 @@ from django.utils.http import is_safe_url
 from django.utils.translation import ugettext
 
 from .models import PhoneDevice
-from .views import BackupTokensView, LoginView, ProfileView, SetupView, SetupCompleteView, DisableView, QRGeneratorView
+from .views import (
+    BackupTokensView, DisableView, LoginView, ProfileView, QRGeneratorView,
+    SetupCompleteView, SetupView,
+)
 
 
 class AdminLoginView(LoginView):

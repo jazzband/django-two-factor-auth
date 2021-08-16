@@ -10,8 +10,10 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
+
+import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
 
@@ -22,7 +24,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
 
 sys.path.insert(0, os.path.abspath('extensions'))
 sys.path.insert(0, os.path.abspath('..'))
-import django
 django.setup()
 
 # -- General configuration ------------------------------------------------
