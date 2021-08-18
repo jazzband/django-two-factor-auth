@@ -22,8 +22,8 @@ setup(
         'call': ['twilio>=6.0'],
         'sms': ['twilio>=6.0'],
         'yubikey': ['django-otp-yubikey'],
-        'phonenumbers': ['phonenumbers>=7.0.9,<8.99', ],
-        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99', ],
+        'phonenumbers': ['phonenumbers>=7.0.9,<8.99'],
+        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99'],
     },
     include_package_data=True,
     classifiers=[

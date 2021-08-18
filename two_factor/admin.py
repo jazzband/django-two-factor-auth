@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import resolve_url
-from django.urls import reverse
+from django.urls import path, reverse
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext
 
@@ -166,7 +166,7 @@ class AdminSiteOTPRequiredMixin(object):
 class AdminSiteOTPMixin(object):
 
     def get_urls(self):
-        from django.conf.urls import include, url
+        from django.conf.urls import include
 
         def wrap(view, cacheable=False):
             def wrapper(*args, **kwargs):
@@ -175,15 +175,15 @@ class AdminSiteOTPMixin(object):
             return update_wrapper(wrapper, view)
 
         urlpatterns_2fa = [
-            url(r'^qrcode/$', QRGeneratorView.as_view(), name='qr'),
-            url(r'^profile/$', wrap(self.two_factor_profile), name='profile'),
-            url(r'^profile/disable/$', wrap(self.two_factor_disable), name='disable'),
-            url(r'^setup/$', self.two_factor_setup, name='setup'),
-            url(r'^setup-complete/$', self.two_factor_setup_complete, name='setup_complete'),
-            url(r'^backup/tokens/$', wrap(self.two_factor_backup_tokens), name='backup_tokens'),
+            path('qrcode/', QRGeneratorView.as_view(), name='qr'),
+            path('^profile/', wrap(self.two_factor_profile), name='profile'),
+            path('^profile/disable/', wrap(self.two_factor_disable), name='disable'),
+            path('^setup/', self.two_factor_setup, name='setup'),
+            path('^setup-complete/', self.two_factor_setup_complete, name='setup_complete'),
+            path('^backup/tokens/', wrap(self.two_factor_backup_tokens), name='backup_tokens'),
         ]
         urlpatterns = [
-            url(r'^two_factor/', include((urlpatterns_2fa, "two_factor"), namespace='two_factor'))
+            path('two_factor/', include((urlpatterns_2fa, "two_factor"), namespace='two_factor'))
         ]
         urlpatterns += super(AdminSiteOTPMixin, self).get_urls()
         return urlpatterns
