@@ -150,11 +150,11 @@ class AdminSiteOTPMixin(object):
 
         urlpatterns_2fa = [
             path('qrcode/', QRGeneratorView.as_view(), name='qr'),
-            path('^profile/', wrap(self.two_factor_profile), name='profile'),
-            path('^profile/disable/', wrap(self.two_factor_disable), name='disable'),
-            path('^setup/', self.two_factor_setup, name='setup'),
-            path('^setup-complete/', self.two_factor_setup_complete, name='setup_complete'),
-            path('^backup/tokens/', wrap(self.two_factor_backup_tokens), name='backup_tokens'),
+            path('profile/', wrap(self.two_factor_profile), name='profile'),
+            path('profile/disable/', wrap(self.two_factor_disable), name='disable'),
+            path('setup/', self.two_factor_setup, name='setup'),
+            path('setup-complete/', self.two_factor_setup_complete, name='setup_complete'),
+            path('backup/tokens/', wrap(self.two_factor_backup_tokens), name='backup_tokens'),
         ]
         urlpatterns = [
             path('two_factor/', include((urlpatterns_2fa, "two_factor"), namespace='two_factor'))
