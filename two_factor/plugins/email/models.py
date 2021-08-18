@@ -26,6 +26,9 @@ class EmailDevice(ThrottlingMixin, TwoFactorModelBase, Device):
         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
         send_email(device=self, token=token)
 
+    def get_throttle_factor(self):
+        return getattr(settings, 'TWO_FACTOR_EMAIL_THROTTLE_FACTOR', 1)
+
 
 def send_email(device, token):
     email = EmailMultiAlternatives(
