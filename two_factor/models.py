@@ -68,7 +68,7 @@ class TwoFactorMixin(models.Model):
         app_label = 'two_factor'
         abstract = True
 
-    drift_range = ()
+    drift_range = None
     key = models.CharField(max_length=40,
                            validators=[key_validator],
                            default=random_hex,
@@ -92,9 +92,6 @@ class TwoFactorMixin(models.Model):
                 return True
         return False
 
-    def get_throttle_factor(self):
-        return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
-
 
 class EmailDevice(TwoFactorMixin, ThrottlingMixin, Device):
     """Model with token seed linked to a user."""
@@ -113,6 +110,9 @@ class EmailDevice(TwoFactorMixin, ThrottlingMixin, Device):
         no_digits = totp_digits()
         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
         send_email(device=self, token=token)
+
+    def get_throttle_factor(self):
+        return getattr(settings, 'TWO_FACTOR_EMAIL_THROTTLE_FACTOR', 1)
 
 
 class PhoneDevice(TwoFactorMixin, ThrottlingMixin, Device):
@@ -144,3 +144,6 @@ class PhoneDevice(TwoFactorMixin, ThrottlingMixin, Device):
             make_call(device=self, token=token)
         else:
             send_sms(device=self, token=token)
+
+    def get_throttle_factor(self):
+        return getattr(settings, 'TWO_FACTOR_PHONE_THROTTLE_FACTOR', 1)
