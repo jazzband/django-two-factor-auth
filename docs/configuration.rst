@@ -45,7 +45,7 @@ General Settings
   See also LOGIN_REDIRECT_URL_.
 
 ``LOGOUT_REDIRECT_URL``
-  Should point to a view that the user is redirected to after loging out. It was
+  Should point to a view that the user is redirected to after logging out. It was
   added in Django 1.10, and also adapted by this application. This can be a
   URL path or URL name as defined in the Django documentation.
 
@@ -77,7 +77,7 @@ General Settings
   The number of seconds between a user successfully passing the "authentication"
   step (usually by entering a valid username and password) and them having to
   restart the login flow and re-authenticate. This ensures that users can't sit
-  indefinately in a state of having entered their password successfully but not
+  indefinitely in a state of having entered their password successfully but not
   having passed two factor authentication. Set to ``0`` to disable.
 
 ``PHONENUMBER_DEFAULT_REGION`` (default: ``None``)
@@ -104,6 +104,7 @@ Next, add additional urls to your config:
 
     # urls.py
     from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+    
     urlpatterns = [
         path('', include(tf_twilio_urls)),
         ...
@@ -119,7 +120,7 @@ Additionally, you need to enable the ``ThreadLocals`` middleware:
         # Always include for two-factor auth
         'django_otp.middleware.OTPMiddleware',
 
-        # Include for twilio gateway
+        # Include for Twilio gateway
         'two_factor.middleware.threadlocals.ThreadLocals',
     )
 
@@ -147,7 +148,7 @@ serves as a second factor.
 
 The option to remember a browser is deactived by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
 
-The browser will be remembered as long as
+The browser will be remembered as long as:
 
 - the cookie that authorizes the browser did not expire,
 - the user did not reset the password, and
@@ -162,7 +163,7 @@ e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
 
 ``TWO_FACTOR_REMEMBER_COOKIE_AGE``
   Age in seconds to remember the browser. The remember cookie will expire after the given time interval
-  and the server will not accept this cookie to remember this browser, user and device any longer.
+  and the server will not accept this cookie to remember this browser, user, and device any longer.
 
   If this is set to a positive `int` the user is presented the option to remember the browser when entering the token.
   If the age is `None`, the user must authenticate with a token option during each login, if a device is setup.
