@@ -29,7 +29,7 @@ class PhoneSetupTest(UserMixin, TestCase):
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:phone_create'))
-        self.assertContains(response, 'Number:')
+        self.assertContains(response, 'Number')
 
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:phone_create'), data=data)

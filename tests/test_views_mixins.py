@@ -22,7 +22,7 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
         self.login_user()
         url = '/secure/redirect_unverified/'
         response = self.client.get(url)
-        redirect_to = '%s?%s' % ('/account/login/', 'next=' + url)
+        redirect_to = '%s?%s' % ('/two_factor/login/', 'next=' + url)
         self.assertRedirects(response, redirect_to)
 
     def test_unverified_raise(self):

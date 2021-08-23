@@ -20,7 +20,7 @@ class LoginTest(UserMixin, TestCase):
 
     def test_form(self):
         response = self.client.get(reverse('two_factor:login'))
-        self.assertContains(response, 'Password:')
+        self.assertContains(response, 'Password')
 
     def test_invalid_login(self):
         response = self._post({'auth-username': 'unknown',
@@ -99,7 +99,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
         self.assertEqual(
@@ -117,7 +117,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
         self.assertEqual(self.client.session['wizard_login_view']['step'], 'token')
@@ -136,7 +136,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
         self.assertEqual(
@@ -149,8 +149,8 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'token-otp_token': totp(device.bin_key),
                                'login_view-current_step': 'token'})
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, 'Token:')
-        self.assertContains(response, 'Password:')
+        self.assertNotContains(response, 'Token')
+        self.assertContains(response, 'Password')
         self.assertContains(response, 'Your session has timed out. Please login again.')
 
         # Check that a message was logged.
@@ -169,7 +169,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         self.assertEqual(self.client.session['wizard_login_view']['user_pk'], str(user.pk))
         self.assertEqual(
@@ -214,7 +214,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         self.assertContains(response, 'autofocus="autofocus"')
         self.assertContains(response, 'inputmode="numeric"')
         self.assertContains(response, 'autocomplete="one-time-code"')
@@ -363,7 +363,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         # A GET request resets the state of the wizard...
         self.client.get(reverse('two_factor:login'))
@@ -372,7 +372,7 @@ class LoginTest(UserMixin, TestCase):
         # depends on a user being present, this should be handled gracefully.
         response = self._post({'token-otp_token': '123456',
                                'login_view-current_step': 'token'})
-        self.assertContains(response, 'Password:')
+        self.assertContains(response, 'Password')
 
         # Check that a message was logged.
         mock_logger.warning.assert_called_with(
@@ -414,7 +414,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         session_contents = json.dumps(list(self.client.session.items()))
 
@@ -435,7 +435,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         response = self._post({'token-otp_token': totp(device.bin_key),
                                'login_view-current_step': 'token',
                                'token-remember': 'on'})
@@ -519,7 +519,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         response = self._post({'token-otp_token': totp(self.device.bin_key),
                                'login_view-current_step': 'token',
@@ -569,7 +569,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         response = self._post({'token-otp_token': totp(self.device.bin_key),
                                'login_view-current_step': 'token'})
@@ -585,7 +585,7 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
 
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
     @override_settings(TWO_FACTOR_REMEMBER_COOKIE_AGE=1)
     def test_expired(self):
@@ -593,7 +593,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         response = self._post({'token-otp_token': totp(self.device.bin_key),
                                'login_view-current_step': 'token',
@@ -613,7 +613,7 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
 
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         self.assertFalse(any(
             key.startswith('remember-cookie_') and cookie.value
             for key, cookie in self.client.cookies.items()
@@ -625,7 +625,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         response = self._post({'token-otp_token': totp(self.device.bin_key),
                                'login_view-current_step': 'token',
@@ -644,7 +644,7 @@ class RememberLoginTest(UserMixin, TestCase):
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
 
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
     @override_settings(
         TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60,
@@ -656,7 +656,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         # Enter token
         response = self._post({'token-otp_token': totp(self.device.bin_key),
@@ -672,7 +672,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         # Login with valid remember cookie but throttled
         self.client = self.client_class()
@@ -680,7 +680,7 @@ class RememberLoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
 
         # Reset throttling
         self.device.throttle_reset()
