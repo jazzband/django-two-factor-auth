@@ -17,12 +17,13 @@ class AdminPatchTest(TestCase):
     def tearDown(self):
         unpatch_admin()
 
+    @override_settings(LOGIN_URL='admin:login')
     def test(self):
         response = self.client.get('/admin/', follow=True)
         redirect_to = '%s?next=/admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
-    @override_settings(LOGIN_URL='two_factor:login')
+    @override_settings(LOGIN_URL='admin:login')
     def test_named_url(self):
         response = self.client.get('/admin/', follow=True)
         redirect_to = '%s?next=/admin/' % resolve_url(settings.LOGIN_URL)
@@ -50,12 +51,13 @@ class OTPAdminSiteTest(UserMixin, TestCase):
         self.user = self.create_superuser()
         self.login_user()
 
+    @override_settings(LOGIN_URL='admin:login')
     def test_otp_admin_without_otp(self):
         response = self.client.get('/otp_admin/', follow=True)
         redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)
         self.assertRedirects(response, redirect_to)
 
-    @override_settings(LOGIN_URL='two_factor:login')
+    @override_settings(LOGIN_URL='admin:login')
     def test_otp_admin_without_otp_named_url(self):
         response = self.client.get('/otp_admin/', follow=True)
         redirect_to = '%s?next=/otp_admin/' % resolve_url(settings.LOGIN_URL)

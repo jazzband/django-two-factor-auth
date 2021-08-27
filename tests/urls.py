@@ -44,7 +44,7 @@ urlpatterns = [
     path(
         'secure/redirect_unverified/',
         SecureView.as_view(raise_anonymous=True,
-                           verification_url='/account/login/'),
+                           verification_url='/two_factor/login/'),
     ),
     path('', include(tf_urls)),
     path('', include(tf_twilio_urls)),

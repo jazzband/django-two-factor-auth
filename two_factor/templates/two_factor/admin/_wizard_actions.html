@@ -5,12 +5,17 @@
         <a href="/admin/password_reset/">Forgotten your password or username?</a>
     </div>
 {% endif %}
-
-<div class="submit-row">
-    {% if wizard.steps.prev %}
-        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-default">{% trans "Back" %}</button>
-    {% else %}
-        <button disabled name="" type="button" class="btn btn-disabled">{% trans "Back" %}</button>
-    {% endif %}
-    <input type="submit" value="{% trans "Next" %}">
+<div class="actions-buttons">
+      {% if cancel_url %}
+            <a href="{{ cancel_url }}">
+                <input type="button" value="{% trans "Cancel" %}" />
+            </a>
+      {% endif %}
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="button button-with-padding">{% trans "Back" %}</button>
+      {% else %}
+        <button disabled name="" type="button" class="button button-with-padding">{% trans "Back" %}</button>
+      {% endif %}
+      {% comment %} <a href="{% url 'two_factor:setup' %}" class="btn btn-default">{% trans "Setup" %}</a> {% endcomment %}
+      <input type="submit" value="{% trans "Next" %}">
 </div>

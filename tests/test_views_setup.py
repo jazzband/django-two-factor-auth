@@ -29,7 +29,7 @@ class SetupTest(UserMixin, TestCase):
             reverse('two_factor:setup'),
             data={'setup_view-current_step': 'welcome'})
 
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         self.assertContains(response, 'autofocus="autofocus"')
         self.assertContains(response, 'inputmode="numeric"')
         self.assertContains(response, 'autocomplete="one-time-code"')
@@ -64,13 +64,13 @@ class SetupTest(UserMixin, TestCase):
         response = self.client.post(
             reverse('two_factor:setup'),
             data={'setup_view-current_step': 'welcome'})
-        self.assertContains(response, 'Method:')
+        self.assertContains(response, 'Method')
 
         response = self.client.post(
             reverse('two_factor:setup'),
             data={'setup_view-current_step': 'method',
                   'method-method': 'generator'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         session = self.client.session
         self.assertIn('django_two_factor-qr_secret_key', session.keys())
 
@@ -112,15 +112,15 @@ class SetupTest(UserMixin, TestCase):
     @override_settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake')
     def test_setup_phone_call(self, fake):
         response = self._post(data={'setup_view-current_step': 'welcome'})
-        self.assertContains(response, 'Method:')
+        self.assertContains(response, 'Method')
 
         response = self._post(data={'setup_view-current_step': 'method',
                                     'method-method': 'call'})
-        self.assertContains(response, 'Number:')
+        self.assertContains(response, 'Number')
 
         response = self._post(data={'setup_view-current_step': 'call',
                                     'call-number': '+31101234567'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         self.assertContains(response, 'We are calling your phone right now')
 
         # assert that the token was send to the gateway
@@ -151,15 +151,15 @@ class SetupTest(UserMixin, TestCase):
     @override_settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
     def test_setup_phone_sms(self, fake):
         response = self._post(data={'setup_view-current_step': 'welcome'})
-        self.assertContains(response, 'Method:')
+        self.assertContains(response, 'Method')
 
         response = self._post(data={'setup_view-current_step': 'method',
                                     'method-method': 'sms'})
-        self.assertContains(response, 'Number:')
+        self.assertContains(response, 'Number')
 
         response = self._post(data={'setup_view-current_step': 'sms',
                                     'sms-number': '+31101234567'})
-        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'Token')
         self.assertContains(response, 'We sent you a text message')
 
         # assert that the token was send to the gateway

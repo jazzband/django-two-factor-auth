@@ -8,7 +8,7 @@
   <form method="post">
     {% csrf_token %}
     <table>{{ form }}</table>
-    <button class="btn btn-danger"
+    <button class="button button-with-padding"
             type="submit">{% trans "Disable" %}</button>
   </form>
 {% endblock %}

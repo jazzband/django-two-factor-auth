@@ -41,7 +41,7 @@ class YubiKeyTest(UserMixin, TestCase):
         response = self.client.post(reverse('two_factor:setup'),
                                     data={'setup_view-current_step': 'method',
                                           'method-method': 'yubikey'})
-        self.assertContains(response, 'YubiKey:')
+        self.assertContains(response, 'YubiKey')
 
         # Should call verify_token and create the device on finish
         token = 'jlvurcgekuiccfcvgdjffjldedjjgugk'
@@ -67,7 +67,7 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'auth-username': 'bouke@example.com',
                                           'auth-password': 'secret',
                                           'login_view-current_step': 'auth'})
-        self.assertContains(response, 'YubiKey:')
+        self.assertContains(response, 'YubiKey')
         self.assertIsInstance(response.context_data['wizard']['form'].fields['otp_token'],
                               forms.CharField)
 
@@ -95,12 +95,12 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'auth-username': 'bouke@example.com',
                                           'auth-password': 'secret',
                                           'login_view-current_step': 'auth'})
-        self.assertContains(response, 'YubiKey:')
+        self.assertContains(response, 'YubiKey')
 
         response = self.client.post(reverse('two_factor:login'),
                                     data={'wizard_goto_step': 'backup'})
-        self.assertNotContains(response, 'YubiKey:')
-        self.assertContains(response, 'Token:')
+        self.assertNotContains(response, 'YubiKey')
+        self.assertContains(response, 'Token')
 
     def test_missing_management_data(self):
         # missing management data
