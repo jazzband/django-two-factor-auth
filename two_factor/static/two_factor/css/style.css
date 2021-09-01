@@ -13,3 +13,14 @@
 .centered-text {
     text-align: center;
 }
+
+/*hide arrows for token field*/
+#id_token-otp_token::-webkit-outer-spin-button,
+#id_token-otp_token::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#id_token-otp_token {
+    -moz-appearance:textfield; /* Firefox */
+}
