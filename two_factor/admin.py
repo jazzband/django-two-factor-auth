@@ -16,6 +16,17 @@ from .views import (
 )
 
 
+def is_user_verified(user) -> bool:
+    #  can't use user.is_verified() from OTP middleware in the login view
+    if hasattr(user, 'is_verified'):
+        return user.is_verified()
+
+    if hasattr(user, 'otp_device'):
+        return user.otp_device is not None
+
+    return False
+
+
 class AdminLoginView(LoginView):
     redirect_url = 'admin:two_factor:setup'
     template_name = 'two_factor/admin/login.html'
@@ -24,10 +35,8 @@ class AdminLoginView(LoginView):
         context = super(AdminLoginView, self).get_context_data(form, **kwargs)
         if self.kwargs['extra_context']:
             context.update(self.kwargs['extra_context'])
-        user_is_validated = getattr(self.request.user, 'is_verified', None)
-        context.update({
-            'cancel_url': reverse('admin:index' if user_is_validated else 'admin:login'),
-        })
+
+        context.update({'cancel_url': reverse('admin:index')})
         return context
 
     def get_redirect_url(self):
@@ -40,8 +49,7 @@ class AdminLoginView(LoginView):
         if url_is_safe:
             self.request.session[REDIRECT_FIELD_NAME] = redirect_to
 
-        user_is_validated = getattr(self.request.user, 'is_verified', None)
-        if not user_is_validated:
+        if not is_user_verified(self.request.user):
             redirect_to = resolve_url(self.redirect_url)
 
         return redirect_to
@@ -65,9 +73,8 @@ class AdminSetupView(SetupView):
 
     def get_context_data(self, form, **kwargs):
         context = super(AdminSetupView, self).get_context_data(form, **kwargs)
-        user_is_validated = getattr(self.request.user, 'is_verified', None)
         context.update({
-            'cancel_url': reverse('admin:two_factor:profile' if user_is_validated else 'admin:login'),
+            'cancel_url': reverse('admin:two_factor:profile' if is_user_verified(self.request.user) else 'admin:login'),
             'site_header': ugettext("Enable Two-Factor Authentication"),
             'title': ugettext("Enable Two-Factor Authentication"),
         })
