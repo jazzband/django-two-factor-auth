@@ -2,21 +2,27 @@
 Django Two-Factor Authentication
 ================================
 
-.. image:: https://travis-ci.org/Bouke/django-two-factor-auth.svg?branch=master
-    :alt: Build Status
-    :target: https://travis-ci.org/Bouke/django-two-factor-auth
+:Version: 2.0.3
+:Download: https://pypi.python.org/pypi/maykin-django-two-factor-auth
+:Source: https://github.com/maykinmedia/django-two-factor-auth
+:Keywords: django, admin, 2fa, two-factor
 
-.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg?branch=master
-    :alt: Build Status
-    :target: https://github.com/Bouke/django-two-factor-auth/actions
+*Fork of https://github.com/Bouke/django-two-factor-auth/*
 
-.. image:: https://codecov.io/gh/Bouke/django-two-factor-auth/branch/master/graph/badge.svg
-    :alt: Test Coverage
-    :target: https://codecov.io/gh/Bouke/django-two-factor-auth
+|build-status| |pyversion| |djversion|
 
-.. image:: https://badge.fury.io/py/django-two-factor-auth.svg
-    :alt: PyPI
-    :target: https://pypi.python.org/pypi/django-two-factor-auth
+.. |build-status| image:: https://github.com/maykinmedia/django-two-factor-auth/actions/workflows/ci.yml/badge.svg
+    :alt: Build status
+    :target: https://github.com/maykinmedia/django-two-factor-auth/actions/workflows/ci.yml
+
+.. |pyversion| image:: https://img.shields.io/pypi/pyversions/maykin-django-two-factor-auth.svg
+    :alt: Supported Python versions
+    :target: http://pypi.python.org/pypi/maykin-django-two-factor-auth
+
+.. |djversion| image:: https://img.shields.io/badge/django-2.2+-blue.svg
+    :alt: Supported Django versions
+    :target: http://pypi.python.org/pypi/maykin-django-two-factor-auth
+
 
 Complete Two-Factor Authentication for Django. Built on top of the one-time
 password framework django-otp_ and Django's built-in authentication framework
