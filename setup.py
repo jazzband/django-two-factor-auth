@@ -2,12 +2,12 @@ from setuptools import find_packages, setup
 
 setup(
     name='maykin-django-two-factor-auth',
-    version='2.0.0',
-    description='Complete Two-Factor Authentication for Django',
+    version='2.0.3',
+    description='Fork of "django-two-factor-auth" featuring a complete Two-Factor Authentication system for Django',
     long_description=open('README.rst', encoding='utf-8').read(),
     author='Bouke Haarsma',
     author_email='bouke@haarsma.eu',
-    url='https://github.com/MaykinMedia/django-two-factor-auth',
+    url='https://github.com/maykinmedia/django-two-factor-auth',
     download_url='https://pypi.python.org/pypi/maykin-django-two-factor-auth',
     license='MIT',
     packages=find_packages(exclude=('example', 'tests')),
