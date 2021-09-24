@@ -2,6 +2,14 @@
 Change history
 ==============
 
+2.0.4
+=====
+
+*September 24, 2021*
+
+* Translated reset password link
+
+
 2.0.3
 =====
 

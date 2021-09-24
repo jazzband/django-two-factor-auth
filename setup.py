@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='maykin-django-two-factor-auth',
-    version='version='2.0.3'',
+    version='2.0.4',
     description='Fork of "django-two-factor-auth" featuring a complete Two-Factor Authentication system for Django',
     long_description=open('README.rst', encoding='utf-8').read(),
     author='Bouke Haarsma',
