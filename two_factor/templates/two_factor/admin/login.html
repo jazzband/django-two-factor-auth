@@ -68,7 +68,7 @@
 
     {% if wizard.steps.current == 'auth' %}
     <div class="password-reset-link">
-        <a href="/admin/password_reset/">Forgotten your password or username?</a>
+        <a href="/admin/password_reset/">{% trans 'Forgotten your password or username?' %}</a>
     </div>
     <div class="actions-buttons">
       <input type="submit" value="{% trans 'Login' %}">
