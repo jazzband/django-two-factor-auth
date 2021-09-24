@@ -2,7 +2,7 @@
 Django Two-Factor Authentication
 ================================
 
-:Version: 2.0.3
+:Version: :Version: 2.0.3
 :Download: https://pypi.python.org/pypi/maykin-django-two-factor-auth
 :Source: https://github.com/maykinmedia/django-two-factor-auth
 :Keywords: django, admin, 2fa, two-factor
