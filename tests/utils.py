@@ -27,9 +27,8 @@ class UserMixin(object):
         self._passwords[user] = password
         return user
 
-    def login_user(self, user=None):
-        if not user:
-            user = list(self._passwords.keys())[0]
+    def login_user(self):
+        user = list(self._passwords.keys())[0]
         username = user.get_username()
         assert self.client.login(username=username, password=self._passwords[user])
         if default_device(user):
@@ -38,6 +37,6 @@ class UserMixin(object):
             session.save()
 
     def enable_otp(self, user=None):
-        if not user:
+        if user is None:
             user = list(self._passwords.keys())[0]
         return user.totpdevice_set.create(name='default')
