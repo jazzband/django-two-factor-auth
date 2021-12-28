@@ -6,7 +6,7 @@
 
 ### Changed
 - Suppressed default_app_config warning on Django 3.2+
-- qrcode dependency limit upped to 7.99.
+- qrcode dependency limit upped to 7.99 and django-phonenumber-field to 7
 
 ## 1.13.1
 
