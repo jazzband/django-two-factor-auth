@@ -10,7 +10,7 @@ from django.urls import reverse
 from .utils import UserMixin
 
 try:
-    from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
+    from otp_yubikey.models import RemoteYubikeyDevice, ValidationService
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
 
