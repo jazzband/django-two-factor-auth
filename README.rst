@@ -2,17 +2,17 @@
 Django Two-Factor Authentication
 ================================
 
-.. image:: https://travis-ci.org/Bouke/django-two-factor-auth.svg?branch=master
-    :alt: Build Status
-    :target: https://travis-ci.org/Bouke/django-two-factor-auth
+.. image:: https://jazzband.co/static/img/badge.svg
+        :target: https://jazzband.co/
+        :alt: Jazzband
 
-.. image:: https://github.com/Bouke/django-two-factor-auth/workflows/build/badge.svg?branch=master
+.. image:: https://github.com/jazzband/django-two-factor-auth/workflows/build/badge.svg?branch=master
     :alt: Build Status
-    :target: https://github.com/Bouke/django-two-factor-auth/actions
+    :target: https://github.com/jazzband/django-two-factor-auth/actions
 
-.. image:: https://codecov.io/gh/Bouke/django-two-factor-auth/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/jazzband/django-two-factor-auth/branch/master/graph/badge.svg
     :alt: Test Coverage
-    :target: https://codecov.io/gh/Bouke/django-two-factor-auth
+    :target: https://codecov.io/gh/jazzband/django-two-factor-auth
 
 .. image:: https://badge.fury.io/py/django-two-factor-auth.svg
     :alt: PyPI
@@ -126,8 +126,8 @@ The project is licensed under the MIT license.
 .. _Heroku: https://www.heroku.com
 .. _django-user-sessions: https://pypi.python.org/pypi/django-user-sessions
 .. _tox: https://testrun.org/tox/latest/
-.. _issue tracker: https://github.com/Bouke/django-two-factor-auth/issues
-.. _source code: https://github.com/Bouke/django-two-factor-auth
+.. _issue tracker: https://github.com/jazzband/django-two-factor-auth/issues
+.. _source code: https://github.com/jazzband/django-two-factor-auth
 .. _readthedocs.org: http://django-two-factor-auth.readthedocs.org/
 .. _`installation instructions`:
    http://django-two-factor-auth.readthedocs.io/en/stable/installation.html
@@ -137,4 +137,4 @@ The project is licensed under the MIT license.
 .. _`Hynek's Sharing Your Labor of Love: PyPI Quick And Dirty`:
    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
 .. _`issue 239`:
-   https://github.com/Bouke/django-two-factor-auth/issues/239
+   https://github.com/jazzband/django-two-factor-auth/issues/239
