@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Added
+- Translations for new languages: Hausa, Japanese, Vietnamese
+
 ### Changed
 - Change "Back to Profile" to "Back to Account Security"
 - Suppressed default_app_config warning on Django 3.2+
