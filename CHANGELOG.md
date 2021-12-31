@@ -2,6 +2,7 @@
 
 ### Added
 - Translations for new languages: Hausa, Japanese, Vietnamese
+- Django 4.0 support
 
 ### Changed
 - Suppressed default_app_config warning on Django 3.2+
