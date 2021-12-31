@@ -4,16 +4,16 @@
 # 
 # Translators:
 # Translators:
-# Claude Paroz <claude@2xlibre.net>, 2020
+# Claude Paroz <claude@2xlibre.net>, 2020-2021
 # bato <francoisconil@gmail.com>, 2014
 # Michael Mior <michael.mior@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-08 08:49+0200\n"
-"PO-Revision-Date: 2020-07-08 12:49+0000\n"
-"Last-Translator: Michael Mior <michael.mior@gmail.com>\n"
+"POT-Creation-Date: 2021-09-27 12:48+0100\n"
+"PO-Revision-Date: 2021-09-27 11:48+0000\n"
+"Last-Translator: Matt Molyneaux\n"
 "Language-Team: French (http://www.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,31 +31,27 @@ msgstr "Appel faux à %(number)s: \"Votre jeton est: %(token)s\""
 msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
 msgstr "Texto faux à %(number)s: \"Votre jeton est: %(token)s\""
 
-#: templates/_base.html:20
-msgid "Toggle navigation"
-msgstr "Basculer la navigation"
-
-#: templates/_base.html:25 templates/two_factor/_base_focus.html:8
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
 msgid "Demo"
 msgstr "Démo"
 
-#: templates/_base.html:32
+#: templates/_base.html:26
 msgid "Home"
 msgstr "Accueil"
 
-#: templates/_base.html:34 templates/secret.html:7
+#: templates/_base.html:29 templates/secret.html:7
 msgid "Secret Page"
 msgstr "Page secrète"
 
-#: templates/_base.html:42
+#: templates/_base.html:39
 msgid "Account Security"
 msgstr "Securité du compte"
 
-#: templates/_base.html:44
+#: templates/_base.html:41
 msgid "Sessions"
 msgstr "Sessions"
 
-#: templates/_base.html:45
+#: templates/_base.html:43
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -63,7 +59,7 @@ msgstr "Se déconnecter"
 msgid "Not logged in"
 msgstr "Non connecté"
 
-#: templates/_base.html:48 templates/registration_complete.html:9
+#: templates/_base.html:50 templates/registration_complete.html:9
 msgid "Login"
 msgstr "Se connecter"
 
@@ -95,22 +91,22 @@ msgstr "Avez-vous fourni vos réglages Twilio dans le fichier <code>settings_pri
 
 #: templates/home.html:26
 msgid "Next steps:"
-msgstr "Prochaines étapes:"
+msgstr "Prochaines étapes :"
 
 #: templates/home.html:28
 #, python-format
 msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
-msgstr "Commencez par <a href=\"%(reg_url)s\">l’enregistrement</a> d’un compte."
+msgstr "Commencez par <a href=\"%(reg_url)s\">la création</a> d’un compte."
 
 #: templates/home.html:30
 #, python-format
 msgid "<a href=\"%(login_url)s\">Login</a> to your account."
-msgstr "<a href=\"%(login_url)s\">Se connecter</a> à votre compte."
+msgstr "<a href=\"%(login_url)s\">Connectez-vous</a> à votre compte."
 
 #: templates/home.html:32
 #, python-format
 msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
-msgstr "<a href=\"%(setup_url)s\">Activer</a> l’authentification à deux facteurs."
+msgstr "<a href=\"%(setup_url)s\">Activez</a> l’authentification à deux facteurs."
 
 #: templates/home.html:34
 #, python-format
@@ -118,14 +114,14 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and <a "
 "href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
 " authentication at work."
-msgstr "Puis, vous <a href=\"%(logout_url)s\">déconnecter</a> et vous <a href=\"%(login_url)s\">connecter</a> pour tester l'authentification à deux facteurs."
+msgstr "<a href=\"%(logout_url)s\">Déconnectez</a>-vous, puis <a href=\"%(login_url)s\">connectez</a>-vous à nouveau pour confirmer que l'authentification à deux facteurs fonctionne correctement."
 
 #: templates/home.html:37
 #, python-format
 msgid ""
 "At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
 "page</a>! :-)"
-msgstr "Enfin, vous avez obtenu l'accès à la <a href=\"%(secret_url)s\">page secrète</a>! :-)"
+msgstr "Finalement, vous avez obtenu l'accès à la <a href=\"%(secret_url)s\">page secrète</a>! :-)"
 
 #: templates/registration.html:5
 msgid "Registration"
