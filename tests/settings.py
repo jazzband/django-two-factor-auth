@@ -77,3 +77,4 @@ TEMPLATES = [
 TWO_FACTOR_PATCH_ADMIN = False
 
 AUTH_USER_MODEL = os.environ.get('AUTH_USER_MODEL', 'auth.User')
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
