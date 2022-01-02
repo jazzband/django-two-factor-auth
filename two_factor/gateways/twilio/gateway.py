@@ -17,7 +17,7 @@ VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
                    'pt-PT', 'ru-RU', 'sv-SE', 'zh-CN', 'zh-HK', 'zh-TW')
 
 
-class Twilio(object):
+class Twilio:
     """
     Gateway for sending text messages and making phone calls using Twilio_.
 

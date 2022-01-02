@@ -5,7 +5,7 @@ from two_factor.middleware.threadlocals import get_current_request
 from two_factor.templatetags.two_factor import mask_phone_number
 
 
-class Messages(object):
+class Messages:
     @classmethod
     def make_call(cls, device, token):
         cls._add_message(_('Fake call to %(number)s: "Your token is: %(token)s"'),

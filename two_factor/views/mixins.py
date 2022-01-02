@@ -7,7 +7,7 @@ from django.urls import reverse
 from ..utils import default_device
 
 
-class OTPRequiredMixin(object):
+class OTPRequiredMixin:
     """
     View mixin which verifies that the user logged in using OTP.
 

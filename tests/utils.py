@@ -6,7 +6,7 @@ from django_otp import DEVICE_ID_SESSION_KEY
 from two_factor.utils import default_device
 
 
-class UserMixin(object):
+class UserMixin:
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
