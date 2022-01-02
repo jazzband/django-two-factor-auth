@@ -16,7 +16,7 @@ except ImportError:
     )
 
 
-class AdminSiteOTPRequiredMixin(object):
+class AdminSiteOTPRequiredMixin:
     """
     Mixin for enforcing OTP verified staff users.
 
