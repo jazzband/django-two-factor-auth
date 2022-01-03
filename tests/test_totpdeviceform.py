@@ -13,7 +13,7 @@ from two_factor.forms import TOTPDeviceForm
 from .utils import UserMixin
 
 # Use this as the Unix time for all TOTPs.  It is chosen arbitrarily
-# as 3 Jan 2021
+# as 3 Jan 2022
 TEST_TIME = 1641194517
 
 # This class test how the TOTPDeviceForm validator handles drift between its clock
