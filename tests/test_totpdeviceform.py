@@ -1,5 +1,3 @@
-import unittest
-from unittest.mock import patch, MagicMock
 from binascii import unhexlify
 import time
 
@@ -32,7 +30,7 @@ class TOTPDeviceFormTest(UserMixin, TestCase):
         self.old_TOTP_init = old_TOTP_init
         def new_TOTP_init(self, key, step=30, t0=0, digits=6, drift=0):
         	old_TOTP_init(self, key, step, t0, digits, drift)
-        	self._time = TEST_TIME
+        	self.time = TEST_TIME
         django_otp.oath.TOTP.__init__ = new_TOTP_init
 
     def restore_time_for_totp(self):
