@@ -1,12 +1,12 @@
-from binascii import unhexlify
 import time
+from binascii import unhexlify
 
+import django_otp.oath
 from django import forms
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.urls import reverse
-import django_otp.oath 
 
 from two_factor.forms import TOTPDeviceForm
 
