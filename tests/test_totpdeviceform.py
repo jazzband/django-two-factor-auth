@@ -23,9 +23,6 @@ class TOTPDeviceFormTest(TestCase):
 
     key = '12345678901234567890'
 
-    def restore_time_for_totp(self):
-        django_otp.oath.TOTP.__init__ = self.old_TOTP_init
-
     def setUp(self):
         super().setUp()
         self.bin_key = unhexlify(TOTPDeviceFormTest.key.encode())
