@@ -7,6 +7,7 @@
 ### Changed
 - Suppressed default_app_config warning on Django 3.2+
 - qrcode dependency limit upped to 7.99 and django-phonenumber-field to 7
+- When validating a TOTP after scanning the QR code, allow a time drift of +/-1 instead of just -1
 
 ## 1.13.1
 
