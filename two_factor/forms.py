@@ -125,7 +125,7 @@ class TOTPDeviceForm(forms.Form):
         if 'valid_t0' in self.metadata:
             t0s.append(int(time()) - self.metadata['valid_t0'])
         for t0 in t0s:
-            for offset in range(-self.tolerance, self.tolerance):
+            for offset in range(-self.tolerance, self.tolerance + 1):
                 if totp(key, self.step, t0, self.digits, self.drift + offset) == token:
                     self.drift = offset
                     self.metadata['valid_t0'] = int(time()) - t0
