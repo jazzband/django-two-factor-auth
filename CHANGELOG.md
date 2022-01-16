@@ -1,4 +1,4 @@
-## Unreleased
+## 1.13.2
 
 ### Added
 - Translations for new languages: Hausa, Japanese, Vietnamese
