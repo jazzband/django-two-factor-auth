@@ -1,3 +1,11 @@
+## Unreleased
+
+### Added
+- Python 3.10 support
+
+### Removed
+- Python 3.5 and 3.6 support
+
 ## 1.13.2
 
 ### Added
