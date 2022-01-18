@@ -423,8 +423,7 @@ class LoginTest(UserMixin, TestCase):
     def test_login_different_user_with_otp_on_existing_session(self):
         self.create_user()
         vedran_user = self.create_user(username='vedran@example.com')
-        device = vedran_user.totpdevice_set.create(name='default',
-                                            key=random_hex())
+        device = vedran_user.totpdevice_set.create(name='default', key=random_hex())
 
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
@@ -498,8 +497,7 @@ class RememberLoginTest(UserMixin, TestCase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
-        self.device = self.user.totpdevice_set.create(name='default',
-                                            key=random_hex())
+        self.device = self.user.totpdevice_set.create(name='default', key=random_hex())
 
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
@@ -702,8 +700,7 @@ class RememberLoginTest(UserMixin, TestCase):
     )
     def test_phonedevice_with_remember_cookie(self, mock_signal, fake):
         self.user.totpdevice_set.first().delete()
-        device = self.user.phonedevice_set.create(name='default', number='+31101234567',
-                                             method='sms',)
+        device = self.user.phonedevice_set.create(name='default', number='+31101234567', method='sms')
 
         # Ask for SMS challenge
         response = self._post({'auth-username': 'bouke@example.com',
