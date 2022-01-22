@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils import translation
 from phonenumber_field.phonenumber import PhoneNumber
 
-from two_factor.gateways.fake import Fake
+from two_factor.gateways.fake import Fake, QueryableFake
 from two_factor.gateways.twilio.gateway import Twilio
 
 
@@ -154,3 +154,32 @@ class FakeGatewayTest(TestCase):
             fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             logger.info.assert_called_with(
                 'Fake SMS to %s: "Your token is: %s"', '+123', code)
+
+
+class QueryableFakeGatewayTest(TestCase):
+
+    def tearDown(self):
+        QueryableFake.reset()
+
+    def test_gateway(self):
+        fake = QueryableFake()
+
+        for code in ['654321', '87654321']:
+            fake.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            self.assertEqual(fake.call_tokens['+123'].pop(), code)
+
+            fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            self.assertEqual(fake.sms_tokens['+123'].pop(), code)
+
+    def test_gateway_must_be_reset_between_tests(self):
+        fake = QueryableFake()
+        codes = ['654321', '87654321']
+        for code in codes:
+            fake.make_call(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+            fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
+
+        self.assertEqual(len(fake.call_tokens['+123']), len(codes))
+        self.assertEqual(len(fake.sms_tokens['+123']), len(codes))
+        fake.reset()
+        self.assertEqual(len(fake.call_tokens['+123']), 0)
+        self.assertEqual(len(fake.sms_tokens['+123']), 0)
