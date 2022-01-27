@@ -5,12 +5,17 @@ from django_otp import devices_for_user
 
 from two_factor.models import PhoneDevice
 
+USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
+
 
 def default_device(user):
     if not user or user.is_anonymous:
         return
+    if hasattr(user, USER_DEFAULT_DEVICE_ATTR_NAME):
+        return getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME)
     for device in devices_for_user(user):
         if device.name == 'default':
+            setattr(user, USER_DEFAULT_DEVICE_ATTR_NAME, device)
             return device
 
 
