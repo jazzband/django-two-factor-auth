@@ -1,17 +1,23 @@
 from unittest import mock
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.shortcuts import resolve_url
+from django.template import Context, Template
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse, reverse_lazy
 from django_otp.oath import totp
 from django_otp.util import random_hex
 
-from two_factor.models import PhoneDevice
-from two_factor.utils import backup_phones
-from two_factor.validators import validate_international_phonenumber
-from two_factor.views.core import PhoneDeleteView, PhoneSetupView
+from two_factor.plugins.phonenumber.models import PhoneDevice
+from two_factor.plugins.phonenumber.utils import backup_phones
+from two_factor.plugins.phonenumber.validators import (
+    validate_international_phonenumber,
+)
+from two_factor.plugins.phonenumber.views import (
+    PhoneDeleteView, PhoneSetupView,
+)
 
 from .utils import UserMixin
 
@@ -30,6 +36,11 @@ class PhoneSetupTest(UserMixin, TestCase):
     def test_form(self):
         response = self.client.get(reverse('two_factor:phone_create'))
         self.assertContains(response, 'Number:')
+
+        # When no methods are configured, redirect to login.
+        with self.settings(TWO_FACTOR_SMS_GATEWAY=None, TWO_FACTOR_CALL_GATEWAY=None):
+            response = self.client.get(reverse('two_factor:phone_create'))
+            self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL))
 
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:phone_create'), data=data)
@@ -177,6 +188,13 @@ class PhoneDeleteTest(UserMixin, TestCase):
 
 
 class PhoneDeviceTest(UserMixin, TestCase):
+    def test_clean(self):
+        device = PhoneDevice(key='xyz', method='sms')
+        with self.assertRaises(ValidationError) as ctxt:
+            device.full_clean()
+        # The 'b' prefix might be a bug to be solved in django_otp.
+        self.assertIn("b'xyz' is not valid hex-encoded data.", str(ctxt.exception))
+
     def test_verify(self):
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
@@ -202,3 +220,38 @@ class PhoneDeviceTest(UserMixin, TestCase):
 
         device.user = self.create_user()
         self.assertEqual('unknown (bouke@example.com)', str(device))
+
+    def test_template_tags(self):
+        def render_template(string, context=None):
+            context = context or {}
+            context = Context(context)
+            return Template(string).render(context)
+
+        rendered = render_template(
+            '{% load phonenumber %}'
+            '{{ number|format_phone_number }}',
+            context={'number': '+41524204242'}
+        )
+        self.assertEqual(rendered, '+41 52 420 42 42')
+
+        rendered = render_template(
+            '{% load phonenumber %}'
+            '{{ number|mask_phone_number }}',
+            context={'number': '+41524204242'}
+        )
+        self.assertEqual(rendered, '+41*******42')
+
+        device1 = PhoneDevice(method='sms', number='+12024561111')
+        device2 = PhoneDevice(method='call', number='+12024561112')
+        rendered = render_template(
+            '{% load phonenumber %}'
+            '{{ device|device_action }}',
+            context={'device': device1}
+        )
+        self.assertEqual(rendered, 'Send text message to +1 ***-***-**11')
+        rendered = render_template(
+            '{% load phonenumber %}'
+            '{{ device|device_action }}',
+            context={'device': device2}
+        )
+        self.assertEqual(rendered, 'Call number +1 ***-***-**12')

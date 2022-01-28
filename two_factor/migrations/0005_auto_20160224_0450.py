@@ -5,7 +5,7 @@ import django_otp.util
 from django.conf import settings
 from django.db import migrations, models
 
-import two_factor.models
+from two_factor.plugins.phonenumber.models import key_validator
 
 
 class Migration(migrations.Migration):
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='phonedevice',
             name='key',
-            field=models.CharField(default=django_otp.util.random_hex, help_text='Hex-encoded secret key', max_length=40, validators=[two_factor.models.key_validator]),
+            field=models.CharField(default=django_otp.util.random_hex, help_text='Hex-encoded secret key', max_length=40, validators=[key_validator]),
         ),
         migrations.AlterField(
             model_name='phonedevice',

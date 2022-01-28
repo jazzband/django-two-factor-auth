@@ -7,9 +7,12 @@ from django.views.generic import FormView, TemplateView
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
 
+from two_factor.plugins.phonenumber.utils import (
+    backup_phones, get_available_phone_methods,
+)
+
 from ..forms import DisableForm
-from ..models import get_available_phone_methods
-from ..utils import backup_phones, default_device
+from ..utils import default_device
 from .utils import class_view_decorator
 
 

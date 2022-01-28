@@ -34,6 +34,8 @@ Add the following apps to the ``INSTALLED_APPS``:
         'django_otp.plugins.otp_static',
         'django_otp.plugins.otp_totp',
         'two_factor',
+        'two_factor.plugins.phonenumber',  # <- if you want phone number capability.
+        'two_factor.plugins.yubikey',  # <- for yubikey capability.
     )
 
 Add the ``django-otp`` middleware to your ``MIDDLEWARE``. Make sure

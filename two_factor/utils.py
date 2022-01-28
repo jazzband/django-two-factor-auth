@@ -1,9 +1,11 @@
 from urllib.parse import quote, urlencode
 
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 from django_otp import devices_for_user
 
-from two_factor.models import PhoneDevice
+from two_factor.plugins.phonenumber.utils import get_available_phone_methods
+from two_factor.plugins.yubikey.utils import get_available_yubikey_methods
 
 USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
 
@@ -17,12 +19,6 @@ def default_device(user):
         if device.name == 'default':
             setattr(user, USER_DEFAULT_DEVICE_ATTR_NAME, device)
             return device
-
-
-def backup_phones(user):
-    if not user or user.is_anonymous:
-        return PhoneDevice.objects.none()
-    return user.phonedevice_set.filter(name='backup')
 
 
 def get_otpauth_url(accountname, secret, issuer=None, digits=None):
@@ -63,3 +59,10 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
+
+
+def get_available_methods():
+    methods = [('generator', _('Token generator'))]
+    methods.extend(get_available_phone_methods())
+    methods.extend(get_available_yubikey_methods())
+    return methods
