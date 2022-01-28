@@ -3,6 +3,9 @@
 ### Added
 - Python 3.10 support
 
+### Changed
+- default_device utility function now caches the found device on the given user object
+
 ### Removed
 - Python 3.5 and 3.6 support
 

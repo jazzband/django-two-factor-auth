@@ -7,7 +7,8 @@ from django_otp.util import random_hex
 
 from two_factor.models import PhoneDevice
 from two_factor.utils import (
-    backup_phones, default_device, get_otpauth_url, totp_digits,
+    USER_DEFAULT_DEVICE_ATTR_NAME, backup_phones, default_device,
+    get_otpauth_url, totp_digits,
 )
 from two_factor.views.utils import (
     get_remember_device_cookie, salted_hmac_sha256,
@@ -27,6 +28,12 @@ class UtilsTest(UserMixin, TestCase):
 
         default = user.phonedevice_set.create(name='default', number='+12024561111')
         self.assertEqual(default_device(user).pk, default.pk)
+        self.assertEqual(getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME).pk, default.pk)
+
+        # double check we're actually caching
+        PhoneDevice.objects.all().delete()
+        self.assertEqual(default_device(user).pk, default.pk)
+        self.assertEqual(getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME).pk, default.pk)
 
     def test_backup_phones(self):
         self.assertQuerysetEqual(list(backup_phones(None)),
