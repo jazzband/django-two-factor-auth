@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import patch
 
 from django import forms
+from django.apps import apps
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from django.urls import reverse
@@ -11,6 +13,8 @@ from .utils import UserMixin
 
 try:
     from otp_yubikey.models import RemoteYubikeyDevice, ValidationService
+
+    from two_factor.plugins.yubikey.method import YubikeyMethod
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
 
@@ -110,3 +114,20 @@ class YubiKeyTest(UserMixin, TestCase):
 
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
+
+    def test_double_validation_service(self):
+        ValidationService.objects.create(
+            name='default', use_ssl=True, param_sl='', param_timeout=''
+        )
+        ValidationService.objects.create(
+            name='default', use_ssl=True, param_sl='', param_timeout=''
+        )
+        msg = "Multiple ValidationService found with name 'default'"
+        with self.assertRaisesMessage(KeyError, msg):
+            YubikeyMethod().get_device_from_setup_data(None, {})
+
+    @patch('two_factor.plugins.yubikey.apps.apps.is_installed', return_value=False)
+    def test_no_otp_yubikey_installed(self, *args):
+        msg = "'otp_yubikey' must be installed to be able to use the yubikey plugin."
+        with self.assertRaisesMessage(ImproperlyConfigured, msg):
+            apps.get_app_config('yubikey').ready()

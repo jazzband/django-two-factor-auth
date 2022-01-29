@@ -1,11 +1,9 @@
 from urllib.parse import quote, urlencode
 
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 from django_otp import devices_for_user
 
-from two_factor.plugins.phonenumber.utils import get_available_phone_methods
-from two_factor.plugins.yubikey.utils import get_available_yubikey_methods
+from two_factor.plugins.registry import registry
 
 USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
 
@@ -62,7 +60,4 @@ def totp_digits():
 
 
 def get_available_methods():
-    methods = [('generator', _('Token generator'))]
-    methods.extend(get_available_phone_methods())
-    methods.extend(get_available_yubikey_methods())
-    return methods
+    return [(m.code, m.verbose_name) for m in registry.get_methods()]

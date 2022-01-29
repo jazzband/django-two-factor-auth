@@ -8,12 +8,8 @@ from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from .utils import get_available_methods, totp_digits
-
-try:
-    from otp_yubikey.models import RemoteYubikeyDevice, YubikeyDevice
-except ImportError:
-    RemoteYubikeyDevice = YubikeyDevice = None
+from .plugins.registry import registry
+from .utils import totp_digits
 
 
 class MethodForm(forms.Form):
@@ -23,7 +19,9 @@ class MethodForm(forms.Form):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = get_available_methods()
+        self.fields['method'].choices = [
+            (m.code, m.verbose_name) for m in registry.get_methods()
+        ]
 
 
 class DeviceValidationForm(forms.Form):
@@ -130,13 +128,6 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         """
         super().__init__(**kwargs)
         self.user = user
-
-        # YubiKey generates a OTP of 44 characters (not digits). So if the
-        # user's primary device is a YubiKey, replace the otp_token
-        # IntegerField with a CharField.
-        if RemoteYubikeyDevice and YubikeyDevice and \
-                isinstance(initial_device, (RemoteYubikeyDevice, YubikeyDevice)):
-            self.fields['otp_token'] = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput())
 
         # Add a field to remeber this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):

@@ -24,7 +24,7 @@ INSTALLED_APPS = [
 ]
 
 if otp_yubikey:
-    INSTALLED_APPS += ['otp_yubikey']
+    INSTALLED_APPS.extend(['otp_yubikey', 'two_factor.plugins.yubikey'])
 
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
