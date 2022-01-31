@@ -70,8 +70,6 @@ logger = logging.getLogger(__name__)
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 
-@class_view_decorator(sensitive_post_parameters())
-@class_view_decorator(never_cache)
 class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.
