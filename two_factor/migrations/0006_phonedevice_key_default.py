@@ -1,7 +1,7 @@
 import django_otp.util
 from django.db import migrations, models
 
-from two_factor.plugins.phonenumber.models import key_validator
+from two_factor.abstracts import key_validator
 
 
 class Migration(migrations.Migration):
