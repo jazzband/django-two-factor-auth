@@ -522,10 +522,12 @@ class SetupView(IdempotentSessionWizardView):
 
         Only used for call / sms -- generator uses other procedure.
         """
-        method = self.get_method()
-        return method.get_device_from_setup_data(
-            self.request, self.storage.validated_step_data, key=self.get_key(method.code)
-        )
+        if not getattr(self, '_device', None):
+            method = self.get_method()
+            self._device = method.get_device_from_setup_data(
+                self.request, self.storage.validated_step_data, key=self.get_key(method.code)
+            )
+        return self._device
 
     def get_key(self, step):
         self.storage.extra_data.setdefault('keys', {})
