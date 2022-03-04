@@ -143,15 +143,28 @@ class UtilsTest(UserMixin, TestCase):
 
 class PhoneUtilsTests(UserMixin, TestCase):
     def test_backup_phones(self):
-        self.assertQuerysetEqual(list(backup_phones(None)),
-                                 list(PhoneDevice.objects.none()))
+        gateway = 'two_factor.gateways.fake.Fake'
         user = self.create_user()
         user.phonedevice_set.create(name='default', number='+12024561111')
         backup = user.phonedevice_set.create(name='backup', number='+12024561111')
-        phones = backup_phones(user)
 
-        self.assertEqual(len(phones), 1)
-        self.assertEqual(phones[0].pk, backup.pk)
+        parameters = [
+            # with_gateway, with_user, expected_output
+            (True, True, [backup.pk]),
+            (True, False, []),
+            (False, True, []),
+            (False, False, [])
+        ]
+
+        for with_gateway, with_user, expected_output in parameters:
+            gateway_param = gateway if with_gateway else None
+            user_param = user if with_user else None
+
+            with self.subTest(with_gateway=with_gateway, with_user=with_user), \
+                 self.settings(TWO_FACTOR_CALL_GATEWAY=gateway_param):
+
+                phone_pks = [phone.pk for phone in backup_phones(user_param)]
+                self.assertEqual(phone_pks, expected_output)
 
     def test_mask_phone_number(self):
         self.assertEqual(mask_phone_number('+41 524 204 242'), '+41 *** *** *42')

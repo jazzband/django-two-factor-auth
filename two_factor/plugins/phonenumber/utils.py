@@ -8,7 +8,12 @@ phone_mask = re.compile(r'(?<=.{3})[0-9](?=.{2})')
 
 
 def backup_phones(user):
-    if not user or user.is_anonymous:
+    no_gateways = (
+        getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None) is None
+        and getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None) is None)
+    no_user = not user or user.is_anonymous
+
+    if no_gateways or no_user:
         from .models import PhoneDevice
         return PhoneDevice.objects.none()
     return user.phonedevice_set.filter(name='backup')
