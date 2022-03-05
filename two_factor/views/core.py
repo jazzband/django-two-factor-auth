@@ -80,10 +80,6 @@ class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
         ('token', AuthenticationTokenForm),
         ('backup', BackupTokenForm),
     )
-    idempotent_dict = {
-        'token': False,
-        'backup': False,
-    }
     redirect_authenticated_user = False
     storage_name = 'two_factor.views.utils.LoginStorage'
 
@@ -413,9 +409,6 @@ class SetupView(IdempotentSessionWizardView):
         ('method', MethodForm),
         # Other forms are dynamically added in get_form_list()
     )
-    idempotent_dict = {
-        'yubikey': False,
-    }
 
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})

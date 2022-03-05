@@ -1,15 +1,18 @@
 import json
+from importlib import import_module
 from time import sleep
 from unittest import mock
 
 from django.conf import settings
 from django.shortcuts import resolve_url
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
+
+from two_factor.views.core import LoginView
 
 from .utils import UserMixin, totp_str
 
@@ -440,6 +443,26 @@ class LoginTest(UserMixin, TestCase):
                                'token-remember': 'on'})
         self.assertRedirects(response,
                              resolve_url(settings.LOGIN_REDIRECT_URL))
+
+    def test_login_view_is_step_visible(self):
+        request = RequestFactory().get(reverse('login'))
+        engine = import_module(settings.SESSION_ENGINE)
+        request.session = engine.SessionStore(None)
+        login_view = LoginView(**LoginView.get_initkwargs())
+        login_view.setup(request)
+        login_view.dispatch(request)
+
+        # Initially, any step is visible
+        for step, form_class in login_view.form_list.items():
+            self.assertTrue(login_view.is_step_visible(step, form_class))
+        login_view.storage.validated_step_data['auth'] = {'username': 'joe', 'password': 'any'}
+        login_view.storage.validated_step_data['token'] = {'otp_token': '123456'}
+        # Once token was entered, the token step is no longer visible
+        for step, form_class in login_view.form_list.items():
+            if step == 'token':
+                self.assertFalse(login_view.is_step_visible(step, form_class))
+            else:
+                self.assertTrue(login_view.is_step_visible(step, form_class))
 
 
 class BackupTokensTest(UserMixin, TestCase):
