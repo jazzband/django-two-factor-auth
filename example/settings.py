@@ -103,6 +103,7 @@ TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
 SESSION_ENGINE = 'user_sessions.backends.db'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'webmaster@example.org'
 
 SILENCED_SYSTEM_CHECKS = ['admin.E410']
 

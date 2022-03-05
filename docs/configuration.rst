@@ -97,6 +97,18 @@ setting. Then, you may want to configure the following settings:
   multiplied by this factor to define the delay imposed after 1, 2, 3, 4...
   successive failures. Set to ``0`` to disable throttling completely.
 
+Email Gateway
+-------------
+
+To enable receiving authentication tokens by email, you have to add
+``'django_otp.plugins.otp_totp'`` to your ``INSTALLED_APPS`` setting. Also
+ensure that the DEFAULT_FROM_EMAIL_ settings is configured with an appropriate
+value.
+
+Read the `Email Settings`_ section of the ``django_otp`` documentation to find
+about possible email-related customizations (subject/body of messages,
+throttling, etc.).
+
 Twilio Gateway
 --------------
 To use the Twilio gateway, you need first to install the `Twilio client`_:
@@ -141,6 +153,8 @@ Fake Gateway
 .. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 .. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 .. _LOGOUT_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
+.. _DEFAULT_FROM_EMAIL: https://docs.djangoproject.com/en/stable/ref/settings/#default-from-email
+.. _`Email Settings`: https://django-otp-official.readthedocs.io/en/stable/overview.html#email-settings
 .. _Twilio: http://www.twilio.com/
 .. _`Twilio client`: https://pypi.python.org/pypi/twilio
 .. _python-qrcode: https://pypi.python.org/pypi/qrcode
