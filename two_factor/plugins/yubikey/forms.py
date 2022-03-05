@@ -10,6 +10,7 @@ class YubiKeyDeviceForm(DeviceValidationForm):
     error_messages = {
         'invalid_token': _("The YubiKey could not be verified."),
     }
+    idempotent = False
 
     def clean_token(self):
         self.device.public_id = self.cleaned_data['token'][:-32]

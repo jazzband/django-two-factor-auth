@@ -79,14 +79,13 @@ class IdempotentSessionWizardView(SessionWizardView):
     case the form is only validated once and the cleaned values stored.
     """
     storage_name = 'two_factor.views.utils.ExtraSessionStorage'
-    idempotent_dict = {}
 
-    def is_step_visible(self, step):
+    def is_step_visible(self, step, form_class):
         """
         Returns whether the given `step` should be included in the wizard; it
         is included if either the form is idempotent or not filled in before.
         """
-        return self.idempotent_dict.get(step, True) or \
+        return getattr(form_class, 'idempotent', True) or \
             step not in self.storage.validated_step_data
 
     def get_prev_step(self, step=None):
@@ -102,7 +101,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         key = keys.index(step) - 1
         if key >= 0:
             for prev_step in keys[key::-1]:
-                if self.is_step_visible(prev_step):
+                if self.is_step_visible(prev_step, form_list[prev_step]):
                     return prev_step
         return None
 
@@ -118,7 +117,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         keys = list(form_list.keys())
         key = keys.index(step) + 1
         for next_step in keys[key:]:
-            if self.is_step_visible(next_step):
+            if self.is_step_visible(next_step, form_list[next_step]):
                 return next_step
         return None
 
@@ -206,7 +205,7 @@ class IdempotentSessionWizardView(SessionWizardView):
                                      data=self.storage.get_step_data(form_key),
                                      files=self.storage.get_step_files(
                                          form_key))
-            if not (form_key in self.idempotent_dict or form_obj.is_valid()):
+            if getattr(form_obj, 'idempotent', True) and not form_obj.is_valid():
                 return self.render_revalidation_failure(form_key, form_obj,
                                                         **kwargs)
             final_form_list.append(form_obj)

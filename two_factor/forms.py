@@ -121,6 +121,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
     # solution would be to move the button outside the `<form>` and into
     # its own `<form>`.
     use_required_attribute = False
+    idempotent = False
 
     def __init__(self, user, initial_device, **kwargs):
         """

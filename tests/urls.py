@@ -9,6 +9,11 @@ from .views import SecureView
 
 urlpatterns = [
     path(
+        'account/login/',
+        LoginView.as_view(),
+        name='login',
+    ),
+    path(
         'account/logout/',
         LogoutView.as_view(),
         name='logout',
