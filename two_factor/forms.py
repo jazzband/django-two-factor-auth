@@ -132,6 +132,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         """
         super().__init__(**kwargs)
         self.user = user
+        self.initial_device = initial_device
 
         # Add a field to remeber this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):

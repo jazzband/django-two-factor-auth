@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_email',
     'two_factor',
     'two_factor.plugins.phonenumber',
     'tests',
@@ -79,3 +80,6 @@ TWO_FACTOR_PATCH_ADMIN = False
 
 AUTH_USER_MODEL = os.environ.get('AUTH_USER_MODEL', 'auth.User')
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+DEFAULT_FROM_EMAIL = 'test@test.org'

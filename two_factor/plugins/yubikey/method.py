@@ -13,7 +13,7 @@ class YubikeyMethod(MethodBase):
     def recognize_device(self, device):
         return isinstance(device, RemoteYubikeyDevice)
 
-    def get_setup_forms(self):
+    def get_setup_forms(self, *args):
         return {'yubikey': YubiKeyDeviceForm}
 
     def get_device_from_setup_data(self, request, setup_data, **kwargs):
