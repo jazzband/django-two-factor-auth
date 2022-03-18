@@ -1,26 +1,20 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
-import sys
 import unittest
+from unittest.mock import patch
 
 from django import forms
+from django.apps import apps
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import resolve_url
 from django.test import TestCase
-from django.utils import six
+from django.urls import reverse
 
 from .utils import UserMixin
 
 try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+    from otp_yubikey.models import RemoteYubikeyDevice, ValidationService
 
-try:
-    from otp_yubikey.models import ValidationService, RemoteYubikeyDevice
+    from two_factor.plugins.yubikey.method import YubikeyMethod
 except ImportError:
     ValidationService = RemoteYubikeyDevice = None
 
@@ -38,16 +32,12 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'setup_view-current_step': 'welcome'})
         self.assertContains(response, 'YubiKey')
 
-        # self.assertRaises is broken on Python 2.7.10. See also
-        # https://bugs.python.org/issue24134 and
-        # https://code.djangoproject.com/ticket/24903.
-        if sys.version_info < (2, 7, 10) or sys.version_info >= (2, 7, 11):
-            # Without ValidationService it won't work
-            with six.assertRaisesRegex(self, KeyError, "No ValidationService "
-                                                       "found with name 'default'"):
-                self.client.post(reverse('two_factor:setup'),
-                                 data={'setup_view-current_step': 'method',
-                                       'method-method': 'yubikey'})
+        # Without ValidationService it won't work
+        with self.assertRaisesMessage(KeyError, "No ValidationService "
+                                                "found with name 'default'"):
+            self.client.post(reverse('two_factor:setup'),
+                             data={'setup_view-current_step': 'method',
+                                   'method-method': 'yubikey'})
 
         # With a ValidationService, should be able to input a YubiKey
         ValidationService.objects.create(name='default', param_sl='', param_timeout='')
@@ -115,3 +105,29 @@ class YubiKeyTest(UserMixin, TestCase):
                                     data={'wizard_goto_step': 'backup'})
         self.assertNotContains(response, 'YubiKey:')
         self.assertContains(response, 'Token:')
+
+    def test_missing_management_data(self):
+        # missing management data
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'auth-username': 'bouke@example.com',
+                                          'auth-password': 'secret'})
+
+        # view should return HTTP 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+
+    def test_double_validation_service(self):
+        ValidationService.objects.create(
+            name='default', use_ssl=True, param_sl='', param_timeout=''
+        )
+        ValidationService.objects.create(
+            name='default', use_ssl=True, param_sl='', param_timeout=''
+        )
+        msg = "Multiple ValidationService found with name 'default'"
+        with self.assertRaisesMessage(KeyError, msg):
+            YubikeyMethod().get_device_from_setup_data(None, {})
+
+    @patch('two_factor.plugins.yubikey.apps.apps.is_installed', return_value=False)
+    def test_no_otp_yubikey_installed(self, *args):
+        msg = "'otp_yubikey' must be installed to be able to use the yubikey plugin."
+        with self.assertRaisesMessage(ImproperlyConfigured, msg):
+            apps.get_app_config('yubikey').ready()

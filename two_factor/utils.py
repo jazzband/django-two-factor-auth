@@ -1,26 +1,22 @@
+from urllib.parse import quote, urlencode
+
 from django.conf import settings
 from django_otp import devices_for_user
 
-from two_factor.models import PhoneDevice
+from two_factor.plugins.registry import registry
 
-try:
-    from urllib.parse import quote, urlencode
-except ImportError:
-    from urllib import quote, urlencode
+USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
 
 
 def default_device(user):
-    if not user or user.is_anonymous():
+    if not user or user.is_anonymous:
         return
+    if hasattr(user, USER_DEFAULT_DEVICE_ATTR_NAME):
+        return getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME)
     for device in devices_for_user(user):
         if device.name == 'default':
+            setattr(user, USER_DEFAULT_DEVICE_ATTR_NAME, device)
             return device
-
-
-def backup_phones(user):
-    if not user or user.is_anonymous():
-        return PhoneDevice.objects.none()
-    return user.phonedevice_set.filter(name='backup')
 
 
 def get_otpauth_url(accountname, secret, issuer=None, digits=None):
@@ -61,3 +57,7 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
+
+
+def get_available_methods():
+    return [(m.code, m.verbose_name) for m in registry.get_methods()]

@@ -8,6 +8,19 @@ and its dependencies:
 
     $ pip install django-two-factor-auth
 
+This project uses ``django-phonenumber-field`` which requires either ``phonenumbers``
+or ``phonenumberslite`` to be installed. Either manually install a supported version
+using ``pip`` or install ``django-two-factor-auth`` with the extras specified as in
+the below examples:
+
+.. code-block:: console
+
+    $ pip install django-two-factor-auth[phonenumbers]
+
+    OR
+
+    $ pip install django-two-factor-auth[phonenumberslite]
+
 Setup
 -----
 
@@ -21,33 +34,38 @@ Add the following apps to the ``INSTALLED_APPS``:
         'django_otp.plugins.otp_static',
         'django_otp.plugins.otp_totp',
         'two_factor',
+        'two_factor.plugins.phonenumber',  # <- if you want phone number capability.
+        'two_factor.plugins.yubikey',  # <- for yubikey capability.
     )
 
-Add the ``django-otp`` middleware to your ``MIDDLEWARE_CLASSES``. Make sure
+Add the ``django-otp`` middleware to your ``MIDDLEWARE``. Make sure
 it comes after ``AuthenticationMiddleware``:
 
 .. code-block:: python
 
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = (
         ...
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django_otp.middleware.OTPMiddleware',
         ...
     )
 
-Point to the new login pages in your ``settings.py``::
+Point to the new login pages in your ``settings.py``:
 
-    from django.core.urlresolvers import reverse_lazy
+.. code-block:: python
 
     LOGIN_URL = 'two_factor:login'
 
     # this one is optional
     LOGIN_REDIRECT_URL = 'two_factor:profile'
 
-Add the routes to your project url configuration::
+Add the routes to your project url configuration:
 
+.. code-block:: python
+
+    from two_factor.urls import urlpatterns as tf_urls
     urlpatterns = [
-        url(r'', include('two_factor.urls', 'two_factor')),
+       path('', include(tf_urls)),
         ...
     ]
 
@@ -74,7 +92,7 @@ Add the following app to the ``INSTALLED_APPS``:
         'otp_yubikey',
     )
 
-This plugin also requires adding a validation service, through wich YubiKeys
+This plugin also requires adding a validation service, through which YubiKeys
 will be verified. Normally, you'd use the YubiCloud for this. In the Django
 admin, navigate to ``YubiKey validation services`` and add an item. Django
 Two-Factor Authentication will identify the validation service with the

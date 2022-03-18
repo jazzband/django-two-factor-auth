@@ -1,140 +1,132 @@
-# SOME DESCRIPTIVE TITLE.
+# django-two-factor-auth translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the django-two-factor-auth package.
 # 
-# Translators:
 # Translators:
 # Kunda, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-20 22:44+0200\n"
-"PO-Revision-Date: 2014-05-20 20:25+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
-"Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/django-two-factor-auth/language/he_IL/)\n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 06:54+0000\n"
+"Last-Translator: Kunda\n"
+"Language-Team: Hebrew (Israel) (http://www.transifex.com/Bouke/django-two-factor-auth/language/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: he_IL\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
-#: forms.py:21 forms.py:31
+#: forms.py:24 forms.py:36
 msgid "Method"
 msgstr "שיטה"
 
-#: forms.py:49 forms.py:79 forms.py:132 forms.py:157
+#: forms.py:34 forms.py:49
+msgid "Phone Number"
+msgstr ""
+
+#: forms.py:58 forms.py:88 forms.py:142 forms.py:178
 msgid "Token"
 msgstr "טוקן"
 
-#: forms.py:52 forms.py:82
+#: forms.py:61 forms.py:91
 msgid "Entered token is not valid."
 msgstr ""
 
-#: forms.py:67 forms.py:149 models.py:46
+#: forms.py:76 forms.py:170 models.py:41
 msgid "YubiKey"
 msgstr ""
 
-#: forms.py:70
+#: forms.py:79
 msgid "The YubiKey could not be verified."
 msgstr ""
 
-#: forms.py:128
+#: forms.py:138
 msgid "Yes, I am sure"
 msgstr "כן, אני בטוח"
 
-#: models.py:24
-msgid ""
-"Please enter a valid phone number, including your country code starting with"
-" + or 00."
-msgstr "אנא הכנס מספר טלפון תקף, כולל קוד המדינה שלך שמתחיל ב + או 00."
-
-#: models.py:29
-msgid "Phone Call"
-msgstr "שיחת טלפון"
-
-#: models.py:30
-msgid "Text Message"
-msgstr "הודעת טקסט"
-
-#: models.py:37
-msgid "Phone call"
-msgstr ""
-
-#: models.py:39
-msgid "Text message"
-msgstr ""
-
-#: models.py:51
-msgid "Token generator"
-msgstr "טוקן ג'נרטור"
-
-#: models.py:66
-msgid "number"
-msgstr "מספר"
-
-#: models.py:72
-msgid "method"
-msgstr "שיטה"
-
-#: gateways/twilio/gateway.py:54
+#: gateways/twilio/gateway.py:55
 #, python-format
 msgid "Your authentication token is %s"
 msgstr "טוקן האימות שלך הוא %s"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:63 gateways/twilio/views.py:73
+#: gateways/twilio/gateway.py:64 gateways/twilio/views.py:74
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "en"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:38
+#: gateways/twilio/views.py:39
 #, python-format
 msgid "Hi, this is %(site_name)s calling. Press any key to continue."
 msgstr ""
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:43
+#: gateways/twilio/views.py:44
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
 msgstr ""
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:47
+#: gateways/twilio/views.py:48
 msgid "You didn't press any keys. Good bye."
 msgstr ""
 
-#: templates/two_factor/_wizard_actions.html:4
+#: models.py:24
+msgid "Phone Call"
+msgstr "שיחת טלפון"
+
+#: models.py:25
+msgid "Text Message"
+msgstr "הודעת טקסט"
+
+#: models.py:32
+msgid "Phone call"
+msgstr ""
+
+#: models.py:34
+msgid "Text message"
+msgstr ""
+
+#: models.py:46
+msgid "Token generator"
+msgstr "טוקן ג'נרטור"
+
+#: models.py:75
+msgid "method"
+msgstr "שיטה"
+
+#: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
 msgstr "ביטול"
 
-#: templates/two_factor/_wizard_actions.html:8
-#: templates/two_factor/_wizard_actions.html:11
+#: templates/two_factor/_wizard_actions.html:10
+#: templates/two_factor/_wizard_actions.html:13
 msgid "Back"
 msgstr "חזרה"
 
-#: templates/two_factor/_wizard_actions.html:13
+#: templates/two_factor/_wizard_actions.html:15
 msgid "Next"
 msgstr "הבא"
 
 #: templates/two_factor/core/backup_tokens.html:5
-#: templates/two_factor/profile/profile.html:35
+#: templates/two_factor/profile/profile.html:37
 msgid "Backup Tokens"
 msgstr "טוקנז גיבוי"
 
 #: templates/two_factor/core/backup_tokens.html:6
 msgid ""
-"Backup tokens can be used when your primary and backup\n"
-"      phone numbers aren't available. The backup tokens below can be used\n"
-"      for login verification. If you've used up all your backup tokens, you\n"
-"      can generate a new set of backup tokens. Only the backup tokens shown\n"
-"      below will be valid."
-msgstr "ניתן להשתמש בטוקנז גיבוי כאשר מספרי הטלפון העיקרי והגיבוי\nשלך אינם זמינים. הטוקנז גיבוי להלן יוכלו לשמש\nלאימות כניסה. אם השתמשת בכל טוקנז הגיבוי שלך, קיימת\nהאפשרות ליצור סדרה חדשה של טוקנז גיבוי. רק הטוקנז הגיבוי המוצגים\nלהלן יהיו בתוקף."
+"Backup tokens can be used when your primary and backup phone numbers aren't "
+"available. The backup tokens below can be used for login verification. If "
+"you've used up all your backup tokens, you can generate a new set of backup "
+"tokens. Only the backup tokens shown below will be valid."
+msgstr ""
 
 #: templates/two_factor/core/backup_tokens.html:18
 msgid "Print these tokens and keep them somewhere safe."
@@ -161,31 +153,25 @@ msgid "Enter your credentials."
 msgstr "הכנס את האישורים שלך."
 
 #: templates/two_factor/core/login.html:11
-#: templates/two_factor/core/setup.html:28
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"        digits you hear."
-msgstr "אנחנו מתקשרים לטלפון שלך עכשיו, בבקשה הקלד את\nהספרות שאתה שומע."
+#: templates/two_factor/core/setup.html:29
+msgid "We are calling your phone right now, please enter the digits you hear."
+msgstr "אנחנו מתקשרים לטלפון שלך עכשיו, בבקשה הקלד את הספרות שאתה שומע."
 
 #: templates/two_factor/core/login.html:14
-#: templates/two_factor/core/setup.html:31
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"        sent."
-msgstr "שלחנו אליך הודעת טקסט, אנא הקלד את הטוקנז\nשנשלחו."
+#: templates/two_factor/core/setup.html:32
+msgid "We sent you a text message, please enter the tokens we sent."
+msgstr "שלחנו אליך הודעת טקסט, אנא הקלד את הטוקנז שנשלחו."
 
 #: templates/two_factor/core/login.html:17
-msgid ""
-"Please enter the tokens generated by your token\n"
-"        generator."
-msgstr "אנא הקלד את הטוקנז שנוצרו על ידי הטוקנז ג'נרטור\nשלך"
+msgid "Please enter the tokens generated by your token generator."
+msgstr "אנא הקלד את הטוקנז שנוצרו על ידי הטוקן ג'נרטור שלך"
 
 #: templates/two_factor/core/login.html:21
 msgid ""
-"Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. Please\n"
-"      enter one of these backup tokens to login to your account."
-msgstr "כדי להיכנס למערכת השתמש בטופס זה להזנת בטוקני גיבוי.\nאסימונים אלה שנוצרו אבורך הם אחריותך להדפיס ולשמור במקום בטוח. נא\nלהזין אחד מטוקני גיבוי אלה כדי להיכנס לחשבון שלך."
+"Use this form for entering backup tokens for logging in. These tokens have "
+"been generated for you to print and keep safe. Please enter one of these "
+"backup tokens to login to your account."
+msgstr ""
 
 #: templates/two_factor/core/login.html:33
 msgid "Or, alternatively, use one of your backup phones:"
@@ -205,17 +191,17 @@ msgstr "הרשאה נדחתה"
 
 #: templates/two_factor/core/otp_required.html:7
 msgid ""
-"The page you requested, enforces users to verify using\n"
-"    two-factor authentication for security reasons. You need to enable these\n"
-"    security features in order to access this page."
-msgstr "הדף שביקשת, אוכף למשתמשים להיבדק באמצעות\nאותנטיקציה דו-שלבית מסיבות ביטחוניות. יש צורך לאשר תכונות אבטחה הללו\nעל מנת לגשת לדף זה."
+"The page you requested, enforces users to verify using two-factor "
+"authentication for security reasons. You need to enable these security "
+"features in order to access this page."
+msgstr ""
 
 #: templates/two_factor/core/otp_required.html:11
+#: templates/two_factor/profile/profile.html:56
 msgid ""
-"Two-factor authentication is not enabled for your\n"
-"    account. Enable two-factor authentication for enhanced account\n"
-"    security."
-msgstr "אותנטיקציה דו-שלבית אינו מופעל עבור\nהחשבון שלך. אפשר אותנטיקציה דו-שלבית לצורך הגברת אבטחת\nהחשבון."
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
+msgstr ""
 
 #: templates/two_factor/core/otp_required.html:16
 msgid "Go back"
@@ -224,7 +210,7 @@ msgstr "חזרה"
 #: templates/two_factor/core/otp_required.html:18
 #: templates/two_factor/core/setup.html:5
 #: templates/two_factor/core/setup_complete.html:5
-#: templates/two_factor/profile/profile.html:58
+#: templates/two_factor/profile/profile.html:60
 msgid "Enable Two-Factor Authentication"
 msgstr "אפשר אותנטיקציה דו-שלבית"
 
@@ -234,62 +220,62 @@ msgstr "הוסף טלפון גיבוי"
 
 #: templates/two_factor/core/phone_register.html:8
 msgid ""
-"You'll be adding a backup phone number to your\n"
-"        account. This number will be used if your primary method of\n"
-"        registration is not available."
-msgstr "אתה תוסיף מספר טלפון גיבוי\nלחשבונך. מספר זה ישומש מתי שהשיטה העיקרית שלך\nלרישום אינו זמין."
+"You'll be adding a backup phone number to your account. This number will be "
+"used if your primary method of registration is not available."
+msgstr ""
 
 #: templates/two_factor/core/phone_register.html:12
 msgid ""
-"We've sent a token to your phone number. Please\n"
-"        enter the token you've received."
-msgstr "אנחנו שלחנו טוקן למספר הטלפון שלך. אנא\nהקלד את הטוקן שקיבלת."
+"We've sent a token to your phone number. Please enter the token you've "
+"received."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:7
 msgid ""
-"You are about to take your account security to the\n"
-"        next level. Follow the steps in this wizard to enable two-factor\n"
-"        authentication."
-msgstr "אתה עומד לקחת את ביטחון אבטחת החשבון שלך\nלרמה הבאה. בצע את השלבים באשף זה כדי לאפשר אותנטיקציה\nדו-שלבית."
+"You are about to take your account security to the next level. Follow the "
+"steps in this wizard to enable two-factor authentication."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:11
-msgid ""
-"Please select which authentication method you would\n"
-"        like to use."
-msgstr "אנא בחר בשיטת אותנטיקציה בו היית\nרוצה להשתמש."
+msgid "Please select which authentication method you would like to use."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:14
 msgid ""
-"To start using a token generator, please use your\n"
-"        smartphone to scan the QR code below. For example, use Google\n"
-"        Authenticator. Then, enter the token generated by the app.\n"
-"        "
-msgstr "כדי להתחיל להשתמש בה טוקן ג'נרטור, אנא השתמש בה\nסמרטפון שלך כדי לסרוק את קוד ה-QR כפי שניתן לראות להלן. לדוגמא, תשתמש ב-Google\nAuthenticator. לאחר מכן, הקלד את הטוקן שנוצר על ידי היישום."
+"To start using a token generator, please use your smartphone to scan the QR "
+"code below. For example, use Google Authenticator. Then, enter the token "
+"generated by the app."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:20
 msgid ""
-"Please enter the phone number you wish to receive the\n"
-"      text messages on. This number will be validated in the next step.\n"
-"      "
-msgstr "אנא הכנס את מספר הטלפון בו אתה רוצה לקבל\nטקסטים. מספר זה יאומת רק בשלב הבא."
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
+msgstr ""
 
 #: templates/two_factor/core/setup.html:24
 msgid ""
-"Please enter the phone number you wish to be called on.\n"
-"      This number will be validated in the next step. "
-msgstr "אנא הכנס את מספר הטלפון בו ברצונך לקבל צילצול\nמספר זה יאומת רק בשלב הבא."
+"Please enter the phone number you wish to be called on. This number will be "
+"validated in the next step."
+msgstr ""
 
-#: templates/two_factor/core/setup.html:35
+#: templates/two_factor/core/setup.html:36
 msgid ""
-"To identify and verify your YubiKey, please insert a\n"
-"      token in the field below. Your YubiKey will be linked to your\n"
-"      account."
+"We've encountered an issue with the selected authentication method. Please "
+"go back and verify that you entered your information correctly, try again, "
+"or use a different authentication method instead. If the issue persists, "
+"contact the site administrator."
+msgstr ""
+
+#: templates/two_factor/core/setup.html:43
+msgid ""
+"To identify and verify your YubiKey, please insert a token in the field "
+"below. Your YubiKey will be linked to your account."
 msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
-"Congratulations, you've successfully enabled two-factor\n"
-"      authentication."
+"Congratulations, you've successfully enabled two-factor authentication."
 msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:12
@@ -299,13 +285,12 @@ msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
-"However, it might happen that you don't have access to\n"
-"      your primary token device. To enable account recovery, add a phone \n"
-"      number."
+"However, it might happen that you don't have access to your primary token "
+"device. To enable account recovery, add a phone number."
 msgstr ""
 
 #: templates/two_factor/core/setup_complete.html:21
-#: templates/two_factor/profile/profile.html:33
+#: templates/two_factor/profile/profile.html:34
 msgid "Add Phone Number"
 msgstr "להוסיף מספר טלפון"
 
@@ -315,9 +300,9 @@ msgstr "בטל אותנטיקציה דו-שלבית"
 
 #: templates/two_factor/profile/disable.html:6
 msgid ""
-"You are about to disable two-factor authentication. This\n"
-"    compromises your account security, are you sure?"
-msgstr "אתה עומד לבטל אותנטיקציה דו-שלבית. זה\nעלול לסכן את אבטחת החשבון שלך, האם אתה בטוח?"
+"You are about to disable two-factor authentication. This weakens your "
+"account security, are you sure?"
+msgstr ""
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -340,70 +325,70 @@ msgstr "השיטה העיקרית: %(primary)s"
 msgid "Tokens will be generated by your YubiKey."
 msgstr ""
 
-#: templates/two_factor/profile/profile.html:16
+#: templates/two_factor/profile/profile.html:17
 msgid "Backup Phone Numbers"
 msgstr "מספרי טלפון גיבוי"
 
-#: templates/two_factor/profile/profile.html:17
+#: templates/two_factor/profile/profile.html:18
 msgid ""
-"If your primary method is not available, we are able to\n"
-"      send backup tokens to the phone numbers listed below."
-msgstr "אם השיטה העיקרית שלך אינה זמינה, אנו מסוגלים\nלשלוח טוקנז גיבוי למספרי הטלפון מפורטים להלן."
+"If your primary method is not available, we are able to send backup tokens "
+"to the phone numbers listed below."
+msgstr ""
 
-#: templates/two_factor/profile/profile.html:27
+#: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
 msgstr "בטל את הרישום"
 
-#: templates/two_factor/profile/profile.html:37
-msgid ""
-"If you don't have any device with you, you can access\n"
-"        your account using backup tokens."
-msgstr "אם אין עליך מכשיר כלשהו, אתה יכול לגשת\nלחשבונך באמצעות טוקנז גיבוי."
-
 #: templates/two_factor/profile/profile.html:39
-#, python-format
 msgid ""
-"\n"
-"        You have only one backup token remaining.\n"
-"      "
-msgid_plural ""
-"\n"
-"        You have %(counter)s backup tokens remaining.\n"
-"      "
-msgstr[0] "\n\nנותר לך רק טוקן גיבוי יחיד."
-msgstr[1] "\nנותרו לך %(counter)s טוקנז גיבוי."
+"If you don't have any device with you, you can access your account using "
+"backup tokens."
+msgstr ""
 
-#: templates/two_factor/profile/profile.html:46
+#: templates/two_factor/profile/profile.html:41
+#, python-format
+msgid "You have only one backup token remaining."
+msgid_plural "You have %(counter)s backup tokens remaining."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: templates/two_factor/profile/profile.html:48
 msgid "Show Codes"
 msgstr "הצג את הקודים"
 
-#: templates/two_factor/profile/profile.html:48
-#: templates/two_factor/profile/profile.html:52
+#: templates/two_factor/profile/profile.html:50
+#: templates/two_factor/profile/profile.html:54
 msgid "Disable Two-Factor Authentication"
 msgstr "בטל אותנטיקציה דו-שלבית"
 
-#: templates/two_factor/profile/profile.html:49
+#: templates/two_factor/profile/profile.html:51
 msgid ""
-"However we strongly discourage you to do so, you can\n"
-"      also disable two-factor authentication for your account."
-msgstr "עם זאת אנו מאוד לא ממליצים לך לעשות זאת, אתה יכול\nגם לבטל את האותנטיקציה דו-שלבית לחשבונך."
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
+msgstr ""
 
-#: templates/two_factor/profile/profile.html:54
-msgid ""
-"Two-factor authentication is not enabled for your\n"
-"      account. Enable two-factor authentication for enhanced account\n"
-"      security."
-msgstr "אותנטיקציה דו-שלבית אינו מופעל עבור\nהחשבון שלך. אפשר אותנטיקציה דו-שלבית לצורך הגברת אבטחת\nהחשבון."
-
-#: templatetags/two_factor.py:38
+#: templatetags/two_factor.py:56
 #, python-format
 msgid "Send text message to %s"
 msgstr "שלח הודעת טקסט ל- %s"
 
-#: templatetags/two_factor.py:40
+#: templatetags/two_factor.py:58
 #, python-format
 msgid "Call number %s"
 msgstr "התקשר למספר %s"
 
-#~ msgid "Please enter a valid token."
-#~ msgstr "Please enter a valid token."
+#: validators.py:14
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "אנא הכנס מספר טלפון תקף, כולל קוד המדינה שלך שמתחיל ב + או 00."
+
+#: views/core.py:225
+msgid "Your session has timed out. Please login again."
+msgstr ""
+
+#: views/utils.py:139
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr ""

@@ -1,0 +1,152 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# Tuấn-Hiển Ngô, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-27 12:48+0100\n"
+"PO-Revision-Date: 2021-11-25 07:40+0000\n"
+"Last-Translator: Tuấn-Hiển Ngô\n"
+"Language-Team: Vietnamese (http://www.transifex.com/Bouke/django-two-factor-auth/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Cuộc gọi giả lập tới %(number)s: \"Token của quý khách là: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "Tin nhắn SMS giả lập tới %(number)s: \"Token của quý khách là: %(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "Dùng thử"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "Trang chủ"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr "Trang bí mật"
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "An ninh Tài khoản"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "Phiên"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "Thoát"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Chưa đăng nhập"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "Ứng dụng mô phỏng"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "Gia tăng cấp độ an ninh <small>người dùng của quý khách sẽ cảm ơn</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "Xin chúc mừng quý khách đến với ứng dụng mẫu của <code>Xác minh hai lớp Django</code>. Hãy sử dụng ví dụ này để hiểu thêm về những gì ứng dụng này có thể giúp quý khách. "
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Vui lòng rà soát thiết lập của quý khách"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "Quý vị đã cung cấp thông tin thiết lập tài khoản Twilio trong tập tin cấu hình <code>settings_private.py</code> chưa? Bằng cách này, ứng dụng mẫu sẽ có thể thực hiện cuộc gọi và gửi tin nhắn cho quý khách để thực hiện xác minh token. Nếu không, token sẽ được hiển thị trên màn hình. "
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Tiếp theo"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "Bắt đầu bằng việc <a href=\"%(reg_url)s\"> Đăng ký </a> một tài khoản"
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "<a href=\"%(login_url)s\">Đăng nhập </a> vào tài khoản của quý khách."
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr "<a href=\"%(setup_url)s\">Kích hoạt</a> xác minh hai lớp."
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "Sau đó, <a href=\"%(logout_url)s\">Thoát</a> và <a href=\"%(login_url)s\"> đăng nhập </a> trở lại vào tài khoản của quý khách để xem sự thay đổi của việc xác minh hai lớp. "
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "Cuối cùng, quý khách sẽ được truy cập tới <a href=\"%(secret_url)s\">trang bí mật</a>! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Đăng ký"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Đăng ký"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Thoát"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Hẹn gặp lại!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Đăng ký hoàn tất"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "Xin chúc mừng, quý khách đã đăng ký thành công tài khoản"
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "Xin chúc mừng, quý khách đã thực hiện thành công. Quý khách đã kích hoạt thành công phương thức xác minh hai lớp và đăng nhập bằng token của quý khách."

@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'two_factor.plugins.phonenumber',
     'example',
 
     'debug_toolbar',
@@ -97,9 +98,13 @@ TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
 TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
 PHONENUMBER_DEFAULT_REGION = 'NL'
 
+TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
+
 SESSION_ENGINE = 'user_sessions.backends.db'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SILENCED_SYSTEM_CHECKS = ['admin.E410']
 
 try:
     from .settings_private import *  # noqa

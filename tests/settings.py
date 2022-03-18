@@ -19,13 +19,14 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'two_factor.plugins.phonenumber',
     'tests',
 ]
 
 if otp_yubikey:
-    INSTALLED_APPS += ['otp_yubikey']
+    INSTALLED_APPS.extend(['otp_yubikey', 'two_factor.plugins.yubikey'])
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -37,7 +38,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'tests.urls'
 
-LOGOUT_URL = 'logout'
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'two_factor:profile'
 
@@ -50,15 +50,10 @@ CACHES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 }
 
-# Django < 1.8
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
-
-# Django >= 1.8
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -83,3 +78,4 @@ TEMPLATES = [
 TWO_FACTOR_PATCH_ADMIN = False
 
 AUTH_USER_MODEL = os.environ.get('AUTH_USER_MODEL', 'auth.User')
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']

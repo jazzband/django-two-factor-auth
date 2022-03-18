@@ -3,7 +3,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 from django.utils import translation
 from django.utils.translation import (
-    check_for_language, pgettext, ugettext_lazy as _,
+    check_for_language, gettext_lazy as _, pgettext,
 )
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -80,5 +80,5 @@ class TwilioCallApp(View):
             # Build the prompt. The numbers have to be clearly pronounced,
             # this is by creating a string like "1. 2. 3. 4. 5. 6.", this way
             # Twilio reads the numbers one by one.
-            'token': ', '.join(self.kwargs['token']) if self.request.method == 'POST' else '',
+            'token': '. '.join(str(self.kwargs['token'])) if self.request.method == 'POST' else '',
         }

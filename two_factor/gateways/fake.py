@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class Fake(object):
+class Fake:
     """
     Prints the tokens to the logger. You will have to set the message level of
     the ``two_factor`` logger to ``INFO`` for them to appear in the console.

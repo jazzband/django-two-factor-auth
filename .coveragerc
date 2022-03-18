@@ -1,9 +1,12 @@
 [run]
 branch = True
-source = two_factor
+source =
+    tests
+    two_factor
+omit =
+    */migrations/*
 
 [report]
-show_missing = True
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover

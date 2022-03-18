@@ -1,31 +1,18 @@
-# -*- coding: utf-8 -*-
-
 from binascii import unhexlify
+from unittest import mock
 
-from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.utils import modify_settings, override_settings
+from django.test.utils import override_settings
+from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 
-from .utils import UserMixin
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
+from .utils import UserMixin, method_registry
 
 
 class SetupTest(UserMixin, TestCase):
     def setUp(self):
-        super(SetupTest, self).setUp()
+        super().setUp()
         self.user = self.create_user()
         self.login_user()
 
@@ -34,15 +21,16 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Follow the steps in this wizard to '
                                       'enable two-factor')
 
-    @modify_settings(INSTALLED_APPS={
-        'remove': ['otp_yubikey'],
-    })
+    @method_registry(['generator'])
     def test_setup_only_generator_available(self):
         response = self.client.post(
             reverse('two_factor:setup'),
             data={'setup_view-current_step': 'welcome'})
 
         self.assertContains(response, 'Token:')
+        self.assertContains(response, 'autofocus="autofocus"')
+        self.assertContains(response, 'inputmode="numeric"')
+        self.assertContains(response, 'autocomplete="one-time-code"')
         session = self.client.session
         self.assertIn('django_two_factor-qr_secret_key', session.keys())
 
@@ -228,3 +216,10 @@ class SetupTest(UserMixin, TestCase):
         with self.settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake'):
             response = self.client.get(reverse('two_factor:setup_complete'))
             self.assertContains(response, 'Add Phone Number')
+
+    def test_missing_management_data(self):
+        # missing management data
+        response = self._post({'validation-token': '666'})
+
+        # view should return HTTP 400 Bad Request
+        self.assertEqual(response.status_code, 400)

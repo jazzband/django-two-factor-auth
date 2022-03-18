@@ -1,0 +1,157 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# Bogdan Mateescu, 2018
+# Bogdan Mateescu, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-08 08:49+0200\n"
+"PO-Revision-Date: 2020-07-08 06:54+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"Language-Team: Romanian (http://www.transifex.com/Bouke/django-two-factor-auth/language/ro/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Apel fals către %(number)s: \"Codul dvs. de verificare este: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "SMS fals către %(number)s: \"Codul dvs. de verificare este: %(token)s\""
+
+#: templates/_base.html:20
+msgid "Toggle navigation"
+msgstr "Comutare navigare"
+
+#: templates/_base.html:25 templates/two_factor/_base_focus.html:8
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/_base.html:32
+msgid "Home"
+msgstr "Acasă"
+
+#: templates/_base.html:34 templates/secret.html:7
+msgid "Secret Page"
+msgstr "Pagina secretă"
+
+#: templates/_base.html:42
+msgid "Account Security"
+msgstr "Securitatea contului"
+
+#: templates/_base.html:44
+msgid "Sessions"
+msgstr "Sesiuni"
+
+#: templates/_base.html:45
+msgid "Logout"
+msgstr "Deconectare"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Nu sunteți conectat"
+
+#: templates/_base.html:48 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Conectare"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – Aplicaţie demo"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr ""
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr ""
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Verificați-vă setările"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr ""
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Pașii următori:"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr ""
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr ""
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr ""
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr ""
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr ""
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Înregistrare"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Înregistrează-te"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Deconectat"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Ne mai vedem!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Înregistrare completă"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr ""
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr ""
