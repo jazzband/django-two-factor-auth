@@ -1,0 +1,152 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# gab_tes, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-27 12:48+0100\n"
+"PO-Revision-Date: 2021-10-10 04:07+0000\n"
+"Last-Translator: gab_tes\n"
+"Language-Team: Japanese (http://www.transifex.com/Bouke/django-two-factor-auth/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "偽の電話%(number)s：\"あなたのトークンは：%(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "偽のSMSの宛先：%(number)s\"トークンは：%(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "デモ"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "ホーム"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr "シークレットページ"
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "アカウントのセキュリティ"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "セッション"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "ログアウト"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "ログインしていない"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "ログイン"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – デモのアップリケーション"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "セキュリティを向上させる<small>ユーザーはあなたに感謝します</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "<code>django-two-factor-auth</code>のサンプルアプリへようこそ。この例を使用して、アプリで何ができるかを理解してください。"
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "設定を確認してください "
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "<code>settings_private.py</code>ファイルでTwilio設定を提供しましたか？ そうすることで、サンプルアプリは、認証トークンを確認するために電話をかけたり、テキストメッセージを送信したりできるようになります。 それ以外の場合、トークンは画面に表示されます。"
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "次のステップ："
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "アカウントを<a href=\"%(reg_url)s\">登録</a>することから始めてください。"
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "アカウントに<a href=\"%(login_url)s\">ログインしてください</a>。"
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr "二段階認証を<a href=\"%(setup_url)s\">有効にする</a>"
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "次に、<a href=\"%(logout_url)s\">ログアウト</a>してアカウントにもう一度<a href=\"%(login_url)s\">ログイン</a>し、二段階認証が機能していることを確認します。"
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "ついに、<a href=\"%(secret_url)s\">秘密のページ</a>にアクセスできるようになりました！ :-) "
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "登録"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "登録"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "ログアウトしました"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "またね〜！"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "登録完了"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "おめでとうございます、登録できました。"
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "おめでとうございます、成し遂げました。 これで、二段階認証が正常に有効になり、トークンを使用してログインしました。 "

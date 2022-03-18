@@ -1,18 +1,13 @@
-from __future__ import absolute_import
+from urllib.parse import urlencode
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import pgettext, ugettext
-from twilio.rest import TwilioRestClient
+from django.utils.translation import pgettext
+from twilio.rest import Client
 
 from two_factor.middleware.threadlocals import get_current_request
-
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 
 # Supported voice languages, see http://bit.ly/187I5cr
 VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
@@ -22,7 +17,7 @@ VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
                    'pt-PT', 'ru-RU', 'sv-SE', 'zh-CN', 'zh-HK', 'zh-TW')
 
 
-class Twilio(object):
+class Twilio:
     """
     Gateway for sending text messages and making phone calls using Twilio_.
 
@@ -39,30 +34,49 @@ class Twilio(object):
       Should be set to a verified phone number. Twilio_ differentiates between
       numbers verified for making phone calls and sending text messages.
 
+    ``TWILIO_MESSAGING_SERVICE_SID``
+      Can be set to a Twilio Messaging Service for SMS. This service can wrap multiple
+      phone numbers and choose one depending on the destination country.
+      When left empty the ``TWILIO_CALLER_ID`` will be used as sender ID.
+
     .. _Twilio: http://www.twilio.com/
     """
+
     def __init__(self):
-        self.client = TwilioRestClient(getattr(settings, 'TWILIO_ACCOUNT_SID'),
-                                       getattr(settings, 'TWILIO_AUTH_TOKEN'))
+        self.client = Client(getattr(settings, 'TWILIO_ACCOUNT_SID'),
+                             getattr(settings, 'TWILIO_AUTH_TOKEN'))
 
     def make_call(self, device, token):
         locale = translation.get_language()
         validate_voice_locale(locale)
 
         request = get_current_request()
-        url = reverse('two_factor:twilio_call_app', kwargs={'token': token})
+        url = reverse('two_factor_twilio:call_app', kwargs={'token': token})
         url = '%s?%s' % (url, urlencode({'locale': locale}))
         uri = request.build_absolute_uri(url)
         self.client.calls.create(to=device.number.as_e164,
                                  from_=getattr(settings, 'TWILIO_CALLER_ID'),
-                                 url=uri, method='GET', if_machine='Hangup', timeout=15)
+                                 url=uri, method='GET', timeout=15)
 
     def send_sms(self, device, token):
-        body = ugettext('Your authentication token is %s') % token
-        self.client.sms.messages.create(
-            to=device.number.as_e164,
-            from_=getattr(settings, 'TWILIO_CALLER_ID'),
-            body=body)
+        """
+        send sms using template 'two_factor/twilio/sms_message.html'
+        """
+        body = render_to_string(
+            'two_factor/twilio/sms_message.html',
+            {'token': token}
+        )
+        send_kwargs = {
+            'to': device.number.as_e164,
+            'body': body
+        }
+        messaging_service_sid = getattr(settings, 'TWILIO_MESSAGING_SERVICE_SID', None)
+        if messaging_service_sid is not None:
+            send_kwargs['messaging_service_sid'] = messaging_service_sid
+        else:
+            send_kwargs['from_'] = getattr(settings, 'TWILIO_CALLER_ID')
+
+        self.client.messages.create(**send_kwargs)
 
 
 def validate_voice_locale(locale):

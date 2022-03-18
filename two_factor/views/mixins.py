@@ -1,13 +1,13 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
+from django.urls import reverse
 
 from ..utils import default_device
 
 
-class OTPRequiredMixin(object):
+class OTPRequiredMixin:
     """
     View mixin which verifies that the user logged in using OTP.
 
@@ -55,7 +55,7 @@ class OTPRequiredMixin(object):
         return self.verification_url and str(self.verification_url)
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated() or \
+        if not request.user or not request.user.is_authenticated or \
                 (not request.user.is_verified() and default_device(request.user)):
             # If the user has not authenticated raise or redirect to the login
             # page. Also if the user just enabled two-factor authentication and
@@ -79,4 +79,4 @@ class OTPRequiredMixin(object):
                     template='two_factor/core/otp_required.html',
                     status=403,
                 )
-        return super(OTPRequiredMixin, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)

@@ -1,0 +1,152 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# Bello Hamisu <hbelloida@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-27 12:48+0100\n"
+"PO-Revision-Date: 2021-09-27 11:48+0000\n"
+"Last-Translator: Matt Molyneaux\n"
+"Language-Team: Hausa (http://www.transifex.com/Bouke/django-two-factor-auth/language/ha/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ha\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Saba lambar kira %(number)s; \"Lambobin sirinka su ne: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "Saba sakon %(number)s: \"Lambobin sirrin su ne: %(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "Samfuri"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "Gida"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr "Sirrin fegin"
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "Sirrin Akawu"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "Lokaci"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "Fita"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Bai shiga ba"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Shiga"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – Samfurin manhaja"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "Inganta tsaronka 1 masu amfani da hajarka za su gode maka 1"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "Barka da zuwa manhaja mai misali da 1 django-two-factor-auth 1 yi amfani da wannan misali don samun fahimtar abun da manhajar ya ke yi."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Don Allah, tantance saiti"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "Ka samar da saitin Twiliyo da 1 saitin sirri.py 1 fayil? idan aka hakam misalin manhajar zai samar da kira sa sako zai ba da damar tantance lambobin sirri, in ba haka ba, lambobin sirrin za au iya bayyana a saman sikirin."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Mataki na gaba:"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "Fara da <a href=\"%(reg_url)s\">rigistar </a>akawu."
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "<a href=\"%(login_url)s\">Shiga </a>cikin akawunka."
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr "<a href=\"%(setup_url)s\">Dama </a>Lamba biyu ta sirri"
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "Bayan <a href=\"%(logout_url)s\">fita </a>da <a href=\"%(login_url)s\"> shiga </a>sake shiga a akawunka don ganin mataki biyu ma sirri a  wajen aiki."
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "A kalla, ka samu damar ahifa <a href=\"%(secret_url)s\"> sirrin fegin </a>! ;-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Rigista"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Rigistar"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Fita "
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Sai na ganka a wajen"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "An Kammala Rigista"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "Muna maka murna, Ka kammala rigistar akawunka."
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "Muna maka murna, ka kammala saita matakin lamba biyu na sirri don shigar da lambobin sirri. "

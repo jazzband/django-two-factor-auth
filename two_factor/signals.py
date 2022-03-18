@@ -1,3 +1,4 @@
 from django.dispatch import Signal
 
-user_verified = Signal(providing_args=['request', 'user', 'device'])
+# Signal additional parameters are: request, user, and device.
+user_verified = Signal()

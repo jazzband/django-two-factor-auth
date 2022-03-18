@@ -1,19 +1,20 @@
+import base64
+import hashlib
+import hmac
 import logging
+import time
 
-from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.contrib.auth import load_backend
+from django.core.exceptions import SuspiciousOperation
+from django.core.signing import BadSignature, SignatureExpired
+from django.utils import baseconv
 from django.utils.decorators import method_decorator
-from django.utils.functional import lazy_property
-from django.utils.translation import ugettext as _
-
-try:
-    from formtools.wizard.forms import ManagementForm
-    from formtools.wizard.views import SessionWizardView
-    from formtools.wizard.storage.session import SessionStorage
-except ImportError:
-    from django.contrib.formtools.wizard.forms import ManagementForm
-    from django.contrib.formtools.wizard.views import SessionWizardView
-    from django.contrib.formtools.wizard.storage.session import SessionStorage
-
+from django.utils.encoding import force_bytes
+from django.utils.translation import gettext as _
+from formtools.wizard.forms import ManagementForm
+from formtools.wizard.storage.session import SessionStorage
+from formtools.wizard.views import SessionWizardView
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +27,12 @@ class ExtraSessionStorage(SessionStorage):
     validated_step_data_key = 'validated_step_data'
 
     def init_data(self):
-        super(ExtraSessionStorage, self).init_data()
+        super().init_data()
         self.data[self.validated_step_data_key] = {}
 
     def reset(self):
         if self.prefix in self.request.session:
-            super(ExtraSessionStorage, self).reset()
+            super().reset()
         else:
             self.init_data()
 
@@ -41,8 +42,35 @@ class ExtraSessionStorage(SessionStorage):
     def _set_validated_step_data(self, validated_step_data):
         self.data[self.validated_step_data_key] = validated_step_data
 
-    validated_step_data = lazy_property(_get_validated_step_data,
-                                        _set_validated_step_data)
+    validated_step_data = property(_get_validated_step_data,
+                                   _set_validated_step_data)
+
+
+class LoginStorage(ExtraSessionStorage):
+    """
+    SessionStorage that includes the property 'authenticated_user' for storing
+    backend authenticated users while logging in.
+    """
+    def _get_authenticated_user(self):
+        # Ensure that both user_pk and user_backend exist in the session
+        if not all([self.data.get("user_pk"), self.data.get("user_backend")]):
+            return False
+        # Acquire the user the same way django.contrib.auth.get_user does
+        backend = load_backend(self.data["user_backend"])
+        user = backend.get_user(self.data["user_pk"])
+        if not user:
+            return False
+        # Set user.backend to the dotted path version of the backend for login()
+        user.backend = self.data["user_backend"]
+        return user
+
+    def _set_authenticated_user(self, user):
+        # Acquire the PK the same way django's auth middleware does
+        self.data["user_pk"] = user._meta.pk.value_to_string(user)
+        self.data["user_backend"] = user.backend
+
+    authenticated_user = property(_get_authenticated_user,
+                                  _set_authenticated_user)
 
 
 class IdempotentSessionWizardView(SessionWizardView):
@@ -116,14 +144,11 @@ class IdempotentSessionWizardView(SessionWizardView):
         # Check if form was refreshed
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
-            raise ValidationError(
-                _('ManagementForm data is missing or has been tampered.'),
-                code='missing_management_form',
-            )
+            raise SuspiciousOperation(_('ManagementForm data is missing or has been tampered with'))
 
         form_current_step = management_form.cleaned_data['current_step']
-        if (form_current_step != self.steps.current and
-                self.storage.current_step is not None):
+        if (form_current_step != self.steps.current
+                and self.storage.current_step is not None):
             # form refreshed, change current step
             self.storage.current_step = form_current_step
         # -- End duplicated code from upstream
@@ -136,7 +161,7 @@ class IdempotentSessionWizardView(SessionWizardView):
                            self.steps.current)
             return self.render_goto_step(self.steps.all[-1])
 
-        return super(IdempotentSessionWizardView, self).post(*args, **kwargs)
+        return super().post(*args, **kwargs)
 
     def process_step(self, form):
         """
@@ -162,7 +187,10 @@ class IdempotentSessionWizardView(SessionWizardView):
         for next_step in keys[key:]:
             self.storage.validated_step_data.pop(next_step, None)
 
-        return super(IdempotentSessionWizardView, self).process_step(form)
+        return super().process_step(form)
+
+    def get_done_form_list(self):
+        return self.get_form_list()
 
     def render_done(self, form, **kwargs):
         """
@@ -173,7 +201,7 @@ class IdempotentSessionWizardView(SessionWizardView):
         """
         final_form_list = []
         # walk through the form list and try to validate the data again.
-        for form_key in self.get_form_list():
+        for form_key in self.get_done_form_list():
             form_obj = self.get_form(step=form_key,
                                      data=self.storage.get_step_data(form_key),
                                      files=self.storage.get_step_files(
@@ -205,3 +233,72 @@ def class_view_decorator(function_decorator):
         View.dispatch = method_decorator(function_decorator)(View.dispatch)
         return View
     return simple_decorator
+
+
+remember_device_cookie_separator = ':'
+
+
+def get_remember_device_cookie(user, otp_device_id):
+    """
+    Compile a signed cookie from user.pk, user.password and otp_device_id,
+    but only return the hashed and signatures and omit the data.
+
+    The cookie is composed of 3 parts:
+    1. A timestamp of signing.
+    2. A hashed value of otp_device_id and the timestamp.
+    3. A hashed value of user.pk, user.password, otp_device_id and the timestamp.
+    """
+    timestamp = baseconv.base62.encode(int(time.time()))
+    cookie_key = hash_remember_device_cookie_key(otp_device_id)
+    cookie_value = hash_remember_device_cookie_value(otp_device_id, user, timestamp)
+
+    cookie = remember_device_cookie_separator.join([timestamp, cookie_key, cookie_value])
+    return cookie
+
+
+def validate_remember_device_cookie(cookie, user, otp_device_id):
+    """
+    Returns True if the cookie was returned by get_remember_device_cookie using the same
+    user.pk, user.password and otp_device_id. Moreover the cookie must not be expired.
+    Returns False if the otp_device_id does not match.
+    Otherwise raises an exception.
+    """
+
+    timestamp, input_cookie_key, input_cookie_value = cookie.split(remember_device_cookie_separator, 3)
+
+    cookie_key = hash_remember_device_cookie_key(otp_device_id)
+    if input_cookie_key != cookie_key:
+        return False
+
+    cookie_value = hash_remember_device_cookie_value(otp_device_id, user, timestamp)
+    if input_cookie_value != cookie_value:
+        raise BadSignature('Signature does not match')
+
+    timestamp_int = baseconv.base62.decode(timestamp)
+    age = time.time() - timestamp_int
+    if age > settings.TWO_FACTOR_REMEMBER_COOKIE_AGE:
+        raise SignatureExpired(
+            'Signature age %s > %s seconds' % (age, settings.TWO_FACTOR_REMEMBER_COOKIE_AGE)
+        )
+
+    return True
+
+
+def hash_remember_device_cookie_key(otp_device_id):
+    return str(base64.b64encode(force_bytes(otp_device_id)))
+
+
+def hash_remember_device_cookie_value(otp_device_id, user, timestamp):
+    salt = 'two_factor.views.utils.hash_remember_device_cookie_value'
+    value = otp_device_id + str(user.pk) + str(user.password) + timestamp
+    return salted_hmac_sha256(salt, value).hexdigest()
+
+
+# inspired by django.utils.crypto.salted_hmac django versions > 3.1a1
+def salted_hmac_sha256(key_salt, value, secret=None):
+    if secret is None:
+        secret = settings.SECRET_KEY
+    key_salt = force_bytes(key_salt)
+    secret = force_bytes(secret)
+    key = hashlib.sha256(key_salt + secret).digest()
+    return hmac.new(key, msg=force_bytes(value), digestmod=hashlib.sha256)

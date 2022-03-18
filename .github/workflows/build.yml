@@ -1,0 +1,52 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      COVERAGE_OPTIONS: "-a"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Tox and any other packages
+        run: pip install tox tox-gh-actions codecov
+      - name: Test with tox
+        run: tox
+      - name: Generate coverage XML report
+        run: coverage xml
+      - name: Codecov
+        uses: codecov/codecov-action@v2.0.3
+        env:
+          PYTHON: ${{matrix.python-version}}
+        with:
+          env_vars: PTYHON
+
+
+  code_quality:
+
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Tox
+        run: pip install tox
+      - name: isort
+        run: tox -e isort
+      - name: flake8
+        run: tox -e flake8

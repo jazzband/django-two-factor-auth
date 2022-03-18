@@ -81,7 +81,7 @@ with this. In your ``urls.py``::
     admin.site.__class__ = AdminSiteOTPRequired
 
     urlpatterns = [
-        url(r'^admin/', admin.site.urls),
+        path('admin/', admin.site.urls),
         ...
     ]
 
@@ -93,8 +93,8 @@ When a user was successfully verified using a OTP, the signal
 user, the device used and the request itself. You can use this signal for
 example to warn a user when one of his backup tokens was used::
 
+    from django.contrib.sites.shortcuts import get_current_site
     from django.dispatch import receiver
-    from two_factor.compat import get_current_site
     from two_factor.signals import user_verified
 
 

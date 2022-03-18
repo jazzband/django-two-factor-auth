@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Django Two-Factor Authentication documentation build configuration file,
 # created by sphinx-quickstart on Tue Dec 31 20:34:24 2013.
 #
@@ -12,8 +10,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
 
@@ -25,6 +23,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.settings')
 sys.path.insert(0, os.path.abspath('extensions'))
 sys.path.insert(0, os.path.abspath('..'))
 import django
+
 django.setup()
 
 # -- General configuration ------------------------------------------------
@@ -60,7 +59,7 @@ copyright = '2014, Bouke Haarsma'
 #
 
 # The full version, including alpha/beta/rc tags.
-release = '1.5.0'
+release = '1.13.2'
 
 # The short X.Y version.
 version = '.'.join(release.split('.')[0:2])
