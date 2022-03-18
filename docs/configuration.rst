@@ -134,6 +134,10 @@ Additionally, you need to enable the ``ThreadLocals`` middleware:
 
 .. autoclass:: two_factor.gateways.twilio.gateway.Twilio
 
+``TWILIO_SEPARATOR`` (default: ``'. '``)
+  Localizable Twilio spoken token separator. For German ``', '`` is recommended.
+
+
 Fake Gateway
 ------------
 .. autoclass:: two_factor.gateways.fake.Fake

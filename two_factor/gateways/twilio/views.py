@@ -74,11 +74,13 @@ class TwilioCallApp(View):
         return pgettext('twilio_locale', 'en')
 
     def get_prompt_context(self):
+        # e.g. for german use `, ` for numbers spoken
+        separator = getattr(settings, 'TWILIO_SEPARATOR', '. ')
         return {
             'site_name': get_current_site(self.request).name,
 
             # Build the prompt. The numbers have to be clearly pronounced,
             # this is by creating a string like "1. 2. 3. 4. 5. 6.", this way
             # Twilio reads the numbers one by one.
-            'token': '. '.join(str(self.kwargs['token'])) if self.request.method == 'POST' else '',
+            'token': separator.join(str(self.kwargs['token'])) if self.request.method == 'POST' else '',
         }
