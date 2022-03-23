@@ -1,3 +1,4 @@
+from base64 import b32decode
 from binascii import unhexlify
 from unittest import mock
 
@@ -33,6 +34,10 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'autocomplete="one-time-code"')
         session = self.client.session
         self.assertIn('django_two_factor-qr_secret_key', session.keys())
+
+        # test if secret key is valid base32 and has the correct number of bytes
+        secret_key = response.context_data['secret_key']
+        self.assertEqual(len(b32decode(secret_key)), 20)
 
         response = self.client.post(
             reverse('two_factor:setup'),
