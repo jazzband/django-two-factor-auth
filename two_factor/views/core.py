@@ -545,7 +545,8 @@ class SetupView(IdempotentSessionWizardView):
             b32key = b32encode(rawkey).decode('utf-8')
             self.request.session[self.session_key_name] = b32key
             context.update({
-                'QR_URL': reverse(self.qrcode_url)
+                'QR_URL': reverse(self.qrcode_url),
+                'secret_key': b32key,
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()

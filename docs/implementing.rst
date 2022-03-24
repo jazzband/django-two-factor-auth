@@ -112,3 +112,11 @@ example to warn a user when one of his backup tokens was used::
                          'site_name': current_site.name}
             user.email_user(subject='Backup token used', message=message)
 
+
+Show OTP Secret Key During Setup
+--------------------------------
+
+Users who only have a smartphone will have difficulty scanning the QR code
+during setup. You can directly show the secret key within the QR code in text
+form during setup by providing your own ``two_factor/core/setup.html`` template
+and using the ``secret_key`` context variable.
