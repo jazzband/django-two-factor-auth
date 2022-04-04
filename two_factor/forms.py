@@ -104,12 +104,15 @@ class DisableForm(forms.Form):
 
 
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
-    otp_token = forms.IntegerField(label=_("Token"), min_value=1,
-                                   max_value=int('9' * totp_digits()))
-
-    otp_token.widget.attrs.update({'autofocus': 'autofocus',
-                                   'inputmode': 'numeric',
-                                   'autocomplete': 'one-time-code'})
+    otp_token = forms.RegexField(label=_("Token"),
+                                 regex=r'^[0-9]*$',
+                                 min_length=totp_digits(),
+                                 max_length=totp_digits())
+    otp_token.widget.attrs.update({
+        'autofocus': 'autofocus',
+        'pattern': '[0-9]*',  # hint to show numeric keyboard for on-screen keyboards
+        'autocomplete': 'one-time-code',
+    })
 
     # Our authentication form has an additional submit button to go to the
     # backup token form. When the `required` attribute is set on an input

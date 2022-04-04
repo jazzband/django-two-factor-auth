@@ -3,9 +3,10 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import resolve_url
 from django.test.utils import TestContextDecorator
 from django_otp import DEVICE_ID_SESSION_KEY
+from django_otp.oath import totp
 
 from two_factor.plugins.registry import registry
-from two_factor.utils import default_device
+from two_factor.utils import default_device, totp_digits
 
 
 class UserMixin:
@@ -56,3 +57,7 @@ class method_registry(TestContextDecorator):
 
     def disable(self):
         registry._methods = self.old_methods
+
+
+def totp_str(key):
+    return str(totp(key)).zfill(totp_digits())
