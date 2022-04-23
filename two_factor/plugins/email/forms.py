@@ -23,9 +23,5 @@ class DeviceValidationForm(BaseValidationForm):
 
 
 class AuthenticationTokenForm(BaseAuthenticationTokenForm):
-    otp_token = forms.CharField(label=_("Token"))
-    otp_token.widget.attrs.update({'autofocus': 'autofocus',
-                                   'autocomplete': 'one-time-code'})
-
     def _chosen_device(self, user):
         return self.initial_device
