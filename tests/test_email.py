@@ -161,9 +161,10 @@ class EmailTest(UserMixin, TestCase):
                                     {'token-otp_token': 'a23456',
                                      'login_view-current_step': 'token'})
 
-        self.assertEqual(response.context_data['wizard']['form'].errors,
-                         {'__all__': ['Invalid token. Please make sure you '
-                                      'have entered it correctly.']})
+        self.assertEqual(
+            response.context_data['wizard']['form'].errors['otp_token'],
+            ['Enter a valid value.']
+        )
 
         token = re.findall(r'[0-9]{6}', msg.body)[0]
         response = self.client.post(reverse('two_factor:login'),
