@@ -16,24 +16,51 @@ class TwilioGatewayTest(TestCase):
     def test_call_app(self):
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.get(url)
-        self.assertEqual(response.content,
-                         b'<?xml version="1.0" encoding="UTF-8" ?>'
-                         b'<Response>'
-                         b'  <Gather timeout="15" numDigits="1" finishOnKey="">'
-                         b'    <Say language="en">Hi, this is testserver calling. '
-                         b'Press any key to continue.</Say>'
-                         b'  </Gather>'
-                         b'  <Say language="en">You didn\'t press any keys. Good bye.</Say>'
-                         b'</Response>')
+        self.assertEqual(response.content.decode('utf-8'),
+                         '<?xml version="1.0" encoding="UTF-8" ?>'
+                         '<Response>'
+                         '  <Gather timeout="15" numDigits="1" finishOnKey="">'
+                         '    <Say language="en">Hi, this is testserver calling. '
+                         'Press any key to continue.</Say>'
+                         '  </Gather>'
+                         '  <Say language="en">You didn’t press any keys. Good bye.</Say>'
+                         '</Response>')
 
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.post(url)
-        self.assertEqual(response.content,
-                         b'<?xml version="1.0" encoding="UTF-8" ?>'
-                         b'<Response>'
-                         b'  <Say language="en">Your token is 1. 2. 3. 4. 5. 6. '
-                         b'Repeat: 1. 2. 3. 4. 5. 6. Good bye.</Say>'
-                         b'</Response>')
+        self.assertEqual(response.content.decode('utf-8'),
+                         '<?xml version="1.0" encoding="UTF-8" ?>'
+                         '<Response>'
+                         '  <Say language="en">Your token is:</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">1</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">2</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">3</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">4</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">5</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">6</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">Repeat:</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">1</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">2</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">3</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">4</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">5</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">6</Say>'
+                         '  <Pause>'
+                         '  <Say language="en">Good bye.</Say>'
+                         '</Response>')
 
         # there is a en-gb voice
         response = self.client.get('%s?%s' % (url, urlencode({'locale': 'en-gb'})))

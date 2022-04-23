@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
+from django.template import Context, Engine
 from django.utils import translation
 from django.utils.translation import (
     check_for_language, gettext_lazy as _, pgettext,
@@ -23,13 +24,21 @@ class TwilioCallApp(View):
         'press_a_key': '<?xml version="1.0" encoding="UTF-8" ?>'
                        '<Response>'
                        '  <Gather timeout="15" numDigits="1" finishOnKey="">'
-                       '    <Say language="%(locale)s">%(press_a_key)s</Say>'
+                       '    <Say language="{{ locale }}">{{ press_a_key }}</Say>'
                        '  </Gather>'
-                       '  <Say language="%(locale)s">%(no_input)s</Say>'
+                       '  <Say language="{{ locale }}">{{ no_input }}</Say>'
                        '</Response>',
         'token': '<?xml version="1.0" encoding="UTF-8" ?>'
                  '<Response>'
-                 '  <Say language="%(locale)s">%(token)s</Say>'
+                 '  <Say language="{{ locale }}">{{ your_token_is }}</Say>'
+                 '  <Pause>'
+                 '{% for digit in token %}  <Say language="{{ locale }}">{{ digit }}</Say>'
+                 '  <Pause>{% endfor %}'
+                 '  <Say language="{{ locale }}">{{ repeat }}</Say>'
+                 '  <Pause>'
+                 '{% for digit in token %}  <Say language="{{ locale }}">{{ digit }}</Say>'
+                 '  <Pause>{% endfor %}'
+                 '  <Say language="{{ locale }}">{{ goodbye }}</Say>'
                  '</Response>',
     }
 
@@ -41,11 +50,19 @@ class TwilioCallApp(View):
 
         # Translators: should be a language supported by Twilio,
         # see http://bit.ly/187I5cr
-        'token': _('Your token is %(token)s. Repeat: %(token)s. Good bye.'),
+        'no_input': _('You didn’t press any keys. Good bye.'),
 
         # Translators: should be a language supported by Twilio,
         # see http://bit.ly/187I5cr
-        'no_input': _('You didn\'t press any keys. Good bye.')
+        'your_token_is': _('Your token is:'),
+
+        # Translators: should be a language supported by Twilio,
+        # see http://bit.ly/187I5cr
+        'repeat': _('Repeat:'),
+
+        # Translators: should be a language supported by Twilio,
+        # see http://bit.ly/187I5cr
+        'goodbye': _('Good bye.'),
     }
 
     def get(self, request, token):
@@ -54,12 +71,14 @@ class TwilioCallApp(View):
     def post(self, request, token):
         return self.create_response(self.templates['token'])
 
-    def create_response(self, template):
+    def create_response(self, template_str):
+        template = Engine().from_string(template_str)
         with translation.override(self.get_locale()):
             prompt_context = self.get_prompt_context()
-            template_context = dict((k, v % prompt_context) for k, v in self.prompts.items())
+            template_context = {k: v % prompt_context for k, v in self.prompts.items()}
             template_context['locale'] = self.get_twilio_locale()
-            return HttpResponse(template % template_context, 'text/xml')
+            template_context['token'] = list(str(self.kwargs['token'])) if self.request.method == 'POST' else ''
+            return HttpResponse(template.render(Context(template_context)), content_type='text/xml')
 
     def get_locale(self):
         locale = self.request.GET.get('locale', '')
@@ -76,9 +95,4 @@ class TwilioCallApp(View):
     def get_prompt_context(self):
         return {
             'site_name': get_current_site(self.request).name,
-
-            # Build the prompt. The numbers have to be clearly pronounced,
-            # this is by creating a string like "1. 2. 3. 4. 5. 6.", this way
-            # Twilio reads the numbers one by one.
-            'token': '. '.join(str(self.kwargs['token'])) if self.request.method == 'POST' else '',
         }
