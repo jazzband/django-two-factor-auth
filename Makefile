@@ -36,6 +36,6 @@ tx-pull:
 	cd example; django-admin compilemessages
 
 tx-push:
-	cd two_factor; django-admin makemessages -l en
-	cd example; django-admin makemessages -l en
+	cd two_factor; django-admin makemessages -l en -e html,txt,py,xml
+	cd example; django-admin makemessages -l en -e html,txt,py,xml
 	tx push -s

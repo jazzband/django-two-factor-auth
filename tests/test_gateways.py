@@ -14,53 +14,51 @@ from two_factor.gateways.twilio.gateway import Twilio
 
 class TwilioGatewayTest(TestCase):
     def test_call_app(self):
+        self.maxDiff = None
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.get(url)
-        self.assertEqual(response.content.decode('utf-8'),
-                         '<?xml version="1.0" encoding="UTF-8" ?>'
-                         '<Response>'
-                         '  <Gather timeout="15" numDigits="1" finishOnKey="">'
-                         '    <Say language="en">Hi, this is testserver calling. '
-                         'Press any key to continue.</Say>'
-                         '  </Gather>'
-                         '  <Say language="en">You didn’t press any keys. Good bye.</Say>'
-                         '</Response>')
+        self.assertEqual(response.content.decode('utf-8'), """<?xml version="1.0" encoding="UTF-8" ?>
+<Response>
+  <Gather timeout="15" numDigits="1" finishOnKey="">
+    <Say language="en">Hi, this is testserver calling. Press any key to continue.</Say>
+  </Gather>
+  <Say language="en">You didn’t press any keys. Good bye.</Say>
+</Response>\n""")
 
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.post(url)
-        self.assertEqual(response.content.decode('utf-8'),
-                         '<?xml version="1.0" encoding="UTF-8" ?>'
-                         '<Response>'
-                         '  <Say language="en">Your token is:</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">1</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">2</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">3</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">4</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">5</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">6</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">Repeat:</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">1</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">2</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">3</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">4</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">5</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">6</Say>'
-                         '  <Pause>'
-                         '  <Say language="en">Good bye.</Say>'
-                         '</Response>')
+        self.assertEqual(response.content.decode('utf-8'), """<?xml version="1.0" encoding="UTF-8" ?>
+<Response>
+  <Say language="en">Your token is:</Say>
+  <Pause>
+  <Say language="en">1</Say>
+  <Pause>
+  <Say language="en">2</Say>
+  <Pause>
+  <Say language="en">3</Say>
+  <Pause>
+  <Say language="en">4</Say>
+  <Pause>
+  <Say language="en">5</Say>
+  <Pause>
+  <Say language="en">6</Say>
+  <Pause>
+  <Say language="en">Repeat:</Say>
+  <Pause>
+  <Say language="en">1</Say>
+  <Pause>
+  <Say language="en">2</Say>
+  <Pause>
+  <Say language="en">3</Say>
+  <Pause>
+  <Say language="en">4</Say>
+  <Pause>
+  <Say language="en">5</Say>
+  <Pause>
+  <Say language="en">6</Say>
+  <Pause>
+  <Say language="en">Good bye.</Say>
+</Response>\n""")
 
         # there is a en-gb voice
         response = self.client.get('%s?%s' % (url, urlencode({'locale': 'en-gb'})))
