@@ -72,13 +72,13 @@ License
 The project is licensed under the MIT license.
 
 .. _`example app`: https://example-two-factor-auth.herokuapp.com
-.. _django-otp: https://pypi.python.org/pypi/django-otp
+.. _django-otp: https://pypi.org/project/django-otp/
 .. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
 .. _Twilio: https://www.twilio.com/
 .. _Heroku: https://www.heroku.com
 .. _contribution guidelines:
-   https://github.com/jazzband/django-two-factor-auth/CONTRIBUTING.rst
-.. _django-user-sessions: https://pypi.python.org/pypi/django-user-sessions
+   https://github.com/jazzband/django-two-factor-auth/blob/master/CONTRIBUTING.rst
+.. _django-user-sessions: https://pypi.org/project/django-user-sessions/
 .. _readthedocs.org: https://django-two-factor-auth.readthedocs.org/
 .. _`installation instructions`:
    https://django-two-factor-auth.readthedocs.io/en/stable/installation.html
