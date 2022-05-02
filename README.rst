@@ -31,11 +31,11 @@ project by forking the repository and sending some pull requests. The package
 is translated into English, Dutch and other languages. Please contribute your
 own language using Transifex_.
 
-Test drive this app through the online `example app`_, hosted by Heroku_. It
-demos most features except the Twilio integration. The example also includes
-django-user-sessions_ for providing Django sessions with a foreign key to the
-user. Although the package is optional, it improves account security control
-over ``django.contrib.sessions``.
+Test drive this app through the `example app`_. It demos most features except
+the Twilio integration. The example also includes django-user-sessions_ for
+providing Django sessions with a foreign key to the user. Although the package
+is optional, it improves account security control over
+``django.contrib.sessions``.
 
 Compatible with modern Django versions. At the moment of writing that's
 including 2.2, 3.1, 3.2, and 4.0 on Python 3.7, 3.8, 3.9 and 3.10.
@@ -64,18 +64,18 @@ Read the `contribution guidelines`_.
 See Also
 ========
 Have a look at django-user-sessions_ for Django sessions with a foreign key to
-the user. This package is also included in the online `example app`_.
+the user. This package is also included in the `example app`_.
 
 
 License
 =======
 The project is licensed under the MIT license.
 
-.. _`example app`: https://example-two-factor-auth.herokuapp.com
+.. _`example app`:
+   https://github.com/jazzband/django-two-factor-auth/tree/master/example
 .. _django-otp: https://pypi.org/project/django-otp/
 .. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
 .. _Twilio: https://www.twilio.com/
-.. _Heroku: https://www.heroku.com
 .. _contribution guidelines:
    https://github.com/jazzband/django-two-factor-auth/blob/master/CONTRIBUTING.rst
 .. _django-user-sessions: https://pypi.org/project/django-user-sessions/
