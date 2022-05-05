@@ -38,6 +38,12 @@ class SetupTest(UserMixin, TestCase):
         # test if secret key is valid base32 and has the correct number of bytes
         secret_key = response.context_data['secret_key']
         self.assertEqual(len(b32decode(secret_key)), 20)
+        self.assertEqual(
+            response.context_data['otpauth_url'],
+            f'otpauth://totp/testserver%3A%20bouke%40example.com?secret={secret_key}&digits=6&issuer=testserver'
+        )
+        self.assertEqual(response.context_data['issuer'], 'testserver')
+        self.assertEqual(response.context_data['totp_digits'], 6)
 
         response = self.client.post(
             reverse('two_factor:setup'),

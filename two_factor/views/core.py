@@ -588,10 +588,18 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             key = self.get_key('generator')
             rawkey = unhexlify(key.encode('ascii'))
             b32key = b32encode(rawkey).decode('utf-8')
+            issuer = get_current_site(self.request).name
+            username = self.request.user.get_username()
+            otpauth_url = get_otpauth_url(username, b32key, issuer)
             self.request.session[self.session_key_name] = b32key
             context.update({
+                # used in default template
+                'otpauth_url': otpauth_url,
                 'QR_URL': reverse(self.qrcode_url),
                 'secret_key': b32key,
+                # available for custom templates
+                'issuer': issuer,
+                'totp_digits': totp_digits(),
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
