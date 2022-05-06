@@ -24,7 +24,7 @@ migrations:
 coverage:
 	coverage erase
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=. \
-		coverage run ---parallel --source=two_factor \
+		coverage run --parallel --source=two_factor \
 		`which django-admin` test ${TARGET}
 	coverage combine
 	coverage html
