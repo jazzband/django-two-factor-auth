@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_email',
     'two_factor',
+    'two_factor.plugins.email',
     'two_factor.plugins.phonenumber',
     'tests',
 ]
