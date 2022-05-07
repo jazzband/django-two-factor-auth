@@ -92,8 +92,6 @@ class EmailTest(UserMixin, TestCase):
         response = self.client.post(reverse('two_factor:setup'),
                                     data={'setup_view-current_step': 'validation',
                                     'validation-token': token})
-        if response.status_code == 200:
-            self.fail(response.context['form'].errors)
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
         # Now the user has a default 2FA device that is an EmailDevice.
