@@ -43,7 +43,6 @@ class TwoFactorAdminSiteMixin:
         # have MFA enabled on their account. We're going to redirect them
         # to the MFA setup.
 
-        # TODO: Add redirect_to functionality to MFA setup.
         # TODO: Add message indicating why the user was directed or setup and MFA required
         #       interstitial page to explain to the user they need to setup MFA.
         setup_url = reverse('two_factor:setup')
@@ -133,32 +132,3 @@ class AdminSiteOTPRequired(TwoFactorAdminSite):
     warnings.warn('AdminSiteOTPRequired is deprecated by TwoFactorAdminSite, please update.',
                   category=DeprecationWarning)
     pass
-
-
-def patch_admin():
-    warnings.warn('two-factor admin patching will be removed, use TwoFactorAdminSite or TwoFactorAdminSiteMixin.',
-                  category=DeprecationWarning)
-    # overrides
-    setattr(AdminSite, 'login', TwoFactorAdminSiteMixin.login)
-    setattr(AdminSite, 'admin_view', TwoFactorAdminSiteMixin.admin_view)
-    setattr(AdminSite, 'has_permission', TwoFactorAdminSiteMixin.has_permission)
-    # additions
-    setattr(AdminSite, 'has_admin_permission', original_has_permission)
-    setattr(AdminSite, 'has_mfa_setup', TwoFactorAdminSiteMixin.has_mfa_setup)
-    setattr(AdminSite, 'redirect_to_mfa_setup', TwoFactorAdminSiteMixin.redirect_to_mfa_setup)
-
-
-def unpatch_admin():
-    warnings.warn('django-two-factor admin patching is deprecated, use TwoFactorAdminSite or TwoFactorAdminSiteMixin.',
-                  category=DeprecationWarning)
-    # we really only need unpatching in our tests so this can be a noop.
-    # overrides
-    setattr(AdminSite, 'login', original_login)
-    setattr(AdminSite, 'admin_view', original_admin_view)
-    setattr(AdminSite, 'has_permission', original_has_permission)
-    # NOTE: this unpatching doesn't really work, but becuase it just patches in our mixin it isn't harmful.
-
-
-original_login = AdminSite.login
-original_admin_view = AdminSite.admin_view
-original_has_permission = AdminSite.has_permission

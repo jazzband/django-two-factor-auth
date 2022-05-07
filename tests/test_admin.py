@@ -5,28 +5,11 @@ from django.shortcuts import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from two_factor.admin import patch_admin, unpatch_admin
-
 from .utils import UserMixin
 
 
 @override_settings(ROOT_URLCONF='tests.urls_admin')
 class TwoFactorAdminSiteTest(UserMixin, TestCase):
-
-    def setUp(self):
-        patch_admin()
-
-    def tearDown(self):
-        unpatch_admin()
-
-    def test(self):
-        response = self.client.get('/admin/', follow=True)
-        redirect_to = '%s?next=/admin/' % reverse('admin:login')
-        self.assertRedirects(response, redirect_to)
-
-
-@override_settings(ROOT_URLCONF='tests.urls_admin')
-class AdminPatchTest(TestCase):
     """
     otp_admin is admin console that needs OTP for access.
     Only admin users (is_staff and is_active)
@@ -54,7 +37,6 @@ class AdminPatchTest(TestCase):
         login_url = reverse('admin:login')
         response = self.client.get(login_url, follow=True)
         self.assertEqual(response.status_code, 200)
-
 
     def test_is_staff_not_verified_not_setup_get_admin_index_redirects_to_setup(self):
         """

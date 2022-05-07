@@ -6,6 +6,31 @@
   
 ### Changed
 
+### Removed
+
+- Admin Monkey Patching
+
+  The Admin UI will not longer be automatically patched. The `TwoFactorSiteAdmin` will need to be explicitly
+  configured in urls.py.
+
+  ```py
+  # urls.py
+  from django.urls import path
+  from two_factor.admin import TwoFactorAdminSite
+  url_patterns = [
+    path('admin/', TwoFactorAdminSite().urls),
+  ]
+  ```
+
+  Custom admin sites can extend `TwoFactorSiteAdmin` or `TwoFactorSideAdminMixin` to inherit the behavior.
+
+  ```py
+  # admin.py
+  class MyCustomAdminSite(TwoFactorSiteAdminMixin, AdminSite):
+    # implement your customizations here.
+    pass
+  ```
+
 
 ## 1.14.0
 
@@ -34,6 +59,7 @@
   the pause between digits is now using the `<Pause>` tag.
 - The QR code now always uses a white background to support pages displayed
   with a dark theme.
+
 
 ### Removed
 
