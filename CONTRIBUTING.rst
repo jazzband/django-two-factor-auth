@@ -32,6 +32,10 @@ covering all supported Python and Django version with::
 
     tox
 
+With docker run tests::
+
+    docker-compose run --rm cli bash -c "pip install -r requirements_dev.txt; make test"
+
 Releasing
 ---------
 The following actions are required to push a new version:

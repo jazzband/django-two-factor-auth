@@ -1,0 +1,8 @@
+version: "3.9"
+   
+services:
+  cli:
+    build: .
+    command: bash
+    volumes:
+      - .:/code
