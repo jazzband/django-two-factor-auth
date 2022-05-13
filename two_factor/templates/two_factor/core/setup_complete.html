@@ -21,4 +21,8 @@
         class="btn btn-success">{% trans "Add Phone Number" %}</a></p>
   {% endif %}
 
+  {% if next %}
+    <a href="{{ next }}"
+       class="btn btn-block btn-success">{% trans "Continue where I left off" %}</a>
+  {% endif %}
 {% endblock %}

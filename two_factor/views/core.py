@@ -182,7 +182,13 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                                     samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
                                     )
 
-        return response
+            return response
+
+        # If the user does not have a device.
+        else:
+            if self.request.GET.get('next'):
+                self.request.session['next'] = redirect_to
+            return redirect('two_factor:setup')
 
     # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
@@ -608,8 +614,10 @@ class SetupCompleteView(TemplateView):
     template_name = 'two_factor/core/setup_complete.html'
 
     def get_context_data(self):
+        redirect_url = self.request.session.pop('next', None)
         return {
             'phone_methods': get_available_phone_methods(),
+            'next': redirect_url
         }
 
 
