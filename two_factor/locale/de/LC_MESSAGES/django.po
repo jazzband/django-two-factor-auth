@@ -54,17 +54,17 @@ msgstr "Ja, ich bin sicher"
 #: forms.py:186
 #, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
-msgstr ""
+msgstr "Für %(minutes)i Minuten auf diesem Gerät nicht mehr fragen"
 
 #: forms.py:189
 #, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
-msgstr ""
+msgstr "Für %(hours)i Stunden auf diesen Gerät nicht mehr fragen"
 
 #: forms.py:192
 #, python-format
 msgid "Don't ask again on this device for %(days)i days"
-msgstr ""
+msgstr "Für %(days)i Tage auf diesem Gerät nicht mehr fragen"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
@@ -85,7 +85,7 @@ msgstr "Dies ist ein Anruf von %(site_name)s. Eine beliebige Taste drücken, um 
 #: gateways/twilio/views.py:44
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr "Ihr Code ist %(token)s. Wiederholung: %(token)s. Auf wiederhören."
+msgstr "Ihr Code ist %(token)s. Wiederholung: %(token)s. Auf Wiederhören."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
@@ -382,7 +382,7 @@ msgstr "Wir raten Ihnen davon ab die Two-Factor Authentifizierung zu deaktiviere
 #: templates/two_factor/twilio/sms_message.html:2
 #, python-format
 msgid "Your OTP token is %(token)s"
-msgstr ""
+msgstr "Ihr Einmal-Token ist %(token)s"
 
 #: templatetags/two_factor.py:56
 #, python-format
