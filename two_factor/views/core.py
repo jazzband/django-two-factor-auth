@@ -12,7 +12,6 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import SuccessURLAllowedHostsMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.signing import BadSignature
 from django.forms import Form, ValidationError
@@ -52,18 +51,24 @@ from .utils import (
 
 try:
     from django.utils.http import url_has_allowed_host_and_scheme
-except ImportError:
+except ImportError:  # django<3.0
     from django.utils.http import (
         is_safe_url as url_has_allowed_host_and_scheme,
     )
 
+try:
+    from django.contrib.auth.views import RedirectURLMixin
+except ImportError:  # django<4.1
+    from django.contrib.auth.views import (
+        SuccessURLAllowedHostsMixin as RedirectURLMixin,
+    )
 
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 
-class LoginView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
+class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.
 
