@@ -187,7 +187,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # If the user does not have a device.
         else:
             if self.request.GET.get('next'):
-                self.request.session['next'] = redirect_to
+                self.request.session['next'] = self.get_success_url()
             return redirect('two_factor:setup')
 
     # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
@@ -400,7 +400,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
-class SetupView(IdempotentSessionWizardView):
+class SetupView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
     """
     View for handling OTP setup using a wizard.
 
@@ -423,6 +423,27 @@ class SetupView(IdempotentSessionWizardView):
         # Other forms are dynamically added in get_form_list()
     )
 
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
+    def get_success_url(self):
+        url = self.get_redirect_url()
+        return url or reverse('two_factor:setup_complete')
+
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
+    def get_redirect_url(self):
+        """Return the user-originating redirect URL if it's safe."""
+        redirect_to = self.request.POST.get(
+            REDIRECT_FIELD_NAME,
+            self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        )
+        url_is_safe = url_has_allowed_host_and_scheme(
+            url=redirect_to,
+            allowed_hosts=self.get_success_url_allowed_hosts(),
+            require_https=self.request.is_secure(),
+        )
+        return redirect_to if url_is_safe else ''
+
     def get_method(self):
         method_data = self.storage.validated_step_data.get('method', {})
         method_key = method_data.get('method', None)
@@ -433,7 +454,7 @@ class SetupView(IdempotentSessionWizardView):
         Start the setup wizard. Redirect if already enabled.
         """
         if default_device(self.request.user):
-            return redirect(self.success_url)
+            return redirect(self.get_success_url())
         return super().get(request, *args, **kwargs)
 
     def get_form(self, step=None, **kwargs):
@@ -501,7 +522,7 @@ class SetupView(IdempotentSessionWizardView):
             raise NotImplementedError("Unknown method '%s'" % method.code)
 
         django_otp.login(self.request, device)
-        return redirect(self.success_url)
+        return redirect(self.get_success_url())
 
     def get_form_kwargs(self, step=None):
         kwargs = {}
@@ -613,11 +634,14 @@ class SetupCompleteView(TemplateView):
     """
     template_name = 'two_factor/core/setup_complete.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.session.get('next'):
+            return redirect(request.session.get('next'))
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self):
-        redirect_url = self.request.session.pop('next', None)
         return {
             'phone_methods': get_available_phone_methods(),
-            'next': redirect_url
         }
 
 

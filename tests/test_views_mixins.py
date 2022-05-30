@@ -101,6 +101,4 @@ class OTPRequiredMixinTest(UserMixin, TestCase):
             follow=True,
         )
 
-        self.assertRedirects(response, reverse('two_factor:setup_complete'))
-        self.assertContains(response, 'Continue where I left off')
-        self.assertContains(response, '<a href="%s' % protected_url)
+        self.assertRedirects(response, protected_url)
