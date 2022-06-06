@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-27 12:48+0100\n"
-"PO-Revision-Date: 2021-11-29 12:13+0000\n"
-"Last-Translator: Tuấn-Hiển Ngô\n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-19 18:12+0000\n"
+"Last-Translator: Tuấn-Hiển Ngô, 2021\n"
 "Language-Team: Vietnamese (http://www.transifex.com/Bouke/django-two-factor-auth/language/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,99 +18,106 @@ msgstr ""
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: forms.py:25 forms.py:37
+#: forms.py:16 plugins/phonenumber/forms.py:12
 msgid "Method"
 msgstr "Phương thức"
 
-#: forms.py:35 forms.py:50
-msgid "Phone Number"
-msgstr "Số điện thoại"
-
-#: forms.py:59 forms.py:92 forms.py:150 forms.py:206
+#: forms.py:28 forms.py:49 forms.py:107 forms.py:161 plugins/email/forms.py:19
 msgid "Token"
 msgstr "Token"
 
-#: forms.py:65 forms.py:99
+#: forms.py:34 forms.py:56
 msgid "Entered token is not valid."
 msgstr "Token được nhập vào không sử dụng được"
 
-#: forms.py:80 forms.py:180 models.py:40
-msgid "YubiKey"
-msgstr "YubiKey"
-
-#: forms.py:83
-msgid "The YubiKey could not be verified."
-msgstr "YubiKey không thể được xác minh"
-
-#: forms.py:146
+#: forms.py:103
 msgid "Yes, I am sure"
 msgstr "Vâng, tôi chắc chắn"
 
-#: forms.py:186
+#: forms.py:141
 #, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
 msgstr "Đừng hỏi lại trên thiết bị này trong %(minutes)i phút"
 
-#: forms.py:189
+#: forms.py:144
 #, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
 msgstr "Đừng hỏi lại trên thiết bị này trong %(hours)i giờ"
 
-#: forms.py:192
+#: forms.py:147
 #, python-format
 msgid "Don't ask again on this device for %(days)i days"
 msgstr "Đừng hỏi lại trên thiết bị này trong %(days)i ngày"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:50
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "vi"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:39
-#, python-format
-msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr "Xin chào, đây là cuộc gọi từ %(site_name)s. Vui lòng nhấn một phím bất kỳ để tiếp tục"
+#: plugins/email/forms.py:11
+msgid "Email address"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:44
-#, python-format
-msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr "Token của quý khách là %(token)s. Xin được nhắc lại: %(token)s. Chúc quý khách một ngày tốt lành."
+#: plugins/email/method.py:11
+msgid "Email"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:48
-msgid "You didn't press any keys. Good bye."
-msgstr "Quý khách đã không nhấn một phím bất kỳ. Chúc quý khách một ngày tốt lành."
+#: plugins/phonenumber/forms.py:10 plugins/phonenumber/forms.py:25
+msgid "Phone Number"
+msgstr "Số điện thoại"
 
-#: models.py:23
-msgid "Phone Call"
-msgstr "Cuộc gọi"
-
-#: models.py:24
-msgid "Text Message"
-msgstr "Tin nhắn"
-
-#: models.py:31
+#: plugins/phonenumber/method.py:28 plugins/phonenumber/utils.py:25
 msgid "Phone call"
 msgstr "Cuộc gọi"
 
-#: models.py:33
+#: plugins/phonenumber/method.py:33 plugins/phonenumber/utils.py:27
 msgid "Text message"
 msgstr "Tin nhắn"
 
-#: models.py:45
+#: plugins/phonenumber/models.py:16
+msgid "Phone Call"
+msgstr "Cuộc gọi"
+
+#: plugins/phonenumber/models.py:17
+msgid "Text Message"
+msgstr "Tin nhắn"
+
+#: plugins/phonenumber/models.py:39
+msgid "method"
+msgstr "phương thức"
+
+#: plugins/phonenumber/models.py:83
+#: plugins/phonenumber/templatetags/phonenumber.py:41
+#, python-format
+msgid "Send text message to %s"
+msgstr "Gửi tin nhắn tới  %s"
+
+#: plugins/phonenumber/models.py:85
+#: plugins/phonenumber/templatetags/phonenumber.py:43
+#, python-format
+msgid "Call number %s"
+msgstr "Số cuộc gọi %s"
+
+#: plugins/phonenumber/validators.py:14
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "Vui lòng nhập vào một số điện thoại thực, bao gồm cả mã quốc gia bắt đầu bằng dấu + hoặc 00"
+
+#: plugins/registry.py:39
 msgid "Token generator"
 msgstr "Ứng dụng tạo Token"
 
-#: models.py:69
-msgid "method"
-msgstr "phương thức"
+#: plugins/yubikey/forms.py:8 plugins/yubikey/forms.py:24
+#: plugins/yubikey/method.py:11
+msgid "YubiKey"
+msgstr "YubiKey"
+
+#: plugins/yubikey/forms.py:11
+msgid "The YubiKey could not be verified."
+msgstr "YubiKey không thể được xác minh"
 
 #: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
@@ -342,6 +349,10 @@ msgid ""
 "to the phone numbers listed below."
 msgstr "Nếu phương thức chính của quý khách không sẵn sàng, chúng tôi có thể gửi token dự phòng đến những số điện thoại được liệt kê dưới đây."
 
+#: templates/two_factor/profile/profile.html:25
+msgid "Are you sure?"
+msgstr ""
+
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
 msgstr "Chưa đăng ký"
@@ -373,31 +384,36 @@ msgid ""
 " authentication for your account."
 msgstr "Tuy nhiên, chúng tôi thực sự không khuyến khích quý khách thực hiện việc này, quý khách cũng có thể hủy kích hoạt phương thức xác minh hai lớp cho tài khoản của quý khách."
 
+#: templates/two_factor/twilio/press_a_key.xml:4
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "Xin chào, đây là cuộc gọi từ %(site_name)s. Vui lòng nhấn một phím bất kỳ để tiếp tục"
+
+#: templates/two_factor/twilio/press_a_key.xml:6
+msgid "You didn’t press any keys. Good bye."
+msgstr ""
+
 #: templates/two_factor/twilio/sms_message.html:2
 #, python-format
 msgid "Your OTP token is %(token)s"
 msgstr "Chuỗi OTP token của quý khách là %(token)s"
 
-#: templatetags/two_factor.py:56
-#, python-format
-msgid "Send text message to %s"
-msgstr "Gửi tin nhắn tới  %s"
+#: templates/two_factor/twilio/token.xml:3
+msgid "Your token is:"
+msgstr ""
 
-#: templatetags/two_factor.py:58
-#, python-format
-msgid "Call number %s"
-msgstr "Số cuộc gọi %s"
+#: templates/two_factor/twilio/token.xml:7
+msgid "Repeat:"
+msgstr ""
 
-#: validators.py:14
-msgid ""
-"Please enter a valid phone number, including your country code starting with"
-" + or 00."
-msgstr "Vui lòng nhập vào một số điện thoại thực, bao gồm cả mã quốc gia bắt đầu bằng dấu + hoặc 00"
+#: templates/two_factor/twilio/token.xml:11
+msgid "Good bye."
+msgstr ""
 
-#: views/core.py:266
+#: views/core.py:267
 msgid "Your session has timed out. Please login again."
 msgstr "Thời gian phiên làm việc của quý khách đã hết. Vui lòng đăng nhập lại."
 
-#: views/utils.py:147
+#: views/utils.py:146
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr "Dữ liệu trên biểu mẫu quản lý bị thiếu hoặc đã bị sai lệch với"

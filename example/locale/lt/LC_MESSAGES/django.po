@@ -1,0 +1,151 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-20 09:31+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"Language-Team: Lithuanian (http://www.transifex.com/Bouke/django-two-factor-auth/language/lt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr ""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr ""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr ""
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr ""
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr ""
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr ""
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr ""
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr ""
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr ""
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr ""
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr ""
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr ""
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr ""
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr ""
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr ""
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr ""
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr ""
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr ""
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr ""
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr ""
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr ""
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr ""
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr ""
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr ""
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr ""
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr ""
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr ""
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr ""

@@ -1,0 +1,152 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# Alireza Khorami <khoramism@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-20 09:31+0000\n"
+"Last-Translator: Alireza Khorami <khoramism@gmail.com>, 2022\n"
+"Language-Team: Persian (http://www.transifex.com/Bouke/django-two-factor-auth/language/fa/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "ارتباط تقلبی به %(number)s : \"نشانه شما این می باشد: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "پیامک تقلبی به %(number)s: \"نشانه شما این میباشد : %(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "پیش نمایه"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "خانه"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr "صفحه مخفی"
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "امنیت حساب"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "سشن ها"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "خروج "
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "وارد نشده"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "ورود"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – برنامه پیش نمایه "
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "امنیت خود را بالا ببرید<small>کاربران شما از شما تشکر خواهند کرد</small> "
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "به برنامه نمونه <code> django-two-factor-auth</code> خوش آمدید. از این نمونه استفاده کنید تا درک کنید که برنامه میتواند برای شما چه کار کند."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "لطفا تنظیمات خود را تایید کنید"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "آیا تنظیمات تولیو خود را درفایل  <code>settings_private.py</code> اضافه کرده اید؟\nبا کردن این کار،برنامه نمونه قادر به تماس گیری یا فرستادن پیامک برای تایید تصدیق نشانه (توکن) شما خواهد بود. در غیر این صورت، نشانه های شما روی صفحه نمایش داده خواهد شد."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "قدم های بعدی"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "با <a href=\"%(reg_url)s\">ثبت </a> یک حساب شروع کنید."
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "به اکانت خود<a href=\"%(login_url)s\">وارد شوید</a>."
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr " احراز هویت دو عاملی خود را <a href=\"%(setup_url)s\">فعال</a> کنید."
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "سپس یک بار دیگر <a href=\"%(logout_url)s\">خارج شوید</a> و <a href=\"%(login_url)s\">وارد شوید</a> تا احراز هویت دو عاملی خود را فعال ببینید. "
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "حداقل، شما به <a href=\"%(secret_url)s\">صفحه مخفی</a> دسترسی پیدا کردید! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr " نام نویسی"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "ثبت"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "خارج شده"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "می بینمت!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "نام نویسی به کامل شد."
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "تبریک، شما با موفقیت یک حساب ثبت کردید."
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "تبریک، شما موفق شدید. شما با موفقیت احراز هویت دو عاملی را فعال و با نشانه خود وارد شدید."

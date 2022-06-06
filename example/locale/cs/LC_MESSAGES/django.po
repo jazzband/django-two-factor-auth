@@ -1,0 +1,152 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+# Jonas Vacek, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-20 09:31+0000\n"
+"Last-Translator: Jonas Vacek, 2022\n"
+"Language-Team: Czech (http://www.transifex.com/Bouke/django-two-factor-auth/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Falešný hovor na %(number)s: \"Váš token je: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "Falešná SMS zpráva na %(number)s: \"Váš token je: %(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "Domů"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr ""
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "Bezpečnost Účtu"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "Relace"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "Odhlásit se"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Nepřihlášen"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Přihlásit"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – Demo Aplikace"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "Vylepšete si bezpečnost <small>vaši uživatelé vám budou děkovat</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "Vítejte ve vzorové aplikaci <code>django-two-factor-auth</code>. Využijte ji k porozumění, k čemu vám může být užitečná."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Prosím, ověřte svá nastavení"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "Vlořili jste vaše Twilio údaje do souboru <code>settings_private.py</code>? S němi vám bude moc vzorová aplikace zavolat a posílat SMS zprávy k ověřování vašich tokenů. Jinak vám tokeny budou zobrazeny na obrazovce."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Další kroky:"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "Začněte <a href=\"%(reg_url)s\">registrací</a> účtu."
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "<a href=\"%(login_url)s\">Přihlašte se</a> do vašeho účtu."
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr "<a href=\"%(setup_url)s\">Zapnout</a> dvoufázové ovšření"
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "Potom se opět <a href=\"%(logout_url)s\">odhlašte</a> a <a href=\"%(login_url)s\">přihlašte</a> do vašeho účtu, abyste viděli dvoufázové ověření v praxi."
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "Konečně, byl vám umožněn přístup k <a href=\"%(secret_url)s\">tajné stránce</a>! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Registrace"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Registrovat"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Odhlášen"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Zatím!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Registrace dokončena"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "Blahopřejeme, váš účet byl úspěšně zaregistrován."
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "Blahopřejeme, zvládli jste to. Úspěšně jste zapnulu dvoufázové ověření, a přihlísili jste se se svým tokenem."
