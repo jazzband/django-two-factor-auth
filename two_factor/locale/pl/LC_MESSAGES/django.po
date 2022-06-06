@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-08 08:49+0200\n"
-"PO-Revision-Date: 2020-07-08 06:54+0000\n"
-"Last-Translator: Bouke Haarsma <bouke@haarsma.eu>\n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-19 18:12+0000\n"
+"Last-Translator: m_aciek <maciej.olko@gmail.com>, 2020\n"
 "Language-Team: Polish (http://www.transifex.com/Bouke/django-two-factor-auth/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,100 +22,117 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: forms.py:24 forms.py:36
+#: forms.py:16 plugins/phonenumber/forms.py:12
 msgid "Method"
 msgstr "Metoda"
 
-#: forms.py:34 forms.py:49
-msgid "Phone Number"
-msgstr "Number telefonu"
-
-#: forms.py:58 forms.py:88 forms.py:142 forms.py:178
+#: forms.py:28 forms.py:49 forms.py:107 forms.py:161 plugins/email/forms.py:19
 msgid "Token"
 msgstr "Token"
 
-#: forms.py:61 forms.py:91
+#: forms.py:34 forms.py:56
 msgid "Entered token is not valid."
 msgstr "Wprowadzony token jest nieprawidłowy."
 
-#: forms.py:76 forms.py:170 models.py:41
-msgid "YubiKey"
-msgstr "YubiKey"
-
-#: forms.py:79
-msgid "The YubiKey could not be verified."
-msgstr "Token YubiKey nie mógł być zweryfikowany."
-
-#: forms.py:138
+#: forms.py:103
 msgid "Yes, I am sure"
 msgstr "Tak, jestem pewien."
 
-#: gateways/twilio/gateway.py:55
+#: forms.py:141
 #, python-format
-msgid "Your authentication token is %s"
-msgstr "Twój token do autoryzacji to %s"
+msgid "Don't ask again on this device for %(minutes)i minutes"
+msgstr ""
+
+#: forms.py:144
+#, python-format
+msgid "Don't ask again on this device for %(hours)i hours"
+msgstr ""
+
+#: forms.py:147
+#, python-format
+msgid "Don't ask again on this device for %(days)i days"
+msgstr ""
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:64 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:50
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "pl"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:39
-#, python-format
-msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr "Cześć, z tej strony %(site_name)s. Wciśnij dowolny klawisz, by kontynuować."
+#: plugins/email/forms.py:11
+msgid "Email address"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:44
-#, python-format
-msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr "Twój token to %(token)s. Powtarzam: %(token)s. Do widzenia."
+#: plugins/email/method.py:11
+msgid "Email"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:48
-msgid "You didn't press any keys. Good bye."
-msgstr "Nie nacisnąłeś żadnego przycisku. Do widzenia."
+#: plugins/phonenumber/forms.py:10 plugins/phonenumber/forms.py:25
+msgid "Phone Number"
+msgstr "Number telefonu"
 
-#: models.py:24
-msgid "Phone Call"
-msgstr "Połączenie telefoniczne"
-
-#: models.py:25
-msgid "Text Message"
-msgstr "Wiadomość tekstowa (SMS)"
-
-#: models.py:32
+#: plugins/phonenumber/method.py:28 plugins/phonenumber/utils.py:25
 msgid "Phone call"
 msgstr "Połączenie telefoniczne"
 
-#: models.py:34
+#: plugins/phonenumber/method.py:33 plugins/phonenumber/utils.py:27
 msgid "Text message"
 msgstr "Wiadomość tekstowa (SMS)"
 
-#: models.py:46
+#: plugins/phonenumber/models.py:16
+msgid "Phone Call"
+msgstr "Połączenie telefoniczne"
+
+#: plugins/phonenumber/models.py:17
+msgid "Text Message"
+msgstr "Wiadomość tekstowa (SMS)"
+
+#: plugins/phonenumber/models.py:39
+msgid "method"
+msgstr "Metoda"
+
+#: plugins/phonenumber/models.py:83
+#: plugins/phonenumber/templatetags/phonenumber.py:41
+#, python-format
+msgid "Send text message to %s"
+msgstr "Wyślij wiadomość tekstową do %s"
+
+#: plugins/phonenumber/models.py:85
+#: plugins/phonenumber/templatetags/phonenumber.py:43
+#, python-format
+msgid "Call number %s"
+msgstr "Połącz z numerem %s"
+
+#: plugins/phonenumber/validators.py:14
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "Proszę podać prawidłowy numer telefonu, łącznie z kodem kraju zaczynającym się od + lub 00."
+
+#: plugins/registry.py:39
 msgid "Token generator"
 msgstr "Generator tokenów"
 
-#: models.py:75
-msgid "method"
-msgstr "Metoda"
+#: plugins/yubikey/forms.py:8 plugins/yubikey/forms.py:24
+#: plugins/yubikey/method.py:11
+msgid "YubiKey"
+msgstr "YubiKey"
+
+#: plugins/yubikey/forms.py:11
+msgid "The YubiKey could not be verified."
+msgstr "Token YubiKey nie mógł być zweryfikowany."
 
 #: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
 msgstr "Porzuć"
 
 #: templates/two_factor/_wizard_actions.html:10
-#: templates/two_factor/_wizard_actions.html:13
+#: templates/two_factor/_wizard_actions.html:12
 msgid "Back"
 msgstr "Wstecz"
 
-#: templates/two_factor/_wizard_actions.html:15
+#: templates/two_factor/_wizard_actions.html:14
 msgid "Next"
 msgstr "Dalej"
 
@@ -141,6 +158,8 @@ msgid "You don't have any backup codes yet."
 msgstr "Ty nie masz żadnych zapasowych kodów jeszcze."
 
 #: templates/two_factor/core/backup_tokens.html:25
+#: templates/two_factor/core/setup_complete.html:12
+#: templates/two_factor/core/setup_complete.html:19
 msgid "Back to Account Security"
 msgstr "Wróć do Ochrona Konta"
 
@@ -282,11 +301,6 @@ msgid ""
 "Congratulations, you've successfully enabled two-factor authentication."
 msgstr ""
 
-#: templates/two_factor/core/setup_complete.html:12
-#: templates/two_factor/core/setup_complete.html:19
-msgid "Back to Profile"
-msgstr "Wróć do Profilu"
-
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
 "However, it might happen that you don't have access to your primary token "
@@ -339,6 +353,10 @@ msgid ""
 "to the phone numbers listed below."
 msgstr ""
 
+#: templates/two_factor/profile/profile.html:25
+msgid "Are you sure?"
+msgstr ""
+
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
 msgstr "Wyrejestruj"
@@ -373,26 +391,36 @@ msgid ""
 " authentication for your account."
 msgstr ""
 
-#: templatetags/two_factor.py:56
+#: templates/two_factor/twilio/press_a_key.xml:4
 #, python-format
-msgid "Send text message to %s"
-msgstr "Wyślij wiadomość tekstową do %s"
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "Cześć, z tej strony %(site_name)s. Wciśnij dowolny klawisz, by kontynuować."
 
-#: templatetags/two_factor.py:58
+#: templates/two_factor/twilio/press_a_key.xml:6
+msgid "You didn’t press any keys. Good bye."
+msgstr ""
+
+#: templates/two_factor/twilio/sms_message.html:2
 #, python-format
-msgid "Call number %s"
-msgstr "Połącz z numerem %s"
+msgid "Your OTP token is %(token)s"
+msgstr ""
 
-#: validators.py:14
-msgid ""
-"Please enter a valid phone number, including your country code starting with"
-" + or 00."
-msgstr "Proszę podać prawidłowy numer telefonu, łącznie z kodem kraju zaczynającym się od + lub 00."
+#: templates/two_factor/twilio/token.xml:3
+msgid "Your token is:"
+msgstr ""
 
-#: views/core.py:225
+#: templates/two_factor/twilio/token.xml:7
+msgid "Repeat:"
+msgstr ""
+
+#: templates/two_factor/twilio/token.xml:11
+msgid "Good bye."
+msgstr ""
+
+#: views/core.py:267
 msgid "Your session has timed out. Please login again."
 msgstr ""
 
-#: views/utils.py:139
+#: views/utils.py:146
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr "Danych ManagementForma brakuje lub zostały naruszone"

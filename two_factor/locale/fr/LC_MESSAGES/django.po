@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the django-two-factor-auth package.
 # 
 # Translators:
-# Claude Paroz <claude@2xlibre.net>, 2020
+# Claude Paroz <claude@2xlibre.net>, 2020,2022
 # a270031086f2a0d3514bc0cb507b48f6, 2019
 # bato <francoisconil@gmail.com>, 2014,2018
 # Michael Mior <michael.mior@gmail.com>, 2014
@@ -15,109 +15,116 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-27 12:48+0100\n"
-"PO-Revision-Date: 2021-10-10 03:32+0000\n"
-"Last-Translator: gab_tes\n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-19 18:12+0000\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>, 2020,2022\n"
 "Language-Team: French (http://www.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: forms.py:25 forms.py:37
+#: forms.py:16 plugins/phonenumber/forms.py:12
 msgid "Method"
 msgstr "Méthode"
 
-#: forms.py:35 forms.py:50
-msgid "Phone Number"
-msgstr "Numéro de téléphone"
-
-#: forms.py:59 forms.py:92 forms.py:150 forms.py:206
+#: forms.py:28 forms.py:49 forms.py:107 forms.py:161 plugins/email/forms.py:19
 msgid "Token"
 msgstr "Jeton"
 
-#: forms.py:65 forms.py:99
+#: forms.py:34 forms.py:56
 msgid "Entered token is not valid."
 msgstr "Le jeton entré est invalide."
 
-#: forms.py:80 forms.py:180 models.py:40
-msgid "YubiKey"
-msgstr "YubiKey"
-
-#: forms.py:83
-msgid "The YubiKey could not be verified."
-msgstr "La YubiKey n'a pas pu être vérifiée."
-
-#: forms.py:146
+#: forms.py:103
 msgid "Yes, I am sure"
 msgstr "Oui, je suis sûr"
 
-#: forms.py:186
+#: forms.py:141
 #, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
 msgstr "Ne plus demander sur cet appareil pendant %(minutes)i minute(s)"
 
-#: forms.py:189
+#: forms.py:144
 #, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
 msgstr "Ne plus demander sur cet appareil pendant %(hours)i heure(s)"
 
-#: forms.py:192
+#: forms.py:147
 #, python-format
 msgid "Don't ask again on this device for %(days)i days"
 msgstr "Ne plus demander sur cet appareil pendant %(days)i jour(s)"
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:50
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "fr"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:39
-#, python-format
-msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr "Bonjour, ceci est un appel de %(site_name)s. Appuyez sur une touche pour continuer."
+#: plugins/email/forms.py:11
+msgid "Email address"
+msgstr "Adresse de courriel"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:44
-#, python-format
-msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr "Votre jeton est %(token)s. Je répète: %(token)s. Au revoir."
+#: plugins/email/method.py:11
+msgid "Email"
+msgstr "Courriel"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:48
-msgid "You didn't press any keys. Good bye."
-msgstr "Vous n'avez appuyé sur aucune touche. Au revoir."
+#: plugins/phonenumber/forms.py:10 plugins/phonenumber/forms.py:25
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
 
-#: models.py:23
-msgid "Phone Call"
-msgstr "Appel téléphonique"
-
-#: models.py:24
-msgid "Text Message"
-msgstr "Message texte"
-
-#: models.py:31
+#: plugins/phonenumber/method.py:28 plugins/phonenumber/utils.py:25
 msgid "Phone call"
 msgstr "Appel téléphonique"
 
-#: models.py:33
+#: plugins/phonenumber/method.py:33 plugins/phonenumber/utils.py:27
 msgid "Text message"
 msgstr "Message texte"
 
-#: models.py:45
+#: plugins/phonenumber/models.py:16
+msgid "Phone Call"
+msgstr "Appel téléphonique"
+
+#: plugins/phonenumber/models.py:17
+msgid "Text Message"
+msgstr "Message texte"
+
+#: plugins/phonenumber/models.py:39
+msgid "method"
+msgstr "méthode"
+
+#: plugins/phonenumber/models.py:83
+#: plugins/phonenumber/templatetags/phonenumber.py:41
+#, python-format
+msgid "Send text message to %s"
+msgstr "Envoyer un message texte à %s"
+
+#: plugins/phonenumber/models.py:85
+#: plugins/phonenumber/templatetags/phonenumber.py:43
+#, python-format
+msgid "Call number %s"
+msgstr "Appler le numéro %s"
+
+#: plugins/phonenumber/validators.py:14
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "Veuillez entrer un numéro valide, contenant l'indicateur du pays commençant par + ou 00."
+
+#: plugins/registry.py:39
 msgid "Token generator"
 msgstr "Générateur de jetons"
 
-#: models.py:69
-msgid "method"
-msgstr "méthode"
+#: plugins/yubikey/forms.py:8 plugins/yubikey/forms.py:24
+#: plugins/yubikey/method.py:11
+msgid "YubiKey"
+msgstr "YubiKey"
+
+#: plugins/yubikey/forms.py:11
+msgid "The YubiKey could not be verified."
+msgstr "La YubiKey n'a pas pu être vérifiée."
 
 #: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
@@ -349,6 +356,10 @@ msgid ""
 "to the phone numbers listed below."
 msgstr "Si la méthode principale que vous avez utilisée pour vous inscrire n'est pas disponible, nous pouvons envoyer des jetons de secours aux numéros de téléphone ci-dessous."
 
+#: templates/two_factor/profile/profile.html:25
+msgid "Are you sure?"
+msgstr "En êtes-vous sûr ?"
+
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
 msgstr "Désinscrire"
@@ -365,6 +376,7 @@ msgid "You have only one backup token remaining."
 msgid_plural "You have %(counter)s backup tokens remaining."
 msgstr[0] "Il ne vous reste plus qu’un jeton de secours."
 msgstr[1] "Il vous reste %(counter)s jetons de secours."
+msgstr[2] "Il vous reste %(counter)s jetons de secours."
 
 #: templates/two_factor/profile/profile.html:48
 msgid "Show Codes"
@@ -381,31 +393,36 @@ msgid ""
 " authentication for your account."
 msgstr "Bien que cela soit fortement déconseillé, vous pouvez aussi désactiver l'authentification à deux facteurs pour votre compte."
 
+#: templates/two_factor/twilio/press_a_key.xml:4
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "Bonjour, ceci est un appel de %(site_name)s. Appuyez sur une touche pour continuer."
+
+#: templates/two_factor/twilio/press_a_key.xml:6
+msgid "You didn’t press any keys. Good bye."
+msgstr "Vous n’avez appuyé sur aucune touche. Au revoir."
+
 #: templates/two_factor/twilio/sms_message.html:2
 #, python-format
 msgid "Your OTP token is %(token)s"
 msgstr "Votre jeton OTP est %(token)s"
 
-#: templatetags/two_factor.py:56
-#, python-format
-msgid "Send text message to %s"
-msgstr "Envoyer un message texte à %s"
+#: templates/two_factor/twilio/token.xml:3
+msgid "Your token is:"
+msgstr "Votre jeton est :"
 
-#: templatetags/two_factor.py:58
-#, python-format
-msgid "Call number %s"
-msgstr "Appler le numéro %s"
+#: templates/two_factor/twilio/token.xml:7
+msgid "Repeat:"
+msgstr "Je répète :"
 
-#: validators.py:14
-msgid ""
-"Please enter a valid phone number, including your country code starting with"
-" + or 00."
-msgstr "Veuillez entrer un numéro valide, contenant l'indicateur du pays commençant par + ou 00."
+#: templates/two_factor/twilio/token.xml:11
+msgid "Good bye."
+msgstr "Au revoir."
 
-#: views/core.py:266
+#: views/core.py:267
 msgid "Your session has timed out. Please login again."
 msgstr "Votre session a expiré. Veuillez vous reconnecter."
 
-#: views/utils.py:147
+#: views/utils.py:146
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr "Les données ManagementForm sont manquantes ou ont été falsifiées"

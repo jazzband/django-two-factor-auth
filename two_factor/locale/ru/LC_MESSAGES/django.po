@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-27 12:48+0100\n"
-"PO-Revision-Date: 2021-09-27 11:48+0000\n"
-"Last-Translator: Matt Molyneaux\n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-19 18:12+0000\n"
+"Last-Translator: Антон Утов <vermus.jabber@gmail.com>, 2021\n"
 "Language-Team: Russian (http://www.transifex.com/Bouke/django-two-factor-auth/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,99 +22,106 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: forms.py:25 forms.py:37
+#: forms.py:16 plugins/phonenumber/forms.py:12
 msgid "Method"
 msgstr "Метод"
 
-#: forms.py:35 forms.py:50
-msgid "Phone Number"
-msgstr "Номер телефона"
-
-#: forms.py:59 forms.py:92 forms.py:150 forms.py:206
+#: forms.py:28 forms.py:49 forms.py:107 forms.py:161 plugins/email/forms.py:19
 msgid "Token"
 msgstr "Токен"
 
-#: forms.py:65 forms.py:99
+#: forms.py:34 forms.py:56
 msgid "Entered token is not valid."
 msgstr "Введен некорректный токен"
 
-#: forms.py:80 forms.py:180 models.py:40
-msgid "YubiKey"
-msgstr "YubiKey"
-
-#: forms.py:83
-msgid "The YubiKey could not be verified."
-msgstr "Неправильный YubiKey"
-
-#: forms.py:146
+#: forms.py:103
 msgid "Yes, I am sure"
 msgstr "Да, я уверен"
 
-#: forms.py:186
+#: forms.py:141
 #, python-format
 msgid "Don't ask again on this device for %(minutes)i minutes"
 msgstr ""
 
-#: forms.py:189
+#: forms.py:144
 #, python-format
 msgid "Don't ask again on this device for %(hours)i hours"
 msgstr ""
 
-#: forms.py:192
+#: forms.py:147
 #, python-format
 msgid "Don't ask again on this device for %(days)i days"
 msgstr ""
 
 #. Translators: twilio_locale should be a locale supported by
 #. Twilio, see http://bit.ly/187I5cr
-#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:74
+#: gateways/twilio/gateway.py:84 gateways/twilio/views.py:50
 msgctxt "twilio_locale"
 msgid "en"
 msgstr "en"
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:39
-#, python-format
-msgid "Hi, this is %(site_name)s calling. Press any key to continue."
-msgstr "Привет, это %(site_name)sвызывает. Нажмите любую кнопку для продолжения."
+#: plugins/email/forms.py:11
+msgid "Email address"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:44
-#, python-format
-msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
-msgstr "Ваш код %(token)s. Повторяю: %(token)s. До свидания."
+#: plugins/email/method.py:11
+msgid "Email"
+msgstr ""
 
-#. Translators: should be a language supported by Twilio,
-#. see http://bit.ly/187I5cr
-#: gateways/twilio/views.py:48
-msgid "You didn't press any keys. Good bye."
-msgstr "Вы не нажали любую кнопку. Прощайте."
+#: plugins/phonenumber/forms.py:10 plugins/phonenumber/forms.py:25
+msgid "Phone Number"
+msgstr "Номер телефона"
 
-#: models.py:23
-msgid "Phone Call"
-msgstr "Телефонный звонок"
-
-#: models.py:24
-msgid "Text Message"
-msgstr "SMS сообщение"
-
-#: models.py:31
+#: plugins/phonenumber/method.py:28 plugins/phonenumber/utils.py:25
 msgid "Phone call"
 msgstr "Телефонный звонок"
 
-#: models.py:33
+#: plugins/phonenumber/method.py:33 plugins/phonenumber/utils.py:27
 msgid "Text message"
 msgstr "SMS сообщение"
 
-#: models.py:45
+#: plugins/phonenumber/models.py:16
+msgid "Phone Call"
+msgstr "Телефонный звонок"
+
+#: plugins/phonenumber/models.py:17
+msgid "Text Message"
+msgstr "SMS сообщение"
+
+#: plugins/phonenumber/models.py:39
+msgid "method"
+msgstr "метод"
+
+#: plugins/phonenumber/models.py:83
+#: plugins/phonenumber/templatetags/phonenumber.py:41
+#, python-format
+msgid "Send text message to %s"
+msgstr "Отправка сообщения на номер: %s"
+
+#: plugins/phonenumber/models.py:85
+#: plugins/phonenumber/templatetags/phonenumber.py:43
+#, python-format
+msgid "Call number %s"
+msgstr "Звонок на номер: %s"
+
+#: plugins/phonenumber/validators.py:14
+msgid ""
+"Please enter a valid phone number, including your country code starting with"
+" + or 00."
+msgstr "Пожалуйста введите верный телефонный номер, включая код страны, начинающиеся с + или 00"
+
+#: plugins/registry.py:39
 msgid "Token generator"
 msgstr "Генератор токенов"
 
-#: models.py:69
-msgid "method"
-msgstr "метод"
+#: plugins/yubikey/forms.py:8 plugins/yubikey/forms.py:24
+#: plugins/yubikey/method.py:11
+msgid "YubiKey"
+msgstr "YubiKey"
+
+#: plugins/yubikey/forms.py:11
+msgid "The YubiKey could not be verified."
+msgstr "Неправильный YubiKey"
 
 #: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
@@ -346,6 +353,10 @@ msgid ""
 "to the phone numbers listed below."
 msgstr "Если ваш основной метод недоступен, мы можем отправить резервные токены на номера телефонов, указанные ниже."
 
+#: templates/two_factor/profile/profile.html:25
+msgid "Are you sure?"
+msgstr ""
+
 #: templates/two_factor/profile/profile.html:28
 msgid "Unregister"
 msgstr "Удалить регистрацию "
@@ -380,31 +391,36 @@ msgid ""
 " authentication for your account."
 msgstr "Однако мы настоятельно рекомендуем вам не делать этого, вы можете также отключить двухфакторную аутентификацию для вашей учетной записи."
 
+#: templates/two_factor/twilio/press_a_key.xml:4
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr "Привет, это %(site_name)sвызывает. Нажмите любую кнопку для продолжения."
+
+#: templates/two_factor/twilio/press_a_key.xml:6
+msgid "You didn’t press any keys. Good bye."
+msgstr ""
+
 #: templates/two_factor/twilio/sms_message.html:2
 #, python-format
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
-#: templatetags/two_factor.py:56
-#, python-format
-msgid "Send text message to %s"
-msgstr "Отправка сообщения на номер: %s"
+#: templates/two_factor/twilio/token.xml:3
+msgid "Your token is:"
+msgstr ""
 
-#: templatetags/two_factor.py:58
-#, python-format
-msgid "Call number %s"
-msgstr "Звонок на номер: %s"
+#: templates/two_factor/twilio/token.xml:7
+msgid "Repeat:"
+msgstr ""
 
-#: validators.py:14
-msgid ""
-"Please enter a valid phone number, including your country code starting with"
-" + or 00."
-msgstr "Пожалуйста введите верный телефонный номер, включая код страны, начинающиеся с + или 00"
+#: templates/two_factor/twilio/token.xml:11
+msgid "Good bye."
+msgstr ""
 
-#: views/core.py:266
+#: views/core.py:267
 msgid "Your session has timed out. Please login again."
 msgstr "Ваша сессия истекла. Пожалуйста, войдите заново."
 
-#: views/utils.py:147
+#: views/utils.py:146
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr "Данные ManagementForm отсутствуют или были подделаны"
