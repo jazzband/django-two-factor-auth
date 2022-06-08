@@ -1,7 +1,12 @@
+# Changelog
+
 ## Unreleased
 
 ### Added
 - Enforcing a redirect to setup of otp device when none available for user [#550](https://github.com/jazzband/django-two-factor-auth/pull/500)
+
+### Removed
+- Django 2.2, 3.0, and 3.1 support
 
 ## 1.14.0
 

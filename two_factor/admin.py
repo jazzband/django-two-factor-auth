@@ -3,15 +3,9 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .utils import monkeypatch_method
-
-try:
-    from django.utils.http import url_has_allowed_host_and_scheme
-except ImportError:
-    from django.utils.http import (
-        is_safe_url as url_has_allowed_host_and_scheme,
-    )
 
 
 class AdminSiteOTPRequiredMixin:

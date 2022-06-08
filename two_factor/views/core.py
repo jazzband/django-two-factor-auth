@@ -20,6 +20,7 @@ from django.shortcuts import redirect, resolve_url
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import never_cache
@@ -50,19 +51,11 @@ from .utils import (
 )
 
 try:
-    from django.utils.http import url_has_allowed_host_and_scheme
-except ImportError:  # django<3.0
-    from django.utils.http import (
-        is_safe_url as url_has_allowed_host_and_scheme,
-    )
-
-try:
     from django.contrib.auth.views import RedirectURLMixin
 except ImportError:  # django<4.1
     from django.contrib.auth.views import (
         SuccessURLAllowedHostsMixin as RedirectURLMixin,
     )
-
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
