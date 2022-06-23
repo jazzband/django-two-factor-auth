@@ -66,9 +66,10 @@ Add the routes to your project url configuration:
 .. code-block:: python
 
     from two_factor.urls import urlpatterns as tf_urls
+    from two_factor.admin import TwoFactorAdminSite
     urlpatterns = [
        path('', include(tf_urls)),
-        ...
+       path('admin', TwoFactorAdminSite().urls)
     ]
 
 .. warning::

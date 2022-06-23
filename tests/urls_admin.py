@@ -1,8 +1,9 @@
-from django.contrib import admin
 from django.urls import path
+
+from two_factor.admin import TwoFactorAdminSite
 
 from .urls import urlpatterns
 
 urlpatterns += [
-    path('admin/', admin.site.urls),
+    path('admin/', TwoFactorAdminSite().urls),
 ]

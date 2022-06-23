@@ -1,7 +1,36 @@
+# Change Log
 ## Unreleased
 
 ### Added
 - Enforcing a redirect to setup of otp device when none available for user [#550](https://github.com/jazzband/django-two-factor-auth/pull/500)
+  
+### Changed
+
+### Removed
+
+- Admin Monkey Patching
+
+  The Admin UI will not longer be automatically patched. The `TwoFactorSiteAdmin` will need to be explicitly
+  configured in urls.py.
+
+  ```py
+  # urls.py
+  from django.urls import path
+  from two_factor.admin import TwoFactorAdminSite
+  url_patterns = [
+    path('admin/', TwoFactorAdminSite().urls),
+  ]
+  ```
+
+  Custom admin sites can extend `TwoFactorSiteAdmin` or `TwoFactorSideAdminMixin` to inherit the behavior.
+
+  ```py
+  # admin.py
+  class MyCustomAdminSite(TwoFactorSiteAdminMixin, AdminSite):
+    # implement your customizations here.
+    pass
+  ```
+
 
 ## 1.14.0
 

@@ -1,10 +1,10 @@
+import warnings
+
 from django.conf import settings
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import resolve_url
-
-from .utils import monkeypatch_method
 
 try:
     from django.utils.http import url_has_allowed_host_and_scheme
@@ -14,7 +14,7 @@ except ImportError:
     )
 
 
-class AdminSiteOTPRequiredMixin:
+class TwoFactorAdminSiteMixin:
     """
     Mixin for enforcing OTP verified staff users.
 
@@ -43,29 +43,20 @@ class AdminSiteOTPRequiredMixin:
         return redirect_to_login(redirect_to)
 
 
-class AdminSiteOTPRequired(AdminSiteOTPRequiredMixin, AdminSite):
+class TwoFactorAdminSite(TwoFactorAdminSiteMixin, AdminSite):
     """
-    AdminSite enforcing OTP verified staff users.
+    AdminSite with MFA Support.
     """
     pass
 
 
-def patch_admin():
-    @monkeypatch_method(AdminSite)
-    def login(self, request, extra_context=None):
-        """
-        Redirects to the site login page for the given HttpRequest.
-        """
-        redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
-
-        if not redirect_to or not url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts=[request.get_host()]):
-            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
-
-        return redirect_to_login(redirect_to)
+class AdminSiteOTPRequiredMixin(TwoFactorAdminSiteMixin):
+    warnings.warn('AdminSiteOTPRequiredMixin is deprecated by TwoFactorAdminSiteMixin, please update.',
+                  category=DeprecationWarning)
+    pass
 
 
-def unpatch_admin():
-    setattr(AdminSite, 'login', original_login)
-
-
-original_login = AdminSite.login
+class AdminSiteOTPRequired(TwoFactorAdminSite):
+    warnings.warn('AdminSiteOTPRequired is deprecated by TwoFactorAdminSite, please update.',
+                  category=DeprecationWarning)
+    pass
