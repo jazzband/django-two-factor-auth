@@ -1,3 +1,8 @@
+## Unreleased
+
+### Added
+- Enforcing a redirect to setup of otp device when none available for user [#550](https://github.com/jazzband/django-two-factor-auth/pull/500)
+
 ## 1.14.0
 
 ### Added
