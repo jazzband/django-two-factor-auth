@@ -10,3 +10,5 @@ example/settings_private.py
 .eggs/
 
 .idea/
+
+venv/

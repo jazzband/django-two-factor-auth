@@ -4,13 +4,6 @@ Configuration
 General Settings
 ----------------
 
-``TWO_FACTOR_PATCH_ADMIN`` (default: ``True``)
-  Whether the Django admin is patched to use the default login view.
-
-  .. warning::
-     The admin currently does not enforce one-time passwords being set for
-     admin users.
-
 ``LOGIN_URL``
   Should point to the login view provided by this application as described in
   setup. This login view handles password authentication followed by a one-time
@@ -123,7 +116,7 @@ Next, add additional urls to your config:
 
     # urls.py
     from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
-    
+
     urlpatterns = [
         path('', include(tf_twilio_urls)),
         ...
