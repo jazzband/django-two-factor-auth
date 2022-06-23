@@ -400,7 +400,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
 @class_view_decorator(never_cache)
 @class_view_decorator(login_required)
-class SetupView(SuccessURLAllowedHostsMixin, IdempotentSessionWizardView):
+class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling OTP setup using a wizard.
 
