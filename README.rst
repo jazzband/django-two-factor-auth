@@ -37,8 +37,8 @@ providing Django sessions with a foreign key to the user. Although the package
 is optional, it improves account security control over
 ``django.contrib.sessions``.
 
-Compatible with modern Django versions. At the moment of writing that's
-including 2.2, 3.1, 3.2, and 4.0 on Python 3.7, 3.8, 3.9 and 3.10.
+Compatible with supported Django and Python versions. At the moment of writing that
+includes 3.2 and 4.0 on Python 3.7, 3.8, 3.9 and 3.10.
 Documentation is available at `readthedocs.org`_.
 
 
