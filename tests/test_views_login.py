@@ -406,6 +406,94 @@ class LoginTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
+    def test_totp_token_does_not_impact_backup_token(self):
+        """
+        Ensures that successfully authenticating with a TOTP token does not
+        inadvertently increase the throttling count of the backup token device.
+
+        Addresses issue #473, where correct TOTP token usage was unintentionally
+        affecting the throttling count of backup tokens, potentially leading to
+        their invalidation.
+        """
+        user = self.create_user()
+        backup_device = user.staticdevice_set.create(name='backup')
+        backup_device.token_set.create(token='abcdef123')
+        totp_device = user.totpdevice_set.create(name='default', key=random_hex())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 0)
+        response = self._post({'token-otp_token': totp_str(totp_device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(self.client.session['_auth_user_id'], str(user.pk))
+
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 0)
+
+    def test_wrong_token_does_not_affect_other_device_throttling(self):
+        """
+        Tests that entering an incorrect backup token increases the throttling count
+        of the backup device, but does not affect the TOTP device's throttling count (and other way around).
+
+        This addresses issue #473 where TOTP token submissions were incorrectly
+        impacting the backup device's throttling count.
+        """
+        # Setup: Create a user, backup device, and TOTP device.
+        user = self.create_user()
+        backup_device = user.staticdevice_set.create(user=user, name='backup')
+        backup_token = 'abcdef123'
+        backup_device.token_set.create(token=backup_token)
+        totp_device = user.totpdevice_set.create(
+            user=user, name='default', confirmed=True,
+            key=random_hex()
+        )
+
+        # Simulate login process: username and password step.
+        response = self._post({
+            'auth-username': user.get_username(),
+            'auth-password': 'secret',
+            'login_view-current_step': 'auth',
+        })
+        self.assertContains(response, 'Token:')
+
+        # Attempt login with incorrect backup token and check response.
+        response = self._post({
+            'backup-otp_token': 'WRONG',
+            'login_view-current_step': 'backup',
+        })
+        expected_error = 'Invalid token. Please make sure you have entered it correctly.'
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': [expected_error]})
+
+        # Verify that incorrect backup token submission throttles backup device.
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 1)
+
+        # Ensure TOTP device is not affected by the incorrect backup token submission.
+        totp_device.refresh_from_db()
+        self.assertEqual(totp_device.throttling_failure_count, 0)
+
+        # Attempt login with incorrect TOTP token and check response.
+        response = self._post({
+            'token-otp_token': "123456",
+            'login_view-current_step': 'token'
+        })
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': [expected_error]})
+
+        # Backup device's throttling count should remain unchanged after TOTP token submission.
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 1)
+
+        # Incorrect TOTP token submission should throttle TOTP device.
+        totp_device.refresh_from_db()
+        self.assertEqual(totp_device.throttling_failure_count, 1)
+
     @mock.patch('two_factor.views.utils.logger')
     def test_reset_wizard_state(self, mock_logger):
         self.create_user()
