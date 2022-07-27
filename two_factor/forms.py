@@ -3,7 +3,9 @@ from time import time
 
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
+from django_otp import devices_for_user
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -113,6 +115,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         'pattern': '[0-9]*',  # hint to show numeric keyboard for on-screen keyboards
         'autocomplete': 'one-time-code',
     })
+    device_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     # Our authentication form has an additional submit button to go to the
     # backup token form. When the `required` attribute is set on an input
@@ -123,16 +126,21 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
     use_required_attribute = False
     idempotent = False
 
+    error_messages = {
+        'invalid_device_id': _('Device id is not valid.'),
+    }
+
     def __init__(self, user, initial_device, **kwargs):
         """
-        `initial_device` is either the user's default device, or the backup
-        device when the user chooses to enter a backup token. The token will
-        be verified against all devices, it is not limited to the given
-        device.
+        `initial_device` is either the user's default device a backup device
+        when the user chooses to enter a backup token.
         """
         super().__init__(**kwargs)
         self.user = user
         self.initial_device = initial_device
+        if initial_device:
+            self.fields['device_id'].initial = initial_device.persistent_id
+        self.device_cache = None
 
         # Add a field to remeber this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
@@ -151,6 +159,22 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
                 initial=True,
                 label=label
             )
+
+    def clean_device_id(self):
+        if self.data.get("device_id"):
+            try:
+                for user_device in devices_for_user(self.user):
+                    if user_device.persistent_id == self.data["device_id"]:
+                        self.device_cache = user_device
+                        break
+            except ObjectDoesNotExist:
+                raise forms.ValidationError(self.error_messages['invalid_device_id'])
+
+    def _chosen_device(self, user):
+        if self.device_cache:
+            return self.device_cache
+        else:
+            return self.initial_device
 
     def clean(self):
         self.clean_otp(self.user)
