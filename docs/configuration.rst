@@ -167,7 +167,7 @@ During a successful login with a token, the user may choose to remember this bro
 If the same user logs in again on the same browser, a token will not be requested, as the browser
 serves as a second factor.
 
-The option to remember a browser is deactived by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
+The option to remember a browser is deactivated by default. Set `TWO_FACTOR_REMEMBER_COOKIE_AGE` to activate.
 
 The browser will be remembered as long as:
 
@@ -177,7 +177,7 @@ The browser will be remembered as long as:
 
 The browser is remembered by setting a signed 'remember cookie'.
 
-In order to invalidate remebered browsers after password resets,
+In order to invalidate remembered browsers after password resets,
 the package relies on the `password` field of the `User` model.
 Please consider this in case you do not use the `password` field
 e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
