@@ -661,7 +661,7 @@ class RememberLoginTest(UserMixin, TestCase):
 
         self.set_invalid_remember_cookie()
 
-        # Login but exired remember cookie
+        # Login but expire remember cookie
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})

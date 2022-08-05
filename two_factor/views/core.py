@@ -183,13 +183,13 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                 self.request.session['next'] = self.get_success_url()
             return redirect('two_factor:setup')
 
-    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
         return url or resolve_url(settings.LOGIN_REDIRECT_URL)
 
-    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
     def get_redirect_url(self):
         """Return the user-originating redirect URL if it's safe."""
@@ -374,7 +374,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
             response.delete_cookie(cookie)
         return response
 
-    # Copied from django.conrib.auth.views.LoginView  (Branch: stable/1.11.x)
+    # Copied from django.contrib.auth.views.LoginView  (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49
     @method_decorator(sensitive_post_parameters())
     @method_decorator(csrf_protect)
@@ -416,13 +416,13 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         # Other forms are dynamically added in get_form_list()
     )
 
-    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
         return url or reverse('two_factor:setup_complete')
 
-    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
     def get_redirect_url(self):
         """Return the user-originating redirect URL if it's safe."""
