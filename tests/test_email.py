@@ -140,7 +140,7 @@ class EmailTest(UserMixin, TestCase):
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
     def test_login(self, mock_signal):
-        device = self.user.emaildevice_set.create(name='default')
+        device = self.user.emaildevice_set.create(name='default', email='bouke@example.com')
 
         response = self.client.post(reverse('two_factor:login'),
                                     {'auth-username': 'bouke@example.com',
