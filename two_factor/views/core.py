@@ -34,9 +34,7 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.plugins.phonenumber.utils import (
-    backup_phones, get_available_phone_methods,
-)
+from two_factor.plugins.phonenumber.utils import get_available_phone_methods
 from two_factor.plugins.registry import registry
 from two_factor.utils import totp_digits
 
@@ -278,18 +276,38 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         if not self.device_cache:
             challenge_device_id = self.request.POST.get('challenge_device', None)
             if challenge_device_id:
-                for device in backup_phones(self.get_user()):
+                for device in self.get_devices():
                     if device.persistent_id == challenge_device_id:
                         self.device_cache = device
                         break
+
             if step == 'backup':
                 try:
                     self.device_cache = self.get_user().staticdevice_set.get(name='backup')
                 except StaticDevice.DoesNotExist:
                     pass
+
             if not self.device_cache:
                 self.device_cache = default_device(self.get_user())
+
         return self.device_cache
+
+    def get_devices(self):
+        user = self.get_user()
+
+        devices = []
+        for method in registry.get_methods():
+            devices += list(method.get_devices(user))
+        return devices
+
+    def get_other_devices(self, main_device):
+        user = self.get_user()
+
+        other_devices = []
+        for method in registry.get_methods():
+            other_devices += list(method.get_other_authentication_devices(user, main_device))
+
+        return other_devices
 
     def render(self, form=None, **kwargs):
         """
@@ -317,10 +335,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         context = super().get_context_data(form, **kwargs)
         if self.steps.current == 'token':
-            context['device'] = self.get_device()
-            context['other_devices'] = [
-                phone for phone in backup_phones(self.get_user())
-                if phone != self.get_device()]
+            device = self.get_device()
+            context['device'] = device
+            context['other_devices'] = self.get_other_devices(device)
+
             try:
                 context['backup_tokens'] = self.get_user().staticdevice_set\
                     .get(name='backup').token_set.count()
