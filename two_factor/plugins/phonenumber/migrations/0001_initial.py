@@ -1,9 +1,10 @@
 import django.db.models.deletion
 import django_otp.util
 import phonenumber_field.modelfields
-import two_factor.plugins.phonenumber.models
 from django.conf import settings
 from django.db import migrations, models
+
+import two_factor.plugins.phonenumber.models
 
 
 class Migration(migrations.Migration):
