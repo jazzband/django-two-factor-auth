@@ -27,12 +27,14 @@ class Migration(migrations.Migration):
                         ('confirmed', models.BooleanField(default=True, help_text='Is this device ready for use?')),
                         ('throttling_failure_timestamp', models.DateTimeField(
                             blank=True, default=None,
-                            help_text='A timestamp of the last failed verification attempt. Null if last attempt succeeded.',
+                            help_text='A timestamp of the last failed verification attempt. '
+                                      'Null if last attempt succeeded.',
                             null=True)),
                         ('throttling_failure_count',
                          models.PositiveIntegerField(default=0, help_text='Number of successive failed attempts.')),
                         ('number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
-                        ('key', models.CharField(default=django_otp.util.random_hex, help_text='Hex-encoded secret key',
+                        ('key', models.CharField(default=django_otp.util.random_hex,
+                                                 help_text='Hex-encoded secret key',
                                                  max_length=40,
                                                  validators=[two_factor.plugins.phonenumber.models.key_validator])),
                         ('method',
