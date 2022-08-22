@@ -26,7 +26,7 @@ class PhoneDevice(ThrottlingMixin, Device):
     Model with phone number and token seed linked to a user.
     """
     class Meta:
-        app_label = 'two_factor'
+        db_table = 'two_factor_phonedevice'
 
     number = PhoneNumberField()
     key = models.CharField(max_length=40,
