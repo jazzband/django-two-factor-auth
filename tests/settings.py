@@ -77,6 +77,8 @@ TEMPLATES = [
     },
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 TWO_FACTOR_PATCH_ADMIN = False
 
 AUTH_USER_MODEL = os.environ.get('AUTH_USER_MODEL', 'auth.User')
