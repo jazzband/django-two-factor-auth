@@ -37,8 +37,8 @@ class EmailMethod(MethodBase):
         return AuthenticationTokenForm
 
     def get_action(self, device):
-        masked_email = mask_email(device.email)
-        return _('Send email to %s') % masked_email
+        email = device.email or device.user.email
+        return _('Send email to %s') % (email and mask_email(email) or None,)
 
     def get_verbose_action(self, device):
         return _('We sent you an email, please enter the token we sent.')
