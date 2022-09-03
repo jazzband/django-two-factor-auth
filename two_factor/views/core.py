@@ -480,7 +480,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         form_list = super().get_form_list()
 
-        available_methods = registry.get_methods()
+        available_methods = self.get_available_methods()
         if len(available_methods) == 1:
             form_list.pop('method', None)
             method_key = available_methods[0].code
@@ -494,6 +494,9 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         if {'sms', 'call'} & set(form_list.keys()):
             form_list['validation'] = DeviceValidationForm
         return form_list
+
+    def get_available_methods(self):
+        return registry.get_methods()
 
     def render_next_step(self, form, **kwargs):
         """
