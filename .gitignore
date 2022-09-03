@@ -10,3 +10,4 @@ example/settings_private.py
 .eggs/
 
 .idea/
+.vscode/
