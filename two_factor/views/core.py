@@ -3,6 +3,7 @@ import time
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
+from inspect import signature
 from uuid import uuid4
 
 import django_otp
@@ -203,19 +204,20 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         return redirect_to if url_is_safe else ''
 
     def get_form_kwargs(self, step=None):
-        """
-        AuthenticationTokenForm requires the user kwarg.
-        """
-        if step == 'auth':
-            return {
-                'request': self.request
-            }
-        if step in ('token', 'backup'):
-            return {
-                'user': self.get_user(),
-                'initial_device': self.get_device(step),
-            }
-        return {}
+        if step is None:
+            return {}
+
+        form_class = self.get_form_list()[step]
+        form_params = signature(form_class).parameters
+
+        kwargs = {}
+        if 'user' in form_params:
+            kwargs['user'] = self.get_user()
+        if 'initial_device' in form_params:
+            kwargs['initial_device'] = self.get_device(step)
+        if 'request' in form_params:
+            kwargs['request'] = self.request
+        return kwargs
 
     def get_done_form_list(self):
         """
@@ -536,16 +538,22 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         return redirect(self.get_success_url())
 
     def get_form_kwargs(self, step=None):
+        if step is None:
+            return {}
+
+        form_class = self.get_form_list()[step]
+        form_params = signature(form_class).parameters
+
         kwargs = {}
-        if step == 'generator':
-            kwargs.update({
-                'key': self.get_key(step),
-                'user': self.request.user,
-            })
-        if step in ('validation', 'yubikey'):
-            kwargs.update({
-                'device': self.get_device()
-            })
+        if 'key' in form_params:
+            kwargs['key'] = self.get_key(step)
+        if 'user' in form_params:
+            kwargs['user'] = self.request.user
+        if 'device' in form_params:
+            kwargs['device'] = self.get_device()
+        if 'request' in form_params:
+            kwargs['request'] = self.request
+
         metadata = self.get_form_metadata(step)
         if metadata:
             kwargs.update({
