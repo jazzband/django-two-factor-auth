@@ -3,8 +3,6 @@ from urllib.parse import quote, urlencode
 from django.conf import settings
 from django_otp import devices_for_user
 
-from two_factor.plugins.registry import registry
-
 USER_DEFAULT_DEVICE_ATTR_NAME = "_default_device"
 
 
@@ -57,7 +55,3 @@ def totp_digits():
     for totp tokens. Defaults to 6
     """
     return getattr(settings, 'TWO_FACTOR_TOTP_DIGITS', 6)
-
-
-def get_available_methods():
-    return [(m.code, m.verbose_name) for m in registry.get_methods()]
