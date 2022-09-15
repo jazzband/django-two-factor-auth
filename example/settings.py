@@ -52,7 +52,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'user_sessions',
@@ -68,7 +68,7 @@ INSTALLED_APPS = (
 
     'debug_toolbar',
     'bootstrapform'
-)
+]
 
 
 LOGOUT_REDIRECT_URL = 'home'
