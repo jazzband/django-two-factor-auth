@@ -28,7 +28,7 @@ Add the following apps to the ``INSTALLED_APPS``:
 
 .. code-block:: python
 
-    INSTALLED_APPS = (
+    INSTALLED_APPS = [
         ...
         'django_otp',
         'django_otp.plugins.otp_static',
@@ -38,7 +38,7 @@ Add the following apps to the ``INSTALLED_APPS``:
         'two_factor.plugins.phonenumber',  # <- if you want phone number capability.
         'two_factor.plugins.email',  # <- if you want email capability.
         'two_factor.plugins.yubikey',  # <- for yubikey capability.
-    )
+    ]
 
 Add the ``django-otp`` middleware to your ``MIDDLEWARE``. Make sure
 it comes after ``AuthenticationMiddleware``:
@@ -89,10 +89,10 @@ Add the following app to the ``INSTALLED_APPS``:
 
 .. code-block:: python
 
-    INSTALLED_APPS = (
+    INSTALLED_APPS = [
         ...
         'otp_yubikey',
-    )
+    ]
 
 This plugin also requires adding a validation service, through which YubiKeys
 will be verified. Normally, you'd use the YubiCloud for this. In the Django
