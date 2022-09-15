@@ -14,14 +14,16 @@ from .utils import totp_digits
 
 class MethodForm(forms.Form):
     method = forms.ChoiceField(label=_("Method"),
-                               initial='generator',
                                widget=forms.RadioSelect)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = [
+
+        method = self.fields['method']
+        method.choices = [
             (m.code, m.verbose_name) for m in registry.get_methods()
         ]
+        method.initial = method.choices[0][0]
 
 
 class DeviceValidationForm(forms.Form):
