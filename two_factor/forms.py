@@ -36,8 +36,8 @@ class DeviceValidationForm(forms.Form):
         'invalid_token': _('Entered token is not valid.'),
     }
 
-    def __init__(self, device, **args):
-        super().__init__(**args)
+    def __init__(self, device, **kwargs):
+        super().__init__(**kwargs)
         self.device = device
 
     def clean_token(self):
