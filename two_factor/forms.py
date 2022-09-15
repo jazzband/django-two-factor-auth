@@ -136,7 +136,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         self.user = user
         self.initial_device = initial_device
 
-        # Add a field to remeber this browser.
+        # Add a field to remember this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
             if settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600:
                 minutes = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 60)
