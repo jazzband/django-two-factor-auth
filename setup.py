@@ -23,8 +23,8 @@ setup(
         'sms': ['twilio>=6.0'],
         'webauthn': ['webauthn>=1.6.0,<1.99', 'pydantic>=1.9.0,<1.99'],
         'yubikey': ['django-otp-yubikey'],
-        'phonenumbers': ['phonenumbers>=7.0.9,<8.99',],
-        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99',],
+        'phonenumbers': ['phonenumbers>=7.0.9,<8.99'],
+        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99'],
     },
     include_package_data=True,
     classifiers=[

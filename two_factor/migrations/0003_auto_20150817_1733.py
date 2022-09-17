@@ -1,8 +1,7 @@
 import logging
 
 import phonenumbers
-from django.contrib.auth import get_user_model
-from django.db import migrations, models
+from django.db import migrations
 from phonenumber_field.modelfields import PhoneNumberField
 
 logger = logging.getLogger(__name__)
