@@ -18,6 +18,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='phonedevice',
             name='throttling_failure_timestamp',
-            field=models.DateTimeField(blank=True, default=None, help_text='A timestamp of the last failed verification attempt. Null if last attempt succeeded.', null=True),
+            field=models.DateTimeField(
+                blank=True,
+                default=None,
+                help_text='A timestamp of the last failed verification attempt. Null if last attempt succeeded.',
+                null=True
+            ),
         ),
     ]
