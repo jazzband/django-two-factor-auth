@@ -1,4 +1,5 @@
-from django.urls import path
+from django.apps.registry import apps
+from django.urls import include, path
 
 from two_factor.plugins.phonenumber.views import (
     PhoneDeleteView, PhoneSetupView,
@@ -59,4 +60,17 @@ profile = [
     ),
 ]
 
-urlpatterns = (core + profile, 'two_factor')
+plugin_urlpatterns = []
+for app_config in apps.get_app_configs():
+    if app_config.name.startswith('two_factor.plugins.'):
+        try:
+            plugin_urlpatterns.append(
+                path(
+                    f'account/two_factor/{app_config.url_prefix}/',
+                    include(f'{app_config.name}.urls', app_config.label)
+                ),
+            )
+        except AttributeError:
+            pass
+
+urlpatterns = (core + profile + plugin_urlpatterns, 'two_factor')

@@ -133,6 +133,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
         # Generating a challenge doesn't require to validate the form.
         if 'challenge_device' in self.request.POST:
+            self.storage.data['challenge_device'] = self.request.POST['challenge_device']
             return self.render_goto_step('token')
 
         response = super().post(*args, **kwargs)
@@ -276,7 +277,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         Returns the OTP device selected by the user, or his default device.
         """
         if not self.device_cache:
-            challenge_device_id = self.request.POST.get('challenge_device', None)
+            challenge_device_id = (
+                self.request.POST.get('challenge_device')
+                or self.storage.data.get('challenge_device')
+            )
             if challenge_device_id:
                 for device in self.get_devices():
                     if device.persistent_id == challenge_device_id:
@@ -529,8 +533,9 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         if method.code == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
             device = form.save()
-        # PhoneNumberForm / YubiKeyDeviceForm / EmailForm
-        elif method.code in ('call', 'sms', 'yubikey', 'email'):
+
+        # PhoneNumberForm / YubiKeyDeviceForm / EmailForm / WebauthnDeviceValidationForm
+        elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
             device.save()
 

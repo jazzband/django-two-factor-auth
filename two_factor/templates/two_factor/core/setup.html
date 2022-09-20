@@ -1,6 +1,10 @@
 {% extends "two_factor/_base_focus.html" %}
 {% load i18n %}
 
+{% block extra_media %}
+  {{ form.media }}
+{% endblock %}
+
 {% block content %}
   <h1>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
   {% if wizard.steps.current == 'welcome' %}

@@ -100,6 +100,8 @@ PHONENUMBER_DEFAULT_REGION = 'NL'
 
 TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
 
+TWO_FACTOR_WEBAUTHN_RP_NAME = 'Demo Application'
+
 SESSION_ENGINE = 'user_sessions.backends.db'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

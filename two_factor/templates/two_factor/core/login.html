@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load two_factor_tags %}
 
+{% block extra_media %}
+  {{ form.media }}
+{% endblock %}
+
 {% block content %}
   <h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
 
