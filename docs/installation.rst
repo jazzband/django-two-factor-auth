@@ -116,5 +116,43 @@ You could also do this using Django's `manage.py shell`:
     ... )
     <ValidationService: default>
 
+.. _webauthn-setup:
+
+WebAuthn Setup
+--------------
+
+In order to support WebAuthn_ devices, you have to install the py_webauthn_ package.
+It's a ``django-two-factor-auth`` extra so you can select it at install time:
+
+.. code-block:: console
+
+    $ pip install django-two-factor-auth[webauthn]
+
+You need to include the plugin in your Django settings:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        ...
+        'two_factor.plugins.webauthn',
+    ]
+
+WebAuthn also requires your service to be reachable using HTTPS.
+An exception is made if the domain is ``localhost``, which can be served using plain HTTP.
+
+If you use a different domain, don't forget to set ``SECURE_PROXY_SSL_HEADER`` in your Django settings accordingly:
+
+.. code-block:: python
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+You can try a WebAuthn-enabled version of the example app that is reachable at http://localhost:8000:
+
+.. code-block:: console
+
+    $ make example-webauthn
+
 .. _PyPI: https://pypi.python.org/pypi/django-two-factor-auth
 .. _Yubikeys: https://www.yubico.com/products/yubikey-hardware/
+.. _WebAuthn: https://www.w3.org/TR/webauthn/
+.. _py_webauthn: https://pypi.org/project/webauthn/
