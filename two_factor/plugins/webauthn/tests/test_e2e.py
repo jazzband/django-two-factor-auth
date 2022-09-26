@@ -22,6 +22,7 @@ except ImportError:
 
 try:
     from webdriver_manager.chrome import ChromeDriverManager
+    from webdriver_manager.utils import ChromeType
 except ImportError:
     ChromeDriverManager = None
 
@@ -39,7 +40,11 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
 
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        self.webdriver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+        try:
+            driver = ChromeDriverManager()
+        except ValueError:
+            driver = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM)
+        self.webdriver = webdriver.Chrome(driver.install(), options=options)
 
         super().setUp()
 
