@@ -31,7 +31,7 @@ except ImportError:
 @skipUnless(webauthn, 'package webauthn is not present')
 class E2ETests(UserMixin, StaticLiveServerTestCase):
     port = 8000
-    timeout = 8
+    timeout = 32
 
     def setUp(self):
         self.base_url = f'http://{self.host}:{self.port}'
