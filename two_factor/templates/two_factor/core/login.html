@@ -19,7 +19,9 @@
       enter one of these backup tokens to login to your account.{% endblocktrans %}</p>
   {% endif %}
 
-  <form action="" method="post">{% csrf_token %}
+  <form action="" method="post">
+    {% block main_form_content %}
+    {% csrf_token %}
     {% include "two_factor/_wizard_forms.html" %}
 
     {# hidden submit button to enable [enter] key #}
@@ -37,6 +39,7 @@
     {% endif %}
 
     {% include "two_factor/_wizard_actions.html" %}
+    {% endblock %}
   </form>
 
   {% block 'backup_tokens' %}
