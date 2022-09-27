@@ -1,5 +1,7 @@
 import os
 
+import django
+
 DEBUG = True
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -113,3 +115,6 @@ try:
     from .settings_private import *  # noqa
 except ImportError:
     pass
+
+if '5' > django.__version__ >= '4.1':
+    FORM_RENDERER = "django.forms.renderers.DjangoDivFormRenderer"

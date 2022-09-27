@@ -1,5 +1,7 @@
 import os
 
+import django
+
 try:
     import otp_yubikey
 except ImportError:
@@ -98,3 +100,6 @@ PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 DEFAULT_FROM_EMAIL = 'test@test.org'
+
+if '5' > django.__version__ >= '4.1':
+    FORM_RENDERER = "django.forms.renderers.DjangoDivFormRenderer"
