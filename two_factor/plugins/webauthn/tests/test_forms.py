@@ -30,7 +30,7 @@ class WebauthnAuthenticationFormTests(TestCase):
         with self.assertRaises(ValidationError) as context:
             form._verify_token(None, 'invalid-token')
 
-        self.assertEquals(context.exception.code, 'invalid_token')
+        self.assertEqual(context.exception.code, 'invalid_token')
 
 
 @skipUnless(webauthn, 'package webauthn is not present')
@@ -44,4 +44,4 @@ class WebauthnDeviceValidationFormTests(TestCase):
         form = WebauthnDeviceValidationForm(None, request, data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.error_messages.keys(), {'invalid_token'})
+        self.assertEqual(form.error_messages.keys(), {'invalid_token'})

@@ -33,29 +33,29 @@ class UtilsTests(TestCase):
             self.mocked_user, self.mocked_rp, [self.mocked_credential_id_b64], challenge=self.mocked_challenge)
         options = json.loads(json_options)
 
-        self.assertEquals(options['rp'], {'id': self.mocked_rp.id, 'name': self.mocked_rp.name})
-        self.assertEquals(
+        self.assertEqual(options['rp'], {'id': self.mocked_rp.id, 'name': self.mocked_rp.name})
+        self.assertEqual(
             options['user'],
             {'id': self.mocked_user_id_b64, 'name': 'mocked-username', 'displayName': 'Mocked Display Name'},
         )
-        self.assertEquals(options['challenge'], self.mocked_challenge)
-        self.assertEquals(options['excludeCredentials'], [{'type': 'public-key', 'id': self.mocked_credential_id_b64}])
-        self.assertEquals(
+        self.assertEqual(options['challenge'], self.mocked_challenge)
+        self.assertEqual(options['excludeCredentials'], [{'type': 'public-key', 'id': self.mocked_credential_id_b64}])
+        self.assertEqual(
             options['authenticatorSelection'],
             {'requireResidentKey': False, 'userVerification': 'discouraged'},
         )
-        self.assertEquals(options['attestation'], 'none')
-        self.assertEquals(challenge_b64, self.mocked_challenge)
+        self.assertEqual(options['attestation'], 'none')
+        self.assertEqual(challenge_b64, self.mocked_challenge)
 
     def test_make_credential_request_options(self):
         json_options, challenge_b64 = make_credential_request_options(
             self.mocked_rp, [self.mocked_credential_id_b64], challenge=self.mocked_challenge)
         options = json.loads(json_options)
 
-        self.assertEquals(options['rpId'], self.mocked_rp.id)
-        self.assertEquals(options['challenge'], self.mocked_challenge)
-        self.assertEquals(len(options['allowCredentials']), 1)
-        self.assertEquals(options['allowCredentials'][0]['type'], 'public-key')
-        self.assertEquals(options['allowCredentials'][0]['id'], self.mocked_credential_id_b64)
-        self.assertEquals(options['userVerification'], 'discouraged')
-        self.assertEquals(challenge_b64, self.mocked_challenge)
+        self.assertEqual(options['rpId'], self.mocked_rp.id)
+        self.assertEqual(options['challenge'], self.mocked_challenge)
+        self.assertEqual(len(options['allowCredentials']), 1)
+        self.assertEqual(options['allowCredentials'][0]['type'], 'public-key')
+        self.assertEqual(options['allowCredentials'][0]['id'], self.mocked_credential_id_b64)
+        self.assertEqual(options['userVerification'], 'discouraged')
+        self.assertEqual(challenge_b64, self.mocked_challenge)
