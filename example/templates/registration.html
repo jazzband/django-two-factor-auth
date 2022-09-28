@@ -6,7 +6,7 @@
 
   <form action="" method="POST">
     {% csrf_token %}
-    <table>{{ form }}</table>
+    <table>{{ form.as_table }}</table>
     <button class="btn btn-primary" type="submit">{% trans "Register" %}</button>
   </form>
 {% endblock %}
