@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django_otp import devices_for_user
+from django_otp.models import Device
 from django_otp.forms import OTPAuthenticationFormMixin
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -132,7 +133,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
 
     def __init__(self, user, initial_device, **kwargs):
         """
-        `initial_device` is either the user's default device a backup device
+        `initial_device` is either the user's default device or a backup device
         when the user chooses to enter a backup token.
         """
         super().__init__(**kwargs)
@@ -162,12 +163,10 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
 
     def clean_device_id(self):
         if self.data.get("device_id"):
-            try:
-                for user_device in devices_for_user(self.user):
-                    if user_device.persistent_id == self.data["device_id"]:
-                        self.device_cache = user_device
-                        break
-            except ObjectDoesNotExist:
+            device = Device.from_persistent_id(self.data["device_id"])
+            if device and device.user == self.user:
+                self.device_cache = device
+            else:
                 raise forms.ValidationError(self.error_messages['invalid_device_id'])
 
     def _chosen_device(self, user):
