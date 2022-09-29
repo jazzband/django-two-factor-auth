@@ -38,6 +38,7 @@ from two_factor import signals
 from two_factor.plugins.phonenumber.utils import get_available_phone_methods
 from two_factor.plugins.registry import registry
 from two_factor.utils import totp_digits
+from two_factor.views.mixins import OTPRequiredMixin
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
@@ -174,16 +175,17 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                                     httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
                                     samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
                                     )
-
             return response
 
         # If the user does not have a device.
-        else:
+        elif OTPRequiredMixin.is_otp_view(self.request.GET.get('next')):
             if self.request.GET.get('next'):
                 self.request.session['next'] = self.get_success_url()
             return redirect('two_factor:setup')
 
-    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
+        return response
+
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
