@@ -72,11 +72,16 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     user is asked to provide the generated token. The backup devices are also
     listed, allowing the user to select a backup device for verification.
     """
+    AUTH_STEP = "auth"
+    TOKEN_STEP = "token"
+    BACKUP_STEP = "backup"
+    FIRST_STEP = AUTH_STEP
+
     template_name = 'two_factor/core/login.html'
     form_list = (
-        ('auth', AuthenticationForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
+        (AUTH_STEP, AuthenticationForm),
+        (TOKEN_STEP, AuthenticationTokenForm),
+        (BACKUP_STEP, BackupTokenForm),
     )
     redirect_authenticated_user = False
     storage_name = 'two_factor.views.utils.LoginStorage'
@@ -90,7 +95,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     def has_backup_step(self):
         return (
             default_device(self.get_user()) and
-            'token' not in self.storage.validated_step_data and
+            self.TOKEN_STEP not in self.storage.validated_step_data and
             not self.remember_agent
         )
 
@@ -103,8 +108,8 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         return int(time.time()) > expiration_time
 
     condition_dict = {
-        'token': has_token_step,
-        'backup': has_backup_step,
+        TOKEN_STEP: has_token_step,
+        BACKUP_STEP: has_backup_step,
     }
     redirect_field_name = REDIRECT_FIELD_NAME
 
@@ -122,20 +127,20 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
 
-        if wizard_goto_step == 'auth':
+        if wizard_goto_step == self.FIRST_STEP:
             self.storage.reset()
 
-        if self.expired and self.steps.current != 'auth':
+        if self.expired and self.steps.current != self.FIRST_STEP:
             logger.info("User's authentication flow has timed out. The user "
                         "has been redirected to the initial auth form.")
             self.storage.reset()
             self.show_timeout_error = True
-            return self.render_goto_step('auth')
+            return self.render_goto_step(self.FIRST_STEP)
 
         # Generating a challenge doesn't require to validate the form.
         if 'challenge_device' in self.request.POST:
             self.storage.data['challenge_device'] = self.request.POST['challenge_device']
-            return self.render_goto_step('token')
+            return self.render_goto_step(self.TOKEN_STEP)
 
         response = super().post(*args, **kwargs)
         return self.delete_cookies_from_response(response)
@@ -229,7 +234,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # Intentionally do not process the auth form on the final step. We
         # haven't stored this data, and it isn't required to login the user
         form_list = self.get_form_list()
-        form_list.pop('auth')
+        form_list.pop(self.AUTH_STEP)
         return form_list
 
     def process_step(self, form):
@@ -240,7 +245,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # validate the authentication form, determine the resulting user, then
         # only store the minimum needed to login that user (the user's primary
         # key and the backend used)
-        if self.steps.current == 'auth':
+        if self.steps.current == self.AUTH_STEP:
             user = form.is_valid() and form.user_cache
             self.storage.reset()
             self.storage.authenticated_user = user
@@ -256,7 +261,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         Process the files submitted from a specific test
         """
-        if self.steps.current == 'auth':
+        if self.steps.current == self.AUTH_STEP:
             return {}
         return super().process_step_files(form)
 
@@ -264,10 +269,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         Returns the form for the step
         """
-        if (step or self.steps.current) == 'token':
+        if (step or self.steps.current) == self.TOKEN_STEP:
             # Set form class dynamically depending on user device.
             method = registry.method_from_device(self.get_device())
-            self.form_list['token'] = method.get_token_form_class()
+            self.form_list[self.TOKEN_STEP] = method.get_token_form_class()
         form = super().get_form(step=step, **kwargs)
         if self.show_timeout_error:
             form.cleaned_data = getattr(form, 'cleaned_data', {})
@@ -289,7 +294,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                         self.device_cache = device
                         break
 
-            if step == 'backup':
+            if step == self.BACKUP_STEP:
                 try:
                     self.device_cache = self.get_user().staticdevice_set.get(name='backup')
                 except StaticDevice.DoesNotExist:
@@ -322,7 +327,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         If the user selected a device, ask the device to generate a challenge;
         either making a phone call or sending a text message.
         """
-        if self.steps.current == 'token':
+        if self.steps.current == self.TOKEN_STEP:
             form_with_errors = form and form.is_bound and not form.is_valid()
             if not form_with_errors:
                 self.get_device().generate_challenge()
@@ -342,7 +347,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         Adds user's default and backup OTP devices to the context.
         """
         context = super().get_context_data(form, **kwargs)
-        if self.steps.current == 'token':
+        if self.steps.current == self.TOKEN_STEP:
             device = self.get_device()
             context['device'] = device
             context['other_devices'] = self.get_other_devices(device)
