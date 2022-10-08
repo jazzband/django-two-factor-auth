@@ -130,7 +130,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         if wizard_goto_step == self.FIRST_STEP:
             self.storage.reset()
 
-        if self.expired and self.steps.current != self.FIRST_STEP:
+        if self.expired and self.step_requires_authentication(self.steps.current):
             logger.info("User's authentication flow has timed out. The user "
                         "has been redirected to the initial auth form.")
             self.storage.reset()
@@ -321,6 +321,9 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
             other_devices += list(method.get_other_authentication_devices(user, main_device))
 
         return other_devices
+
+    def step_requires_authentication(self, step):
+        return step != self.FIRST_STEP
 
     def render(self, form=None, **kwargs):
         """
