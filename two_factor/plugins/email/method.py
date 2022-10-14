@@ -4,11 +4,15 @@ from django_otp.plugins.otp_email.models import EmailDevice
 from two_factor.plugins.registry import MethodBase
 
 from .forms import AuthenticationTokenForm, DeviceValidationForm, EmailForm
+from .utils import mask_email
 
 
 class EmailMethod(MethodBase):
     code = 'email'
     verbose_name = _('Email')
+
+    def get_devices(self, user):
+        return EmailDevice.objects.devices_for_user(user).all()
 
     def recognize_device(self, device):
         return isinstance(device, EmailDevice)
@@ -31,3 +35,10 @@ class EmailMethod(MethodBase):
 
     def get_token_form_class(self):
         return AuthenticationTokenForm
+
+    def get_action(self, device):
+        email = device.email or device.user.email
+        return _('Send email to %s') % (email and mask_email(email) or None,)
+
+    def get_verbose_action(self, device):
+        return _('We sent you an email, please enter the token we sent.')

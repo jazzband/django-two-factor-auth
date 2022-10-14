@@ -6,6 +6,7 @@ from django.test import TestCase, override_settings
 from django_otp.util import random_hex
 from phonenumber_field.phonenumber import PhoneNumber
 
+from two_factor.plugins.email.utils import mask_email
 from two_factor.plugins.phonenumber.models import PhoneDevice
 from two_factor.plugins.phonenumber.utils import (
     backup_phones, format_phone_number, mask_phone_number,
@@ -179,3 +180,9 @@ class PhoneUtilsTests(UserMixin, TestCase):
             format_phone_number(PhoneNumber.from_string('+41524204242')),
             '+41 52 420 42 42'
         )
+
+
+class EmailUtilsTests(TestCase):
+    def test_mask_email(self):
+        self.assertEqual(mask_email('bouke@example.com'), 'b***e@example.com')
+        self.assertEqual(mask_email('tim@example.com'), 't**@example.com')

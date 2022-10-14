@@ -10,6 +10,9 @@ class YubikeyMethod(MethodBase):
     code = 'yubikey'
     verbose_name = _('YubiKey')
 
+    def get_devices(self, user):
+        return RemoteYubikeyDevice.objects.filter(user=user)
+
     def recognize_device(self, device):
         return isinstance(device, RemoteYubikeyDevice)
 
@@ -30,3 +33,9 @@ class YubikeyMethod(MethodBase):
 
     def get_token_form_class(self):
         return YubiKeyAuthenticationForm
+
+    def get_action(self, device):
+        return _('Use your Yubikey device')
+
+    def get_verbose_action(self, device):
+        return _('Please use your Yubikey device.')

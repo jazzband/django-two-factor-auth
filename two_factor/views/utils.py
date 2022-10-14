@@ -8,13 +8,20 @@ from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature, SignatureExpired
-from django.utils import baseconv
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
+
+try:
+    from django.core.signing import b62_decode, b62_encode
+except ImportError:  # Django < 4.0
+    # Deprecated in Django 4.0, removed in Django 5.0
+    from django.utils import baseconv
+    b62_decode = baseconv.base62.decode
+    b62_encode = baseconv.base62.encode
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +254,7 @@ def get_remember_device_cookie(user, otp_device_id):
     2. A hashed value of otp_device_id and the timestamp.
     3. A hashed value of user.pk, user.password, otp_device_id and the timestamp.
     """
-    timestamp = baseconv.base62.encode(int(time.time()))
+    timestamp = b62_encode(int(time.time()))
     cookie_key = hash_remember_device_cookie_key(otp_device_id)
     cookie_value = hash_remember_device_cookie_value(otp_device_id, user, timestamp)
 
@@ -273,7 +280,7 @@ def validate_remember_device_cookie(cookie, user, otp_device_id):
     if input_cookie_value != cookie_value:
         raise BadSignature('Signature does not match')
 
-    timestamp_int = baseconv.base62.decode(timestamp)
+    timestamp_int = b62_decode(timestamp)
     age = time.time() - timestamp_int
     if age > settings.TWO_FACTOR_REMEMBER_COOKIE_AGE:
         raise SignatureExpired(

@@ -14,14 +14,16 @@ from .utils import totp_digits
 
 class MethodForm(forms.Form):
     method = forms.ChoiceField(label=_("Method"),
-                               initial='generator',
                                widget=forms.RadioSelect)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = [
+
+        method = self.fields['method']
+        method.choices = [
             (m.code, m.verbose_name) for m in registry.get_methods()
         ]
+        method.initial = method.choices[0][0]
 
 
 class DeviceValidationForm(forms.Form):
@@ -34,8 +36,8 @@ class DeviceValidationForm(forms.Form):
         'invalid_token': _('Entered token is not valid.'),
     }
 
-    def __init__(self, device, **args):
-        super().__init__(**args)
+    def __init__(self, device, **kwargs):
+        super().__init__(**kwargs)
         self.device = device
 
     def clean_token(self):
@@ -134,7 +136,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         self.user = user
         self.initial_device = initial_device
 
-        # Add a field to remeber this browser.
+        # Add a field to remember this browser.
         if getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_AGE', None):
             if settings.TWO_FACTOR_REMEMBER_COOKIE_AGE < 3600:
                 minutes = int(settings.TWO_FACTOR_REMEMBER_COOKIE_AGE / 60)

@@ -140,7 +140,7 @@ class EmailTest(UserMixin, TestCase):
     @mock.patch('two_factor.views.core.signals.user_verified.send')
     @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
     def test_login(self, mock_signal):
-        device = self.user.emaildevice_set.create(name='default')
+        device = self.user.emaildevice_set.create(name='default', email='bouke@example.com')
 
         response = self.client.post(reverse('two_factor:login'),
                                     {'auth-username': 'bouke@example.com',
@@ -176,3 +176,16 @@ class EmailTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY,
                                        user=self.user, device=device)
+
+    def test_device_without_email(self):
+        self.user.emaildevice_set.create(name="default")
+        response = self.client.get(reverse("two_factor:profile"))
+        self.assertNotContains(
+            response,
+            "AttributeError: 'NoneType' object has no attribute 'split'",
+        )
+
+    def test_device_user_without_email(self):
+        self.user.email = ""
+        self.user.save()
+        self.test_device_without_email()

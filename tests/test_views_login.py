@@ -38,7 +38,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, reverse('two_factor:setup'))
 
         # No signal should be fired for non-verified user logins.
         self.assertFalse(mock_signal.called)
@@ -80,7 +80,8 @@ class LoginTest(UserMixin, TestCase):
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
-        self.assertRedirects(response, redirect_url, fetch_redirect_response=False)
+        self.assertEqual(self.client.session.get('next'), redirect_url)
+        self.assertRedirects(response, reverse('two_factor:setup'), fetch_redirect_response=False)
 
     def test_valid_login_with_disallowed_external_redirect(self):
         redirect_url = 'https://test.disallowed-success-url.com'
@@ -90,7 +91,7 @@ class LoginTest(UserMixin, TestCase):
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:profile'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('two_factor:setup'), fetch_redirect_response=False)
 
     @mock.patch('two_factor.views.core.time')
     def test_valid_login_primary_key_stored(self, mock_time):
@@ -429,12 +430,12 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, reverse('two_factor:setup'))
 
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, reverse('two_factor:setup'))
 
     def test_missing_management_data(self):
         # missing management data
@@ -465,8 +466,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response,
-                             resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertRedirects(response, reverse('two_factor:setup'))
 
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
@@ -695,7 +695,7 @@ class RememberLoginTest(UserMixin, TestCase):
 
         self.set_invalid_remember_cookie()
 
-        # Login but exired remember cookie
+        # Login but expire remember cookie
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})

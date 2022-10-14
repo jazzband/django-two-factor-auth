@@ -52,7 +52,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'user_sessions',
@@ -68,7 +68,7 @@ INSTALLED_APPS = (
 
     'debug_toolbar',
     'bootstrapform'
-)
+]
 
 
 LOGOUT_REDIRECT_URL = 'home'
@@ -99,6 +99,8 @@ TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
 PHONENUMBER_DEFAULT_REGION = 'NL'
 
 TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
+
+TWO_FACTOR_WEBAUTHN_RP_NAME = 'Demo Application'
 
 SESSION_ENGINE = 'user_sessions.backends.db'
 

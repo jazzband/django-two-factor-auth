@@ -1,5 +1,3 @@
-TARGET?=tests
-
 .PHONY: docs flake8 example test coverage migrations
 
 docs:
@@ -11,6 +9,12 @@ flake8:
 
 example:
 	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \
+		django-admin runserver
+
+example-webauthn:
+	DJANGO_SETTINGS_MODULE=example.settings_webauthn PYTHONPATH=. \
+		django-admin migrate
+	DJANGO_SETTINGS_MODULE=example.settings_webauthn PYTHONPATH=. \
 		django-admin runserver
 
 test:
