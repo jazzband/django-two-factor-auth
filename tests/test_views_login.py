@@ -358,6 +358,40 @@ class LoginTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    def test_with_alter_backup_token(self, mock_signal):
+        user = self.create_user()
+        user.totpdevice_set.create(name='default', key=random_hex())
+        device = user.staticdevice_set.create(name='alter')
+        device.token_set.create(token='abcdef123')
+
+        # Backup phones should be listed on the login form
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Backup Token')
+
+        # Should be able to go to backup tokens step in wizard
+        response = self._post({'wizard_goto_step': 'backup'})
+        self.assertContains(response, 'backup tokens')
+
+        # Wrong codes should not be accepted
+        response = self._post({'backup-otp_token': 'WRONG',
+                               'login_view-current_step': 'backup'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': ['Invalid token. Please make sure you '
+                                      'have entered it correctly.']})
+        # static devices are throttled
+        device.throttle_reset()
+
+        # Valid token should be accepted.
+        response = self._post({'backup-otp_token': 'abcdef123',
+                               'login_view-current_step': 'backup'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+        # Check that the signal was fired.
+        mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
+
     @mock.patch('two_factor.views.utils.logger')
     def test_reset_wizard_state(self, mock_logger):
         self.create_user()

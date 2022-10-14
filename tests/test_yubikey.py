@@ -106,6 +106,29 @@ class YubiKeyTest(UserMixin, TestCase):
         self.assertNotContains(response, 'YubiKey:')
         self.assertContains(response, 'Token:')
 
+    def test_show_correct_label_alter_backup(self):
+        """
+        The token form replaces the input field when the user's device is a
+        YubiKey. However when the user decides to enter a backup token, the
+        normal backup token form should be shown. Refs #50.
+        """
+        user = self.create_user()
+        service = ValidationService.objects.create(name='default', param_sl='', param_timeout='')
+        user.remoteyubikeydevice_set.create(service=service, name='default')
+        backup = user.staticdevice_set.create(name='alter')
+        backup.token_set.create(token='RANDOM')
+
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'auth-username': 'bouke@example.com',
+                                          'auth-password': 'secret',
+                                          'login_view-current_step': 'auth'})
+        self.assertContains(response, 'YubiKey:')
+
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'wizard_goto_step': 'backup'})
+        self.assertNotContains(response, 'YubiKey:')
+        self.assertContains(response, 'Token:')
+
     def test_missing_management_data(self):
         # missing management data
         response = self.client.post(reverse('two_factor:login'),

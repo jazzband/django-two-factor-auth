@@ -284,10 +284,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                         self.device_cache = device
                         break
             if step == 'backup':
-                try:
-                    self.device_cache = self.get_user().staticdevice_set.get(name='backup')
-                except StaticDevice.DoesNotExist:
-                    pass
+                self.device_cache = self.get_user().staticdevice_set.all().first()
             if not self.device_cache:
                 self.device_cache = default_device(self.get_user())
         return self.device_cache
@@ -322,11 +319,8 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
             context['other_devices'] = [
                 phone for phone in backup_phones(self.get_user())
                 if phone != self.get_device()]
-            try:
-                context['backup_tokens'] = self.get_user().staticdevice_set\
-                    .get(name='backup').token_set.count()
-            except StaticDevice.DoesNotExist:
-                context['backup_tokens'] = 0
+            context['backup_tokens'] = self.get_user().staticdevice_set\
+                .all().values('token_set__token').count()
 
         if getattr(settings, 'LOGOUT_REDIRECT_URL', None):
             context['cancel_url'] = resolve_url(settings.LOGOUT_REDIRECT_URL)
@@ -580,7 +574,10 @@ class BackupTokensView(FormView):
     number_of_tokens = 10
 
     def get_device(self):
-        return self.request.user.staticdevice_set.get_or_create(name='backup')[0]
+        device = self.request.user.staticdevice_set.all().first()
+        if not device:
+            device = self.request.user.staticdevice_set.create(name='backup')
+        return device
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
