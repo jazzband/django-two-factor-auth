@@ -74,7 +74,7 @@ The project is licensed under the MIT license.
 .. _`example app`:
    https://github.com/jazzband/django-two-factor-auth/tree/master/example
 .. _django-otp: https://pypi.org/project/django-otp/
-.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Transifex: https://explore.transifex.com/Bouke/django-two-factor-auth/
 .. _Twilio: https://www.twilio.com/
 .. _contribution guidelines:
    https://github.com/jazzband/django-two-factor-auth/blob/master/CONTRIBUTING.rst
