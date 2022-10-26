@@ -4,6 +4,10 @@
 
 # Additional runtime dependencies
 
+# django-user-sessions 1.7.1 is not compatible with Django 4, see #565
+# TODO: remove next line when new django-user-sessions version is released
+Django>=3.2,<4
+
 twilio
 phonenumberslite
 
