@@ -61,4 +61,4 @@ The following actions are required to push a new version:
 
 .. _issue tracker: https://github.com/jazzband/django-two-factor-auth/issues
 .. _source code: https://github.com/jazzband/django-two-factor-auth
-.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Transifex: https://explore.transifex.com/Bouke/django-two-factor-auth/
