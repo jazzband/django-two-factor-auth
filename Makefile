@@ -9,6 +9,8 @@ flake8:
 
 example:
 	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \
+		django-admin migrate
+	DJANGO_SETTINGS_MODULE=example.settings PYTHONPATH=. \
 		django-admin runserver
 
 example-webauthn:
