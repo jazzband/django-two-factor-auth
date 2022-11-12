@@ -1,20 +1,24 @@
 # Changelog
 
-## Unreleased
+## 1.15.0
 
 ### Added
-- Enforcing a redirect to setup of otp device when none available for user [#550](https://github.com/jazzband/django-two-factor-auth/pull/500)
+- Enforcing a redirect to setup of otp device when none available for user (#499)
 - Confirmed Django 4.1 support
-- WebAuthn support
+- WebAuthn support (thanks to Javier Paniagua)
 - Confirmed Python 3.11 support
-
-### Removed
-- Django 2.2, 3.0, and 3.1 support
 
 ### Changed 
 
-- display the TOTP secret key alongside the QR code to streamline setup for 
-  password managers without QR support. 
+- Display the TOTP secret key alongside the QR code to streamline setup for
+  password managers without QR support.
+- Moved phonenumber migrations under the plugins directory.
+- Avoid crash with email devices without email (#530).
+
+### Removed
+- Django 2.2, 3.0, and 3.1 support
+- `two_factor.utils.get_available_methods()` is replaced by
+  `MethodRegistry.get_methods()`.
 
 ## 1.14.0
 
