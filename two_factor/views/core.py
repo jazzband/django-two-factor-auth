@@ -446,7 +446,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
-        return url or reverse('two_factor:setup_complete')
+        return url or reverse(self.success_url)
 
     # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67

@@ -3,7 +3,7 @@ from django.urls import include, path
 
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 from two_factor.urls import urlpatterns as tf_urls
-from two_factor.views import LoginView
+from two_factor.views import LoginView, SetupView
 
 from .views import SecureView, plain_view
 
@@ -37,7 +37,11 @@ urlpatterns = [
         ),
         name='custom-redirect-authenticated-user-login',
     ),
-
+    path(
+        'account/setup-backup-tokens-redirect/',
+        SetupView.as_view(success_url='two_factor:backup_tokens'),
+        name='setup-backup_tokens-redirect'
+    ),
     path(
         'plain/',
         plain_view,
