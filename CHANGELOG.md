@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.15.1
+### Fixed
+- Missing plugin templates (#583).
+
 ## 1.15.0
 
 ### Added
