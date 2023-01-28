@@ -6,6 +6,9 @@
 - Migrations of `two_factor` app are squashed to avoid requiring `phonenumber_field`
   optional dependency for new projects.
 
+### Changed
+- Updated Finish and French translations.
+
 ## 1.15.0
 
 ### Added
