@@ -9,6 +9,7 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     name = 'two_factor.plugins.phonenumber'
     verbose_name = "Django Two Factor Authentication – Phone Method"
     default_auto_field = "django.db.models.AutoField"
+    url_prefix = 'phone'
 
     def ready(self):
         register_methods(self, None, None)
