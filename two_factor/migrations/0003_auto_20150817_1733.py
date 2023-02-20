@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migrate_phone_numbers, reverse_code=lambda apps, schema_editor: None),
+        migrations.RunPython(migrate_phone_numbers, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name='phonedevice',
             name='number',

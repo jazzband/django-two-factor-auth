@@ -3,6 +3,8 @@
 ## 1.15.1
 ### Fixed
 - Missing plugin templates (#583).
+- Migrations of `two_factor` app are squashed to avoid requiring `phonenumber_field`
+  optional dependency for new projects.
 
 ## 1.15.0
 
