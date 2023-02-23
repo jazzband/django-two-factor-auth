@@ -1,6 +1,4 @@
 import base64
-import hashlib
-import hmac
 import logging
 import time
 
@@ -8,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature, SignatureExpired
+from django.utils.crypto import salted_hmac
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
@@ -297,14 +296,4 @@ def hash_remember_device_cookie_key(otp_device_id):
 def hash_remember_device_cookie_value(otp_device_id, user, timestamp):
     salt = 'two_factor.views.utils.hash_remember_device_cookie_value'
     value = otp_device_id + str(user.pk) + str(user.password) + timestamp
-    return salted_hmac_sha256(salt, value).hexdigest()
-
-
-# inspired by django.utils.crypto.salted_hmac django versions > 3.1a1
-def salted_hmac_sha256(key_salt, value, secret=None):
-    if secret is None:
-        secret = settings.SECRET_KEY
-    key_salt = force_bytes(key_salt)
-    secret = force_bytes(secret)
-    key = hashlib.sha256(key_salt + secret).digest()
-    return hmac.new(key, msg=force_bytes(value), digestmod=hashlib.sha256)
+    return salted_hmac(salt, value, algorithm='sha256').hexdigest()

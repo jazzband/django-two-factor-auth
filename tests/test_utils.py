@@ -16,8 +16,7 @@ from two_factor.utils import (
     totp_digits,
 )
 from two_factor.views.utils import (
-    get_remember_device_cookie, salted_hmac_sha256,
-    validate_remember_device_cookie,
+    get_remember_device_cookie, validate_remember_device_cookie,
 )
 
 from .utils import UserMixin
@@ -135,11 +134,6 @@ class UtilsTest(UserMixin, TestCase):
             otp_device_id="SomeModel/34",
         )
         self.assertFalse(validation_result)
-
-    def test_salted_hmac_sha256(self):
-        hmac_with_secret = salted_hmac_sha256("blah", "blah", "my-new-secret")
-        hmac_without_secret = salted_hmac_sha256("blah", "blah")
-        self.assertNotEqual(hmac_with_secret, hmac_without_secret)
 
 
 class PhoneUtilsTests(UserMixin, TestCase):
