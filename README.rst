@@ -39,7 +39,7 @@ is optional, it improves account security control over
 
 Compatible with supported Django and Python versions. At the moment of writing that
 includes 3.2, 4.0 and 4.1 on Python 3.7, 3.8, 3.9, 3.10 and 3.11.
-Documentation is available at `readthedocs.org`_.
+Documentation is available at `readthedocs.io`_.
 
 
 Installation
@@ -79,7 +79,7 @@ The project is licensed under the MIT license.
 .. _contribution guidelines:
    https://github.com/jazzband/django-two-factor-auth/blob/master/CONTRIBUTING.rst
 .. _django-user-sessions: https://pypi.org/project/django-user-sessions/
-.. _readthedocs.org: https://django-two-factor-auth.readthedocs.org/
+.. _readthedocs.io: https://django-two-factor-auth.readthedocs.io/en/stable/index.html
 .. _`installation instructions`:
    https://django-two-factor-auth.readthedocs.io/en/stable/installation.html
 .. _`Stack Overflow`:
