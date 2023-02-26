@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+### Fixed
+- Set `default_auto_field` to `AutoField` in apps config that have models,
+  so no migrations are generated for projects defaulting to `BigAutoField` (#436).
+
 ## 1.15.1
 ### Fixed
 - Missing plugin templates (#583).
