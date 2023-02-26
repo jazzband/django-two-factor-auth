@@ -10,6 +10,7 @@ class TwoFactorWebauthnConfig(AppConfig):
     label = 'two_factor_webauthn'
     verbose_name = "Django Two Factor Authentication - WebAuthn Method"
     url_prefix = 'webauthn'
+    default_auto_field = 'django.db.models.AutoField'
 
     defaults = {
         'TWO_FACTOR_WEBAUTHN_RP_NAME': None,
