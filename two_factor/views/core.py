@@ -709,6 +709,13 @@ class QRGeneratorView(View):
     def get_issuer(self):
         return get_current_site(self.request).name
 
+    def get_username(self):
+        try:
+            username = self.request.user.get_username()
+        except AttributeError:
+            username = self.request.user.username
+        return username
+
     def get(self, request, *args, **kwargs):
         # Get the data from the session
         try:
@@ -720,10 +727,7 @@ class QRGeneratorView(View):
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
         image_factory = import_string(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
-        try:
-            username = self.request.user.get_username()
-        except AttributeError:
-            username = self.request.user.username
+        username = self.get_username()
 
         otpauth_url = get_otpauth_url(accountname=username,
                                       issuer=self.get_issuer(),
