@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         ('two_factor', '0003_auto_20150817_1733'), ('two_factor', '0004_auto_20160205_1827'),
         ('two_factor', '0005_auto_20160224_0450'), ('two_factor', '0006_phonedevice_key_default'),
         ('two_factor', '0007_auto_20201201_1019'), ('two_factor', '0008_delete_phonedevice'),
+        ('two_factor', '0001_squashed_0008_delete_phonedevice.py'), 
     ]
 
     initial = True
