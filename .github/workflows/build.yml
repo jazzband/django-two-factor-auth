@@ -14,23 +14,23 @@ jobs:
       COVERAGE_OPTIONS: "-a"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Tox and any other packages
-        run: pip install tox tox-gh-actions codecov
+        run: pip install tox tox-gh-actions coverage
       - name: Test with tox
         run: tox
       - name: Generate coverage XML report
         run: coverage xml
       - name: Codecov
-        uses: codecov/codecov-action@v2.0.3
+        uses: codecov/codecov-action@v3
         env:
           PYTHON: ${{matrix.python-version}}
         with:
-          env_vars: PTYHON
+          env_vars: PYTHON
 
 
   code_quality:
