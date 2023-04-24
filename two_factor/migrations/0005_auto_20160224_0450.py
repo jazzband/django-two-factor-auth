@@ -5,7 +5,9 @@ import django_otp.util
 from django.conf import settings
 from django.db import migrations, models
 
-from two_factor.plugins.phonenumber.models import key_validator
+
+def key_validator():
+    pass  # Fake function, enough for migrations
 
 
 class Migration(migrations.Migration):
