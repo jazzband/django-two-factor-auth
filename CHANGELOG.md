@@ -1,9 +1,14 @@
 # Changelog
 
-## Unreleased
+## 1.15.2
+### Added
+- Confirmed Django 4.2 support
+
 ### Fixed
 - Set `default_auto_field` to `AutoField` in apps config that have models,
   so no migrations are generated for projects defaulting to `BigAutoField` (#436).
+- [webauthn] Drop unneeded unique index on `public_key`, which was unsupported
+  on MySQL (#594).
 
 ## 1.15.1
 ### Fixed
