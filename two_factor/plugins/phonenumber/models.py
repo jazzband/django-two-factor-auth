@@ -8,6 +8,12 @@ from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
 
+try:
+    from django.db.models import JSONField
+except ImportError:
+    # see https://docs.djangoproject.com/en/4.1/ref/checks/
+    from django.contrib.postgres.fields.jsonb import JSONField
+
 from two_factor.gateways import make_call, send_sms
 
 PHONE_METHODS = (
@@ -35,6 +41,13 @@ class PhoneDevice(ThrottlingMixin, Device):
                            help_text="Hex-encoded secret key")
     method = models.CharField(max_length=4, choices=PHONE_METHODS,
                               verbose_name=_('method'))
+    # Additional data, such as request ID, timestamp of last sms sent, etc
+    data = JSONField(
+        default=dict,
+        null=True, blank=True,
+        verbose_name=_('Additional data for phone device'),
+        help_text=_('Additional data for phone device'),
+    )
 
     def __repr__(self):
         return '<PhoneDevice(number={!r}, method={!r}>'.format(
