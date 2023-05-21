@@ -9,7 +9,6 @@ from django.test.utils import override_settings
 from django.urls import reverse, reverse_lazy
 from django_otp.oath import totp
 from django_otp.util import random_hex
-
 from freezegun import freeze_time
 
 from two_factor.plugins.phonenumber.models import PhoneDevice
