@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from unittest import mock
 
 from django.conf import settings
@@ -188,6 +189,10 @@ class PhoneDeleteTest(UserMixin, TestCase):
 
 
 class PhoneDeviceTest(UserMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+
     def test_clean(self):
         device = PhoneDevice(key='xyz', method='sms')
         with self.assertRaises(ValidationError) as ctxt:
@@ -197,11 +202,14 @@ class PhoneDeviceTest(UserMixin, TestCase):
 
     def test_verify(self):
         for no_digits in (6, 8):
-            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex())
-                self.assertFalse(device.verify_token(-1))
-                self.assertFalse(device.verify_token('foobar'))
-                self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
+            with freeze_time("2023-01-01") as frozen_time:
+                with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                    device = PhoneDevice(key=random_hex(), user=self.user)
+                    self.assertFalse(device.verify_token(-1))
+                    frozen_time.tick(1)
+                    self.assertFalse(device.verify_token('foobar'))
+                    frozen_time.tick(10)
+                    self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
 
     def test_verify_token_as_string(self):
         """
@@ -211,14 +219,14 @@ class PhoneDeviceTest(UserMixin, TestCase):
         """
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex())
+                device = PhoneDevice(key=random_hex(), user=self.user)
                 self.assertTrue(device.verify_token(str(totp(device.bin_key, digits=no_digits))))
 
     def test_unicode(self):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
 
-        device.user = self.create_user()
+        device.user = self.user
         self.assertEqual('unknown (bouke@example.com)', str(device))
 
     def test_template_tags(self):
