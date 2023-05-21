@@ -98,3 +98,6 @@ PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 DEFAULT_FROM_EMAIL = 'test@test.org'
+
+TWO_FACTOR_PHONE_THROTTLE_FACTOR = 10
+OTP_TOTP_THROTTLE_FACTOR = 10
