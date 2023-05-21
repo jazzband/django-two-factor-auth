@@ -65,7 +65,7 @@ class PhoneDevice(ThrottlingMixin, Device):
         # therefore the throttle is not relevant.
         commit_throttle = False
         if self.id:
-             commit_throttle = True
+            commit_throttle = True
         verify_allowed, _ = self.verify_is_allowed()
 
         if verify_allowed:

@@ -1,5 +1,4 @@
 import json
-from freezegun import freeze_time
 from importlib import import_module
 from time import sleep
 from unittest import mock
@@ -12,6 +11,8 @@ from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
+
+from freezegun import freeze_time
 
 from two_factor.views.core import LoginView
 
