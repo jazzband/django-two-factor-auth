@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+### Fixed
+- Fixed a PhoneDevice migration generated even when the phonenumber plugin was
+  not installed (#587).
+
 ## 1.15.2
 ### Added
 - Confirmed Django 4.2 support
