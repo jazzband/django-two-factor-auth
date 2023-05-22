@@ -684,10 +684,10 @@ class SetupCompleteView(TemplateView):
             return redirect(request.session.get('next'))
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self):
-        return {
-            'phone_methods': get_available_phone_methods(),
-        }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(phone_methods=get_available_phone_methods())
+        return context
 
 
 @class_view_decorator(never_cache)
