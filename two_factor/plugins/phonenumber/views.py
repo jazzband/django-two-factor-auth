@@ -2,7 +2,6 @@ from django.conf import settings
 from django.shortcuts import redirect, resolve_url
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
-from django_otp.decorators import otp_required
 from django_otp.util import random_hex
 
 from two_factor.forms import DeviceValidationForm
@@ -92,12 +91,16 @@ class PhoneSetupView(IdempotentSessionWizardView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
 class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.
     """
     success_url = settings.LOGIN_REDIRECT_URL
+
+    @otp_required_decorator
+    def dispatch(self, *args, **kwargs):
+        # otp_required: validates the token.
+        return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
         return self.request.user.phonedevice_set.filter(name='backup')
