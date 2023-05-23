@@ -1,7 +1,7 @@
 import base64
 import logging
 import time
-
+from functools import wraps, partial
 from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
@@ -238,6 +238,24 @@ def class_view_decorator(function_decorator):
         View.dispatch = method_decorator(function_decorator)(View.dispatch)
         return View
     return simple_decorator
+
+
+def otp_required_decorator(method):
+    """Same as otp_required but allows passing parameters to the
+    decorator through the view whose method was decorated.
+    """
+    from django_otp.decorators import otp_required
+    opt_login_url = getattr(settings, "OTP_LOGIN_URL", None)
+    opt_redirect_field_name = getattr(settings, "OPT_REDIRECT_FIELD_NAME", "next")
+
+    @wraps(method)
+    def wrapped(view, *args, **kwargs):
+        fn = otp_required(partial(method, view),
+            login_url=getattr(view, "opt_login_url", opt_login_url),
+            redirect_field_name=getattr(view, "opt_redirect_field_name", opt_redirect_field_name),
+            if_configured=getattr(view, "opt_if_configured", False))
+        return fn(*args, **kwargs)
+    return wrapped
 
 
 remember_device_cookie_separator = ':'
