@@ -5,7 +5,6 @@ from django.utils.functional import lazy
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from django_otp import devices_for_user
-from django_otp.decorators import otp_required
 
 from two_factor.plugins.phonenumber.utils import (
     backup_phones, get_available_phone_methods,
@@ -13,7 +12,7 @@ from two_factor.plugins.phonenumber.utils import (
 
 from ..forms import DisableForm
 from ..utils import default_device
-from .utils import class_view_decorator
+from .utils import class_view_decorator, otp_required_decorator
 
 
 @class_view_decorator(never_cache)
@@ -50,19 +49,15 @@ class DisableView(FormView):
     View for disabling two-factor for a user's account.
     """
     template_name = 'two_factor/profile/disable.html'
-    opt_login_url = getattr(settings, "OTP_LOGIN_URL", None)
-    opt_redirect_field_name = getattr(settings, "OPT_LOGIN_REDIRECT_FIELD_NAME", None)
-    success_url = lazy(resolve_url, str)(settings.LOGIN_REDIRECT_URL)
+    success_url = opt_login_url = lazy(resolve_url, str)(settings.LOGIN_REDIRECT_URL)
     form_class = DisableForm
 
+    @otp_required_decorator
     def dispatch(self, *args, **kwargs):
         # We call otp_required here because we want to use self.success_url as
         # the login_url. Using it as a class decorator would make it difficult
         # for users who wish to override this property
-        fn = otp_required(super().dispatch,
-                          login_url=self.opt_login_url or self.success_url,
-                          redirect_field_name=self.opt_redirect_field_name)
-        return fn(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         for device in devices_for_user(self.request.user):
