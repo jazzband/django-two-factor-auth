@@ -85,6 +85,8 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     redirect_authenticated_user = False
     storage_name = 'two_factor.views.utils.LoginStorage'
 
+    setup_redirect_url = "two_factor:setup"
+
     def has_token_step(self):
         return (
             default_device(self.get_user()) and
@@ -185,7 +187,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         elif OTPRequiredMixin.is_otp_view(self.request.GET.get('next')):
             if self.request.GET.get('next'):
                 self.request.session['next'] = self.get_success_url()
-            return redirect('two_factor:setup')
+            return redirect(self.setup_redirect_url)
 
         return response
 
