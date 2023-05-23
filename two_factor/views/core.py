@@ -30,7 +30,6 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, TemplateView
 from django.views.generic.base import View
 from django_otp import devices_for_user
-from django_otp.decorators import otp_required
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
