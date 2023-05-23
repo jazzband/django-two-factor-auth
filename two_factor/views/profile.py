@@ -50,6 +50,7 @@ class DisableView(FormView):
     View for disabling two-factor for a user's account.
     """
     template_name = 'two_factor/profile/disable.html'
+    opt_login_url = getattr(settings, "OTP_LOGIN_URL", None)
     success_url = lazy(resolve_url, str)(settings.LOGIN_REDIRECT_URL)
     form_class = DisableForm
 
@@ -57,7 +58,8 @@ class DisableView(FormView):
         # We call otp_required here because we want to use self.success_url as
         # the login_url. Using it as a class decorator would make it difficult
         # for users who wish to override this property
-        fn = otp_required(super().dispatch, login_url=self.success_url, redirect_field_name=None)
+        fn = otp_required(super().dispatch, login_url=self.opt_login_url or self.success_url,
+                          redirect_field_name=None)
         return fn(*args, **kwargs)
 
     def form_valid(self, form):
