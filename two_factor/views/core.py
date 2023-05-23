@@ -47,7 +47,7 @@ from ..forms import (
 from ..utils import default_device, get_otpauth_url
 from .utils import (
     IdempotentSessionWizardView, class_view_decorator,
-    get_remember_device_cookie, validate_remember_device_cookie,
+    get_remember_device_cookie, validate_remember_device_cookie, otp_required_decorator,
 )
 
 try:
@@ -636,7 +636,6 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
 class BackupTokensView(FormView):
     """
     View for listing and generating backup tokens.
@@ -650,6 +649,11 @@ class BackupTokensView(FormView):
     success_url = 'two_factor:backup_tokens'
     template_name = 'two_factor/core/backup_tokens.html'
     number_of_tokens = 10
+
+    @otp_required_decorator
+    def dispatch(self, *args, **kwargs):
+        # otp_required: validates the token.
+        return super().dispatch(*args, **kwargs)
 
     def get_device(self):
         return self.request.user.staticdevice_set.get_or_create(name='backup')[0]
