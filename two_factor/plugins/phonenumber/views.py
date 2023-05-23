@@ -7,7 +7,7 @@ from django_otp.util import random_hex
 
 from two_factor.forms import DeviceValidationForm
 from two_factor.views.utils import (
-    IdempotentSessionWizardView, class_view_decorator,
+    IdempotentSessionWizardView, class_view_decorator, otp_required_decorator,
 )
 
 from .forms import PhoneNumberMethodForm
@@ -16,7 +16,6 @@ from .utils import get_available_phone_methods
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
 class PhoneSetupView(IdempotentSessionWizardView):
     """
     View for configuring a phone number for receiving tokens.
@@ -33,6 +32,11 @@ class PhoneSetupView(IdempotentSessionWizardView):
         ('validation', DeviceValidationForm),
     )
     key_name = 'key'
+
+    @otp_required_decorator
+    def dispatch(self, *args, **kwargs):
+        # otp_required: validates the token.
+        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         """
