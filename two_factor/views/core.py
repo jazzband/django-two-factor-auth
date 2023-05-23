@@ -676,12 +676,16 @@ class BackupTokensView(FormView):
 
 
 @class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
 class SetupCompleteView(TemplateView):
     """
     View congratulation the user when OTP setup has completed.
     """
     template_name = 'two_factor/core/setup_complete.html'
+
+    @otp_required_decorator
+    def dispatch(self, *args, **kwargs):
+        # otp_required: validates the token.
+        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if request.session.get('next'):
