@@ -342,7 +342,8 @@ msgstr ""
 msgid ""
 "Alternatively you can use the following secret to setup TOTP in your "
 "authenticator or password manager manually."
-msgstr ""
+msgstr "Alternativamente você pode utilizar o segredo a seguir para configurar seu autenticador TOTP "
+"ou gerenciador de senha manualmente."
 
 #: templates/two_factor/core/setup.html:24
 msgid "TOTP Secret:"
