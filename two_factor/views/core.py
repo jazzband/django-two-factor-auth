@@ -522,7 +522,14 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         next_step = self.steps.next
         if next_step == 'validation':
             try:
-                self.get_device().generate_challenge()
+                device = self.get_device()
+                try:
+                    device.generate_challenge()
+                finally:
+                    if device.confirmed:
+                        # Waits for the user to confirm the access code.
+                        device.confirmed = False
+                        device.save()
                 kwargs["challenge_succeeded"] = True
             except Exception:
                 logger.exception("Could not generate challenge")
@@ -548,6 +555,8 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         # PhoneNumberForm / YubiKeyDeviceForm / EmailForm / WebauthnDeviceValidationForm
         elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
+            # With the code confirmed, activate the device for use.
+            device.confirmed = True
             device.save()
 
         else:
