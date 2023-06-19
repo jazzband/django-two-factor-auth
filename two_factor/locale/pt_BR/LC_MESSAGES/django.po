@@ -462,8 +462,8 @@ msgid ""
 "If you don't have any device with you, you can access your account using "
 "backup tokens."
 msgstr ""
-"Se você não tiver nenhuma dispositivo com você, você pode acessar sua conta "
-"usando os códigos reservas."
+"Se você não tiver nenhum dispositivo com você, pode acessar sua conta "
+"usando os códigos reserva."
 
 #: templates/two_factor/profile/profile.html:36
 #, python-format
