@@ -246,7 +246,7 @@ msgid ""
 "been generated for you to print and keep safe. Please enter one of these "
 "backup tokens to login to your account."
 msgstr ""
-"Use esse formulário para inserir os códigos reservas para se conectar. Esses "
+"Use esse formulário para inserir os códigos reserva para se conectar. Esses "
 "códigos foram gerados para você imprimir e manter seguros. Por favor, digite "
 "um deles para se conectar à sua conta."
 
@@ -447,7 +447,7 @@ msgid ""
 "to the phone numbers listed below."
 msgstr ""
 "Se seu método primário não estiver disponível, nós podemos lhe enviar os "
-"códigos reservas para o telefone listado abaixo."
+"códigos reserva para o telefone listado abaixo."
 
 #: templates/two_factor/profile/profile.html:20
 msgid "Are you sure?"
@@ -470,8 +470,8 @@ msgstr ""
 msgid "You have only one backup token remaining."
 msgid_plural "You have %(counter)s backup tokens remaining."
 msgstr[0] "Você tem somente um código reserva restante."
-msgstr[1] "Você têm %(counter)s códigos reservas restantes."
-msgstr[2] "Você têm %(counter)s códigos reservas restantes."
+msgstr[1] "Você têm %(counter)s códigos reserva restantes."
+msgstr[2] "Você têm %(counter)s códigos reserva restantes."
 
 #: templates/two_factor/profile/profile.html:43
 msgid "Show Codes"
