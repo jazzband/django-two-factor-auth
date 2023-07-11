@@ -39,6 +39,9 @@
       {% elif device.method == 'sms' %}
         <p>{% blocktrans trimmed %}We sent you a text message, please enter the tokens we
           sent.{% endblocktrans %}</p>
+      {% elif method.code == 'email' %}
+        <p class="mb-0">{% blocktrans trimmed %}We sent you a text message, please enter the tokens we
+          sent.{% endblocktrans %}</p>
       {% endif %}
     {% else %}
       <p class="alert alert-warning" role="alert">{% blocktrans trimmed %}We've

@@ -631,6 +631,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
+            context['method'] = self.get_method()
         context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
         return context
 
