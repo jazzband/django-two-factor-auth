@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
@@ -46,7 +47,12 @@ class OTPRequiredMixin:
         """
         Returns login url to redirect to.
         """
-        return self.login_url and str(self.login_url) or reverse('two_factor:login')
+        login_redirect = 'two_factor:login'
+
+        if settings.LOGIN_URL:
+            login_redirect = settings.LOGIN_URL
+        
+        return self.login_url and str(self.login_url) or reverse(login_redirect)
 
     def get_verification_url(self):
         """
