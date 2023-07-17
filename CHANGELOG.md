@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.15.3
+### Added
+- Added Turkish translation.
+
+### Fixed
+- Fixed a PhoneDevice migration generated even when the phonenumber plugin was
+  not installed (#587).
+- Created a custom phonenumber migration to allow migration for both when the
+  model already exists (legacy installs) and for new installs (#611).
+
 ## 1.15.2
 ### Added
 - Confirmed Django 4.2 support
