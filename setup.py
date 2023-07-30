@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='django-two-factor-auth',
-    version='1.15.2',
+    version='1.15.3',
     description='Complete Two-Factor Authentication for Django',
     long_description=open('README.rst', encoding='utf-8').read(),
     author='Bouke Haarsma',
@@ -10,7 +10,7 @@ setup(
     url='https://github.com/jazzband/django-two-factor-auth',
     download_url='https://pypi.python.org/project/django-two-factor-auth',
     license='MIT',
-    packages=find_packages(exclude=('example', 'tests')),
+    packages=find_packages(exclude=('example', 'tests', 'tests.*')),
     install_requires=[
         'Django>=3.2',
         'django_otp>=0.8.0',

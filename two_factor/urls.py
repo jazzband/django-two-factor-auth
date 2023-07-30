@@ -1,9 +1,6 @@
 from django.apps.registry import apps
 from django.urls import include, path
 
-from two_factor.plugins.phonenumber.views import (
-    PhoneDeleteView, PhoneSetupView,
-)
 from two_factor.views import (
     BackupTokensView, DisableView, LoginView, ProfileView, QRGeneratorView,
     SetupCompleteView, SetupView,
@@ -35,16 +32,6 @@ core = [
         BackupTokensView.as_view(),
         name='backup_tokens',
     ),
-    path(
-        'account/two_factor/backup/phone/register/',
-        PhoneSetupView.as_view(),
-        name='phone_create',
-    ),
-    path(
-        'account/two_factor/backup/phone/unregister/<int:pk>/',
-        PhoneDeleteView.as_view(),
-        name='phone_delete',
-    ),
 ]
 
 profile = [
@@ -63,11 +50,19 @@ profile = [
 plugin_urlpatterns = []
 for app_config in apps.get_app_configs():
     if app_config.name.startswith('two_factor.plugins.'):
+        # Phonenumber used to be include in the two_factor core. Because we
+        # don't want to change the url names and break backwards compatibility
+        # we keep the urls of the phonenumber plugin in the core two_factor
+        # namespace.
+        if app_config.name == 'two_factor.plugins.phonenumber':
+            namespace = None
+        else:
+            namespace = app_config.label
         try:
             plugin_urlpatterns.append(
                 path(
                     f'account/two_factor/{app_config.url_prefix}/',
-                    include(f'{app_config.name}.urls', app_config.label)
+                    include(f'{app_config.name}.urls', namespace)
                 ),
             )
         except AttributeError:
