@@ -73,7 +73,7 @@ class CreatePhoneDevice(Operation):
 class Migration(migrations.Migration):
     replaces = [
         ('phonenumber', '0001_initial'),
-        ('twofactor', '0001_squashed_0008_delete_phonedevice'),
+        ('two_factor', '0001_squashed_0008_delete_phonedevice'),
     ]
 
     initial = True
