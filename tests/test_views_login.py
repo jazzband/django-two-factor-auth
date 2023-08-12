@@ -11,6 +11,7 @@ from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
+from freezegun import freeze_time
 
 from two_factor.views.core import LoginView
 
@@ -252,23 +253,60 @@ class LoginTest(UserMixin, TestCase):
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
     @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(OTP_TOTP_THROTTLE_FACTOR=10)
     def test_throttle_with_generator(self, mock_signal):
-        user = self.create_user()
-        device = user.totpdevice_set.create(name='default',
-                                            key=random_hex())
+        with freeze_time("2023-01-01") as frozen_time:
+            user = self.create_user()
+            device = user.totpdevice_set.create(name='default',
+                                                key=random_hex())
 
-        self._post({'auth-username': 'bouke@example.com',
-                    'auth-password': 'secret',
-                    'login_view-current_step': 'auth'})
+            self._post({'auth-username': 'bouke@example.com',
+                        'auth-password': 'secret',
+                        'login_view-current_step': 'auth'})
 
-        # throttle device
-        device.throttle_increment()
+            # throttle device
+            device.throttle_increment()
 
-        response = self._post({'token-otp_token': totp_str(device.bin_key),
-                               'login_view-current_step': 'token'})
-        self.assertEqual(response.context_data['wizard']['form'].errors,
-                         {'__all__': ['Invalid token. Please make sure you '
-                                      'have entered it correctly.']})
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertEqual(response.context_data['wizard']['form'].errors,
+                             {'__all__': ['Verification temporarily disabled because of 1 failed attempt, please '
+                                          'try again soon.']})
+
+            # Successful login after waiting for the appropriate time
+            frozen_time.tick(10)
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(
+        TWO_FACTOR_PHONE_THROTTLE_FACTOR=10,
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake'
+    )
+    def test_throttle_with_phone_sms(self, mock_signal):
+        with freeze_time("2023-01-01") as frozen_time:
+            user = self.create_user()
+            device = user.phonedevice_set.create(name='default', number='+31101234567', method='sms', key=random_hex())
+
+            self._post({'auth-username': 'bouke@example.com',
+                        'auth-password': 'secret',
+                        'login_view-current_step': 'auth'})
+
+            # throttle device
+            device.throttle_increment()
+
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertEqual(response.context_data['wizard']['form'].errors,
+                             {'__all__': ['Verification temporarily disabled because of 1 failed attempt, please '
+                                          'try again soon.']})
+
+            # Successful login after waiting for the appropriate time
+            frozen_time.tick(10)
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
     @mock.patch('two_factor.gateways.fake.Fake')
     @mock.patch('two_factor.views.core.signals.user_verified.send')
