@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.4
+### Fixed
+- Corrected migration dependency (introduced in 6150a782b6e6).
+- Fixed throttling for PhoneDevice (#418).
+
 ## 1.15.3
 ### Added
 - Added Turkish translation.
