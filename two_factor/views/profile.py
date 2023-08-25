@@ -42,10 +42,10 @@ class ProfileView(TemplateView):
             'backup_tokens': backup_tokens,
         }
 
-        if (apps.is_installed("phonenumber")):
+        if (apps.is_installed('two_factor.plugins.phonenumber')):
             context.update({
                 'backup_phones': backup_phones(self.request.user),
-                'phone_methods': get_available_phone_methods(),
+                'available_phone_methods': get_available_phone_methods(),
             })
 
         return context
