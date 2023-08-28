@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
-from pydantic.error_wrappers import ValidationError as PydanticValidationError
+from pydantic import ValidationError as PydanticValidationError
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import (
     PublicKeyCredentialRpEntity, PublicKeyCredentialUserEntity,
