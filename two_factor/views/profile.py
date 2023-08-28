@@ -1,3 +1,4 @@
+from django.apps.registry import apps
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
@@ -31,16 +32,23 @@ class ProfileView(TemplateView):
     def get_context_data(self, **kwargs):
         try:
             backup_tokens = self.request.user.staticdevice_set.all()[0].token_set.count()
+
         except Exception:
             backup_tokens = 0
 
-        return {
+        context = {
             'default_device': default_device(self.request.user),
             'default_device_type': default_device(self.request.user).__class__.__name__,
-            'backup_phones': backup_phones(self.request.user),
             'backup_tokens': backup_tokens,
-            'available_phone_methods': get_available_phone_methods()
         }
+
+        if (apps.is_installed('two_factor.plugins.phonenumber')):
+            context.update({
+                'backup_phones': backup_phones(self.request.user),
+                'available_phone_methods': get_available_phone_methods(),
+            })
+
+        return context
 
 
 @class_view_decorator(never_cache)
