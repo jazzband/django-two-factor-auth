@@ -15,7 +15,6 @@ setup(
         'Django>=3.2',
         'django_otp>=0.8.0',
         'qrcode>=4.0.0,<7.99',
-        'django-phonenumber-field<8',
         'django-formtools',
     ],
     extras_require={
@@ -23,8 +22,14 @@ setup(
         'sms': ['twilio>=6.0'],
         'webauthn': ['webauthn>=2.0,<2.99'],
         'yubikey': ['django-otp-yubikey'],
-        'phonenumbers': ['phonenumbers>=7.0.9,<8.99'],
-        'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99'],
+        'phonenumbers': [
+            'phonenumbers>=7.0.9,<8.99',
+            'django-phonenumber-field<8',
+        ],
+        'phonenumberslite': [
+            'phonenumberslite>=7.0.9,<8.99',
+            'django-phonenumber-field<8',
+        ],
         # used internally for local development & CI
         'tests': [
             'coverage',

@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
@@ -6,10 +7,6 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from django_otp import devices_for_user
 from django_otp.decorators import otp_required
-
-from two_factor.plugins.phonenumber.utils import (
-    backup_phones, get_available_phone_methods,
-)
 
 from ..forms import DisableForm
 from ..utils import default_device
@@ -41,9 +38,17 @@ class ProfileView(TemplateView):
             'default_device': default_device(user),
             'default_device_type': default_device(user).__class__.__name__,
             'backup_tokens': backup_tokens,
-            'backup_phones': backup_phones(user),
-            'available_phone_methods': get_available_phone_methods(),
         }
+
+        if apps.is_installed('two_factor.plugins.phonenumber'):
+            from two_factor.plugins.phonenumber.utils import (
+                backup_phones, get_available_phone_methods,
+            )
+
+            context.update({
+                'backup_phones': backup_phones(self.request.user),
+                'available_phone_methods': get_available_phone_methods(),
+            })
 
         return context
 
