@@ -4,12 +4,12 @@ from two_factor.plugins.registry import MethodBase
 
 from .forms import PhoneNumberForm
 from .models import PhoneDevice
-from .utils import backup_phones, format_phone_number, mask_phone_number
+from .utils import format_phone_number, mask_phone_number
 
 
 class PhoneMethodBase(MethodBase):
     def get_devices(self, user):
-        return [device for device in backup_phones(user) if device.method == self.code]
+        return PhoneDevice.objects.filter(user=user, method=self.code)
 
     def recognize_device(self, device):
         return isinstance(device, PhoneDevice) and device.method == self.code
