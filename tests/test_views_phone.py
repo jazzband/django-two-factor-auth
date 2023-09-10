@@ -147,6 +147,11 @@ class PhoneSetupTest(UserMixin, TestCase):
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
 
+    def test_url_generation(self):
+        url_name = 'two_factor:phone_create'
+        expected_url = '/account/two_factor/phone/register/'
+        self.assertEqual(reverse(url_name), expected_url)
+
 
 class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
@@ -186,6 +191,11 @@ class PhoneDeleteTest(UserMixin, TestCase):
         view = PhoneDeleteView()
         view.success_url = reverse_lazy(url_name)
         self.assertEqual(view.get_success_url(), url)
+
+    def test_url_generation(self):
+        url_name = 'two_factor:phone_delete'
+        expected_url = '/account/two_factor/phone/unregister/42/'
+        self.assertEqual(reverse(url_name, args=(42,)), expected_url)
 
 
 class PhoneDeviceTest(UserMixin, TestCase):
