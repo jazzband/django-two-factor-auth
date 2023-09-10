@@ -79,7 +79,7 @@ class MethodRegistry:
     def register(self, method):
         for registered_method in self._methods:
             if method.code == registered_method.code:
-                return
+                return   # Already registered, ignore.
 
         self._methods.append(method)
 
