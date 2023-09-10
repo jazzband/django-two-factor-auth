@@ -7,10 +7,13 @@ from django_otp.util import random_hex
 from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.plugins.email.utils import mask_email
+from two_factor.plugins.phonenumber.method import PhoneCallMethod, SMSMethod
 from two_factor.plugins.phonenumber.models import PhoneDevice
 from two_factor.plugins.phonenumber.utils import (
-    backup_phones, format_phone_number, mask_phone_number,
+    backup_phones, format_phone_number, get_available_phone_methods,
+    mask_phone_number,
 )
+from two_factor.plugins.registry import GeneratorMethod, MethodRegistry
 from two_factor.utils import (
     USER_DEFAULT_DEVICE_ATTR_NAME, default_device, get_otpauth_url,
     totp_digits,
@@ -137,11 +140,28 @@ class UtilsTest(UserMixin, TestCase):
 
 
 class PhoneUtilsTests(UserMixin, TestCase):
+    def test_get_available_phone_methods(self):
+        parameters = [
+            # registered_methods, expected_codes
+            ([GeneratorMethod()], set()),
+            ([GeneratorMethod(), PhoneCallMethod()], {'call'}),
+            ([GeneratorMethod(), PhoneCallMethod(), SMSMethod()], {'call', 'sms'}),
+        ]
+        with mock.patch('two_factor.plugins.phonenumber.utils.registry', new_callable=MethodRegistry) as test_registry:
+            for registered_methods, expected_codes in parameters:
+                with self.subTest(
+                    registered_methods=registered_methods,
+                    expected_codes=expected_codes,
+                ):
+                    test_registry._methods = registered_methods
+                    codes = {method.code for method in get_available_phone_methods()}
+                    self.assertEqual(codes, expected_codes)
+
     def test_backup_phones(self):
         gateway = 'two_factor.gateways.fake.Fake'
         user = self.create_user()
-        user.phonedevice_set.create(name='default', number='+12024561111')
-        backup = user.phonedevice_set.create(name='backup', number='+12024561111')
+        user.phonedevice_set.create(name='default', number='+12024561111', method='call')
+        backup = user.phonedevice_set.create(name='backup', number='+12024561111', method='call')
 
         parameters = [
             # with_gateway, with_user, expected_output
