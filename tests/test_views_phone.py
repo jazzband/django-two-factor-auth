@@ -161,11 +161,13 @@ class PhoneDeleteTest(UserMixin, TestCase):
         self.default = self.user.phonedevice_set.create(name='default', method='call', number='+12024561111')
         self.login_user()
 
+    @override_settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
     def test_delete(self):
+        self.assertEqual(len(backup_phones(self.user)), 1)
         response = self.client.post(reverse('two_factor:phone_delete',
                                             args=[self.backup.pk]))
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
-        self.assertEqual(list(backup_phones(self.user)), [])
+        self.assertEqual(backup_phones(self.user), [])
 
     def test_cannot_delete_default(self):
         response = self.client.post(reverse('two_factor:phone_delete',

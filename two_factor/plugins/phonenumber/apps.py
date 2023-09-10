@@ -12,11 +12,11 @@ class TwoFactorPhoneNumberConfig(AppConfig):
     url_prefix = 'phone'
 
     def ready(self):
-        updated_registered_methods(self, None, None)
-        setting_changed.connect(updated_registered_methods)
+        update_registered_methods(self, None, None)
+        setting_changed.connect(update_registered_methods)
 
 
-def updated_registered_methods(sender, setting, value, **kwargs):
+def update_registered_methods(sender, setting, value, **kwargs):
     # This allows for dynamic registration, typically when testing.
     from .method import PhoneCallMethod, SMSMethod
 

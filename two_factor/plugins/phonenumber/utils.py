@@ -1,31 +1,30 @@
 import re
 
 import phonenumbers
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+
+from two_factor.plugins.registry import registry
 
 phone_mask = re.compile(r'(?<=.{3})[0-9](?=.{2})')
 
 
-def backup_phones(user):
-    no_gateways = (
-        getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None) is None
-        and getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None) is None)
-    no_user = not user or user.is_anonymous
-
-    if no_gateways or no_user:
-        from .models import PhoneDevice
-        return PhoneDevice.objects.none()
-    return user.phonedevice_set.filter(name='backup')
-
-
 def get_available_phone_methods():
     methods = []
-    if getattr(settings, 'TWO_FACTOR_CALL_GATEWAY', None):
-        methods.append(('call', _('Phone call')))
-    if getattr(settings, 'TWO_FACTOR_SMS_GATEWAY', None):
-        methods.append(('sms', _('Text message')))
+    for code in ['sms', 'call']:
+        if method := registry.get_method(code):
+            methods.append(method)
+
     return methods
+
+
+def backup_phones(user):
+    if not user or user.is_anonymous:
+        return []
+
+    phones = []
+    for method in get_available_phone_methods():
+        phones += list(method.get_devices(user))
+
+    return [phone for phone in phones if phone.name == 'backup']
 
 
 def mask_phone_number(number):
