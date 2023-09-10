@@ -4,12 +4,12 @@ from .views import PhoneDeleteView, PhoneSetupView
 
 urlpatterns = [
     path(
-        'account/two_factor/backup/phone/register/',
+        'register/',
         PhoneSetupView.as_view(),
         name='phone_create',
     ),
     path(
-        'account/two_factor/backup/phone/unregister/<int:pk>/',
+        'unregister/<int:pk>/',
         PhoneDeleteView.as_view(),
         name='phone_delete',
     ),
