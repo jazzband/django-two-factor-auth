@@ -113,7 +113,7 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and <a "
 "href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
 " authentication at work."
-msgstr "Después, <a href=\"%(logout_url)s\">cierra sesión</a> y <a href=\"%(login_url)s>inicia sesión</a> de nuevo en tu cuenta para ver funcionando la autenticación en dos pasos."
+msgstr "Después, <a href=\"%(logout_url)s\">cierra sesión</a> e <a href=\"%(login_url)s>inicia sesión</a> de nuevo en tu cuenta para ver funcionando la autenticación en dos pasos."
 
 #: templates/home.html:37
 #, python-format
