@@ -41,7 +41,7 @@ class SetupTest(UserMixin, TestCase):
                          {'token': ['This field is required.']})
 
         with mock.patch(
-            "two_factor.plugins.webauthn.forms.RegistrationCredential.parse_raw"
+            "two_factor.plugins.webauthn.forms.parse_registration_credential_json"
         ), mock.patch(
             "two_factor.plugins.webauthn.method.verify_registration_response"
         ) as verify_registration_response:
