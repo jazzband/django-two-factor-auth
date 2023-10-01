@@ -7,10 +7,9 @@ from webauthn import (
 )
 from webauthn.helpers import base64url_to_bytes, bytes_to_base64url
 from webauthn.helpers.structs import (
-    AttestationConveyancePreference, AuthenticationCredential,
-    AuthenticatorAttachment, AuthenticatorSelectionCriteria,
-    AuthenticatorTransport, PublicKeyCredentialDescriptor,
-    RegistrationCredential, UserVerificationRequirement,
+    AttestationConveyancePreference, AuthenticatorAttachment,
+    AuthenticatorSelectionCriteria, AuthenticatorTransport,
+    PublicKeyCredentialDescriptor, UserVerificationRequirement,
 )
 
 
@@ -62,7 +61,7 @@ def verify_registration_response(expected_rp_id, expected_origin, expected_chall
     :return: a tuple with the credential public key, id and current sign count
     """
     verified_registration = webauthn_verify_registration_response(
-        credential=RegistrationCredential.parse_raw(registration_token),
+        credential=registration_token,
         expected_challenge=base64url_to_bytes(expected_challenge),
         expected_origin=expected_origin,
         expected_rp_id=expected_rp_id,
@@ -130,7 +129,7 @@ def verify_authentication_response(
     :return: the new sign count for the WebauthnDevice instance
     """
     verified_authentication = webauthn_verify_authentication_response(
-        credential=AuthenticationCredential.parse_raw(authentication_token),
+        credential=authentication_token,
         expected_challenge=base64url_to_bytes(expected_challenge),
         expected_rp_id=expected_rp.id,
         expected_origin=expected_origin,
