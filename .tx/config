@@ -10,4 +10,3 @@ source_lang = en
 file_filter = two_factor/locale/<lang>/LC_MESSAGES/django.po
 source_file = two_factor/locale/en/LC_MESSAGES/django.po
 source_lang = en
-

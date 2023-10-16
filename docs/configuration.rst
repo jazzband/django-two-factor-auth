@@ -338,5 +338,3 @@ e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
   Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
 
   Default: `'Lax'`
-
-
