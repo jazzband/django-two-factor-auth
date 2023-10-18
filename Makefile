@@ -37,7 +37,7 @@ coverage:
 	coverage report --precision=2
 
 tx-pull:
-	tx pull -a
+	tx pull -a --force
 	cd two_factor; django-admin compilemessages
 	cd example; django-admin compilemessages
 
