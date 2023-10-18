@@ -25,10 +25,6 @@ tox
 isort
 freezegun
 
-# Translation
-
-transifex-client
-
 # Documentation
 
 Sphinx
