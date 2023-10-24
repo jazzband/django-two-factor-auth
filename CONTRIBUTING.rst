@@ -15,6 +15,13 @@ Contribute
 * Send a pull request with your changes.
 * Provide a translation using Transifex_.
 
+Running example app with Docker
+----------------------------------
+
+Run the example app on port 8000::
+
+    docker-compose up -d example_app
+
 Running tests
 -------------
 This project aims for full code-coverage, this means that your code should be
@@ -31,6 +38,10 @@ For Python compatibility, tox_ is used. You can run the full test suite,
 covering all supported Python and Django version with::
 
     tox
+
+With docker run tests::
+
+    docker-compose run --rm cli bash -c "pip install -r requirements_dev.txt; make test"
 
 Releasing
 ---------
