@@ -85,17 +85,18 @@ class TwilioGatewayTest(TestCase):
                 url='http://testserver/twilio/inbound/two_factor/%s/?locale=en-us' % code)
 
             twilio.send_sms(
-                device=Mock(number=PhoneNumber.from_string('+123')),
-                token=code
+
+            # test whatsapp message
+            twilio.send_whatsapp(
+                device=Mock(number=PhoneNumber.from_string("+123")), token=code
             )
 
             client.return_value.messages.create.assert_called_with(
-                to='+123',
+                to="whatsapp:+123",
                 body=render_to_string(
-                    'two_factor/twilio/sms_message.html',
-                    {'token': code}
+                    "two_factor/twilio/whatsapp_message.html", {"token": code}
                 ),
-                from_='+456'
+                from_="whatsapp:+456",
             )
 
             client.return_value.calls.create.reset_mock()
