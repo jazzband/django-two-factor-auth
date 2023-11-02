@@ -88,7 +88,8 @@ class TwilioGatewayTest(TestCase):
 
             # test whatsapp message
             twilio.send_whatsapp(
-                device=Mock(number=PhoneNumber.from_string("+123")), token=code
+                device=Mock(number=PhoneNumber.from_string(f"whatsapp:+123")), token=code
+            )
             )
 
             client.return_value.messages.create.assert_called_with(
@@ -144,6 +145,16 @@ class TwilioGatewayTest(TestCase):
             messaging_service_sid='ID'
         )
 
+        # Sending a WhatsApp message should originate from the messaging service SID
+        twilio.send_whatsapp(device=device, token=code)
+        client.return_value.messages.create.assert_called_with(
+            to="whatsapp:+123",
+            body=render_to_string(
+                "two_factor/twilio/whatsapp_message.html", {"token": code}
+            ),
+            messaging_service_sid="ID",
+        )
+
     @override_settings(
         TWILIO_ACCOUNT_SID='SID',
         TWILIO_AUTH_TOKEN='TOKEN',
@@ -180,3 +191,4 @@ class FakeGatewayTest(TestCase):
             fake.send_sms(device=Mock(number=PhoneNumber.from_string('+123')), token=code)
             logger.info.assert_called_with(
                 'Fake SMS to %s: "Your token is: %s"', '+123', code)
+
