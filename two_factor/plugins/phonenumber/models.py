@@ -8,11 +8,13 @@ from django_otp.oath import totp
 from django_otp.util import hex_validator, random_hex
 from phonenumber_field.modelfields import PhoneNumberField
 
-from two_factor.gateways import make_call, send_sms
+from two_factor.gateways import make_call, send_sms, send_whatsapp
 
+WHATSAPP = 'wa'
 PHONE_METHODS = (
     ('call', _('Phone Call')),
     ('sms', _('Text Message')),
+    (WHATSAPP, _('WhatsApp Message')),
 )
 
 
@@ -94,6 +96,8 @@ class PhoneDevice(ThrottlingMixin, Device):
         token = str(totp(self.bin_key, digits=no_digits)).zfill(no_digits)
         if self.method == 'call':
             make_call(device=self, token=token)
+        elif self.method == WHATSAPP:
+            send_whatsapp(device=self, token=token)
         else:
             send_sms(device=self, token=token)
 

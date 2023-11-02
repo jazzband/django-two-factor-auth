@@ -39,6 +39,15 @@ class Twilio:
       phone numbers and choose one depending on the destination country.
       When left empty the ``TWILIO_CALLER_ID`` will be used as sender ID.
 
+    ``TWILIO_CALLER_ID_WHATSAPP``
+      Should be set to a verified phone number. Twilio_ differentiates between
+      numbers verified for making phone calls and sending whatsapp/sms messages.
+
+    ``TWILIO_MESSAGING_SERVICE_SID_WHATSAPP``
+      Can be set to a Twilio Messaging Service for WhatsApp. This service can wrap multiple
+      phone numbers and choose one depending on the destination country.
+      When left empty the ``TWILIO_CALLER_ID_WHATSAPP`` will be used as sender ID.
+
     .. _Twilio: http://www.twilio.com/
     """
 
@@ -61,19 +70,47 @@ class Twilio:
     def send_sms(self, device, token):
         """
         send sms using template 'two_factor/twilio/sms_message.html'
+        """
+        body = render_to_string(
+            'two_factor/twilio/sms_message.html',
+            {'token': token}
+        )
+        send_kwargs = {
+            'to': device.number.as_e164,
+            'body': body
+        }
+        messaging_service_sid = getattr(settings, 'TWILIO_MESSAGING_SERVICE_SID', None)
+        if messaging_service_sid is not None:
+            send_kwargs['messaging_service_sid'] = messaging_service_sid
+        else:
+            send_kwargs['from_'] = getattr(settings, 'TWILIO_CALLER_ID')
+
+        self.client.messages.create(**send_kwargs)
 
     def send_whatsapp(self, device, token):
         """
         send whatsapp using template 'two_factor/twilio/sms_message.html'
         """
-        body = render_to_string(
-            "two_factor/twilio/whatsapp_message.html", {"token": token}
-        )
+        PLACE_TOKEN_AT_END_OF_MESSAGE = getattr(settings, 'PLACE_TOKEN_AT_END_OF_MESSAGE', False)
+
+        if PLACE_TOKEN_AT_END_OF_MESSAGE:
+          whatsapp_approved_message = f"{getattr(settings, 'WHATSAPP_APPROVED_MESSAGE', 'Your OTP code is')} {token}"
+        else:
+          whatsapp_approved_message = f"{token} {getattr(settings, 'WHATSAPP_APPROVED_MESSAGE', 'is your OTP code.')}"
+
+        body = whatsapp_approved_message
         send_kwargs = {
-            "to": f"whatsapp:{device.number.as_e164}",
-            "from_": f"whatsapp:{getattr(settings, 'TWILIO_CALLER_ID')}",
-            "body": body,
+            'to': f"whatsapp:{device.number.as_e164}",
+            'body': body
         }
+        messaging_service_sid = getattr(settings, 'TWILIO_MESSAGING_SERVICE_SID_WHATSAPP', None)
+        if messaging_service_sid is not None:
+            send_kwargs['messaging_service_sid'] = messaging_service_sid
+        else:
+            send_kwargs['from_'] = (
+                f"whatsapp:{getattr(settings, 'TWILIO_CALLER_ID_WHATSAPP', settings.TWILIO_CALLER_ID)}",
+            )
+
         self.client.messages.create(**send_kwargs)
 
 

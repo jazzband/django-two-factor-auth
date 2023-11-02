@@ -21,6 +21,7 @@ setup(
     extras_require={
         'call': ['twilio>=6.0'],
         'sms': ['twilio>=6.0'],
+        'whatsapp': ['twilio>=6.0'],
         'webauthn': ['webauthn>=1.11.0,<1.99'],
         'yubikey': ['django-otp-yubikey'],
         'phonenumbers': ['phonenumbers>=7.0.9,<8.99'],
