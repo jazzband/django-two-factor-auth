@@ -15,7 +15,6 @@ from .utils import totp_digits
 class MethodForm(forms.Form):
     method = forms.ChoiceField(label=_("Method"),
                                widget=forms.RadioSelect)
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -27,13 +26,16 @@ class MethodForm(forms.Form):
 
 
 class DeviceValidationForm(forms.Form):
-    token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
+    token = forms.IntegerField(label=_("Code"), min_value=1, max_value=int('9' * totp_digits()))
+    token_input_width = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_WIDTH', 80)
+    token_input_height = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_HEIGHT', 10)
 
     token.widget.attrs.update({'autofocus': 'autofocus',
                                'inputmode': 'numeric',
-                               'autocomplete': 'one-time-code'})
+                               'autocomplete': 'one-time-code',
+                               'style': f'width:{token_input_width}px; height:{token_input_height}px;'})
     error_messages = {
-        'invalid_token': _('Entered token is not valid.'),
+        'invalid_token': _('Entered code is not valid.'),
     }
 
     def __init__(self, device, **kwargs):
@@ -49,10 +51,13 @@ class DeviceValidationForm(forms.Form):
 
 class TOTPDeviceForm(forms.Form):
     token = forms.IntegerField(label=_("Token"), min_value=0, max_value=int('9' * totp_digits()))
+    token_input_width = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_WIDTH', 80)
+    token_input_height = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_HEIGHT', 10)
 
     token.widget.attrs.update({'autofocus': 'autofocus',
                                'inputmode': 'numeric',
-                               'autocomplete': 'one-time-code'})
+                               'autocomplete': 'one-time-code',
+                               'style': f'width:{token_input_width}px; height:{token_input_height}px;'})
 
     error_messages = {
         'invalid_token': _('Entered token is not valid.'),
@@ -106,6 +111,8 @@ class DisableForm(forms.Form):
 
 
 class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
+    token_input_width = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_WIDTH', 80)
+    token_input_height = getattr(settings, 'TWO_FACTOR_TOKEN_INPUT_HEIGHT', 10)
     otp_token = forms.RegexField(label=_("Token"),
                                  regex=r'^[0-9]*$',
                                  min_length=totp_digits(),
@@ -114,6 +121,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         'autofocus': 'autofocus',
         'pattern': '[0-9]*',  # hint to show numeric keyboard for on-screen keyboards
         'autocomplete': 'one-time-code',
+        'style': f'width:{token_input_width}px; height:{token_input_height}px;'
     })
 
     # Our authentication form has an additional submit button to go to the

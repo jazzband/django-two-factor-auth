@@ -62,6 +62,16 @@ General Settings
   indefinitely in a state of having entered their password successfully but not
   having passed two factor authentication. Set to ``0`` to disable.
 
+``TWO_FACTOR_TOKEN_INPUT_WIDTH`` (default ``80``)
+  The size of the input field width for the token. This is used by the default
+  templates to set the size of the input field. Set to ``None`` to not set the
+  size.
+
+``TWO_FACTOR_TOKEN_INPUT_HEIGHT`` (default ``10``)
+  The size of the input field height for the token. This is used by the default
+  templates to set the size of the input field. Set to ``None`` to not set the
+  size.
+
 Phone-related settings
 ----------------------
 
