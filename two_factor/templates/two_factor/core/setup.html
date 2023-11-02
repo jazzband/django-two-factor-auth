@@ -28,6 +28,10 @@
     <p>{% blocktrans trimmed %}Please enter the phone number you wish to receive the
       text messages on. This number will be validated in the next step.
       {% endblocktrans %}</p>
+  {% elif wizard.steps.current == 'wa' %}
+      <p>{% blocktrans trimmed %}Please enter the phone number you wish to receive the
+        whatsapp messages on. This number will be validated in the next step.
+        {% endblocktrans %}</p>
   {% elif wizard.steps.current == 'call' %}
     <p>{% blocktrans trimmed %}Please enter the phone number you wish to be called on.
       This number will be validated in the next step. {% endblocktrans %}</p>
@@ -38,6 +42,9 @@
           digits you hear.{% endblocktrans %}</p>
       {% elif device.method == 'sms' %}
         <p>{% blocktrans trimmed %}We sent you a text message, please enter the tokens we
+          sent.{% endblocktrans %}</p>
+      {% elif device.method == 'wa' %}
+        <p>{% blocktrans trimmed %}We sent you a whatsapp message, please enter the tokens we
           sent.{% endblocktrans %}</p>
       {% endif %}
     {% else %}
