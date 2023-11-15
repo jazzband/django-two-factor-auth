@@ -707,6 +707,8 @@ class QRGeneratorView(View):
     }
 
     def get_issuer(self):
+        if settings.TOTP_ISSUER:
+            return settings.TOTP_ISSUER
         return get_current_site(self.request).name
 
     def get_username(self):
