@@ -43,7 +43,7 @@
               <li class="nav-item">
                 <form action="{% url 'logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="nav-link btn btn-link p-2 m-0 text-decoration-none">
+                    <button type="submit" class="nav-link btn btn-link pt-2 m-0 text-decoration-none">
                         {% trans "Logout" %}
                     </button>
                 </form>
