@@ -41,7 +41,12 @@
               <li class="nav-item {% block nav_sessions %}{% endblock %}">
                 <a class="nav-link" href="{% url 'user_sessions:session_list' %}">{% trans "Sessions" %}</a></li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">{% trans "Logout" %}</a>
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link pt-2 m-0 text-decoration-none">
+                        {% trans "Logout" %}
+                    </button>
+                </form>
               </li>
             {% else %}
               <li class="nav-item">
