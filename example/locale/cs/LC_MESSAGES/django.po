@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Translators:
+# Adam Tran, 2023
 # Jonas Vacek, 2022
 msgid ""
 msgstr ""
@@ -11,8 +12,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-15 22:55+0200\n"
 "PO-Revision-Date: 2013-11-20 09:31+0000\n"
-"Last-Translator: Jonas Vacek, 2022\n"
-"Language-Team: Czech (http://www.transifex.com/Bouke/django-two-factor-auth/language/cs/)\n"
+"Last-Translator: Adam Tran, 2023\n"
+"Language-Team: Czech (http://app.transifex.com/Bouke/django-two-factor-auth/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,7 +40,7 @@ msgstr "Domů"
 
 #: templates/_base.html:29 templates/secret.html:7
 msgid "Secret Page"
-msgstr ""
+msgstr "Tajná stránka"
 
 #: templates/_base.html:39
 msgid "Account Security"

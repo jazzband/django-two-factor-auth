@@ -18,7 +18,7 @@ msgstr ""
 "POT-Creation-Date: 2023-01-18 18:32+0100\n"
 "PO-Revision-Date: 2013-11-19 18:12+0000\n"
 "Last-Translator: Claude Paroz <claude@2xlibre.net>, 2020,2022-2023\n"
-"Language-Team: French (http://www.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
+"Language-Team: French (http://app.transifex.com/Bouke/django-two-factor-auth/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -104,7 +104,7 @@ msgstr "Vous avez reçu un texto (SMS), veuillez entrer le jeton que nous avons 
 
 #: plugins/phonenumber/method.py:40 templates/two_factor/core/setup.html:37
 msgid "We are calling your phone right now, please enter the digits you hear."
-msgstr "Nous appelons votre téléphone à l'instant. Veuillez entrer les chiffres que vous entendez."
+msgstr "Nous essayons de vous contacter au numéro fourni à l'instant. Veuillez entrer les chiffres que vous entendez."
 
 #: plugins/phonenumber/method.py:45 plugins/phonenumber/utils.py:25
 msgid "Phone call"
