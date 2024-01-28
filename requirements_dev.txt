@@ -4,6 +4,7 @@
 
 # Additional runtime dependencies
 
+plivo
 twilio
 phonenumberslite
 

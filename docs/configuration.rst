@@ -84,6 +84,7 @@ setting. Then, you may want to configure the following settings:
 
   * ``'two_factor.gateways.twilio.gateway.Twilio'`` for sending real text messages using
     Twilio_.
+  * ``'two_factor.gateways.plivo.gateway.Plivo'`` for sending SMS using Plivo_.
   * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
     default logger.
 
@@ -145,6 +146,26 @@ Additionally, you need to enable the ``ThreadLocals`` middleware:
 
 
 .. autoclass:: two_factor.gateways.twilio.gateway.Twilio
+
+Plivo Gateway
+--------------
+To use the Plivo you need to get the Auth ID and Auth Token from the Plivo console.
+You need to buy a source number from Plivo too, which is used by the gateway too.
+To use Plivo as a authentication service you need to setup a PHLO for Two-Factor
+authentication.
+The dependency needed is the plivo module.
+
+.. code-block:: console
+
+    pip install plivo
+
+Sample configuration in settings could look like this:
+
+.. code-block:: python
+
+    PLIVO_AUTH_ID = 'NANWFHZJDKYJG2YNNNN2'
+    PLIVO_AUTH_TOKEN = 'ZGYwMTVkMGE5NGiiiWFmHGHmYmNhOWY3NTRhYzQ4'
+    PLIVO_SOURCE_NUMBER = '+1 206-426-9999'
 
 Fake Gateway
 ------------
