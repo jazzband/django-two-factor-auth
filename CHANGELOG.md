@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.16.0
+### Fixed
+- Avoid potentially empty `<ul>` on the profile page.
+
+### Changed
+- Upgraded minimal webauthn dependency to 2.0 (which also removes a deprecation
+  warning) (#634, #701). Note the ``pydantic`` dependency was removed in
+  webauthn 2.
+- Checking phone method availability uses now the method registry (#665).
+- Logout example uses POST method to match recent Django behavior.
+- Updated translations.
+
+### Added
+- Support confirmation for Django 5.0 and Python 3.12.
+- A new `main_form_content` template block on login template allows for easier
+  overridability.
+
 ## 1.15.5
 ### Fixed
 - Include transitively replaced migrations in phonenumber migration.
