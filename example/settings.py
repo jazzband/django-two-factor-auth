@@ -97,8 +97,13 @@ LOGGING = {
 }
 
 TWO_FACTOR_CALL_GATEWAY = 'example.gateways.Messages'
-TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
+TWO_FACTOR_SMS_GATEWAY = "two_factor.gateways.twilio.gateway.Twilio"
 PHONENUMBER_DEFAULT_REGION = 'NL'
+TWO_FACTOR_WHATSAPP_GATEWAY = TWO_FACTOR_SMS_GATEWAY
+TWO_FACTOR_INPUT_WIDTH = 200
+TWO_FACTOR_INPUT_HEIGHT = 50
+PLACE_TOKEN_AT_END_OF_MESSAGE = False
+WHATSAPP_APPROVED_MESSAGE = "is your verification code for The Example App."
 
 TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
 

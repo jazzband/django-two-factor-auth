@@ -11,11 +11,12 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from .plugins.registry import registry
 from .utils import totp_digits
 
+TWO_FACTOR_INPUT_WIDTH = getattr(settings, 'TWO_FACTOR_INPUT_WIDTH', 100)
+TWO_FACTOR_INPUT_HEIGHT = getattr(settings, 'TWO_FACTOR_INPUT_HEIGHT', 30)
 
 class MethodForm(forms.Form):
     method = forms.ChoiceField(label=_("Method"),
                                widget=forms.RadioSelect)
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -27,13 +28,13 @@ class MethodForm(forms.Form):
 
 
 class DeviceValidationForm(forms.Form):
-    token = forms.IntegerField(label=_("Token"), min_value=1, max_value=int('9' * totp_digits()))
-
+    token = forms.IntegerField(label=_("Code"), min_value=1, max_value=int('9' * totp_digits()))
     token.widget.attrs.update({'autofocus': 'autofocus',
                                'inputmode': 'numeric',
-                               'autocomplete': 'one-time-code'})
+                               'autocomplete': 'one-time-code',
+                               'style': f'width:{TWO_FACTOR_INPUT_WIDTH}px; height:{TWO_FACTOR_INPUT_HEIGHT}px;'})
     error_messages = {
-        'invalid_token': _('Entered token is not valid.'),
+        'invalid_token': _('Entered code is not valid.'),
     }
 
     def __init__(self, device, **kwargs):
@@ -52,7 +53,8 @@ class TOTPDeviceForm(forms.Form):
 
     token.widget.attrs.update({'autofocus': 'autofocus',
                                'inputmode': 'numeric',
-                               'autocomplete': 'one-time-code'})
+                               'autocomplete': 'one-time-code',
+                               'style': f'width:{TWO_FACTOR_INPUT_WIDTH}px; height:{TWO_FACTOR_INPUT_HEIGHT}px;'})
 
     error_messages = {
         'invalid_token': _('Entered token is not valid.'),
@@ -114,6 +116,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
         'autofocus': 'autofocus',
         'pattern': '[0-9]*',  # hint to show numeric keyboard for on-screen keyboards
         'autocomplete': 'one-time-code',
+        'style': f'width:{TWO_FACTOR_INPUT_WIDTH}px; height:{TWO_FACTOR_INPUT_HEIGHT}px;'
     })
 
     # Our authentication form has an additional submit button to go to the

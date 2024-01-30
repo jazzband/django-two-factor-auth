@@ -214,6 +214,7 @@ class SetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'sms')
 
+
     def test_already_setup(self):
         self.enable_otp()
         self.login_user()
@@ -247,9 +248,62 @@ class SetupTest(UserMixin, TestCase):
             response = self.client.get(reverse('two_factor:setup_complete'))
             self.assertContains(response, 'Add Phone Number')
 
+        with self.settings(TWO_FACTOR_WHATSAPP_GATEWAY='two_factor.gateways.fake.Fake'):
+            response = self.client.get(reverse('two_factor:setup_complete'))
+            self.assertContains(response, 'Add Phone Number')
+
     def test_missing_management_data(self):
         # missing management data
         response = self._post({'validation-token': '666'})
 
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
+
+@mock.patch('two_factor.gateways.fake.Fake')
+@override_settings(TWO_FACTOR_WHATSAPP_GATEWAY='two_factor.gateways.fake.Fake')
+class TestSetupWhatsApp(TestCase):
+    def _post(self, data):
+        # This method should simulate posting data to your 2FA setup view
+        # Implement this based on your view logic
+        pass
+
+    def test_setup_whatsapp_message(self, whatsapp):
+        # Step 1: Start the setup process
+        response = self._post(data={'setup_view-current_step': 'welcome'})
+        self.assertContains(response, 'Method:')
+
+        # Step 2: Select WhatsApp method
+        response = self._post(data={'setup_view-current_step': 'method',
+                                    'method-method': 'wa'})
+        self.assertContains(response, 'Number:')
+
+        # Step 3: Enter phone number
+        response = self._post(data={'setup_view-current_step': 'wa',
+                                    'wa-number': '+31101234567'})
+        self.assertContains(response, 'Token:')
+        self.assertContains(response, 'We sent you a WhatsApp message')
+
+        # Check that the token was sent via WhatsApp
+        self.assertEqual(
+            whatsapp.return_value.method_calls,
+            [mock.call.send_message(device=mock.ANY, token=mock.ANY)]
+        )
+
+        # Step 4: Validate token
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': '123456'})
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'token': ['Entered token is not valid.']})
+
+        # Submitting correct token
+        token = whatsapp.return_value.send_message.call_args[1]['token']
+        response = self._post(data={'setup_view-current_step': 'validation',
+                                    'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+
+        # Verify WhatsApp device creation
+        devices = self.user.whatsappdevice_set.all()
+        self.assertEqual(len(devices), 1)
+        self.assertEqual(devices[0].name, 'default')
+        self.assertEqual(devices[0].number.as_e164, '+31101234567')
+        self.assertEqual(devices[0].method, 'wa')

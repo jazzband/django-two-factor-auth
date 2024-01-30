@@ -39,6 +39,8 @@ def device_action(device):
     number = mask_phone_number_utils(format_phone_number_utils(device.number))
     if device.method == 'sms':
         return _('Send text message to %s') % number
+    elif device.method == 'wa':
+        return _('Send WhatsApp message to %s') % number
     elif device.method == 'call':
         return _('Call number %s') % number
     raise NotImplementedError('Unknown method: %s' % device.method)

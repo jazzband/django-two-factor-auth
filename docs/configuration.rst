@@ -62,6 +62,16 @@ General Settings
   indefinitely in a state of having entered their password successfully but not
   having passed two factor authentication. Set to ``0`` to disable.
 
+``TWO_FACTOR_INPUT_WIDTH`` (default ``80``)
+  The size of the input field width for the token. This is used by the default
+  templates to set the size of the input field. Set to ``None`` to not set the
+  size.
+
+``TWO_FACTOR_INPUT_HEIGHT`` (default ``10``)
+  The size of the input field height for the token. This is used by the default
+  templates to set the size of the input field. Set to ``None`` to not set the
+  size.
+
 Phone-related settings
 ----------------------
 
@@ -87,6 +97,32 @@ setting. Then, you may want to configure the following settings:
   * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
     default logger.
 
+``TWO_FACTOR_WHATSAPP_GATEWAY`` (default: ``None``)
+  Which gateway to use for sending WhatsApp messages. Should be set to a module or
+  object providing a ``send_whatsapp`` method. Most likely can be set to ``TWO_FACTOR_SMS_GATEWAY``.
+  Currently two gateways are bundled:
+
+  * ``'two_factor.gateways.twilio.gateway.Twilio'`` for sending real WhatsApp messages using
+    Twilio_.
+  * ``'two_factor.gateways.fake.Fake'``  for development, recording tokens to the
+    default logger.
+
+``WHATSAPP_APPROVED_MESSAGE`` (default: ``{{ token }} is your OTP code``)
+  The freeform message to be sent to the user via WhatsApp. 
+  **This message needs to a templated message approved by WhatsApp**. 
+  The token variable will be replaced with the actual token. The token variable 
+  is placed at the beginning of the message by default. Default example 
+  ``123456 is your OTP code``. You can customize the message excluding the token. 
+  You can customize the placement of the token variable 
+  by setting ``PLACE_TOKEN_AT_END_OF_MESSAGE``. Due to the specificity in WhatsApp 
+  message templates, any translations should be done in the Twilio console. 
+
+  Note: WhatsApp does not allow sending messages to users who have not initiated a conversation with the business
+  account. You can read more about this in the `WhatsApp Business API documentation`_.
+
+``PLACE_TOKEN_AT_END_OF_MESSAGE`` (default: `False`)
+  Moves the token variable to the end of the message. Default example ``Your OTP code is 123456``.
+  
 ``PHONENUMBER_DEFAULT_REGION`` (default: ``None``)
   The default region for parsing phone numbers. If your application's primary
   audience is a certain country, setting the region to that country allows

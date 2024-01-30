@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.6
+### Changed
+- Added WhatsApp as a token method through Twilio
+- Added the ability to modify the token input size
+
 ## 1.15.5
 ### Fixed
 - Include transitively replaced migrations in phonenumber migration.

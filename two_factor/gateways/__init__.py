@@ -14,3 +14,8 @@ def make_call(device, token):
 def send_sms(device, token):
     gateway = get_gateway_class(getattr(settings, 'TWO_FACTOR_SMS_GATEWAY'))()
     gateway.send_sms(device=device, token=token)
+
+
+def send_whatsapp(device, token):
+    gateway = get_gateway_class(getattr(settings, "TWO_FACTOR_WHATSAPP_GATEWAY"))()
+    gateway.send_whatsapp(device=device, token=token)

@@ -15,6 +15,11 @@ class Messages:
     def send_sms(cls, device, token):
         cls._add_message(_('Fake SMS to %(number)s: "Your token is: %(token)s"'),
                          device, token)
+        
+    @classmethod
+    def send_whatsapp(cls, device, token):
+        cls._add_message(_('Fake WhatsApp to %(number)s: "Your token is: %(token)s"'),
+                         device, token)
 
     @classmethod
     def _add_message(cls, message, device, token):
