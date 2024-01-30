@@ -32,4 +32,5 @@ class RegistrationCompleteView(TemplateView):
 
 @class_view_decorator(never_cache)
 class ExampleSecretView(OTPRequiredMixin, TemplateView):
+#class ExampleSecretView( TemplateView):
     template_name = 'secret.html'
