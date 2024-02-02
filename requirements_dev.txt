@@ -15,7 +15,7 @@ django-user-sessions
 
 # Example app (WebAuthn)
 
-webauthn~=1.11.0
+webauthn~=2.0.0
 
 # Testing
 
