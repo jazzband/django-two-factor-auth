@@ -6,9 +6,9 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
-from pydantic import ValidationError as PydanticValidationError
 from webauthn.helpers.exceptions import (
-    InvalidAuthenticationResponse, InvalidRegistrationResponse,
+    InvalidAuthenticationResponse, InvalidJSONStructure,
+    InvalidRegistrationResponse,
 )
 from webauthn.helpers.parse_authentication_credential_json import (
     parse_authentication_credential_json,
@@ -91,7 +91,7 @@ class WebauthnAuthenticationTokenForm(WebauthnEntitiesFormMixin, AuthenticationT
 
             new_sign_count = verify_authentication_response(
                 device.public_key, device.sign_count, self.webauthn_rp, self.webauthn_origin, challenge, token)
-        except (PydanticValidationError, WebauthnDevice.DoesNotExist, InvalidAuthenticationResponse) as exc:
+        except (InvalidJSONStructure, WebauthnDevice.DoesNotExist, InvalidAuthenticationResponse) as exc:
             raise forms.ValidationError(_('Entered token is not valid.'), code='invalid_token') from exc
 
         device.sign_count = new_sign_count
@@ -136,7 +136,7 @@ class WebauthnDeviceValidationForm(WebauthnEntitiesFormMixin, DeviceValidationFo
 
         try:
             parse_registration_credential_json(token)
-        except InvalidRegistrationResponse as exc:
+        except (InvalidJSONStructure, InvalidRegistrationResponse) as exc:
             raise forms.ValidationError(_('Entered token is not valid.'), code='invalid_token') from exc
 
         self.cleaned_data = {
