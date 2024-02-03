@@ -684,7 +684,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -733,7 +733,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(0, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -758,7 +758,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -790,7 +790,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -822,7 +822,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
 
         # Login having an invalid remember cookie
         self.set_invalid_remember_cookie()
@@ -877,7 +877,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
 
         # Ask for SMS challenge
         response = self._post({'auth-username': 'bouke@example.com',
