@@ -1,29 +1,12 @@
 # The app itself
 
--e .
-
-# Additional runtime dependencies
-
-twilio
-phonenumberslite
+-e .[call,sms,webauthn,yubikey,phonenumberslite,tests,linting]
 
 # Example app
 
 django-debug-toolbar
 django-bootstrap-form
 django-user-sessions
-
-# Example app (WebAuthn)
-
-webauthn~=2.0.0
-
-# Testing
-
-coverage
-flake8
-tox
-isort
-freezegun
 
 # Documentation
 

@@ -15,6 +15,16 @@ Contribute
 * Send a pull request with your changes.
 * Provide a translation using Transifex_.
 
+Local installation
+------------------
+
+Install the development dependencies, which also installs the package in editable mode
+for local development and additional development tools.
+
+.. code-block:: console
+
+    pip install -r requirements_dev.txt
+
 Running tests
 -------------
 This project aims for full code-coverage, this means that your code should be
