@@ -25,6 +25,16 @@ setup(
         'yubikey': ['django-otp-yubikey'],
         'phonenumbers': ['phonenumbers>=7.0.9,<8.99'],
         'phonenumberslite': ['phonenumberslite>=7.0.9,<8.99'],
+        # used internally for local development & CI
+        'tests': [
+            'coverage',
+            'freezegun',
+            'tox',
+        ],
+        'linting': [
+            'flake8<=6.99',
+            'isort<=5.99',
+        ],
     },
     include_package_data=True,
     classifiers=[
