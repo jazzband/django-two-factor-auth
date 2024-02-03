@@ -37,7 +37,7 @@ def make_credential_creation_options(user, rp, excluded_credential_ids, challeng
     creation_options = generate_registration_options(
         rp_id=rp.id,
         rp_name=rp.name,
-        user_id=user.id.decode('utf-8'),
+        user_id=user.id,
         user_name=user.name,
         user_display_name=user.display_name,
         challenge=challenge,
