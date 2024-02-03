@@ -20,15 +20,8 @@ try:
 except ImportError:
     webauthn = None
 
-try:
-    from webdriver_manager.chrome import ChromeDriverManager
-    from webdriver_manager.utils import ChromeType
-except ImportError:
-    ChromeDriverManager = None
-
 
 @skipUnless(webdriver, 'package selenium is not present')
-@skipUnless(ChromeDriverManager, 'package webdriver-manager is not present')
 @skipUnless(webauthn, 'package webauthn is not present')
 class E2ETests(UserMixin, StaticLiveServerTestCase):
     port = 8000
@@ -40,12 +33,7 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
 
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        try:
-            driver = ChromeDriverManager()
-        except ValueError:
-            driver = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM)
-        self.webdriver = webdriver.Chrome(driver.install(), options=options)
-
+        self.webdriver = webdriver.Chrome(options=options)
         super().setUp()
 
     def tearDown(self):
@@ -70,7 +58,7 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
         WebDriverWait(self.webdriver, self.timeout).until(EC.url_to_be(url))
 
     def do_login(self):
-        self.wait_for_url(self.login_url)
+        self.webdriver.get(self.login_url)
 
         username = self.webdriver.find_element(By.ID, 'id_auth-username')
         username.clear()
@@ -84,7 +72,7 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
         button_next.click()
 
     def register_authenticator(self):
-        self.wait_for_url(urljoin(self.base_url, reverse("two_factor:setup")))
+        self.webdriver.get(urljoin(self.base_url, reverse("two_factor:setup")))
         self.webdriver.find_element(By.XPATH, "//button[@type='submit']").click()
 
         self.wait_for_element(By.XPATH, "//input[@value='webauthn']").click()

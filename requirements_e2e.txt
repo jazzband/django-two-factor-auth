@@ -1,3 +1,2 @@
 # test with selenium
-selenium~=4.4.3
-webdriver-manager~=3.8.3,!=3.8.5
+selenium~=4.16.0
