@@ -48,5 +48,5 @@ jobs:
         run: pip install tox
       - name: isort
         run: tox -e isort
-      - name: flake8
-        run: tox -e flake8
+      - name: ruff
+        run: tox -e ruff

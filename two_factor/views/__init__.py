@@ -3,3 +3,14 @@ from .core import (
 )
 from .mixins import OTPRequiredMixin
 from .profile import DisableView, ProfileView
+
+__all__ = (
+    "BackupTokensView",
+    "LoginView",
+    "QRGeneratorView",
+    "SetupCompleteView",
+    "SetupView",
+    "OTPRequiredMixin",
+    "DisableView",
+    "ProfileView"
+)

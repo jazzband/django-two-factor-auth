@@ -61,7 +61,7 @@ tests = [
     "tox",
 ]
 linting = [
-    "flake8<=6.99",
+    "ruff",
     "isort<=5.99",
 ]
 
@@ -69,6 +69,23 @@ linting = [
 Homepage = "https://github.com/jazzband/django-two-factor-auth"
 Documentation = "https://django-two-factor-auth.readthedocs.io/en/stable/"
 Changelog = "https://github.com/jazzband/django-two-factor-auth/blob/master/CHANGELOG.md"
+
+[tool.ruff]
+line-length = 119
+target-version = "py38"
+extend-exclude = ["docs"]
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # pycodestyle (Error)
+    "W",  # pycodestyle (Warning)
+    # "I",  # isort (waiting for https://github.com/astral-sh/ruff/issues/2600)
+]
+
+# [tool.ruff.lint.isort]
+# combine-as-imports = true
+# known-first-party = ["two_factor"]
 
 [tool.isort]
 combine_as_imports = true
