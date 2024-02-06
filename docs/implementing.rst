@@ -122,14 +122,16 @@ form during setup by providing your own ``two_factor/core/setup.html`` template
 and using the ``secret_key`` context variable.
 
 Custom Templates
---------------------------------
+----------------
 To create a custom template, add a template called ``two_factor/_base.html``.
 As a bare minimum, its contents should contain a ``content`` block to load the
-login forms into.
+login forms into and an ``extra_media`` block located in the ``<head>`` tag.
 
-Some plugins, such as WebAuthn, have additional JavaScript that is necessary to
-work properly. These are dynamically loaded in via the ``extra_media`` block
-which should be located in the ``<head>`` tag::
+Certain plugins can load additional static assets (CSS or JS) that are required
+for the correct workings.
+
+You can use the provided ``two_factor/_base.html`` template as a reference.
+.. code-block:: django
 
     <!DOCTYPE html>
     <html>
@@ -151,5 +153,6 @@ which should be located in the ``<head>`` tag::
     </html>
 
 You can also use an existing template by extending it::
+.. code-block:: django
 
     {% extends "your_app_name/base.html" %}
