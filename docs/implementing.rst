@@ -131,6 +131,7 @@ Certain plugins can load additional static assets (CSS or JS) that are required
 for the correct workings.
 
 You can use the provided ``two_factor/_base.html`` template as a reference.
+
 .. code-block:: django
 
     <!DOCTYPE html>
@@ -152,7 +153,8 @@ You can use the provided ``two_factor/_base.html`` template as a reference.
     </body>
     </html>
 
-You can also use an existing template by extending it::
+You can also use an existing template by extending it:
+
 .. code-block:: django
 
     {% extends "your_app_name/base.html" %}
