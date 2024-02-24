@@ -1,5 +1,6 @@
 from unittest.mock import Mock, patch
 from urllib.parse import urlencode
+from xml.etree import ElementTree
 
 from django.template.loader import render_to_string
 from django.test import TestCase
@@ -17,7 +18,10 @@ class TwilioGatewayTest(TestCase):
         self.maxDiff = None
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.get(url)
-        self.assertEqual(response.content.decode('utf-8'), """<?xml version="1.0" encoding="UTF-8" ?>
+        content = response.content.decode('utf-8')
+        # raises an exception if invalid xml
+        ElementTree.fromstring(content)
+        self.assertEqual(content, """<?xml version="1.0" encoding="UTF-8" ?>
 <Response>
   <Gather timeout="15" numDigits="1" finishOnKey="">
     <Say language="en">Hi, this is testserver calling. Press any key to continue.</Say>
@@ -27,7 +31,10 @@ class TwilioGatewayTest(TestCase):
 
         url = reverse('two_factor_twilio:call_app', args=['123456'])
         response = self.client.post(url)
-        self.assertEqual(response.content.decode('utf-8'), """<?xml version="1.0" encoding="UTF-8" ?>
+        content = response.content.decode('utf-8')
+        # raises an exception if invalid xml
+        ElementTree.fromstring(content)
+        self.assertEqual(content, """<?xml version="1.0" encoding="UTF-8" ?>
 <Response>
   <Say language="en">Your token is:</Say>
   <Pause/>
