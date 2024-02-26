@@ -9,6 +9,7 @@ from uuid import uuid4
 import django_otp
 import qrcode
 import qrcode.image.svg
+from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
@@ -35,7 +36,6 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.util import random_hex
 
 from two_factor import signals
-from two_factor.plugins.phonenumber.utils import get_available_phone_methods
 from two_factor.plugins.registry import registry
 from two_factor.utils import totp_digits
 from two_factor.views.mixins import OTPRequiredMixin
@@ -685,8 +685,14 @@ class SetupCompleteView(TemplateView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self):
+        phone_methods = None
+        if (apps.is_installed('two_factor.plugins.phonenumber')):
+            from two_factor.plugins.phonenumber.utils import get_available_phone_methods
+
+            phone_methods = get_available_phone_methods()
+
         return {
-            'phone_methods': get_available_phone_methods(),
+            'phone_methods': phone_methods,
         }
 
 
