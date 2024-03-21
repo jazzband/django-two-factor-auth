@@ -1,14 +1,25 @@
 {% load i18n %}
 
-{% if cancel_url %}
-  <a href="{{ cancel_url }}"
-     class="float-right btn btn-link">{% trans "Cancel" %}</a>
+{% if user.is_authenticated %}
+  {% if cancel_url %}
+    <a href="{{ cancel_url }}" class="float-right btn btn-link">{% trans "Cancel" %}</a>
+  {% endif %}
+  {% if wizard.steps.prev %}
+    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+      {% trans "Back" %}
+    </button>
+  {% else %}
+    <button disabled type="button" class="btn btn-secondary">{% trans "Back" %}</button>
+  {% endif %}
+  <button type="submit" class="btn btn-primary">{% trans "Next" %}</button>
 {% endif %}
-{% if wizard.steps.prev %}
-  <button name="wizard_goto_step" type="submit"
-          value="{{ wizard.steps.prev }}"
-          class="btn btn-secondary">{% trans "Back" %}</button>
+
+{% if user.is_authenticated %}
+  {# User is authenticated, don't show the "Sign in" button #}
 {% else %}
-  <button disabled name="" type="button" class="btn">{% trans "Back" %}</button>
+  <div class="d-grid mt-3">
+    <button type="submit" name="login" class="btn btn-dark">
+      {% trans "Sign in" %}
+    </button>
+  </div>
 {% endif %}
-<button type="submit" class="btn btn-primary">{% trans "Next" %}</button>
