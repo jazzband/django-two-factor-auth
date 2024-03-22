@@ -120,3 +120,41 @@ Users who only have a smartphone will have difficulty scanning the QR code
 during setup. You can directly show the secret key within the QR code in text
 form during setup by providing your own ``two_factor/core/setup.html`` template
 and using the ``secret_key`` context variable.
+
+Custom Templates
+----------------
+To create a custom template, add a template called ``two_factor/_base.html``.
+As a bare minimum, its contents should contain a ``content`` block to load the
+login forms into and an ``extra_media`` block located in the ``<head>`` tag.
+
+Certain plugins can load additional static assets (CSS or JS) that are required
+for the correct workings.
+
+You can use the provided ``two_factor/_base.html`` template as a reference.
+
+.. code-block:: django
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>{% block title %}{% endblock %}</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      {% block extra_media %}{% endblock %}
+    </head>
+    <body>
+      {% block content_wrapper %}
+        <div class="container">
+          {% block content %}{% endblock %}
+        </div>
+      {% endblock %}
+    </body>
+    </html>
+
+You can also use an existing template by extending it:
+
+.. code-block:: django
+
+    {% extends "your_app_name/base.html" %}
