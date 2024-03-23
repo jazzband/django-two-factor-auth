@@ -4,6 +4,7 @@ from time import sleep
 from unittest import mock
 
 from django.conf import settings
+from django.core.signing import BadSignature
 from django.shortcuts import resolve_url
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
@@ -885,3 +886,33 @@ class RememberLoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'auth'})
 
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+    @override_settings(TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60)
+    def test_remember_cookie_with_device_without_throttle(self):
+        self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self._post({'token-otp_token': totp_str(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.client.post(reverse('logout'))
+
+        # mock device_for_user
+        with mock.patch("two_factor.views.core.devices_for_user") as devices_for_user_mock, \
+                mock.patch("two_factor.views.core.validate_remember_device_cookie") as validate_mock:
+            device_mock = mock.Mock(spec=["verify_is_allowed", "persistent_id", "user_id"])
+            device_mock.persistent_id = 1
+            device_mock.verify_is_allowed.return_value = [True, {}]
+            devices_for_user_mock.return_value = [device_mock]
+            validate_mock.return_value = True
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+            self.client.post(reverse('logout'))
+            validate_mock.side_effect = BadSignature()
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertContains(response, 'Token:')
