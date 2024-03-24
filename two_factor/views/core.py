@@ -392,10 +392,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                                 otp_device_id=device.persistent_id
                         ):
                             user.otp_device = device
-                            device.throttle_reset()
+                            getattr(device, "throttle_reset", lambda: None)()
                             return True
                     except BadSignature:
-                        device.throttle_increment()
+                        getattr(device, "throttle_increment", lambda: None)()
                         # Remove remember cookies with invalid signature to omit unnecessary throttling
                         self.cookies_to_delete.append(key)
         return False
