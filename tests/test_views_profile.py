@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from two_factor.plugins.registry import registry
+from two_factor.plugins.registry import MethodNotFoundError, registry
 
 from .utils import UserMixin
 
@@ -27,8 +27,10 @@ class ProfileTest(UserMixin, TestCase):
             app for app in settings.INSTALLED_APPS if app != 'two_factor.plugins.phonenumber']
 
         with override_settings(INSTALLED_APPS=without_phonenumber_plugin):
-            self.assertFalse(registry.get_method('call'))
-            self.assertFalse(registry.get_method('sms'))
+            with self.assertRaises(MethodNotFoundError):
+                registry.get_method('call')
+            with self.assertRaises(MethodNotFoundError):
+                registry.get_method('sms')
 
             response = self.get_profile()
 

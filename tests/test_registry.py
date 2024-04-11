@@ -1,6 +1,8 @@
 from django.test import TestCase
 
-from two_factor.plugins.registry import GeneratorMethod, MethodBase, registry
+from two_factor.plugins.registry import (
+    GeneratorMethod, MethodBase, MethodNotFoundError, registry,
+)
 
 
 class FakeMethod(MethodBase):
@@ -43,3 +45,7 @@ class RegistryTest(TestCase):
 
         registry.unregister('fake-method')
         self.assertEqual(len(registry._methods), expected_length)
+
+    def test_unknown_method(self):
+        with self.assertRaises(MethodNotFoundError):
+            registry.get_method("not-existing-method")

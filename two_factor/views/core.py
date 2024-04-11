@@ -36,7 +36,7 @@ from django_otp.util import random_hex
 
 from two_factor import signals
 from two_factor.plugins.phonenumber.utils import get_available_phone_methods
-from two_factor.plugins.registry import registry
+from two_factor.plugins.registry import MethodNotFoundError, registry
 from two_factor.utils import totp_digits
 from two_factor.views.mixins import OTPRequiredMixin
 
@@ -501,12 +501,13 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             form_list.pop('method', None)
             method_key = available_methods[0].code
             self.storage.validated_step_data['method'] = {'method': method_key}
-        method = self.get_method()
-        if method:
-            form_list.update(method.get_setup_forms(self))
-        else:
+        try:
+            method = self.get_method()
+        except MethodNotFoundError:
             for method in available_methods:
                 form_list.update(method.get_setup_forms(self))
+        else:
+            form_list.update(method.get_setup_forms(self))
         if {'sms', 'call'} & set(form_list.keys()):
             form_list['validation'] = DeviceValidationForm
         return form_list
@@ -548,9 +549,6 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
             device.save()
-
-        else:
-            raise NotImplementedError("Unknown method '%s'" % method.code)
 
         django_otp.login(self.request, device)
         return redirect(self.get_success_url())
