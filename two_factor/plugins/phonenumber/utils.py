@@ -2,7 +2,7 @@ import re
 
 import phonenumbers
 
-from two_factor.plugins.registry import registry
+from two_factor.plugins.registry import MethodNotFoundError, registry
 
 phone_mask = re.compile(r'(?<=.{3})[0-9](?=.{2})')
 
@@ -10,7 +10,11 @@ phone_mask = re.compile(r'(?<=.{3})[0-9](?=.{2})')
 def get_available_phone_methods():
     methods = []
     for code in ['sms', 'call']:
-        if method := registry.get_method(code):
+        try:
+            method = registry.get_method(code)
+        except MethodNotFoundError:
+            pass
+        else:
             methods.append(method)
 
     return methods
