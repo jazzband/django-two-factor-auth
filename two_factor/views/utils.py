@@ -1,4 +1,4 @@
-import base64
+import hashlib
 import logging
 import time
 
@@ -290,7 +290,7 @@ def validate_remember_device_cookie(cookie, user, otp_device_id):
 
 
 def hash_remember_device_cookie_key(otp_device_id):
-    return str(base64.b64encode(force_bytes(otp_device_id)))
+    return hashlib.md5(force_bytes(otp_device_id)).hexdigest()
 
 
 def hash_remember_device_cookie_value(otp_device_id, user, timestamp):
