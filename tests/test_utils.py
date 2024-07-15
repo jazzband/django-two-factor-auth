@@ -1,3 +1,4 @@
+import string
 from unittest import mock
 from urllib.parse import parse_qsl, urlparse
 
@@ -137,6 +138,17 @@ class UtilsTest(UserMixin, TestCase):
             otp_device_id="SomeModel/34",
         )
         self.assertFalse(validation_result)
+
+    def test_cookie_valid_characters(self):
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
+        allowed_characters = set(string.ascii_letters + string.digits + "-_:")
+
+        cookie_value = get_remember_device_cookie(
+            user=user, otp_device_id="SomeModel/33"
+        )
+        self.assertTrue(all(c in allowed_characters for c in cookie_value))
 
 
 class PhoneUtilsTests(UserMixin, TestCase):
