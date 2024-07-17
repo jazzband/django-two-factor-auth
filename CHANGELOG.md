@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+### Changed
+- Allow django-phonenumber-field 8.x.x.
+
 ## 1.16.0
 ### Fixed
 - Avoid potentially empty `<ul>` on the profile page.
