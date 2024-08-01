@@ -5,7 +5,9 @@ import time
 from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
-from django.core.signing import BadSignature, SignatureExpired
+from django.core.signing import (
+    BadSignature, SignatureExpired, b62_decode, b62_encode,
+)
 from django.utils.crypto import salted_hmac
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
@@ -13,14 +15,6 @@ from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
-
-try:
-    from django.core.signing import b62_decode, b62_encode
-except ImportError:  # Django < 4.0
-    # Deprecated in Django 4.0, removed in Django 5.0
-    from django.utils import baseconv
-    b62_decode = baseconv.base62.decode
-    b62_encode = baseconv.base62.encode
 
 logger = logging.getLogger(__name__)
 
