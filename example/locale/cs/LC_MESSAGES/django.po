@@ -6,13 +6,14 @@
 # Translators:
 # Adam Tran, 2023
 # Jonas Vacek, 2022
+# Pavel Mises, 2024
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-15 22:55+0200\n"
 "PO-Revision-Date: 2013-11-20 09:31+0000\n"
-"Last-Translator: Adam Tran, 2023\n"
+"Last-Translator: Pavel Mises, 2024\n"
 "Language-Team: Czech (http://app.transifex.com/Bouke/django-two-factor-auth/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +45,7 @@ msgstr "Tajná stránka"
 
 #: templates/_base.html:39
 msgid "Account Security"
-msgstr "Bezpečnost Účtu"
+msgstr "Bezpečnost účtu"
 
 #: templates/_base.html:41
 msgid "Sessions"
@@ -64,7 +65,7 @@ msgstr "Přihlásit"
 
 #: templates/home.html:4
 msgid "django-two-factor-auth – Demo Application"
-msgstr "django-two-factor-auth – Demo Aplikace"
+msgstr "django-two-factor-auth – demo aplikace"
 
 #: templates/home.html:8
 msgid "Improve Your Security <small>your users will thank you</small>"
@@ -86,7 +87,7 @@ msgid ""
 "<code>settings_private.py</code> file? By doing so, the example app will be "
 "able to call and text you to verify your authentication tokens. Otherwise, "
 "the tokens will be shown on the screen."
-msgstr "Vlořili jste vaše Twilio údaje do souboru <code>settings_private.py</code>? S němi vám bude moc vzorová aplikace zavolat a posílat SMS zprávy k ověřování vašich tokenů. Jinak vám tokeny budou zobrazeny na obrazovce."
+msgstr "Vložili jste své Twilio údaje do souboru <code>settings_private.py</code>? S nimi vám bude moct vzorová aplikace zavolat a posílat SMS zprávy k ověřování vašich tokenů. Jinak vám tokeny budou zobrazeny na obrazovce."
 
 #: templates/home.html:26
 msgid "Next steps:"
@@ -100,12 +101,12 @@ msgstr "Začněte <a href=\"%(reg_url)s\">registrací</a> účtu."
 #: templates/home.html:30
 #, python-format
 msgid "<a href=\"%(login_url)s\">Login</a> to your account."
-msgstr "<a href=\"%(login_url)s\">Přihlašte se</a> do vašeho účtu."
+msgstr "<a href=\"%(login_url)s\">Přihlašte se</a> do svého účtu."
 
 #: templates/home.html:32
 #, python-format
 msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
-msgstr "<a href=\"%(setup_url)s\">Zapnout</a> dvoufázové ovšření"
+msgstr "<a href=\"%(setup_url)s\">Zapnout</a> dvoufázové ověření"
 
 #: templates/home.html:34
 #, python-format
@@ -113,14 +114,14 @@ msgid ""
 "Then, <a href=\"%(logout_url)s\">logout</a> and <a "
 "href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
 " authentication at work."
-msgstr "Potom se opět <a href=\"%(logout_url)s\">odhlašte</a> a <a href=\"%(login_url)s\">přihlašte</a> do vašeho účtu, abyste viděli dvoufázové ověření v praxi."
+msgstr "Potom se opět <a href=\"%(logout_url)s\">odhlaste</a> a <a href=\"%(login_url)s\">přihlaste</a> do vašeho účtu, abyste viděli dvoufázové ověření v praxi."
 
 #: templates/home.html:37
 #, python-format
 msgid ""
 "At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
 "page</a>! :-)"
-msgstr "Konečně, byl vám umožněn přístup k <a href=\"%(secret_url)s\">tajné stránce</a>! :-)"
+msgstr "Konečně vám byl umožněn přístup k <a href=\"%(secret_url)s\">tajné stránce</a>! :-)"
 
 #: templates/registration.html:5
 msgid "Registration"
@@ -150,4 +151,4 @@ msgstr "Blahopřejeme, váš účet byl úspěšně zaregistrován."
 msgid ""
 "Congratulations, you've made it. You have successfully enabled two-factor "
 "authentication and logged in with your token."
-msgstr "Blahopřejeme, zvládli jste to. Úspěšně jste zapnulu dvoufázové ověření, a přihlísili jste se se svým tokenem."
+msgstr "Blahopřejeme, zvládli jste to. Úspěšně jste zapnuli dvoufázové ověření, a přihlásili jste se se svým tokenem."
