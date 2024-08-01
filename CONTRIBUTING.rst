@@ -46,7 +46,8 @@ Releasing
 ---------
 The following actions are required to push a new version:
 
-* Update release notes
+* Update release notes and version number in `pyproject.toml` and `docs/conf.py`
+
 * If any new translations strings were added, push the new source language to
   Transifex_. Make sure translators have sufficient time to translate those
   new strings::
@@ -64,7 +65,6 @@ The following actions are required to push a new version:
 
 * Package and upload::
 
-    bumpversion [major|minor|patch]
     git push && git push --tags
     python setup.py sdist bdist_wheel
     twine upload dist/*
