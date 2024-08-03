@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.signing import BadSignature
 from django.forms import Form, ValidationError
@@ -50,12 +51,6 @@ from .utils import (
     get_remember_device_cookie, validate_remember_device_cookie,
 )
 
-try:
-    from django.contrib.auth.views import RedirectURLMixin
-except ImportError:  # django<4.1
-    from django.contrib.auth.views import (
-        SuccessURLAllowedHostsMixin as RedirectURLMixin,
-    )
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
