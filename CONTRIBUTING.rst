@@ -46,7 +46,8 @@ Releasing
 ---------
 The following actions are required to push a new version:
 
-* Update release notes
+* Update release notes and version number in `pyproject.toml` and `docs/conf.py`
+
 * If any new translations strings were added, push the new source language to
   Transifex_. Make sure translators have sufficient time to translate those
   new strings::
@@ -64,9 +65,8 @@ The following actions are required to push a new version:
 
 * Trigger the packaging and upload::
 
-    bumpversion [major|minor|patch]
     git tag <tag number>
-    git push --tags
+    git push && git push --tags
 
 The `.github/workflows/release.yml` file should do the remaining work and
 publish the release to PyPi.
