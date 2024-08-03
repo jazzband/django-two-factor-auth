@@ -5,13 +5,14 @@
 # Translators:
 # Adam Tran, 2023
 # Jonas Vacek, 2022
+# Pavel Mises, 2024
 msgid ""
 msgstr ""
 "Project-Id-Version: django-two-factor-auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-18 18:32+0100\n"
 "PO-Revision-Date: 2013-11-19 18:12+0000\n"
-"Last-Translator: Adam Tran, 2023\n"
+"Last-Translator: Pavel Mises, 2024\n"
 "Language-Team: Czech (http://app.transifex.com/Bouke/django-two-factor-auth/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,20 +62,20 @@ msgstr "en"
 
 #: plugins/email/forms.py:11
 msgid "Email address"
-msgstr "Emailová adresa"
+msgstr "E-mailová adresa"
 
 #: plugins/email/method.py:12
 msgid "Email"
-msgstr "Email"
+msgstr "E-mail"
 
 #: plugins/email/method.py:41
 #, python-format
 msgid "Send email to %s"
-msgstr "Poslat email na %s"
+msgstr "Poslat e-mail na %s"
 
 #: plugins/email/method.py:44
 msgid "We sent you an email, please enter the token we sent."
-msgstr "Poslali jsme vám email, zadejte prosím token, který jsme vám poslali."
+msgstr "Poslali jsme vám e-mail, zadejte prosím zaslaný token."
 
 #: plugins/phonenumber/forms.py:10 plugins/phonenumber/forms.py:25
 msgid "Phone Number"
@@ -94,11 +95,11 @@ msgstr "Zavolat na %s"
 
 #: plugins/phonenumber/method.py:38
 msgid "We sent you a text message, please enter the token we sent."
-msgstr "Poslali jsme vám SMS zprávu, zadejte prosím token, který jsme vám poslali."
+msgstr "Poslali jsme vám SMS zprávu, zadejte prosím zaslaný token."
 
 #: plugins/phonenumber/method.py:40 templates/two_factor/core/setup.html:37
 msgid "We are calling your phone right now, please enter the digits you hear."
-msgstr "Voláme vám, zadejte prosím čísla která slyšíte."
+msgstr "Voláme vám, zadejte prosím čísla, která slyšíte."
 
 #: plugins/phonenumber/method.py:45 plugins/phonenumber/utils.py:25
 msgid "Phone call"
@@ -209,11 +210,11 @@ msgstr "Nemáte zatím žádné záložní tokeny."
 #: templates/two_factor/core/setup_complete.html:12
 #: templates/two_factor/core/setup_complete.html:19
 msgid "Back to Account Security"
-msgstr "Zpět do Bezpečnost Účtu"
+msgstr "Zpět do Bezpečnosti účtu"
 
 #: templates/two_factor/core/backup_tokens.html:26
 msgid "Generate Tokens"
-msgstr "Vygenerovat Tokeny"
+msgstr "Vygenerovat tokeny"
 
 #: templates/two_factor/core/login.html:10
 msgid "Login"
@@ -221,7 +222,7 @@ msgstr "Přihlásit"
 
 #: templates/two_factor/core/login.html:13
 msgid "Enter your credentials."
-msgstr "Vložte vaše přihlašovací údaje."
+msgstr "Vložte své přihlašovací údaje."
 
 #: templates/two_factor/core/login.html:17
 msgid ""
@@ -251,14 +252,14 @@ msgid ""
 "The page you requested, enforces users to verify using two-factor "
 "authentication for security reasons. You need to enable these security "
 "features in order to access this page."
-msgstr "Stránka, kterou jste požadovali, nutí uživatele k ověření pomocí dvoufaktorového ověřování z bezpečnostních důvodů. Chcete-li získat přístup k této stránce, musíte tyto funkce zabezpečení povolit."
+msgstr "Stránka, kterou jste požadovali, vybízí uživatele k potvrzení pomocí dvoufázového ověřování z bezpečnostních důvodů. Chcete-li získat přístup k této stránce, musíte si zapnout tento způsob zabezpečení."
 
 #: templates/two_factor/core/otp_required.html:11
 #: templates/two_factor/profile/profile.html:51
 msgid ""
 "Two-factor authentication is not enabled for your account. Enable two-factor"
 " authentication for enhanced account security."
-msgstr "Dvou-faktorové ověřování není pro váš účet povoleno. Povolte dvou-faktorové ověřování pro lepší zabezpečení účtu."
+msgstr "Dvoufázové ověřování není pro váš účet zapnuto. Zapněte dvoufázové ověřování pro lepší zabezpečení účtu."
 
 #: templates/two_factor/core/otp_required.html:16
 msgid "Go back"
@@ -291,7 +292,7 @@ msgstr "Na vaše telefonní číslo jsme odeslali token. Zadejte token, který j
 msgid ""
 "You are about to take your account security to the next level. Follow the "
 "steps in this wizard to enable two-factor authentication."
-msgstr "Chystáte se posunout zabezpečení svého účtu na další úroveň. Chcete-li povolit dvou-faktorové ověřování, postupujte podle kroků v tomto průvodci."
+msgstr "Chystáte se posunout zabezpečení svého účtu na další úroveň. Chcete-li povolit dvoufázové ověřování, postupujte podle kroků v tomto průvodci."
 
 #: templates/two_factor/core/setup.html:15
 msgid "Please select which authentication method you would like to use."
@@ -307,11 +308,11 @@ msgstr "Chcete-li začít používat generátor tokenů, naskenujte pomocí smar
 msgid ""
 "Alternatively you can use the following secret to setup TOTP in your "
 "authenticator or password manager manually."
-msgstr "Alternativně můžete použít následující secret TOTP ve vašem autentizátoru nebo k manuálně ve správci hesel."
+msgstr "Případně můžete použít následující časově omezené jednorázové heslo (TOTP) ve vašem autentizátoru nebo k manuálně ve správci hesel."
 
 #: templates/two_factor/core/setup.html:24
 msgid "TOTP Secret:"
-msgstr "TOTP Secret:"
+msgstr "TOTP klíč:"
 
 #: templates/two_factor/core/setup.html:25
 msgid "Then, enter the token generated by the app."
@@ -350,18 +351,18 @@ msgstr "Pro identifikaci a ověření vašeho YubiKey vložte token do pole ní�
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
 "Congratulations, you've successfully enabled two-factor authentication."
-msgstr "Blahopřejeme, ůspěšně jste zapli dvoufázové ověřování"
+msgstr "Blahopřejeme, úspěšně jste zapnuli dvoufázové ověřování."
 
 #: templates/two_factor/core/setup_complete.html:14
 msgid ""
 "However, it might happen that you don't have access to your primary token "
 "device. To enable account recovery, add a phone number."
-msgstr "Může se však stát, že nebudete mít přístup ke svému primárnímu tokenovému zařízení. Chcete-li povolit obnovení účtu, přidejte telefonní číslo."
+msgstr "Může se však stát, že nebudete mít přístup ke svému primárnímu autorizačnímu zařízení. Chcete-li povolit obnovení účtu, přidejte telefonní číslo."
 
 #: templates/two_factor/core/setup_complete.html:21
 #: templates/two_factor/profile/profile.html:29
 msgid "Add Phone Number"
-msgstr "Přidat Telefonní Číslo"
+msgstr "Přidat telefonní číslo"
 
 #: templates/two_factor/profile/disable.html:5
 msgid "Disable Two-factor Authentication"
@@ -371,7 +372,7 @@ msgstr "Vypnout dvoufázové ověřování"
 msgid ""
 "You are about to disable two-factor authentication. This weakens your "
 "account security, are you sure?"
-msgstr "Chystáte se vypnout dvou-faktorové ověřování. To oslabuje zabezpečení vašeho účtu, jste si jistý/á?"
+msgstr "Chystáte se vypnout dvoufázové ověřování. To oslabí zabezpečení vašeho účtu, jste si tím jistí?"
 
 #: templates/two_factor/profile/disable.html:12
 msgid "Disable"
@@ -379,16 +380,16 @@ msgstr "Vypnout"
 
 #: templates/two_factor/profile/profile.html:6
 msgid "Account Security"
-msgstr "Bezpečnost Účtu"
+msgstr "Bezpečnost účtu"
 
 #: templates/two_factor/profile/profile.html:9
 #, python-format
 msgid "Primary method: %(primary)s"
-msgstr "Provřadná metoda: %(primary)s"
+msgstr "Primární metoda: %(primary)s"
 
 #: templates/two_factor/profile/profile.html:12
 msgid "Backup Phone Numbers"
-msgstr "Záložní Telefonní Čísla"
+msgstr "Záložní telefonní čísla"
 
 #: templates/two_factor/profile/profile.html:13
 msgid ""
@@ -398,7 +399,7 @@ msgstr "Pokud vaše primární metoda není k dispozici, jsme schopni zaslat zá
 
 #: templates/two_factor/profile/profile.html:20
 msgid "Are you sure?"
-msgstr "Jste si jistý/á?"
+msgstr "Jste si jistí?"
 
 #: templates/two_factor/profile/profile.html:23
 msgid "Unregister"
@@ -408,7 +409,7 @@ msgstr "Odregistrovat"
 msgid ""
 "If you don't have any device with you, you can access your account using "
 "backup tokens."
-msgstr "Nemaáte-li žádné zařízení s vámi, můžete také použít záložní tokeny."
+msgstr "Nemáte-li u sebe žádné zařízení, můžete také použít záložní tokeny."
 
 #: templates/two_factor/profile/profile.html:36
 #, python-format
@@ -432,16 +433,16 @@ msgstr "Vypnout dvoufázové ověření"
 msgid ""
 "However we strongly discourage you to do so, you can also disable two-factor"
 " authentication for your account."
-msgstr "Opravdu vám to nedoporučujeme dělat, můžete také vypnout dvoufázové ověřování pro váš účet."
+msgstr "Přestože vám to nedoporučujeme, můžete také vypnout dvoufázové ověřování pro váš účet."
 
 #: templates/two_factor/twilio/sms_message.html:2
 #, python-format
 msgid "Your OTP token is %(token)s"
-msgstr "Váš OTP token je %(token)s"
+msgstr "Váš jednorázový token je %(token)s"
 
 #: views/core.py:274
 msgid "Your session has timed out. Please login again."
-msgstr "Vaše relace vypršela. Prosím opět se přihlašte."
+msgstr "Vaše relace vypršela. Opět se prosím přihlaste."
 
 #: views/utils.py:153
 msgid "ManagementForm data is missing or has been tampered with"

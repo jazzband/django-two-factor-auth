@@ -4,6 +4,12 @@
 ### Changed
 - Allow django-phonenumber-field 8.x.x.
 
+### Added
+- Support confirmation for Django 5.1.
+
+### Removed
+- Dropped support for Django <4.2.
+
 ## 1.16.0
 ### Fixed
 - Avoid potentially empty `<ul>` on the profile page.

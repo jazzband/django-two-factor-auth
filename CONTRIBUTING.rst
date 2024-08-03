@@ -63,11 +63,13 @@ The following actions are required to push a new version:
 
     make tx-pull
 
-* Package and upload::
+* Trigger the packaging and upload::
 
+    git tag <tag number>
     git push && git push --tags
-    python setup.py sdist bdist_wheel
-    twine upload dist/*
+
+The `.github/workflows/release.yml` file should do the remaining work and
+publish the release to PyPi.
 
 .. _issue tracker: https://github.com/jazzband/django-two-factor-auth/issues
 .. _source code: https://github.com/jazzband/django-two-factor-auth
