@@ -51,12 +51,27 @@ from .utils import (
     validate_remember_device_cookie,
 )
 
+try:
+    from django.contrib.auth.decorators import login_not_required
+except ImportError:
+    # For Django < 5.1, copy the current Django implementation
+    def login_not_required(view_func):
+        """
+        Decorator for views that allows access to unauthenticated requests.
+        """
+        view_func.login_required = False
+        return view_func
+
+
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 
-@method_decorator([sensitive_post_parameters(), csrf_protect, never_cache], name='dispatch')
+@method_decorator(
+    [login_not_required, sensitive_post_parameters(), csrf_protect, never_cache],
+    name='dispatch'
+)
 class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.

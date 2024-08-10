@@ -6,6 +6,8 @@
 
 ### Added
 - Support confirmation for Django 5.1.
+- The login view is also decorated with the `login_not_required` decorator for
+  projects using the new `LoginRequiredMiddleware` available with Django 5.1+.
 
 ### Removed
 - Dropped support for Django <4.2.

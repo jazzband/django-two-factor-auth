@@ -1,13 +1,13 @@
 import json
 from importlib import import_module
 from time import sleep
-from unittest import mock
+from unittest import mock, skipUnless
 
 from django.conf import settings
 from django.core.signing import BadSignature
 from django.shortcuts import resolve_url
 from django.test import RequestFactory, TestCase
-from django.test.utils import override_settings
+from django.test.utils import modify_settings, override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
@@ -18,12 +18,27 @@ from two_factor.views.core import LoginView
 
 from .utils import UserMixin, totp_str
 
+try:
+    from django.contrib.auth.middleware import LoginRequiredMiddleware  # NOQA
+    has_login_required_middleware = True
+except ImportError:
+    # Django < 5.1
+    has_login_required_middleware = False
+
 
 class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
-    def test_form(self):
+    def test_get_to_login(self):
+        response = self.client.get(reverse('two_factor:login'))
+        self.assertContains(response, 'Password:')
+
+    @skipUnless(has_login_required_middleware, 'LoginRequiredMiddleware needs Django 5.1+')
+    @modify_settings(
+        MIDDLEWARE={'append': 'django.contrib.auth.middleware.LoginRequiredMiddleware'}
+    )
+    def test_get_to_login_with_loginrequiredmiddleware(self):
         response = self.client.get(reverse('two_factor:login'))
         self.assertContains(response, 'Password:')
 
