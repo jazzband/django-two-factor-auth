@@ -1,8 +1,18 @@
 # Changelog
 
-## Unreleased
+## 1.17.0
+### Fixed
+- Fixed the XML syntax of the Twilio token.xml file.
+- The Yubikey token field is now receiving autofocus.
+- Avoid crashes for devices with no `throttle_*` methods (#699).
+- Fixed format of the hash for the OTP device cookie key.
+
 ### Changed
 - Allow django-phonenumber-field 8.x.x.
+- Project build is now using a more modern toolbox based on `pyproject.toml` (no
+  more setup.*).
+- The plugins method registry can now return a new `MethodNotFoundError`
+  exception when some method is not found in the plugins registry.
 
 ### Added
 - Support confirmation for Django 5.1.
