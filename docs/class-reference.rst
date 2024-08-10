@@ -11,9 +11,6 @@ Decorators
 .. automodule:: django_otp.decorators
    :members:
 
-.. automodule:: two_factor.views.utils
-   :members: class_view_decorator
-
 Models
 ------
 .. autoclass:: two_factor.plugins.phonenumber.models.PhoneDevice
@@ -49,6 +46,11 @@ Signals
 Template Tags
 --------------
 .. automodule:: two_factor.plugins.phonenumber.templatetags.phonenumber
+   :members:
+
+Utilities
+---------
+.. automodule:: two_factor.views.utils
    :members:
 
 Views

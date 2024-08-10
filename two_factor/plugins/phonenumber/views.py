@@ -1,22 +1,20 @@
 from django.conf import settings
 from django.shortcuts import redirect, resolve_url
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django_otp.decorators import otp_required
 from django_otp.util import random_hex
 
 from two_factor.forms import DeviceValidationForm
-from two_factor.views.utils import (
-    IdempotentSessionWizardView, class_view_decorator,
-)
+from two_factor.views.utils import IdempotentSessionWizardView
 
 from .forms import PhoneNumberMethodForm
 from .models import PhoneDevice
 from .utils import get_available_phone_methods
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class PhoneSetupView(IdempotentSessionWizardView):
     """
     View for configuring a phone number for receiving tokens.
@@ -87,8 +85,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         return super().get_context_data(form, **kwargs)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class PhoneDeleteView(DeleteView):
     """
     View for removing a phone number used for verification.

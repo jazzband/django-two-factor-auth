@@ -2,17 +2,16 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.response import TemplateResponse
 from django.utils import translation
+from django.utils.decorators import method_decorator
 from django.utils.translation import check_for_language, pgettext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from ...views.utils import class_view_decorator
 from .gateway import validate_voice_locale
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(csrf_exempt)
+@method_decorator([never_cache, csrf_exempt], name='dispatch')
 class TwilioCallApp(View):
     """
     View used by Twilio for the interactive token verification by phone.

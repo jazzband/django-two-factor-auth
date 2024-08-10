@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
+from django.utils.decorators import method_decorator
 from django.utils.functional import lazy
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
@@ -13,11 +14,9 @@ from two_factor.plugins.phonenumber.utils import (
 
 from ..forms import DisableForm
 from ..utils import default_device
-from .utils import class_view_decorator
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class ProfileView(TemplateView):
     """
     View used by users for managing two-factor configuration.
@@ -48,7 +47,7 @@ class ProfileView(TemplateView):
         return context
 
 
-@class_view_decorator(never_cache)
+@method_decorator(never_cache, name='dispatch')
 class DisableView(FormView):
     """
     View for disabling two-factor for a user's account.
