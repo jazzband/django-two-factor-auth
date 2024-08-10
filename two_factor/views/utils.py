@@ -9,7 +9,6 @@ from django.core.signing import (
     BadSignature, SignatureExpired, b62_decode, b62_encode,
 )
 from django.utils.crypto import salted_hmac
-from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
@@ -216,22 +215,6 @@ class IdempotentSessionWizardView(SessionWizardView):
         done_response = self.done(final_form_list, **kwargs)
         self.storage.reset()
         return done_response
-
-
-def class_view_decorator(function_decorator):
-    """
-    Converts a function based decorator into a class based decorator usable
-    on class based Views.
-
-    Can't subclass the `View` as it breaks inheritance (super in particular),
-    so we monkey-patch instead.
-
-    From: http://stackoverflow.com/a/8429311/58107
-    """
-    def simple_decorator(View):
-        View.dispatch = method_decorator(function_decorator)(View.dispatch)
-        return View
-    return simple_decorator
 
 
 remember_device_cookie_separator = ':'

@@ -47,8 +47,8 @@ from ..forms import (
 )
 from ..utils import default_device, get_otpauth_url
 from .utils import (
-    IdempotentSessionWizardView, class_view_decorator,
-    get_remember_device_cookie, validate_remember_device_cookie,
+    IdempotentSessionWizardView, get_remember_device_cookie,
+    validate_remember_device_cookie,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,7 @@ logger = logging.getLogger(__name__)
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 
+@method_decorator([sensitive_post_parameters(), csrf_protect, never_cache], name='dispatch')
 class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.
@@ -405,9 +406,6 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
     # Copied from django.contrib.auth.views.LoginView  (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49
-    @method_decorator(sensitive_post_parameters())
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
         if self.redirect_authenticated_user and self.request.user.is_authenticated:
             redirect_to = self.get_success_url()
@@ -420,8 +418,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         return super().dispatch(request, *args, **kwargs)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling OTP setup using a wizard.
@@ -628,8 +625,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         return self.storage.extra_data['forms'].get(step, None)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class BackupTokensView(FormView):
     """
     View for listing and generating backup tokens.
@@ -664,8 +660,7 @@ class BackupTokensView(FormView):
         return redirect(self.success_url)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class SetupCompleteView(TemplateView):
     """
     View congratulation the user when OTP setup has completed.
@@ -683,8 +678,7 @@ class SetupCompleteView(TemplateView):
         }
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class QRGeneratorView(View):
     """
     View returns an SVG image with the OTP token information

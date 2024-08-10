@@ -9,6 +9,8 @@
 
 ### Removed
 - Dropped support for Django <4.2.
+- Removed custom `utils.class_view_decorator()` in favor of Django's
+  `method_decorator()`.
 
 ## 1.16.0
 ### Fixed
