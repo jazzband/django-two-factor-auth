@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "Python: Command",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "/home/paxw-panevo/Code/2_OpenSource/django-two-factor-auth/.venv/bin/django-admin",
+        "args": [
+            "test",
+            "tests.test_email.EmailTest"
+        ],
+        "justMyCode": false,
+        "django": true,
+        "env": {
+            "DJANGO_SETTINGS_MODULE": "tests.settings",
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "cwd": "${workspaceFolder}",
+    }
+    ]
+}

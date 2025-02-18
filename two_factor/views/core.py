@@ -529,7 +529,10 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         next_step = self.steps.next
         if next_step == 'validation':
             try:
-                self.get_device().generate_challenge()
+                extra_context_setup = getattr(
+                    self.get_device(), "extra_context_setup", None
+                )
+                self.get_device().generate_challenge(extra_context_setup)
                 kwargs["challenge_succeeded"] = True
             except Exception:
                 logger.exception("Could not generate challenge")
@@ -569,7 +572,11 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
 
         kwargs = {}
         if 'key' in form_params:
-            kwargs['key'] = self.get_key(step)
+            kwargs['key'] = (
+                self.request.session.get(self.session_key_name) 
+                if self.get_method().code == 'email' 
+                else self.get_key(step)
+            )
         if 'user' in form_params:
             kwargs['user'] = self.request.user
         if 'device' in form_params:
@@ -626,6 +633,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             })
         elif self.steps.current == 'validation':
             context['device'] = self.get_device()
+            self.request.session[self.session_key_name] = self.get_device().token
         context['cancel_url'] = resolve_url(settings.LOGIN_REDIRECT_URL)
         return context
 

@@ -71,6 +71,8 @@ class EmailTest(UserMixin, TestCase):
         response = self.client.post(reverse('two_factor:setup'),
                                     data={'setup_view-current_step': 'email',
                                           'email-email': 'bouke@example.com'})
+        
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
 
         # Test that no EmailDevice should be marked as confirmed yet.
         device = EmailDevice.objects.filter(user=self.user).first()

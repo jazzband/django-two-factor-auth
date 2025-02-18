@@ -29,6 +29,12 @@ class EmailDeviceProxy(EmailDevice):
     class Meta:
         proxy = True
 
+    @property
+    def extra_context_setup(self) -> dict:
+        """Extra context to pass when generating challenge during setup."""
+        print("Pax was in extra_context_setup")
+        return {"commit": False}
+
     def generate_challenge(self, extra_context=None):
         """
         Generates a random token and emails it to the user.
@@ -62,6 +68,9 @@ class EmailDeviceProxy(EmailDevice):
         self.generate_token(valid_secs=settings.OTP_EMAIL_TOKEN_VALIDITY, commit=commit)
 
         context = {'token': self.token, **(extra_context or {})}
+
+        print(f"Pax was in _deliver_token. Key is {self.token}")
+
         if settings.OTP_EMAIL_BODY_TEMPLATE:
             body = Template(settings.OTP_EMAIL_BODY_TEMPLATE).render(Context(context))
         else:
