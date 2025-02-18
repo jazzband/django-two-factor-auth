@@ -72,6 +72,10 @@ class EmailTest(UserMixin, TestCase):
                                     data={'setup_view-current_step': 'email',
                                           'email-email': 'bouke@example.com'})
 
+        # Test that no EmailDevice should be marked as confirmed yet.
+        device = EmailDevice.objects.filter(user=self.user).first()
+        self.assertIsNone(device)
+
         # Test that one message has been sent.
         self.assertEqual(len(mail.outbox), 1)
         msg = mail.outbox.pop(0)
@@ -98,6 +102,7 @@ class EmailTest(UserMixin, TestCase):
         device = default_device(self.user)
         self.assertIsNotNone(device)
         self.assertIsInstance(device, EmailDevice)
+        self.assertEqual(device.confirmed, True)
 
         # Check save user on success.
         self.assertIn(
