@@ -154,6 +154,12 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
                 label=label
             )
 
+    def _chosen_device(self, user):
+        device = super()._chosen_device(user)
+        if not device:
+            device = self.initial_device
+        return device
+
     def clean(self):
         self.clean_otp(self.user)
         return self.cleaned_data

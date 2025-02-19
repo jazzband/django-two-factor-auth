@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
+from django.utils.decorators import method_decorator
 from django.utils.functional import lazy
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
@@ -13,11 +14,9 @@ from two_factor.plugins.phonenumber.utils import (
 
 from ..forms import DisableForm
 from ..utils import default_device
-from .utils import class_view_decorator
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class ProfileView(TemplateView):
     """
     View used by users for managing two-factor configuration.
@@ -29,21 +28,26 @@ class ProfileView(TemplateView):
     template_name = 'two_factor/profile/profile.html'
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+
         try:
-            backup_tokens = self.request.user.staticdevice_set.all()[0].token_set.count()
+            backup_tokens = user.staticdevice_set.all()[0].token_set.count()
+
         except Exception:
             backup_tokens = 0
 
-        return {
-            'default_device': default_device(self.request.user),
-            'default_device_type': default_device(self.request.user).__class__.__name__,
-            'backup_phones': backup_phones(self.request.user),
+        context = {
+            'default_device': default_device(user),
+            'default_device_type': default_device(user).__class__.__name__,
             'backup_tokens': backup_tokens,
-            'available_phone_methods': get_available_phone_methods()
+            'backup_phones': backup_phones(user),
+            'available_phone_methods': get_available_phone_methods(),
         }
 
+        return context
 
-@class_view_decorator(never_cache)
+
+@method_decorator(never_cache, name='dispatch')
 class DisableView(FormView):
     """
     View for disabling two-factor for a user's account.

@@ -1,3 +1,4 @@
+import string
 from unittest import mock
 from urllib.parse import parse_qsl, urlparse
 
@@ -7,17 +8,19 @@ from django_otp.util import random_hex
 from phonenumber_field.phonenumber import PhoneNumber
 
 from two_factor.plugins.email.utils import mask_email
+from two_factor.plugins.phonenumber.method import PhoneCallMethod, SMSMethod
 from two_factor.plugins.phonenumber.models import PhoneDevice
 from two_factor.plugins.phonenumber.utils import (
-    backup_phones, format_phone_number, mask_phone_number,
+    backup_phones, format_phone_number, get_available_phone_methods,
+    mask_phone_number,
 )
+from two_factor.plugins.registry import GeneratorMethod, MethodRegistry
 from two_factor.utils import (
     USER_DEFAULT_DEVICE_ATTR_NAME, default_device, get_otpauth_url,
     totp_digits,
 )
 from two_factor.views.utils import (
-    get_remember_device_cookie, salted_hmac_sha256,
-    validate_remember_device_cookie,
+    get_remember_device_cookie, validate_remember_device_cookie,
 )
 
 from .utils import UserMixin
@@ -136,18 +139,41 @@ class UtilsTest(UserMixin, TestCase):
         )
         self.assertFalse(validation_result)
 
-    def test_salted_hmac_sha256(self):
-        hmac_with_secret = salted_hmac_sha256("blah", "blah", "my-new-secret")
-        hmac_without_secret = salted_hmac_sha256("blah", "blah")
-        self.assertNotEqual(hmac_with_secret, hmac_without_secret)
+    def test_cookie_valid_characters(self):
+        user = mock.Mock()
+        user.pk = 123
+        user.password = make_password("xx")
+        allowed_characters = set(string.ascii_letters + string.digits + "-_:")
+
+        cookie_value = get_remember_device_cookie(
+            user=user, otp_device_id="SomeModel/33"
+        )
+        self.assertTrue(all(c in allowed_characters for c in cookie_value))
 
 
 class PhoneUtilsTests(UserMixin, TestCase):
+    def test_get_available_phone_methods(self):
+        parameters = [
+            # registered_methods, expected_codes
+            ([GeneratorMethod()], set()),
+            ([GeneratorMethod(), PhoneCallMethod()], {'call'}),
+            ([GeneratorMethod(), PhoneCallMethod(), SMSMethod()], {'call', 'sms'}),
+        ]
+        with mock.patch('two_factor.plugins.phonenumber.utils.registry', new_callable=MethodRegistry) as test_registry:
+            for registered_methods, expected_codes in parameters:
+                with self.subTest(
+                    registered_methods=registered_methods,
+                    expected_codes=expected_codes,
+                ):
+                    test_registry._methods = registered_methods
+                    codes = {method.code for method in get_available_phone_methods()}
+                    self.assertEqual(codes, expected_codes)
+
     def test_backup_phones(self):
         gateway = 'two_factor.gateways.fake.Fake'
         user = self.create_user()
-        user.phonedevice_set.create(name='default', number='+12024561111')
-        backup = user.phonedevice_set.create(name='backup', number='+12024561111')
+        user.phonedevice_set.create(name='default', number='+12024561111', method='call')
+        backup = user.phonedevice_set.create(name='backup', number='+12024561111', method='call')
 
         parameters = [
             # with_gateway, with_user, expected_output

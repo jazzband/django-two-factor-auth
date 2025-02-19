@@ -20,7 +20,7 @@
     <p>{% trans "You don't have any backup codes yet." %}</p>
   {% endif %}
 
-  <form method="post">{% csrf_token %}{{ form }}
+  <form method="post">{% csrf_token %}{{ form.as_p }}
     <a href="{% url 'two_factor:profile'%}"
        class="float-right btn btn-link">{% trans "Back to Account Security" %}</a>
     <button class="btn btn-primary" type="submit">{% trans "Generate Tokens" %}</button>

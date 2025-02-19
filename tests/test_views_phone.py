@@ -9,6 +9,7 @@ from django.test.utils import override_settings
 from django.urls import reverse, reverse_lazy
 from django_otp.oath import totp
 from django_otp.util import random_hex
+from freezegun import freeze_time
 
 from two_factor.plugins.phonenumber.models import PhoneDevice
 from two_factor.plugins.phonenumber.utils import backup_phones
@@ -146,6 +147,11 @@ class PhoneSetupTest(UserMixin, TestCase):
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
 
+    def test_url_generation(self):
+        url_name = 'two_factor:phone_create'
+        expected_url = '/account/two_factor/phone/register/'
+        self.assertEqual(reverse(url_name), expected_url)
+
 
 class PhoneDeleteTest(UserMixin, TestCase):
     def setUp(self):
@@ -155,11 +161,13 @@ class PhoneDeleteTest(UserMixin, TestCase):
         self.default = self.user.phonedevice_set.create(name='default', method='call', number='+12024561111')
         self.login_user()
 
+    @override_settings(TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
     def test_delete(self):
+        self.assertEqual(len(backup_phones(self.user)), 1)
         response = self.client.post(reverse('two_factor:phone_delete',
                                             args=[self.backup.pk]))
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
-        self.assertEqual(list(backup_phones(self.user)), [])
+        self.assertEqual(backup_phones(self.user), [])
 
     def test_cannot_delete_default(self):
         response = self.client.post(reverse('two_factor:phone_delete',
@@ -186,8 +194,17 @@ class PhoneDeleteTest(UserMixin, TestCase):
         view.success_url = reverse_lazy(url_name)
         self.assertEqual(view.get_success_url(), url)
 
+    def test_url_generation(self):
+        url_name = 'two_factor:phone_delete'
+        expected_url = '/account/two_factor/phone/unregister/42/'
+        self.assertEqual(reverse(url_name, args=(42,)), expected_url)
+
 
 class PhoneDeviceTest(UserMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+
     def test_clean(self):
         device = PhoneDevice(key='xyz', method='sms')
         with self.assertRaises(ValidationError) as ctxt:
@@ -197,11 +214,14 @@ class PhoneDeviceTest(UserMixin, TestCase):
 
     def test_verify(self):
         for no_digits in (6, 8):
-            with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex())
-                self.assertFalse(device.verify_token(-1))
-                self.assertFalse(device.verify_token('foobar'))
-                self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
+            with freeze_time("2023-01-01") as frozen_time:
+                with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
+                    device = PhoneDevice(key=random_hex(), user=self.user)
+                    self.assertFalse(device.verify_token(-1))
+                    frozen_time.tick(1)
+                    self.assertFalse(device.verify_token('foobar'))
+                    frozen_time.tick(10)
+                    self.assertTrue(device.verify_token(totp(device.bin_key, digits=no_digits)))
 
     def test_verify_token_as_string(self):
         """
@@ -211,14 +231,14 @@ class PhoneDeviceTest(UserMixin, TestCase):
         """
         for no_digits in (6, 8):
             with self.settings(TWO_FACTOR_TOTP_DIGITS=no_digits):
-                device = PhoneDevice(key=random_hex())
+                device = PhoneDevice(key=random_hex(), user=self.user)
                 self.assertTrue(device.verify_token(str(totp(device.bin_key, digits=no_digits))))
 
     def test_unicode(self):
         device = PhoneDevice(name='unknown')
         self.assertEqual('unknown (None)', str(device))
 
-        device.user = self.create_user()
+        device.user = self.user
         self.assertEqual('unknown (bouke@example.com)', str(device))
 
     def test_template_tags(self):

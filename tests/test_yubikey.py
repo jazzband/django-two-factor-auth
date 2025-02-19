@@ -6,7 +6,7 @@ from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import resolve_url
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from .utils import UserMixin
@@ -154,3 +154,31 @@ class YubiKeyTest(UserMixin, TestCase):
         msg = "'otp_yubikey' must be installed to be able to use the yubikey plugin."
         with self.assertRaisesMessage(ImproperlyConfigured, msg):
             apps.get_app_config('yubikey').ready()
+
+    @override_settings(TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60)
+    @patch('otp_yubikey.models.RemoteYubikeyDevice.verify_token')
+    def test_login_with_remember_cookie(self, verify_token):
+        user = self.create_user()
+        verify_token.return_value = True
+        service = ValidationService.objects.create(name='default', param_sl='', param_timeout='')
+        user.remoteyubikeydevice_set.create(service=service, name='default')
+
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'auth-username': 'bouke@example.com',
+                                          'auth-password': 'secret',
+                                          'login_view-current_step': 'auth'})
+        # Should call verify_token
+        token = 'cjikftknbiktlitnbltbitdncgvrbgic'
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'token-otp_token': token,
+                                          'login_view-current_step': 'token',
+                                          'token-remember': 'on'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        verify_token.assert_called_with(token)
+
+        self.client.post(reverse('logout'))
+        response = self.client.post(reverse('two_factor:login'),
+                                    data={'auth-username': 'bouke@example.com',
+                                          'auth-password': 'secret',
+                                          'login_view-current_step': 'auth'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))

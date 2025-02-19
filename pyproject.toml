@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-two-factor-auth"
+version = "1.17.0"
+description = "Complete Two-Factor Authentication for Django"
+readme = "README.rst"
+authors = [
+  {name = "Bouke Haarsma", email = "bouke@haarsma.eu"},
+]
+maintainers = [
+  {name = "Claude Paroz", email = "claude@2xlibre.net"},
+  {name = "Matt Molyneaux", email = "moggers87+git@moggers87.co.uk"},
+]
+license = {text = "MIT"}
+requires-python = ">= 3.8"
+dependencies = [
+    "Django>=4.2",
+    "django_otp>=0.8.0",
+    "qrcode>=4.0.0,<7.99",
+    "django-phonenumber-field<9",
+    "django-formtools",
+]
+keywords = ["django", "two-factor"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration :: Authentication/Directory",
+]
+
+[project.optional-dependencies]
+call = ['twilio>=6.0']
+sms = ['twilio>=6.0']
+webauthn = ['webauthn>=2.0,<2.99']
+yubikey = ['django-otp-yubikey']
+phonenumbers = ['phonenumbers>=7.0.9,<8.99']
+phonenumberslite = ['phonenumberslite>=7.0.9,<8.99']
+# used internally for local development & CI
+tests = [
+    "coverage",
+    "freezegun",
+    "tox",
+]
+linting = [
+    "ruff",
+    "isort<=5.99",
+]
+
+[project.urls]
+Homepage = "https://github.com/jazzband/django-two-factor-auth"
+Documentation = "https://django-two-factor-auth.readthedocs.io/en/stable/"
+Changelog = "https://github.com/jazzband/django-two-factor-auth/blob/master/CHANGELOG.md"
+
+[tool.ruff]
+line-length = 119
+target-version = "py38"
+extend-exclude = ["docs"]
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # pycodestyle (Error)
+    "W",  # pycodestyle (Warning)
+    # "I",  # isort (waiting for https://github.com/astral-sh/ruff/issues/2600)
+]
+
+# [tool.ruff.lint.isort]
+# combine-as-imports = true
+# known-first-party = ["two_factor"]
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+known_first_party = "two_factor"
+line_length = 79
+multi_line_output = 5
+sections="FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+
+[tool.coverage.run]
+branch = true
+source = [
+    "tests",
+    "two_factor",
+]
+omit = ["*/migrations/*"]
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+]

@@ -223,6 +223,7 @@ will be sent to your application after the authentication takes place:
   If you want to verify attestations made by a Yubikey, get `Yubico's root CA`_ and use it as follows:
 
   .. code-block:: python
+     from webauthn.helpers.structs import AttestationFormat
 
      yubico_u2f_ca = """
      -----BEGIN CERTIFICATE-----
@@ -338,5 +339,3 @@ e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
   Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
 
   Default: `'Lax'`
-
-

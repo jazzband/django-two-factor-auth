@@ -9,28 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     env:
       COVERAGE_OPTIONS: "-a"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Tox and any other packages
-        run: pip install tox tox-gh-actions codecov
+        run: pip install tox tox-gh-actions coverage
       - name: Test with tox
         run: tox
       - name: Generate coverage XML report
         run: coverage xml
       - name: Codecov
-        uses: codecov/codecov-action@v2.0.3
+        uses: codecov/codecov-action@v3
         env:
           PYTHON: ${{matrix.python-version}}
         with:
-          env_vars: PTYHON
+          env_vars: PYTHON
 
 
   code_quality:
@@ -39,14 +39,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.11
       - name: Install Tox
         run: pip install tox
       - name: isort
         run: tox -e isort
-      - name: flake8
-        run: tox -e flake8
+      - name: ruff
+        run: tox -e ruff

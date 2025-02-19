@@ -1,19 +1,115 @@
 # Changelog
 
-## Unreleased
+## 1.17.0
+### Fixed
+- Fixed the XML syntax of the Twilio token.xml file.
+- The Yubikey token field is now receiving autofocus.
+- Avoid crashes for devices with no `throttle_*` methods (#699).
+- Fixed format of the hash for the OTP device cookie key.
+
+### Changed
+- Allow django-phonenumber-field 8.x.x.
+- Project build is now using a more modern toolbox based on `pyproject.toml` (no
+  more setup.*).
+- The plugins method registry can now return a new `MethodNotFoundError`
+  exception when some method is not found in the plugins registry.
 
 ### Added
-- Enforcing a redirect to setup of otp device when none available for user [#550](https://github.com/jazzband/django-two-factor-auth/pull/500)
-- Confirmed Django 4.1 support
-- WebAuthn support
+- Support confirmation for Django 5.1.
+- The login view is also decorated with the `login_not_required` decorator for
+  projects using the new `LoginRequiredMiddleware` available with Django 5.1+.
 
 ### Removed
-- Django 2.2, 3.0, and 3.1 support
+- Dropped support for Django <4.2.
+- Removed custom `utils.class_view_decorator()` in favor of Django's
+  `method_decorator()`.
+
+## 1.16.0
+### Fixed
+- Avoid potentially empty `<ul>` on the profile page.
+
+### Changed
+- Upgraded minimal webauthn dependency to 2.0 (which also removes a deprecation
+  warning) (#634, #701). Note the ``pydantic`` dependency was removed in
+  webauthn 2.
+- Checking phone method availability uses now the method registry (#665).
+- Logout example uses POST method to match recent Django behavior.
+- Updated translations.
+
+### Added
+- Support confirmation for Django 5.0 and Python 3.12.
+- A new `main_form_content` template block on login template allows for easier
+  overridability.
+
+## 1.15.5
+### Fixed
+- Include transitively replaced migrations in phonenumber migration.
+- Avoid importing PhoneDevice when not enabled.
+- Simplified URLs for phone_create/phone_delete paths.
+- Implement strict PhoneDevice identification (#661).
+- Avoid multiple registrations of the same method (#657).
+- Get all phonedevices of the user (#659).
+
+### Changed
+- Allow django-phonenumber-field 7.
+- Updated Dutch, German, and Spanish translations.
+
+### Removed
+- Python 3.7 support (EOL).
+
+## 1.15.4
+### Fixed
+- Corrected migration dependency (introduced in 6150a782b6e6).
+- Fixed throttling for PhoneDevice (#418).
+
+## 1.15.3
+### Added
+- Added Turkish translation.
+
+### Fixed
+- Fixed a PhoneDevice migration generated even when the phonenumber plugin was
+  not installed (#587).
+- Created a custom phonenumber migration to allow migration for both when the
+  model already exists (legacy installs) and for new installs (#611).
+
+## 1.15.2
+### Added
+- Confirmed Django 4.2 support
+
+### Fixed
+- Set `default_auto_field` to `AutoField` in apps config that have models,
+  so no migrations are generated for projects defaulting to `BigAutoField` (#436).
+- [webauthn] Drop unneeded unique index on `public_key`, which was unsupported
+  on MySQL (#594).
+
+## 1.15.1
+### Fixed
+- Missing plugin templates (#583).
+- Migrations of `two_factor` app are squashed to avoid requiring `phonenumber_field`
+  optional dependency for new projects.
+
+### Changed
+- Updated Finish and French translations.
+
+## 1.15.0
+
+### Added
+- Enforcing a redirect to setup of otp device when none available for user (#499)
+- Confirmed Django 4.1 support
+- WebAuthn support (thanks to Javier Paniagua)
+- Confirmed Python 3.11 support
 
 ### Changed 
 
-- display the TOTP secret key alongside the QR code to streamline setup for 
-  password managers without QR support. 
+- Display the TOTP secret key alongside the QR code to streamline setup for
+  password managers without QR support.
+- Moved phonenumber migrations under the plugins directory.
+- Avoid crash with email devices without email (#530).
+
+### Removed
+- Django 2.2, 3.0, and 3.1 support
+- `two_factor.utils.get_available_methods()` is replaced by
+  `MethodRegistry.get_methods()`.
 
 ## 1.14.0
 

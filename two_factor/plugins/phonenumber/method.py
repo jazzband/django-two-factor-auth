@@ -4,15 +4,15 @@ from two_factor.plugins.registry import MethodBase
 
 from .forms import PhoneNumberForm
 from .models import PhoneDevice
-from .utils import backup_phones, format_phone_number, mask_phone_number
+from .utils import format_phone_number, mask_phone_number
 
 
 class PhoneMethodBase(MethodBase):
     def get_devices(self, user):
-        return [device for device in backup_phones(user) if device.method == self.code]
+        return PhoneDevice.objects.filter(user=user, method=self.code)
 
     def recognize_device(self, device):
-        return isinstance(device, PhoneDevice)
+        return isinstance(device, PhoneDevice) and device.method == self.code
 
     def get_setup_forms(self, *args):
         return {self.code: PhoneNumberForm}
@@ -28,23 +28,21 @@ class PhoneMethodBase(MethodBase):
 
     def get_action(self, device):
         number = mask_phone_number(format_phone_number(device.number))
-        if device.method == 'sms':
-            return _('Send text message to %s') % number
-        else:
-            return _('Call number %s') % number
+        return self.action % number
 
     def get_verbose_action(self, device):
-        if device.method == 'sms':
-            return _('We sent you a text message, please enter the token we sent.')
-        else:
-            return _('We are calling your phone right now, please enter the digits you hear.')
+        return self.verbose_action
 
 
 class PhoneCallMethod(PhoneMethodBase):
     code = 'call'
     verbose_name = _('Phone call')
+    action = _('Call number %s')
+    verbose_action = _('We are calling your phone right now, please enter the digits you hear.')
 
 
 class SMSMethod(PhoneMethodBase):
     code = 'sms'
     verbose_name = _('Text message')
+    action = _('Send text message to %s')
+    verbose_action = _('We sent you a text message, please enter the token we sent.')

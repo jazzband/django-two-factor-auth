@@ -1,12 +1,11 @@
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.13.2
     hooks:
     - id: isort
       args: ['--check-only', '--diff']
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
     hooks:
-      - id: flake8
-        files: ^(example|tests|two_factor)/
+      - id: ruff

@@ -6,8 +6,16 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
-from pydantic.error_wrappers import ValidationError as PydanticValidationError
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse
+from webauthn.helpers.exceptions import (
+    InvalidAuthenticationResponse, InvalidJSONStructure,
+    InvalidRegistrationResponse,
+)
+from webauthn.helpers.parse_authentication_credential_json import (
+    parse_authentication_credential_json,
+)
+from webauthn.helpers.parse_registration_credential_json import (
+    parse_registration_credential_json,
+)
 from webauthn.helpers.structs import (
     PublicKeyCredentialRpEntity, PublicKeyCredentialUserEntity,
 )
@@ -16,7 +24,6 @@ from two_factor.forms import AuthenticationTokenForm, DeviceValidationForm
 
 from .models import WebauthnDevice
 from .utils import (
-    AuthenticationCredential, RegistrationCredential,
     make_credential_creation_options, make_credential_request_options,
     verify_authentication_response,
 )
@@ -79,12 +86,12 @@ class WebauthnAuthenticationTokenForm(WebauthnEntitiesFormMixin, AuthenticationT
         del self.request.session['webauthn_request_options']
 
         try:
-            credential_id = AuthenticationCredential.parse_raw(token).id
+            credential_id = parse_authentication_credential_json(token).id
             device = WebauthnDevice.objects.get(user=user, key_handle=credential_id)
 
             new_sign_count = verify_authentication_response(
                 device.public_key, device.sign_count, self.webauthn_rp, self.webauthn_origin, challenge, token)
-        except (PydanticValidationError, WebauthnDevice.DoesNotExist, InvalidAuthenticationResponse) as exc:
+        except (InvalidJSONStructure, WebauthnDevice.DoesNotExist, InvalidAuthenticationResponse) as exc:
             raise forms.ValidationError(_('Entered token is not valid.'), code='invalid_token') from exc
 
         device.sign_count = new_sign_count
@@ -128,8 +135,8 @@ class WebauthnDeviceValidationForm(WebauthnEntitiesFormMixin, DeviceValidationFo
         token = self.cleaned_data['token']
 
         try:
-            RegistrationCredential.parse_raw(token)
-        except PydanticValidationError as exc:
+            parse_registration_credential_json(token)
+        except (InvalidJSONStructure, InvalidRegistrationResponse) as exc:
             raise forms.ValidationError(_('Entered token is not valid.'), code='invalid_token') from exc
 
         self.cleaned_data = {

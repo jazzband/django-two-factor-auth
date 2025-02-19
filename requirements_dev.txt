@@ -1,32 +1,12 @@
 # The app itself
 
--e .
-
-# Additional runtime dependencies
-
-twilio
-phonenumberslite
+-e .[call,sms,webauthn,yubikey,phonenumberslite,tests,linting]
 
 # Example app
 
 django-debug-toolbar
 django-bootstrap-form
 django-user-sessions
-
-# Example app (WebAuthn)
-
-webauthn~=1.6.0
-
-# Testing
-
-coverage
-flake8
-tox
-isort
-
-# Translation
-
-transifex-client
 
 # Documentation
 
@@ -36,5 +16,4 @@ sphinx_rtd_theme
 # Build
 
 wheel
-bump2version
 twine

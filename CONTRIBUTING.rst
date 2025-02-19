@@ -15,6 +15,16 @@ Contribute
 * Send a pull request with your changes.
 * Provide a translation using Transifex_.
 
+Local installation
+------------------
+
+Install the development dependencies, which also installs the package in editable mode
+for local development and additional development tools.
+
+.. code-block:: console
+
+    pip install -r requirements_dev.txt
+
 Running tests
 -------------
 This project aims for full code-coverage, this means that your code should be
@@ -36,7 +46,8 @@ Releasing
 ---------
 The following actions are required to push a new version:
 
-* Update release notes
+* Update release notes and version number in `pyproject.toml` and `docs/conf.py`
+
 * If any new translations strings were added, push the new source language to
   Transifex_. Make sure translators have sufficient time to translate those
   new strings::
@@ -52,13 +63,14 @@ The following actions are required to push a new version:
 
     make tx-pull
 
-* Package and upload::
+* Trigger the packaging and upload::
 
-    bumpversion [major|minor|patch]
+    git tag <tag number>
     git push && git push --tags
-    python setup.py sdist bdist_wheel
-    twine upload dist/*
+
+The `.github/workflows/release.yml` file should do the remaining work and
+publish the release to PyPi.
 
 .. _issue tracker: https://github.com/jazzband/django-two-factor-auth/issues
 .. _source code: https://github.com/jazzband/django-two-factor-auth
-.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Transifex: https://explore.transifex.com/Bouke/django-two-factor-auth/

@@ -21,4 +21,4 @@ class YubiKeyAuthenticationForm(AuthenticationTokenForm):
     # YubiKey generates a OTP of 44 characters (not digits). So if the
     # user's primary device is a YubiKey, replace the otp_token
     # IntegerField with a CharField.
-    otp_token = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput())
+    otp_token = forms.CharField(label=_('YubiKey'), widget=forms.PasswordInput(attrs={'autofocus': True}))

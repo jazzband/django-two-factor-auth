@@ -38,5 +38,5 @@ Indices and tables
 * :ref:`search`
 
 .. _django-otp: https://pypi.python.org/pypi/django-otp
-.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Transifex: https://explore.transifex.com/Bouke/django-two-factor-auth/
 .. _GitHub: https://github.com/Bouke/django-two-factor-auth/issues

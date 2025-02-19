@@ -3,11 +3,12 @@ Requirements
 
 Django
 ------
-Supported Django versions are supported. Currently this list includes Django 3.2, and 4.0.
+Supported Django versions are supported. Currently this list includes Django 4.2,
+5.0 and 5.1.
 
 Python
 ------
-The following Python versions are supported: 3.7, 3.8, 3.9 and 3.10 with a
+The following Python versions are supported: 3.8, 3.9, 3.10, 3.11 and 3.12 with a
 limit to what Django itself supports. As support for older Django versions is
 dropped, the minimum version might be raised. See also `What Python version can
 I use with Django?`_.

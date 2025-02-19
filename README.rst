@@ -37,9 +37,9 @@ providing Django sessions with a foreign key to the user. Although the package
 is optional, it improves account security control over
 ``django.contrib.sessions``.
 
-Compatible with supported Django and Python versions. At the moment of writing that
-includes 3.2, 4.0 and 4.1 on Python 3.7, 3.8, 3.9 and 3.10.
-Documentation is available at `readthedocs.org`_.
+Compatible with supported Django and Python versions. At the moment of writing
+that includes 4.2, 5.0, and 5.1 on Python 3.8 to 3.12.
+Documentation is available at `readthedocs.io`_.
 
 
 Installation
@@ -74,12 +74,12 @@ The project is licensed under the MIT license.
 .. _`example app`:
    https://github.com/jazzband/django-two-factor-auth/tree/master/example
 .. _django-otp: https://pypi.org/project/django-otp/
-.. _Transifex: https://www.transifex.com/projects/p/django-two-factor-auth/
+.. _Transifex: https://explore.transifex.com/Bouke/django-two-factor-auth/
 .. _Twilio: https://www.twilio.com/
 .. _contribution guidelines:
    https://github.com/jazzband/django-two-factor-auth/blob/master/CONTRIBUTING.rst
 .. _django-user-sessions: https://pypi.org/project/django-user-sessions/
-.. _readthedocs.org: https://django-two-factor-auth.readthedocs.org/
+.. _readthedocs.io: https://django-two-factor-auth.readthedocs.io/en/stable/index.html
 .. _`installation instructions`:
    https://django-two-factor-auth.readthedocs.io/en/stable/installation.html
 .. _`Stack Overflow`:

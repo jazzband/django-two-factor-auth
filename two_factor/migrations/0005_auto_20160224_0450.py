@@ -5,7 +5,9 @@ import django_otp.util
 from django.conf import settings
 from django.db import migrations, models
 
-from two_factor.plugins.phonenumber.models import key_validator
+
+def key_validator():
+    pass  # Fake function, enough for migrations
 
 
 class Migration(migrations.Migration):
@@ -23,12 +25,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='phonedevice',
             name='key',
-            field=models.CharField(default=django_otp.util.random_hex, help_text='Hex-encoded secret key', max_length=40, validators=[key_validator]),
+            field=models.CharField(
+                default=django_otp.util.random_hex,
+                help_text='Hex-encoded secret key',
+                max_length=40,
+                validators=[key_validator]
+            ),
         ),
         migrations.AlterField(
             model_name='phonedevice',
             name='method',
-            field=models.CharField(choices=[('call', 'Phone Call'), ('sms', 'Text Message')], max_length=4, verbose_name='method'),
+            field=models.CharField(
+                choices=[('call', 'Phone Call'), ('sms', 'Text Message')],
+                max_length=4,
+                verbose_name='method'
+            ),
         ),
         migrations.AlterField(
             model_name='phonedevice',
@@ -38,6 +49,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='phonedevice',
             name='user',
-            field=models.ForeignKey(help_text='The user that this device belongs to.', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                help_text='The user that this device belongs to.',
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

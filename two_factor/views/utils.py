@@ -1,27 +1,19 @@
-import base64
 import hashlib
-import hmac
 import logging
 import time
 
 from django.conf import settings
 from django.contrib.auth import load_backend
 from django.core.exceptions import SuspiciousOperation
-from django.core.signing import BadSignature, SignatureExpired
-from django.utils.decorators import method_decorator
+from django.core.signing import (
+    BadSignature, SignatureExpired, b62_decode, b62_encode,
+)
+from django.utils.crypto import salted_hmac
 from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
 from formtools.wizard.forms import ManagementForm
 from formtools.wizard.storage.session import SessionStorage
 from formtools.wizard.views import SessionWizardView
-
-try:
-    from django.core.signing import b62_decode, b62_encode
-except ImportError:  # Django < 4.0
-    # Deprecated in Django 4.0, removed in Django 5.0
-    from django.utils import baseconv
-    b62_decode = baseconv.base62.decode
-    b62_encode = baseconv.base62.encode
 
 logger = logging.getLogger(__name__)
 
@@ -225,22 +217,6 @@ class IdempotentSessionWizardView(SessionWizardView):
         return done_response
 
 
-def class_view_decorator(function_decorator):
-    """
-    Converts a function based decorator into a class based decorator usable
-    on class based Views.
-
-    Can't subclass the `View` as it breaks inheritance (super in particular),
-    so we monkey-patch instead.
-
-    From: http://stackoverflow.com/a/8429311/58107
-    """
-    def simple_decorator(View):
-        View.dispatch = method_decorator(function_decorator)(View.dispatch)
-        return View
-    return simple_decorator
-
-
 remember_device_cookie_separator = ':'
 
 
@@ -291,20 +267,10 @@ def validate_remember_device_cookie(cookie, user, otp_device_id):
 
 
 def hash_remember_device_cookie_key(otp_device_id):
-    return str(base64.b64encode(force_bytes(otp_device_id)))
+    return hashlib.md5(force_bytes(otp_device_id)).hexdigest()
 
 
 def hash_remember_device_cookie_value(otp_device_id, user, timestamp):
     salt = 'two_factor.views.utils.hash_remember_device_cookie_value'
     value = otp_device_id + str(user.pk) + str(user.password) + timestamp
-    return salted_hmac_sha256(salt, value).hexdigest()
-
-
-# inspired by django.utils.crypto.salted_hmac django versions > 3.1a1
-def salted_hmac_sha256(key_salt, value, secret=None):
-    if secret is None:
-        secret = settings.SECRET_KEY
-    key_salt = force_bytes(key_salt)
-    secret = force_bytes(secret)
-    key = hashlib.sha256(key_salt + secret).digest()
-    return hmac.new(key, msg=force_bytes(value), digestmod=hashlib.sha256)
+    return salted_hmac(salt, value, algorithm='sha256').hexdigest()

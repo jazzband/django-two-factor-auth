@@ -1,6 +1,15 @@
 from django.utils.translation import gettext_lazy as _
 
 
+class MethodNotFoundError(LookupError):
+    """Registry method was not found
+
+    Check that the appropriate method has been registered
+    """
+    def __init__(self, code, methods):
+        super().__init__(f"{code} not found in {[m.code for m in methods]}")
+
+
 class MethodBase:
     code = None
     verbose_name = None
@@ -77,6 +86,10 @@ class MethodRegistry:
         self.register(GeneratorMethod())
 
     def register(self, method):
+        for registered_method in self._methods:
+            if method.code == registered_method.code:
+                return   # Already registered, ignore.
+
         self._methods.append(method)
 
     def unregister(self, code):
@@ -86,7 +99,7 @@ class MethodRegistry:
         try:
             return [meth for meth in self._methods if meth.code == code][0]
         except IndexError:
-            return None
+            raise MethodNotFoundError(code, self._methods)
 
     def get_methods(self):
         return self._methods

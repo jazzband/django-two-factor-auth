@@ -2,7 +2,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
-from django.urls import reverse
+from django.urls import Resolver404, resolve, reverse
 
 from ..utils import default_device
 
@@ -80,3 +80,14 @@ class OTPRequiredMixin:
                     status=403,
                 )
         return super().dispatch(request, *args, **kwargs)
+
+    @classmethod
+    def is_otp_view(cls, view_path):
+        try:
+            next_resolver_match = resolve(view_path)
+        except Resolver404:
+            return False
+        return (
+            hasattr(next_resolver_match.func, 'view_class') and
+            issubclass(next_resolver_match.func.view_class, OTPRequiredMixin)
+        )

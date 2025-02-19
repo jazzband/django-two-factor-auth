@@ -12,19 +12,21 @@
       <h2>{% trans "Backup Phone Numbers" %}</h2>
       <p>{% blocktrans trimmed %}If your primary method is not available, we are able to
         send backup tokens to the phone numbers listed below.{% endblocktrans %}</p>
-      <ul>
-        {% for phone in backup_phones %}
-          <li>
-            {{ phone|as_action }}
-            <form method="post" action="{% url 'two_factor:phone_delete' phone.id %}"
+      {% if backup_phones %}
+        <ul>
+          {% for phone in backup_phones %}
+            <li>
+              {{ phone|as_action }}
+              <form method="post" action="{% url 'two_factor:phone_delete' phone.id %}"
                   onsubmit="return confirm({% trans 'Are you sure?' %})">
-              {% csrf_token %}
-              <button class="btn btn-sm btn-warning"
+                {% csrf_token %}
+                <button class="btn btn-sm btn-warning"
                       type="submit">{% trans "Unregister" %}</button>
-            </form>
-          </li>
-        {% endfor %}
-      </ul>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
       <p><a href="{% url 'two_factor:phone_create' %}"
         class="btn btn-info">{% trans "Add Phone Number" %}</a></p>
     {% endif %}

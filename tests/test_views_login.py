@@ -1,27 +1,44 @@
 import json
 from importlib import import_module
 from time import sleep
-from unittest import mock
+from unittest import mock, skipUnless
 
 from django.conf import settings
+from django.core.signing import BadSignature
 from django.shortcuts import resolve_url
 from django.test import RequestFactory, TestCase
-from django.test.utils import override_settings
+from django.test.utils import modify_settings, override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
 from django_otp.util import random_hex
+from freezegun import freeze_time
 
 from two_factor.views.core import LoginView
 
 from .utils import UserMixin, totp_str
+
+try:
+    from django.contrib.auth.middleware import LoginRequiredMiddleware  # NOQA
+    has_login_required_middleware = True
+except ImportError:
+    # Django < 5.1
+    has_login_required_middleware = False
 
 
 class LoginTest(UserMixin, TestCase):
     def _post(self, data=None):
         return self.client.post(reverse('two_factor:login'), data=data)
 
-    def test_form(self):
+    def test_get_to_login(self):
+        response = self.client.get(reverse('two_factor:login'))
+        self.assertContains(response, 'Password:')
+
+    @skipUnless(has_login_required_middleware, 'LoginRequiredMiddleware needs Django 5.1+')
+    @modify_settings(
+        MIDDLEWARE={'append': 'django.contrib.auth.middleware.LoginRequiredMiddleware'}
+    )
+    def test_get_to_login_with_loginrequiredmiddleware(self):
         response = self.client.get(reverse('two_factor:login'))
         self.assertContains(response, 'Password:')
 
@@ -38,13 +55,23 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:setup'))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # No signal should be fired for non-verified user logins.
         self.assertFalse(mock_signal.called)
 
     def test_valid_login_with_custom_redirect(self):
         redirect_url = reverse('two_factor:setup')
+        self.create_user()
+        response = self.client.post(
+            '%s?%s' % (reverse('two_factor:login'), 'next=' + redirect_url),
+            {'auth-username': 'bouke@example.com',
+             'auth-password': 'secret',
+             'login_view-current_step': 'auth'})
+        self.assertRedirects(response, redirect_url)
+
+    def test_valid_login_non_class_based_redirect(self):
+        redirect_url = reverse('plain')
         self.create_user()
         response = self.client.post(
             '%s?%s' % (reverse('two_factor:login'), 'next=' + redirect_url),
@@ -80,8 +107,7 @@ class LoginTest(UserMixin, TestCase):
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
-        self.assertEqual(self.client.session.get('next'), redirect_url)
-        self.assertRedirects(response, reverse('two_factor:setup'), fetch_redirect_response=False)
+        self.assertRedirects(response, redirect_url, fetch_redirect_response=False)
 
     def test_valid_login_with_disallowed_external_redirect(self):
         redirect_url = 'https://test.disallowed-success-url.com'
@@ -91,7 +117,7 @@ class LoginTest(UserMixin, TestCase):
             {'auth-username': 'bouke@example.com',
              'auth-password': 'secret',
              'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:setup'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('two_factor:profile'), fetch_redirect_response=False)
 
     @mock.patch('two_factor.views.core.time')
     def test_valid_login_primary_key_stored(self, mock_time):
@@ -243,23 +269,60 @@ class LoginTest(UserMixin, TestCase):
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
     @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(OTP_TOTP_THROTTLE_FACTOR=10)
     def test_throttle_with_generator(self, mock_signal):
-        user = self.create_user()
-        device = user.totpdevice_set.create(name='default',
-                                            key=random_hex())
+        with freeze_time("2023-01-01") as frozen_time:
+            user = self.create_user()
+            device = user.totpdevice_set.create(name='default',
+                                                key=random_hex())
 
-        self._post({'auth-username': 'bouke@example.com',
-                    'auth-password': 'secret',
-                    'login_view-current_step': 'auth'})
+            self._post({'auth-username': 'bouke@example.com',
+                        'auth-password': 'secret',
+                        'login_view-current_step': 'auth'})
 
-        # throttle device
-        device.throttle_increment()
+            # throttle device
+            device.throttle_increment()
 
-        response = self._post({'token-otp_token': totp_str(device.bin_key),
-                               'login_view-current_step': 'token'})
-        self.assertEqual(response.context_data['wizard']['form'].errors,
-                         {'__all__': ['Invalid token. Please make sure you '
-                                      'have entered it correctly.']})
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertEqual(response.context_data['wizard']['form'].errors,
+                             {'__all__': ['Verification temporarily disabled because of 1 failed attempt, please '
+                                          'try again soon.']})
+
+            # Successful login after waiting for the appropriate time
+            frozen_time.tick(10)
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+    @mock.patch('two_factor.views.core.signals.user_verified.send')
+    @override_settings(
+        TWO_FACTOR_PHONE_THROTTLE_FACTOR=10,
+        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake'
+    )
+    def test_throttle_with_phone_sms(self, mock_signal):
+        with freeze_time("2023-01-01") as frozen_time:
+            user = self.create_user()
+            device = user.phonedevice_set.create(name='default', number='+31101234567', method='sms', key=random_hex())
+
+            self._post({'auth-username': 'bouke@example.com',
+                        'auth-password': 'secret',
+                        'login_view-current_step': 'auth'})
+
+            # throttle device
+            device.throttle_increment()
+
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertEqual(response.context_data['wizard']['form'].errors,
+                             {'__all__': ['Verification temporarily disabled because of 1 failed attempt, please '
+                                          'try again soon.']})
+
+            # Successful login after waiting for the appropriate time
+            frozen_time.tick(10)
+            response = self._post({'token-otp_token': totp_str(device.bin_key),
+                                   'login_view-current_step': 'token'})
+            self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
     @mock.patch('two_factor.gateways.fake.Fake')
     @mock.patch('two_factor.views.core.signals.user_verified.send')
@@ -393,6 +456,94 @@ class LoginTest(UserMixin, TestCase):
         # Check that the signal was fired.
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY, user=user, device=device)
 
+    def test_totp_token_does_not_impact_backup_token(self):
+        """
+        Ensures that successfully authenticating with a TOTP token does not
+        inadvertently increase the throttling count of the backup token device.
+
+        Addresses issue #473, where correct TOTP token usage was unintentionally
+        affecting the throttling count of backup tokens, potentially leading to
+        their invalidation.
+        """
+        user = self.create_user()
+        backup_device = user.staticdevice_set.create(name='backup')
+        backup_device.token_set.create(token='abcdef123')
+        totp_device = user.totpdevice_set.create(name='default', key=random_hex())
+
+        response = self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+        self.assertContains(response, 'Token:')
+
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 0)
+        response = self._post({'token-otp_token': totp_str(totp_device.bin_key),
+                               'login_view-current_step': 'token'})
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+        self.assertEqual(self.client.session['_auth_user_id'], str(user.pk))
+
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 0)
+
+    def test_wrong_token_does_not_affect_other_device_throttling(self):
+        """
+        Tests that entering an incorrect backup token increases the throttling count
+        of the backup device, but does not affect the TOTP device's throttling count (and other way around).
+
+        This addresses issue #473 where TOTP token submissions were incorrectly
+        impacting the backup device's throttling count.
+        """
+        # Setup: Create a user, backup device, and TOTP device.
+        user = self.create_user()
+        backup_device = user.staticdevice_set.create(user=user, name='backup')
+        backup_token = 'abcdef123'
+        backup_device.token_set.create(token=backup_token)
+        totp_device = user.totpdevice_set.create(
+            user=user, name='default', confirmed=True,
+            key=random_hex()
+        )
+
+        # Simulate login process: username and password step.
+        response = self._post({
+            'auth-username': user.get_username(),
+            'auth-password': 'secret',
+            'login_view-current_step': 'auth',
+        })
+        self.assertContains(response, 'Token:')
+
+        # Attempt login with incorrect backup token and check response.
+        response = self._post({
+            'backup-otp_token': 'WRONG',
+            'login_view-current_step': 'backup',
+        })
+        expected_error = 'Invalid token. Please make sure you have entered it correctly.'
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': [expected_error]})
+
+        # Verify that incorrect backup token submission throttles backup device.
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 1)
+
+        # Ensure TOTP device is not affected by the incorrect backup token submission.
+        totp_device.refresh_from_db()
+        self.assertEqual(totp_device.throttling_failure_count, 0)
+
+        # Attempt login with incorrect TOTP token and check response.
+        response = self._post({
+            'token-otp_token': "123456",
+            'login_view-current_step': 'token'
+        })
+        self.assertEqual(response.context_data['wizard']['form'].errors,
+                         {'__all__': [expected_error]})
+
+        # Backup device's throttling count should remain unchanged after TOTP token submission.
+        backup_device.refresh_from_db()
+        self.assertEqual(backup_device.throttling_failure_count, 1)
+
+        # Incorrect TOTP token submission should throttle TOTP device.
+        totp_device.refresh_from_db()
+        self.assertEqual(totp_device.throttling_failure_count, 1)
+
     @mock.patch('two_factor.views.utils.logger')
     def test_reset_wizard_state(self, mock_logger):
         self.create_user()
@@ -430,12 +581,12 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:setup'))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:setup'))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
     def test_missing_management_data(self):
         # missing management data
@@ -466,7 +617,7 @@ class LoginTest(UserMixin, TestCase):
         response = self._post({'auth-username': 'bouke@example.com',
                                'auth-password': 'secret',
                                'login_view-current_step': 'auth'})
-        self.assertRedirects(response, reverse('two_factor:setup'))
+        self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         response = self._post({'auth-username': 'vedran@example.com',
                                'auth-password': 'secret',
@@ -583,7 +734,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -632,7 +783,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(0, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -657,7 +808,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -689,7 +840,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
         response = self.client.get('/secure/raises/')
         self.assertEqual(response.status_code, 403)
 
@@ -721,7 +872,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertEqual(1, len([cookie for cookie in response.cookies if cookie.startswith('remember-cookie_')]))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
 
         # Login having an invalid remember cookie
         self.set_invalid_remember_cookie()
@@ -776,7 +927,7 @@ class RememberLoginTest(UserMixin, TestCase):
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # Logout
-        self.client.get(reverse('logout'))
+        self.client.post(reverse('logout'))
 
         # Ask for SMS challenge
         response = self._post({'auth-username': 'bouke@example.com',
@@ -784,3 +935,33 @@ class RememberLoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'auth'})
 
         self.assertRedirects(response, resolve_url(settings.LOGIN_REDIRECT_URL))
+
+    @override_settings(TWO_FACTOR_REMEMBER_COOKIE_AGE=60 * 60)
+    def test_remember_cookie_with_device_without_throttle(self):
+        self._post({'auth-username': 'bouke@example.com',
+                               'auth-password': 'secret',
+                               'login_view-current_step': 'auth'})
+
+        self._post({'token-otp_token': totp_str(self.device.bin_key),
+                               'login_view-current_step': 'token',
+                               'token-remember': 'on'})
+        self.client.post(reverse('logout'))
+
+        # mock device_for_user
+        with mock.patch("two_factor.views.core.devices_for_user") as devices_for_user_mock, \
+                mock.patch("two_factor.views.core.validate_remember_device_cookie") as validate_mock:
+            device_mock = mock.Mock(spec=["verify_is_allowed", "persistent_id", "user_id"])
+            device_mock.persistent_id = 1
+            device_mock.verify_is_allowed.return_value = [True, {}]
+            devices_for_user_mock.return_value = [device_mock]
+            validate_mock.return_value = True
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL), fetch_redirect_response=False)
+            self.client.post(reverse('logout'))
+            validate_mock.side_effect = BadSignature()
+            response = self._post({'auth-username': 'bouke@example.com',
+                                   'auth-password': 'secret',
+                                   'login_view-current_step': 'auth'})
+            self.assertContains(response, 'Token:')

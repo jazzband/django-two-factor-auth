@@ -105,6 +105,25 @@ class SetupTest(UserMixin, TestCase):
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
         self.assertEqual(1, self.user.totpdevice_set.count())
 
+    @method_registry(['generator'])
+    def test_setup_custom_success_url(self):
+        custom_setup = reverse('setup-backup_tokens-redirect')
+        custom_redirect = reverse('two_factor:backup_tokens')
+        response = self.client.post(
+            custom_setup,
+            data={
+                'setup_view-current_step': 'method',
+                'method-method': 'generator'
+            }
+        )
+        key = response.context_data['keys'].get('generator')
+        data = {
+            'setup_view-current_step': 'generator',
+            'generator-token': totp(unhexlify(key.encode()))
+        }
+        response = self.client.post(custom_setup, data=data)
+        self.assertRedirects(response, custom_redirect)
+
     def _post(self, data):
         return self.client.post(reverse('two_factor:setup'), data=data)
 

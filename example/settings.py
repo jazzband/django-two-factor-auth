@@ -62,8 +62,10 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_email',
     'two_factor',
     'two_factor.plugins.phonenumber',
+    'two_factor.plugins.email',
     'example',
 
     'debug_toolbar',
@@ -99,6 +101,9 @@ TWO_FACTOR_SMS_GATEWAY = 'example.gateways.Messages'
 PHONENUMBER_DEFAULT_REGION = 'NL'
 
 TWO_FACTOR_REMEMBER_COOKIE_AGE = 120  # Set to 2 minute for testing
+
+TWO_FACTOR_PHONE_THROTTLE_FACTOR = 10
+OTP_TOTP_THROTTLE_FACTOR = 10
 
 TWO_FACTOR_WEBAUTHN_RP_NAME = 'Demo Application'
 

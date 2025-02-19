@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.signing import BadSignature
 from django.forms import Form, ValidationError
@@ -36,8 +37,9 @@ from django_otp.util import random_hex
 
 from two_factor import signals
 from two_factor.plugins.phonenumber.utils import get_available_phone_methods
-from two_factor.plugins.registry import registry
+from two_factor.plugins.registry import MethodNotFoundError, registry
 from two_factor.utils import totp_digits
+from two_factor.views.mixins import OTPRequiredMixin
 
 from ..forms import (
     AuthenticationTokenForm, BackupTokenForm, DeviceValidationForm, MethodForm,
@@ -45,21 +47,31 @@ from ..forms import (
 )
 from ..utils import default_device, get_otpauth_url
 from .utils import (
-    IdempotentSessionWizardView, class_view_decorator,
-    get_remember_device_cookie, validate_remember_device_cookie,
+    IdempotentSessionWizardView, get_remember_device_cookie,
+    validate_remember_device_cookie,
 )
 
 try:
-    from django.contrib.auth.views import RedirectURLMixin
-except ImportError:  # django<4.1
-    from django.contrib.auth.views import (
-        SuccessURLAllowedHostsMixin as RedirectURLMixin,
-    )
+    from django.contrib.auth.decorators import login_not_required
+except ImportError:
+    # For Django < 5.1, copy the current Django implementation
+    def login_not_required(view_func):
+        """
+        Decorator for views that allows access to unauthenticated requests.
+        """
+        view_func.login_required = False
+        return view_func
+
+
 logger = logging.getLogger(__name__)
 
 REMEMBER_COOKIE_PREFIX = getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_PREFIX', 'remember-cookie_')
 
 
+@method_decorator(
+    [login_not_required, sensitive_post_parameters(), csrf_protect, never_cache],
+    name='dispatch'
+)
 class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling the login process, including OTP verification.
@@ -71,11 +83,16 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     user is asked to provide the generated token. The backup devices are also
     listed, allowing the user to select a backup device for verification.
     """
+    AUTH_STEP = "auth"
+    TOKEN_STEP = "token"
+    BACKUP_STEP = "backup"
+    FIRST_STEP = AUTH_STEP
+
     template_name = 'two_factor/core/login.html'
     form_list = (
-        ('auth', AuthenticationForm),
-        ('token', AuthenticationTokenForm),
-        ('backup', BackupTokenForm),
+        (AUTH_STEP, AuthenticationForm),
+        (TOKEN_STEP, AuthenticationTokenForm),
+        (BACKUP_STEP, BackupTokenForm),
     )
     redirect_authenticated_user = False
     storage_name = 'two_factor.views.utils.LoginStorage'
@@ -89,7 +106,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
     def has_backup_step(self):
         return (
             default_device(self.get_user()) and
-            'token' not in self.storage.validated_step_data and
+            self.TOKEN_STEP not in self.storage.validated_step_data and
             not self.remember_agent
         )
 
@@ -102,8 +119,8 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         return int(time.time()) > expiration_time
 
     condition_dict = {
-        'token': has_token_step,
-        'backup': has_backup_step,
+        TOKEN_STEP: has_token_step,
+        BACKUP_STEP: has_backup_step,
     }
     redirect_field_name = REDIRECT_FIELD_NAME
 
@@ -121,20 +138,20 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
 
-        if wizard_goto_step == 'auth':
+        if wizard_goto_step == self.FIRST_STEP:
             self.storage.reset()
 
-        if self.expired and self.steps.current != 'auth':
+        if self.expired and self.step_requires_authentication(self.steps.current):
             logger.info("User's authentication flow has timed out. The user "
                         "has been redirected to the initial auth form.")
             self.storage.reset()
             self.show_timeout_error = True
-            return self.render_goto_step('auth')
+            return self.render_goto_step(self.FIRST_STEP)
 
         # Generating a challenge doesn't require to validate the form.
         if 'challenge_device' in self.request.POST:
             self.storage.data['challenge_device'] = self.request.POST['challenge_device']
-            return self.render_goto_step('token')
+            return self.render_goto_step(self.TOKEN_STEP)
 
         response = super().post(*args, **kwargs)
         return self.delete_cookies_from_response(response)
@@ -174,16 +191,17 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                                     httponly=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_HTTPONLY', True),
                                     samesite=getattr(settings, 'TWO_FACTOR_REMEMBER_COOKIE_SAMESITE', 'Lax'),
                                     )
-
             return response
 
         # If the user does not have a device.
-        else:
+        elif OTPRequiredMixin.is_otp_view(self.request.GET.get('next')):
             if self.request.GET.get('next'):
                 self.request.session['next'] = self.get_success_url()
             return redirect('two_factor:setup')
 
-    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
+        return response
+
+    # Copied from django.conrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
@@ -227,7 +245,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # Intentionally do not process the auth form on the final step. We
         # haven't stored this data, and it isn't required to login the user
         form_list = self.get_form_list()
-        form_list.pop('auth')
+        form_list.pop(self.AUTH_STEP)
         return form_list
 
     def process_step(self, form):
@@ -238,7 +256,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # validate the authentication form, determine the resulting user, then
         # only store the minimum needed to login that user (the user's primary
         # key and the backend used)
-        if self.steps.current == 'auth':
+        if self.steps.current == self.AUTH_STEP:
             user = form.is_valid() and form.user_cache
             self.storage.reset()
             self.storage.authenticated_user = user
@@ -254,7 +272,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         Process the files submitted from a specific test
         """
-        if self.steps.current == 'auth':
+        if self.steps.current == self.AUTH_STEP:
             return {}
         return super().process_step_files(form)
 
@@ -262,10 +280,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         """
         Returns the form for the step
         """
-        if (step or self.steps.current) == 'token':
+        if (step or self.steps.current) == self.TOKEN_STEP:
             # Set form class dynamically depending on user device.
             method = registry.method_from_device(self.get_device())
-            self.form_list['token'] = method.get_token_form_class()
+            self.form_list[self.TOKEN_STEP] = method.get_token_form_class()
         form = super().get_form(step=step, **kwargs)
         if self.show_timeout_error:
             form.cleaned_data = getattr(form, 'cleaned_data', {})
@@ -287,7 +305,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                         self.device_cache = device
                         break
 
-            if step == 'backup':
+            if step == self.BACKUP_STEP:
                 self.device_cache = self.get_user().staticdevice_set.all().first()
 
             if not self.device_cache:
@@ -312,12 +330,15 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
         return other_devices
 
+    def step_requires_authentication(self, step):
+        return step != self.FIRST_STEP
+
     def render(self, form=None, **kwargs):
         """
         If the user selected a device, ask the device to generate a challenge;
         either making a phone call or sending a text message.
         """
-        if self.steps.current == 'token':
+        if self.steps.current == self.TOKEN_STEP:
             form_with_errors = form and form.is_bound and not form.is_valid()
             if not form_with_errors:
                 self.get_device().generate_challenge()
@@ -337,7 +358,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         Adds user's default and backup OTP devices to the context.
         """
         context = super().get_context_data(form, **kwargs)
-        if self.steps.current == 'token':
+        if self.steps.current == self.TOKEN_STEP:
             device = self.get_device()
             context['device'] = device
             context['other_devices'] = self.get_other_devices(device)
@@ -375,10 +396,10 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
                                 otp_device_id=device.persistent_id
                         ):
                             user.otp_device = device
-                            device.throttle_reset()
+                            getattr(device, "throttle_reset", lambda: None)()
                             return True
                     except BadSignature:
-                        device.throttle_increment()
+                        getattr(device, "throttle_increment", lambda: None)()
                         # Remove remember cookies with invalid signature to omit unnecessary throttling
                         self.cookies_to_delete.append(key)
         return False
@@ -393,9 +414,6 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
 
     # Copied from django.contrib.auth.views.LoginView  (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L49
-    @method_decorator(sensitive_post_parameters())
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
         if self.redirect_authenticated_user and self.request.user.is_authenticated:
             redirect_to = self.get_success_url()
@@ -408,8 +426,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         return super().dispatch(request, *args, **kwargs)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     """
     View for handling OTP setup using a wizard.
@@ -437,7 +454,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L63
     def get_success_url(self):
         url = self.get_redirect_url()
-        return url or reverse('two_factor:setup_complete')
+        return url or reverse(self.success_url)
 
     # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
     # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
@@ -484,12 +501,13 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             form_list.pop('method', None)
             method_key = available_methods[0].code
             self.storage.validated_step_data['method'] = {'method': method_key}
-        method = self.get_method()
-        if method:
-            form_list.update(method.get_setup_forms(self))
-        else:
+        try:
+            method = self.get_method()
+        except MethodNotFoundError:
             for method in available_methods:
                 form_list.update(method.get_setup_forms(self))
+        else:
+            form_list.update(method.get_setup_forms(self))
         if {'sms', 'call'} & set(form_list.keys()):
             form_list['validation'] = DeviceValidationForm
         return form_list
@@ -531,9 +549,6 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
             device.save()
-
-        else:
-            raise NotImplementedError("Unknown method '%s'" % method.code)
 
         django_otp.login(self.request, device)
         return redirect(self.get_success_url())
@@ -618,8 +633,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         return self.storage.extra_data['forms'].get(step, None)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class BackupTokensView(FormView):
     """
     View for listing and generating backup tokens.
@@ -657,8 +671,7 @@ class BackupTokensView(FormView):
         return redirect(self.success_url)
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(otp_required)
+@method_decorator([never_cache, otp_required], name='dispatch')
 class SetupCompleteView(TemplateView):
     """
     View congratulation the user when OTP setup has completed.
@@ -676,8 +689,7 @@ class SetupCompleteView(TemplateView):
         }
 
 
-@class_view_decorator(never_cache)
-@class_view_decorator(login_required)
+@method_decorator([never_cache, login_required], name='dispatch')
 class QRGeneratorView(View):
     """
     View returns an SVG image with the OTP token information
@@ -695,6 +707,13 @@ class QRGeneratorView(View):
     def get_issuer(self):
         return get_current_site(self.request).name
 
+    def get_username(self):
+        try:
+            username = self.request.user.get_username()
+        except AttributeError:
+            username = self.request.user.username
+        return username
+
     def get(self, request, *args, **kwargs):
         # Get the data from the session
         try:
@@ -706,10 +725,7 @@ class QRGeneratorView(View):
         image_factory_string = getattr(settings, 'TWO_FACTOR_QR_FACTORY', self.default_qr_factory)
         image_factory = import_string(image_factory_string)
         content_type = self.image_content_types[image_factory.kind]
-        try:
-            username = self.request.user.get_username()
-        except AttributeError:
-            username = self.request.user.username
+        username = self.get_username()
 
         otpauth_url = get_otpauth_url(accountname=username,
                                       issuer=self.get_issuer(),

@@ -15,9 +15,16 @@ class PhoneNumberMethodForm(forms.ModelForm):
         model = PhoneDevice
         fields = ['number', 'method']
 
+    @staticmethod
+    def get_available_choices():
+        choices = []
+        for method in get_available_phone_methods():
+            choices.append((method.code, method.verbose_name))
+        return choices
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fields['method'].choices = get_available_phone_methods()
+        self.fields['method'].choices = self.get_available_choices()
 
 
 class PhoneNumberForm(forms.ModelForm):
