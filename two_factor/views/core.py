@@ -649,9 +649,7 @@ class BackupTokensView(FormView):
     number_of_tokens = 10
 
     def get_device(self):
-        device = self.request.user.staticdevice_set.all().first()
-        if not device:
-            device = self.request.user.staticdevice_set.create(name='backup')
+        device, _ = self.request.user.staticdevice_set.get_or_create(defaults={'name':'backup'})
         return device
 
     def get_context_data(self, **kwargs):
