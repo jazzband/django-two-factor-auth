@@ -189,3 +189,22 @@ class EmailTest(UserMixin, TestCase):
         self.user.email = ""
         self.user.save()
         self.test_device_without_email()
+
+    @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
+    def test_unconfirmed_email(self):
+        # Setup
+        self.client.post(reverse('two_factor:setup'),
+                                    data={'setup_view-current_step': 'welcome'})
+        # right now, the user does not have a default 2FA device.
+        self.assertEqual(default_device(self.user), None)
+        # user has email, so we skip the email form.
+        self.client.post(reverse('two_factor:setup'),
+                                    data={'setup_view-current_step': 'method',
+                                    'method-method': 'email'})
+        
+        # Now we look at the device, it should be unconfirmed.
+        device = default_device(self.user, confirmed=False)
+        self.assertIsNotNone(device)
+        self.assertIsInstance(device, EmailDevice)
+        self.assertFalse(device.confirmed)
+
