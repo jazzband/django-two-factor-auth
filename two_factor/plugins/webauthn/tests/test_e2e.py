@@ -71,6 +71,9 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
         button_next = self.webdriver.find_element(By.XPATH, "//button[@type='submit']")
         button_next.click()
 
+        # wait for login to complete before moving on
+        self.wait_for_url(urljoin(self.base_url, reverse("two_factor:profile")))
+
     def register_authenticator(self):
         self.webdriver.get(urljoin(self.base_url, reverse("two_factor:setup")))
         self.webdriver.find_element(By.XPATH, "//button[@type='submit']").click()
