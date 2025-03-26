@@ -15,7 +15,7 @@ maintainers = [
   {name = "Matt Molyneaux", email = "moggers87+git@moggers87.co.uk"},
 ]
 license = {text = "MIT"}
-requires-python = ">= 3.8"
+requires-python = ">= 3.9"
 dependencies = [
     "Django>=4.2",
     "django_otp>=0.8.0",
@@ -37,11 +37,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Security",
     "Topic :: System :: Systems Administration :: Authentication/Directory",
 ]
@@ -71,7 +71,7 @@ Changelog = "https://github.com/jazzband/django-two-factor-auth/blob/master/CHAN
 
 [tool.ruff]
 line-length = 119
-target-version = "py38"
+target-version = "py39"
 extend-exclude = ["docs"]
 
 [tool.ruff.lint]
