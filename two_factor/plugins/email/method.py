@@ -30,7 +30,7 @@ class EmailMethod(MethodBase):
             request.user.save(update_fields=['email'])
         device = EmailDevice.objects.devices_for_user(request.user).first()
         if not device:
-            device = EmailDevice(user=request.user, name='default')
+            device = EmailDevice(user=request.user, name='default', confirmed=False)
         return device
 
     def get_token_form_class(self):
