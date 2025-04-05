@@ -204,15 +204,15 @@ class EmailTest(UserMixin, TestCase):
             email='unconfirmed@example.com',
             confirmed=False
         )
-        
+
         # Verify default_device only returns the confirmed device
         device = default_device(self.user)
         self.assertIsNotNone(device, "A confirmed default device should be returned")
-        self.assertEqual(device.pk, confirmed_device.pk, 
-                        "The returned device should be the confirmed one")
-        self.assertTrue(device.confirmed, 
-                    "The returned device should be confirmed")
-    
+        self.assertEqual(device.pk, confirmed_device.pk,
+                         "The returned device should be the confirmed one")
+        self.assertTrue(device.confirmed,
+                        "The returned device should be confirmed")
+
     def test_default_device_includes_unconfirmed_when_flag_false(self):
         """Test that default_device(user, confirmed=False) returns unconfirmed devices."""
         # Create an unconfirmed default device only.
@@ -224,7 +224,8 @@ class EmailTest(UserMixin, TestCase):
 
         # When using the default (confirmed=True), no device should be returned because
         # the only default device is unconfirmed.
-        self.assertIsNone(default_device(self.user), "No device should be returned when only unconfirmed devices exist")
+        self.assertIsNone(default_device(self.user),
+                          "No device should be returned when only unconfirmed devices exist")
 
         # When passing confirmed=False, it should return the unconfirmed device.
         device = default_device(self.user, confirmed=False)
