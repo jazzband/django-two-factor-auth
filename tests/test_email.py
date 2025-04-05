@@ -190,6 +190,85 @@ class EmailTest(UserMixin, TestCase):
         self.user.save()
         self.test_device_without_email()
 
+
+    def test_default_device_returns_only_confirmed(self):
+        """Test that default_device(user) returns only confirmed devices."""
+        # Create a confirmed default device
+        confirmed_device = self.user.emaildevice_set.create(
+            name='default',
+            email='confirmed@example.com',
+            confirmed=True
+        )
+        self.user.emaildevice_set.create(
+            name='default',
+            email='unconfirmed@example.com',
+            confirmed=False
+        )
+        
+        # Verify default_device only returns the confirmed device
+        device = default_device(self.user)
+        self.assertIsNotNone(device, "A confirmed default device should be returned")
+        self.assertEqual(device.pk, confirmed_device.pk, 
+                        "The returned device should be the confirmed one")
+        self.assertTrue(device.confirmed, 
+                    "The returned device should be confirmed")
+    
+    def test_default_device_includes_unconfirmed_when_flag_false(self):
+        """Test that default_device(user, confirmed=False) returns unconfirmed devices."""
+        # Create an unconfirmed default device only.
+        unconfirmed_device = self.user.emaildevice_set.create(
+            name="default",
+            email="unconfirmed@example.com",
+            confirmed=False
+        )
+
+        # When using the default (confirmed=True), no device should be returned because
+        # the only default device is unconfirmed.
+        self.assertIsNone(default_device(self.user), "No device should be returned when only unconfirmed devices exist")
+
+        # When passing confirmed=False, it should return the unconfirmed device.
+        device = default_device(self.user, confirmed=False)
+        self.assertIsNotNone(device)
+        self.assertFalse(device.confirmed)
+        self.assertEqual(device.pk, unconfirmed_device.pk)
+
+    @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
+    def test_confirmed_email(self):
+        # Setup
+        self.client.post(reverse('two_factor:setup'),
+                         data={'setup_view-current_step': 'welcome'})
+        self.assertIsNone(
+            default_device(self.user, confirmed=False),
+            "User should not have a default device before setup"
+        )
+        # user has email, so we skip the email form.
+        method_response = self.client.post(
+            reverse('two_factor:setup'),
+            data={
+                'setup_view-current_step': 'method',
+                'method-method': 'email'
+            }
+        )
+        self.assertEqual(method_response.status_code, 200, "Method selection should succeed")
+
+        # Now we look at the device, it should be unconfirmed.
+        device = default_device(self.user, confirmed=False)
+        self.assertIsNotNone(device)
+        self.assertIsInstance(device, EmailDevice)
+        self.assertFalse(device.confirmed)
+        self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox.pop(0)
+        token = re.findall(r'[0-9]{6}', msg.body)[0]
+
+        # Confirm the email
+        response = self.client.post(reverse('two_factor:setup'),
+                                    data={'setup_view-current_step': 'validation',
+                                          'validation-token': token})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+        # Now the user has a confirmed default 2FA device that is an EmailDevice.
+        device.refresh_from_db()
+        self.assertTrue(device.confirmed, "Device should be confirmed after validation")
+
     @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
     def test_unconfirmed_email(self):
         # Setup
