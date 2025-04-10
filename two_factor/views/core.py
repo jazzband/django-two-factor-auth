@@ -548,6 +548,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         # PhoneNumberForm / YubiKeyDeviceForm / EmailForm / WebauthnDeviceValidationForm
         elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
+            device.confirmed = True
             device.save()
 
         django_otp.login(self.request, device)
