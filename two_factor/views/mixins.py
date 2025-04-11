@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.urls import Resolver404, resolve, reverse
 
+from ..admin import AdminSiteOTPRequiredMixin
 from ..utils import default_device
 
 
@@ -90,4 +91,7 @@ class OTPRequiredMixin:
         return (
             hasattr(next_resolver_match.func, 'view_class') and
             issubclass(next_resolver_match.func.view_class, OTPRequiredMixin)
+        ) or (
+            hasattr(next_resolver_match.func, 'admin_site') and
+            isinstance(next_resolver_match.func.admin_site, AdminSiteOTPRequiredMixin)
         )
