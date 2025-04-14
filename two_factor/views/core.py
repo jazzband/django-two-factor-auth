@@ -1,5 +1,6 @@
 import logging
 import time
+import urllib.parse
 import warnings
 from base64 import b32encode
 from binascii import unhexlify
@@ -196,8 +197,15 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         # If the user does not have a device.
         elif OTPRequiredMixin.is_otp_view(self.request.GET.get('next')):
             if self.request.GET.get('next'):
-                self.request.session['next'] = self.get_success_url()
-            return redirect('two_factor:setup')
+                return redirect(
+                    '{view_url}?{query_string}'.format(
+                        view_url=reverse('two_factor:setup'),
+                        query_string=urllib.parse.urlencode({
+                            'next': self.get_success_url()
+                        })
+                    ))
+            else:
+                return redirect('two_factor:setup')
 
         return response
 
