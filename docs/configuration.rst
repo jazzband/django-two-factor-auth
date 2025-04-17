@@ -150,16 +150,6 @@ Fake Gateway
 ------------
 .. autoclass:: two_factor.gateways.fake.Fake
 
-.. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-.. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-.. _LOGOUT_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
-.. _DEFAULT_FROM_EMAIL: https://docs.djangoproject.com/en/stable/ref/settings/#default-from-email
-.. _`Email Settings`: https://django-otp-official.readthedocs.io/en/stable/overview.html#email-settings
-.. _Twilio: http://www.twilio.com/
-.. _`Twilio client`: https://pypi.python.org/pypi/twilio
-.. _python-qrcode: https://pypi.python.org/pypi/qrcode
-.. _`the upstream ticket`: https://code.google.com/p/google-authenticator/issues/detail?id=327
-
 WebAuthn Settings
 -----------------
 
@@ -259,13 +249,6 @@ WebAuthn devices support throttling too:
   multiplied by this factor to define the delay imposed after 1, 2, 3, 4...
   successive failures. Set to ``0`` to disable throttling completely.
 
-.. _`Relying Party`: https://w3c.github.io/webauthn/#webauthn-relying-party
-.. _`Authenticator Attachment`: https://www.w3.org/TR/webauthn/#enum-attachment
-.. _`User Verification`: https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
-.. _`Attestation Conveyance`: https://www.w3.org/TR/webauthn-2/#enum-attestation-convey
-.. _`Yubico's Root CA`: https://developers.yubico.com/U2F/Attestation_and_Metadata/
-.. _`HttpRequest.get_host()`: https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpRequest.get_host
-
 Remember Browser
 ----------------
 
@@ -339,3 +322,19 @@ e.g. [django-auth-ldap](https://github.com/django-auth-ldap/django-auth-ldap)
   Only relevant if `TWO_FACTOR_REMEMBER_COOKIE_AGE` is not `None`.
 
   Default: `'Lax'`
+
+.. _LOGIN_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+.. _LOGIN_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+.. _LOGOUT_REDIRECT_URL: https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
+.. _DEFAULT_FROM_EMAIL: https://docs.djangoproject.com/en/stable/ref/settings/#default-from-email
+.. _`Email Settings`: https://django-otp-official.readthedocs.io/en/stable/overview.html#email-settings
+.. _Twilio: http://www.twilio.com/
+.. _`Twilio client`: https://pypi.python.org/pypi/twilio
+.. _python-qrcode: https://pypi.python.org/pypi/qrcode
+.. _`the upstream ticket`: https://code.google.com/p/google-authenticator/issues/detail?id=327
+.. _`Relying Party`: https://w3c.github.io/webauthn/#webauthn-relying-party
+.. _`Authenticator Attachment`: https://www.w3.org/TR/webauthn/#enum-attachment
+.. _`User Verification`: https://www.w3.org/TR/webauthn-2/#enum-userVerificationRequirement
+.. _`Attestation Conveyance`: https://www.w3.org/TR/webauthn-2/#enum-attestation-convey
+.. _`Yubico's Root CA`: https://developers.yubico.com/U2F/Attestation_and_Metadata/
+.. _`HttpRequest.get_host()`: https://docs.djangoproject.com/en/4.0/ref/request-response/#django.http.HttpRequest.get_host
