@@ -34,6 +34,7 @@ Add the following apps to the ``INSTALLED_APPS``:
         'django_otp.plugins.otp_static',
         'django_otp.plugins.otp_totp',
         'django_otp.plugins.otp_email',  # <- if you want email capability.
+        'otp_yubikey',  # <- for yubikey capability.
         'two_factor',
         'two_factor.plugins.phonenumber',  # <- if you want phone number capability.
         'two_factor.plugins.email',  # <- if you want email capability.
@@ -92,6 +93,7 @@ Add the following app to the ``INSTALLED_APPS``:
     INSTALLED_APPS = [
         ...
         'otp_yubikey',
+        'two_factor.plugins.yubikey',
     ]
 
 This plugin also requires adding a validation service, through which YubiKeys
