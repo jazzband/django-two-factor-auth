@@ -1,8 +1,7 @@
 .PHONY: docs flake8 example test coverage migrations
 
 docs:
-	cd docs; make html
-	open docs/_build/html/index.html
+	tox -e docs
 
 flake8:
 	tox -e flake8,isort

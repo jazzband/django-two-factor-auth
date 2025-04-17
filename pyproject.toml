@@ -64,6 +64,14 @@ linting = [
     "ruff",
     "isort<=5.99",
 ]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+    "django-two-factor-auth[call]",
+    "django-two-factor-auth[webauthn]",
+    "django-two-factor-auth[yubikey]",
+    "django-two-factor-auth[phonenumberslite]",
+]
 
 [project.urls]
 Homepage = "https://github.com/jazzband/django-two-factor-auth"
