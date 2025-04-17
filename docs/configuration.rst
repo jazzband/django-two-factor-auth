@@ -101,7 +101,7 @@ Email Gateway
 -------------
 
 To enable receiving authentication tokens by email, you have to add
-``'django_otp.plugins.otp_totp'`` to your ``INSTALLED_APPS`` setting. Also
+``'django_otp.plugins.otp_email'`` to your ``INSTALLED_APPS`` setting. Also
 ensure that the DEFAULT_FROM_EMAIL_ settings is configured with an appropriate
 value.
 
