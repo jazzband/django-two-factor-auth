@@ -19,7 +19,6 @@ Contents:
    implementing
    management-commands
    class-reference
-   release-notes
 
 I would love to hear your feedback on this application. If you run into
 problems, please file an issue on GitHub_, or contribute to the project by
