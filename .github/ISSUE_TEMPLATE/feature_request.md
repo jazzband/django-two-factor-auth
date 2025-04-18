@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for django-two-factor-auth
 title: "FEATURE REQUEST: Short description of requested feature"
-labels: "feature request"
+labels: "enhancement"
 assignees: ""
 ---
 
