@@ -7,6 +7,7 @@ class TwoFactorConfig(AppConfig):
     verbose_name = "Django Two Factor Authentication"
 
     def ready(self):
+        from . import checks  # noqa
         if getattr(settings, 'TWO_FACTOR_PATCH_ADMIN', True):
             from .admin import patch_admin
             patch_admin()
