@@ -20,7 +20,7 @@ navigator.credentials.create({
             type: attestationCredential.type,
         },
         tokenField = document.querySelector('[name=webauthn-token]'),
-        form = document.forms[0];
+        form = tokenField.closest('form');
 
     tokenField.value = JSON.stringify(serializableAttestationCredential);
     form.submit();
