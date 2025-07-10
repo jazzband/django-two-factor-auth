@@ -1,13 +1,14 @@
 import logging
 
-import phonenumbers
+from django.apps import apps
 from django.db import migrations
-from phonenumber_field.modelfields import PhoneNumberField
 
 logger = logging.getLogger(__name__)
 
 
 def migrate_phone_numbers(apps, schema_editor):
+    import phonenumbers
+
     PhoneDevice = apps.get_model("two_factor", "PhoneDevice")
     for device in PhoneDevice.objects.all():
         try:
@@ -29,11 +30,17 @@ class Migration(migrations.Migration):
         ('two_factor', '0002_auto_20150110_0810'),
     ]
 
-    operations = [
-        migrations.RunPython(migrate_phone_numbers, reverse_code=migrations.RunPython.noop),
-        migrations.AlterField(
-            model_name='phonedevice',
-            name='number',
-            field=PhoneNumberField(max_length=16, verbose_name='number'),
-        ),
-    ]
+    if apps.is_installed('two_factor.plugins.phonenumber'):
+        from phonenumber_field.modelfields import PhoneNumberField
+
+        operations = [
+            migrations.RunPython(migrate_phone_numbers, reverse_code=migrations.RunPython.noop),
+            migrations.AlterField(
+                model_name='phonedevice',
+                name='number',
+                field=PhoneNumberField(max_length=16, verbose_name='number'),
+            ),
+        ]
+
+    else:
+        operations = []
