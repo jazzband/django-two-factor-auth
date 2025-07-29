@@ -38,7 +38,7 @@ is optional, it improves account security control over
 ``django.contrib.sessions``.
 
 Compatible with supported Django and Python versions. At the moment of writing
-that includes 4.2, 5.0, and 5.1 on Python 3.8 to 3.12.
+that includes 4.2, 5.0, and 5.1 on Python 3.9 to 3.13.
 Documentation is available at `readthedocs.io`_.
 
 
