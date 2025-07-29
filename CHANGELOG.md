@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+### Changed
+- Allow qrcode 8.x.
+
 ## 1.17.0
 ### Fixed
 - Fixed the XML syntax of the Twilio token.xml file.
