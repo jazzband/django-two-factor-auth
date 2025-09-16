@@ -8,6 +8,7 @@
 # Juan José Scarafía <scarafia.juanjose@gmail.com>, 2015
 # Juan José Scarafía <scarafia.juanjose@gmail.com>, 2015
 # Maciej Olko <maciej.olko@gmail.com>, 2020
+# Rafał Safin, 2024
 # Wojciech Banaś, 2016
 msgid ""
 msgstr ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-18 18:32+0100\n"
 "PO-Revision-Date: 2013-11-19 18:12+0000\n"
-"Last-Translator: Jan Rydzewski, 2023\n"
+"Last-Translator: Rafał Safin, 2024\n"
 "Language-Team: Polish (http://app.transifex.com/Bouke/django-two-factor-auth/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -144,19 +145,19 @@ msgstr "Proszę wpisz token wygenerowany przez Twój generator tokenów."
 
 #: plugins/webauthn/forms.py:102
 msgid "WebAuthn Token"
-msgstr ""
+msgstr "Token WebAuthn"
 
 #: plugins/webauthn/method.py:14
 msgid "WebAuthn"
-msgstr ""
+msgstr "WebAuthn"
 
 #: plugins/webauthn/method.py:62
 msgid "Authenticate using a WebAuthn-compatible device"
-msgstr ""
+msgstr "Uwierzytelnij się przy użyciu urządzenia zgodnego z WebAuthn"
 
 #: plugins/webauthn/method.py:65
 msgid "Please use your WebAuthn-compatible device to authenticate."
-msgstr ""
+msgstr "Użyj urządzenia zgodnego z WebAuthn aby się uwierzytelnić."
 
 #: plugins/yubikey/forms.py:8 plugins/yubikey/forms.py:24
 #: plugins/yubikey/method.py:11
@@ -169,11 +170,11 @@ msgstr "Token YubiKey nie mógł być zweryfikowany."
 
 #: plugins/yubikey/method.py:38
 msgid "Use your Yubikey device"
-msgstr ""
+msgstr "Użyj klucza YubiKey"
 
 #: plugins/yubikey/method.py:41
 msgid "Please use your Yubikey device."
-msgstr ""
+msgstr "Użyj swojego klucza YubiKey."
 
 #: templates/two_factor/_wizard_actions.html:5
 msgid "Cancel"
@@ -283,13 +284,13 @@ msgstr "Dodaj zapasowy telefon"
 msgid ""
 "You'll be adding a backup phone number to your account. This number will be "
 "used if your primary method of registration is not available."
-msgstr ""
+msgstr "Dodawanie zapasowego numer telefonu do Twojego konta. Ten numer będzie użyty jeżeli Twoja główna metoda rejestracji nie będzie dostępna."
 
 #: templates/two_factor/core/phone_register.html:12
 msgid ""
 "We've sent a token to your phone number. Please enter the token you've "
 "received."
-msgstr ""
+msgstr "Wpisz kod który wysłaliśmy na Twój numer telefonu."
 
 #: templates/two_factor/core/setup.html:11
 msgid ""
@@ -325,17 +326,17 @@ msgstr "Następnie wpisz token wygenerowany przez aplikację."
 msgid ""
 "Please enter the phone number you wish to receive the text messages on. This"
 " number will be validated in the next step."
-msgstr ""
+msgstr "Proszę wpisz numer telefonu, na którym będziesz otrzymywał wiadomości SMS. Ten numer będzie sprawdzony w następnym kroku. "
 
 #: templates/two_factor/core/setup.html:32
 msgid ""
 "Please enter the phone number you wish to be called on. This number will be "
 "validated in the next step."
-msgstr ""
+msgstr "Proszę wpisz numer telefonu, na którym będziesz otrzymywał połączenia telefoniczne. Ten numer będzie sprawdzony w następnym kroku. "
 
 #: templates/two_factor/core/setup.html:40
 msgid "We sent you a text message, please enter the tokens we sent."
-msgstr ""
+msgstr "Wysłaliśmy do Ciebie SMSa. Wpisz otrzymany token."
 
 #: templates/two_factor/core/setup.html:44
 msgid ""
@@ -349,7 +350,7 @@ msgstr "Napotkaliśmy problem z wybraną metodą uwierzytelniania. Proszę wró�
 msgid ""
 "To identify and verify your YubiKey, please insert a token in the field "
 "below. Your YubiKey will be linked to your account."
-msgstr ""
+msgstr "Aby zidentyfikować i zweryfikować YubiKey proszę wprowadź token w polu poniżej klikając na swój klucz. Twój YubiKey zostanie połączony z kontem."
 
 #: templates/two_factor/core/setup_complete.html:7
 msgid ""
@@ -360,7 +361,7 @@ msgstr "Gratulacje, włączyłeś/aś uwierzytelnianie dwuskładniowe!"
 msgid ""
 "However, it might happen that you don't have access to your primary token "
 "device. To enable account recovery, add a phone number."
-msgstr ""
+msgstr "Może się zdarzyć, że nie będziesz miał dostępu do Twojej podstawowej metody uwierzytelniania. Aby właczyć funkcję odzyskiwania konta, dodaj numer telefonu."
 
 #: templates/two_factor/core/setup_complete.html:21
 #: templates/two_factor/profile/profile.html:29
@@ -398,7 +399,7 @@ msgstr "Zapasowe numery telefonów"
 msgid ""
 "If your primary method is not available, we are able to send backup tokens "
 "to the phone numbers listed below."
-msgstr ""
+msgstr "Jeżeli główna metoda autoryzacji nie jest dostępna, jesteśmy w stanie wysłać zapasowe tokeny na numery telefonów podane niżej."
 
 #: templates/two_factor/profile/profile.html:20
 msgid "Are you sure?"

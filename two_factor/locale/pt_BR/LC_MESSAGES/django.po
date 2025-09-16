@@ -5,7 +5,7 @@
 # Translators:
 # Kevin Nakasaki <kevin.nakasaki@gmail.com>, 2020
 # Leonardo Soligo <leosoligo@gmail.com>, 2020
-# Rodrigo de Almeida Sottomaior Macedo <sottomaiormacedotec@gmail.com>, 2022
+# Rodrigo Sottomaior Macedo <sottomaiormacedotec@sottomaiormacedo.tech>, 2022
 # Rodrigo Moyle <rodrigorm@gmail.com>, 2023
 # vitormazzi <vitormazzi@gmail.com>, 2014
 msgid ""
