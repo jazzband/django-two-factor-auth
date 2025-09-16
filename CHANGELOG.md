@@ -12,7 +12,7 @@
 
 ### Changed
 - Allow qrcode 8.x.
-- `phonenumbers` is no longer a hard requirement for migrations.
+- `phonenumbers` is no longer a hard requirement for users who don't require it.
 - Change `EmailDevice.confirmed` default to `False`
 - Any `StaticDevice` can be used as backup tokens, not just those labelled
   "backup"
