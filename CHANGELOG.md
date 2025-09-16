@@ -1,8 +1,30 @@
 # Changelog
 
-## Unreleased
+## 1.18.0
+### Fixed
+- Documentation for setting yubikey support forgot to inform users they would
+  need to add our yubikey plugin to `INSTALLED_APPS`
+- Remove reference to release-notes that had been missed, docs now build
+  without warnings
+- WebAuthn: avoid submitting the wrong form
+- Email gateway: tell user to use correct django-otp plugin
+- Fix infinite redirect on admin site with AdminSiteOTPRequiredMixin
+
 ### Changed
 - Allow qrcode 8.x.
+- `phonenumbers` is no longer a hard requirement for migrations.
+- Change `EmailDevice.confirmed` default to `False`
+- Any `StaticDevice` can be used as backup tokens, not just those labelled
+  "backup"
+
+### Added
+- Support for Django 5.2
+- Support for Python 3.13
+- Django check for `INSTALLED_APPS` to make sure `two_factor` is present and
+  comes before its plugins
+
+### Removed
+- Drop support for Python 3.8
 
 ## 1.17.0
 ### Fixed
