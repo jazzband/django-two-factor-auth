@@ -34,7 +34,7 @@ class ProfileTest(UserMixin, TestCase):
 
             response = self.get_profile()
 
-        self.assertTrue(response.context['available_phone_methods'] == [])
+        self.assertNotIn('available_phone_methods', response.context)
 
     def test_get_profile_with_phonenumer_plugin_enabled(self):
         self.assertTrue(registry.get_method('call'))
