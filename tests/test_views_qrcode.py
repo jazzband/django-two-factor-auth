@@ -1,7 +1,7 @@
 from unittest import mock
 
 import qrcode.image.svg
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from two_factor.utils import get_otpauth_url
@@ -91,3 +91,19 @@ class QRTest(UserMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode('utf-8'), self.test_img)
         self.assertEqual(response['Content-Type'], 'image/svg+xml; charset=utf-8')
+
+    @override_settings(TOTP_ISSUER='My Custom App')
+    def test_totp_issuer_setting(self):
+        """Test that TOTP_ISSUER setting is used when provided."""
+        view = QRGeneratorView()
+        view.request = mock.Mock()
+        self.assertEqual(view.get_issuer(), 'My Custom App')
+
+    def test_totp_issuer_fallback(self):
+        """Test fallback to site name when TOTP_ISSUER is not set."""
+        view = QRGeneratorView()
+        view.request = mock.Mock()
+        view.request.META = {'SERVER_NAME': 'testserver', 'SERVER_PORT': '80'}
+        with mock.patch('two_factor.views.core.get_current_site') as mock_site:
+            mock_site.return_value.name = 'testserver'
+            self.assertEqual(view.get_issuer(), 'testserver')

@@ -62,6 +62,11 @@ General Settings
   indefinitely in a state of having entered their password successfully but not
   having passed two factor authentication. Set to ``0`` to disable.
 
+``TOTP_ISSUER`` (default ``site name``)
+  Changes the Site Name that is shown in the TOTP app after scanning the QR Code.
+  If not set, falls back to default site name.
+
+
 Phone-related settings
 ----------------------
 
@@ -123,7 +128,7 @@ Next, add additional urls to your config:
 
     # urls.py
     from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
-    
+
     urlpatterns = [
         path('', include(tf_twilio_urls)),
         ...
@@ -168,7 +173,7 @@ Start by providing a value for the following setting:
 ``TWO_FACTOR_WEBAUTHN_RP_NAME`` (default: ``None``)
   The human-palatable identifier for the `Relying Party`_. You **MUST** name your application. Failing to do so will
   raise an ``ImproperlyConfigured`` exception.
-  
+
 The defaults provided for all other settings should be enough to enable the use of fingerprint readers, security keys
 and android phones (Chrome-based browsers only).
 
@@ -184,11 +189,11 @@ will be sent to your application after the authentication takes place:
   A list of preferred communication transports that will be set for all registered authenticators. **This can be
   used to optimize user interaction at authentication time. Its implementation is highly browser-dependent and may
   even be disregarded.**
-  
+
   Chrome uses this to filter out credentials that do not use any of the transports listed.
   For example, if set to ``['usb', 'internal']`` Chrome will not attempt to authenticate the user with authenticators
   that communicate using CaBLE (e.g., android phones).
-  
+
   Possible values for each element in the list are members of ``webauthn.helpers.structs.AuthenticatorTransport``. The
   default is to accept all transports.
 
@@ -196,7 +201,7 @@ will be sent to your application after the authentication takes place:
   The type of `User Verification`_ that is required. Verification ranges from a simple test of user presence such as
   by touching a button to more thorough checks like using biometrics or requiring user PIN input.
   Possible values: ``'discouraged'``, ``'preferred'``, ``'required'``.
-  
+
 ``TWO_FACTOR_WEBAUTHN_ATTESTATION_CONVEYANCE`` (default: ``'none'``)
   The type of `Attestation Conveyance`_. A `Relying Party`_ may want to verify attestations to ensure that
   only authentication devices from certain approved vendors can be used. Depending on the level of conveyance, the
@@ -213,13 +218,13 @@ will be sent to your application after the authentication takes place:
      ``'fido-u2f'``, ``'packed'`` and ``'tpm'`` do not come pre-configured with root certificates. Download the
      additional certificates that you needed for your particular device and use the
      ``TWO_FACTOR_WEBAUTHN_PEM_ROOT_CERTS_BYTES_BY_FMT`` setting below.
-  
+
 ``TWO_FACTOR_WEBAUTHN_PEM_ROOT_CERTS_BYTES_BY_FMT`` (default: ``None``)
   A mapping of attestation statement formats to lists of Root Certificates, provided as bytes. These will be used in
   addition to those already provided by ``py_webauthn`` to verify attestation objects.
 
   **Example:**
-  
+
   If you want to verify attestations made by a Yubikey, get `Yubico's root CA`_ and use it as follows:
 
   .. code-block:: python
@@ -237,7 +242,7 @@ will be sent to your application after the authentication takes place:
          AttestationFormat.FIDO_U2F: root_ca_list,
      }
 
-The following settings control how the attributes for WebAuthn entities are built: 
+The following settings control how the attributes for WebAuthn entities are built:
 
 ``TWO_FACTOR_WEBAUTHN_ENTITIES_FORM_MIXIN`` (default: ``'two_factor.webauthn.utils.WebauthnEntitiesFormMixin'``)
   A mixin to provide WebAuthn entities (user and `Relying Party`_) needed during setup and authentication. Although
