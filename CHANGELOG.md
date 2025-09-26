@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.18.1
+### Added
+- New translations for Azerbaijani and Serbian
+
 ## 1.18.0
 ### Fixed
 - Documentation for setting yubikey support forgot to inform users they would

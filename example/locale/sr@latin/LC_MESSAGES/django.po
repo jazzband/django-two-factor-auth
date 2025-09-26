@@ -1,0 +1,151 @@
+# django-two-factor-auth example translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-two-factor-auth package.
+# 
+# Translators:
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: django-two-factor-auth\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-15 22:55+0200\n"
+"PO-Revision-Date: 2013-11-20 09:31+0000\n"
+"Last-Translator: Bouke Haarsma <bouke@webatoom.nl>\n"
+"Language-Team: Serbian (Latin) (http://app.transifex.com/Bouke/django-two-factor-auth/language/sr@latin/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: gateways.py:11
+#, python-format
+msgid "Fake call to %(number)s: \"Your token is: %(token)s\""
+msgstr "Lažni poziv na %(number)s: \"Vaš token je: %(token)s\""
+
+#: gateways.py:16
+#, python-format
+msgid "Fake SMS to %(number)s: \"Your token is: %(token)s\""
+msgstr "Lažni SMS na %(number)s: \"Vaš token je: %(token)s\""
+
+#: templates/_base.html:15 templates/two_factor/_base_focus.html:7
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/_base.html:26
+msgid "Home"
+msgstr "Početna"
+
+#: templates/_base.html:29 templates/secret.html:7
+msgid "Secret Page"
+msgstr "Tajna stranica"
+
+#: templates/_base.html:39
+msgid "Account Security"
+msgstr "Bezbednost naloga"
+
+#: templates/_base.html:41
+msgid "Sessions"
+msgstr "Sesije"
+
+#: templates/_base.html:43
+msgid "Logout"
+msgstr "Odjavi se"
+
+#: templates/_base.html:47
+msgid "Not logged in"
+msgstr "Niste prijavljeni"
+
+#: templates/_base.html:50 templates/registration_complete.html:9
+msgid "Login"
+msgstr "Prijavite se"
+
+#: templates/home.html:4
+msgid "django-two-factor-auth – Demo Application"
+msgstr "django-two-factor-auth – Demo aplikacija"
+
+#: templates/home.html:8
+msgid "Improve Your Security <small>your users will thank you</small>"
+msgstr "Poboljšajte svoju bezbednost <small>vaši korisnici će vam biti zahvalni</small>"
+
+#: templates/home.html:10
+msgid ""
+"Welcome to the example app of <code>django-two-factor-auth</code>. Use this "
+"example to get an understanding of what the app can do for you."
+msgstr "Dobrodošli u primer aplikacije <code>django-two-factor-auth</code>. Koristite ovaj primer da biste razumeli šta aplikacija može da uradi za vas."
+
+#: templates/home.html:14
+msgid "Please verify your settings"
+msgstr "Proverite svoja podešavanja"
+
+#: templates/home.html:15
+msgid ""
+"Have you provided your Twilio settings in the "
+"<code>settings_private.py</code> file? By doing so, the example app will be "
+"able to call and text you to verify your authentication tokens. Otherwise, "
+"the tokens will be shown on the screen."
+msgstr "Da li ste naveli svoja Tvilio podešavanja u datoteci <code>settings_private.py</code>? Na taj način, primer aplikacije će moći da vas pozove i pošalje vam SMS da verifikujete svoje tokene za autentifikaciju. U suprotnom, tokeni će biti prikazani na ekranu."
+
+#: templates/home.html:26
+msgid "Next steps:"
+msgstr "Sledeći koraci:"
+
+#: templates/home.html:28
+#, python-format
+msgid "Start by <a href=\"%(reg_url)s\">registering</a> an account."
+msgstr "Počnite sa <a href=\"%(reg_url)s\">registracijom</a> naloga."
+
+#: templates/home.html:30
+#, python-format
+msgid "<a href=\"%(login_url)s\">Login</a> to your account."
+msgstr "<a href=\"%(login_url)s\">Prijavite se</a> na svoj nalog."
+
+#: templates/home.html:32
+#, python-format
+msgid "<a href=\"%(setup_url)s\">Enable</a> two-factor authentication."
+msgstr "<a href=\"%(setup_url)s\">Omogućite</a> dvofaktorsku autentifikaciju."
+
+#: templates/home.html:34
+#, python-format
+msgid ""
+"Then, <a href=\"%(logout_url)s\">logout</a> and <a "
+"href=\"%(login_url)s\">login</a> once more to your account to see two-factor"
+" authentication at work."
+msgstr "Zatim se <a href=\"%(logout_url)s\">odjavite</a> i ponovo <a href=\"%(login_url)s\">prijavite</a> na svoj nalog da biste videli kako radi dvofaktorska autentifikacija."
+
+#: templates/home.html:37
+#, python-format
+msgid ""
+"At last, you've gained access to the <a href=\"%(secret_url)s\">secret "
+"page</a>! :-)"
+msgstr "Konačno ste dobili pristup <a href=\"%(secret_url)s\">tajnoj stranici</a>! :-)"
+
+#: templates/registration.html:5
+msgid "Registration"
+msgstr "Registracija"
+
+#: templates/registration.html:10
+msgid "Register"
+msgstr "Registrujte se"
+
+#: templates/registration/logged_out.html:5
+msgid "Logged Out"
+msgstr "Odjavljeni ste"
+
+#: templates/registration/logged_out.html:6
+msgid "See you around!"
+msgstr "Vidimo se!"
+
+#: templates/registration_complete.html:5
+msgid "Registration Complete"
+msgstr "Registracija je završena"
+
+#: templates/registration_complete.html:6
+msgid "Congratulations, you've successfully registered an account."
+msgstr "Čestitamo, uspešno ste registrovali nalog."
+
+#: templates/secret.html:9
+msgid ""
+"Congratulations, you've made it. You have successfully enabled two-factor "
+"authentication and logged in with your token."
+msgstr "Čestitam, uspeli ste. Uspešno ste omogućili dvofaktorsku autentifikaciju i prijavili se sa svojim tokenom."
