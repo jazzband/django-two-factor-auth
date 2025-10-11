@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+### Fixed
+- Compile translation files for Azerbaijani and Serbian, forgotten in 1.18.1.
+
 ## 1.18.1
 ### Added
 - New translations for Azerbaijani and Serbian
