@@ -177,6 +177,24 @@ class EmailTest(UserMixin, TestCase):
         mock_signal.assert_called_with(sender=mock.ANY, request=mock.ANY,
                                        user=self.user, device=device)
 
+    @override_settings(OTP_EMAIL_THROTTLE_FACTOR=0)
+    @override_settings(OTP_EMAIL_BODY_TEMPLATE_PATH="email_with_context.txt")
+    def test_login_with_context(self):
+        self.user.emaildevice_set.create(name="default", email="bouke@example.com")
+        response = self.client.post(reverse("custom-device-context-login"),
+                                    {"auth-username": "bouke@example.com",
+                                     "auth-password": "secret",
+                                     "login_view_with_context-current_step": "auth"})
+
+        self.assertContains(response, "Token:")
+        # Test that one message has been sent and that it includes
+        # the string passed in as context. Rest of login procedure
+        # is not tested, as it is already tested by test_login.
+        self.assertEqual(len(mail.outbox), 1)
+        msg = mail.outbox.pop(0)
+        self.assertIn("OTP token", msg.subject)
+        self.assertIn("hello, test", msg.body)
+
     def test_device_without_email(self):
         self.user.emaildevice_set.create(name="default")
         response = self.client.get(reverse("two_factor:profile"))

@@ -1,3 +1,5 @@
+from inspect import signature
+
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
@@ -6,6 +8,44 @@ from django.urls import Resolver404, resolve, reverse
 
 from ..admin import AdminSiteOTPRequiredMixin
 from ..utils import default_device
+
+
+class DeviceContextDataMixin:
+    """
+    View mixin allowing customization of context data passed to device
+    generate_challenge method.
+    """
+
+    def get_device_context_data(self, **kwargs):
+        """
+        Get context data for device generate_challenge method.
+
+        Override this method to pass custom context to the email device template.
+        Context data is only passed to generate_challenge if the method has the
+        parameter extra_context.
+        """
+        return {}
+
+    def generate_challenge_with_context(self, device):
+        """
+        Call device generate_challenge method.
+
+        If device supports extra_context parameter, context data
+        from get_device_context_data is passed to generate_challenge.
+        """
+        if self.device_supports_extra_context(device):
+            return device.generate_challenge(self.get_device_context_data())
+        else:
+            return device.generate_challenge()
+
+    def device_supports_extra_context(self, device):
+        """
+        Test whether device generate_challenge method supports extra_context parameter.
+        """
+        generate_challenge = getattr(device, "generate_challenge", None)
+        if not callable(generate_challenge):
+            raise TypeError("Device has no generate_challenge method")
+        return "extra_context" in signature(generate_challenge).parameters
 
 
 class OTPRequiredMixin:
