@@ -42,10 +42,7 @@ class DeviceContextDataMixin:
         """
         Test whether device generate_challenge method supports extra_context parameter.
         """
-        generate_challenge = getattr(device, "generate_challenge", None)
-        if not callable(generate_challenge):
-            raise TypeError("Device has no generate_challenge method")
-        return "extra_context" in signature(generate_challenge).parameters
+        return "extra_context" in signature(device.generate_challenge).parameters
 
 
 class OTPRequiredMixin:
