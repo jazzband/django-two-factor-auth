@@ -5,7 +5,7 @@ from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 from two_factor.urls import urlpatterns as tf_urls
 from two_factor.views import LoginView, SetupView
 
-from .views import SecureView, plain_view
+from .views import LoginViewWithContext, SecureView, plain_view
 
 urlpatterns = [
     path(
@@ -36,6 +36,11 @@ urlpatterns = [
             redirect_authenticated_user=True
         ),
         name='custom-redirect-authenticated-user-login',
+    ),
+    path(
+        'account/custom-device-context-login/',
+        LoginViewWithContext.as_view(),
+        name='custom-device-context-login',
     ),
     path(
         'account/setup-backup-tokens-redirect/',
