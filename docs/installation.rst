@@ -36,7 +36,7 @@ Add the following apps to the ``INSTALLED_APPS``:
         'django_otp.plugins.otp_email',  # <- for email capability.
         'otp_yubikey',  # <- for yubikey capability.
         'two_factor',
-        'two_factor.plugins.phonenumber',  # <- for phone number capability.
+        'two_factor.plugins.phonenumber',  # <- Required, even if phone is not used.
         'two_factor.plugins.email',  # <- for email capability.
         'two_factor.plugins.yubikey',  # <- for yubikey capability.
     ]
