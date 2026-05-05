@@ -62,6 +62,38 @@ General Settings
   indefinitely in a state of having entered their password successfully but not
   having passed two factor authentication. Set to ``0`` to disable.
 
+``TWO_FACTOR_DEFAULT_DEVICE_PICKER`` (default: unset)
+  Dotted path to a callable used by :func:`~two_factor.utils.default_device`
+  to choose the user's primary 2FA device. The callable receives the unfiltered
+  list of confirmed devices returned by ``devices_for_user`` and must return
+  one of them or ``None``.
+
+  When unset, the built-in policy applies: a device named ``"default"`` wins
+  (back-compat with the upstream setup wizard's auto-naming), then the
+  most-recently-used non-backup device, then the non-backup device with the
+  lowest ``persistent_id``. Backup devices (``StaticDevice`` and any device
+  named ``"backup"``) are excluded by the built-in picker.
+
+  Set this to override the policy. Custom pickers may use the public helper
+  :func:`~two_factor.utils.primary_device_candidates` to apply the same
+  backup-exclusion logic, or pass it through unchanged for cases where backup
+  devices should also be eligible::
+
+      # myapp/settings.py
+      TWO_FACTOR_DEFAULT_DEVICE_PICKER = "myapp.utils.passkey_first_picker"
+
+      # myapp/utils.py
+      from two_factor.utils import primary_device_candidates
+
+      def passkey_first_picker(devices):
+          candidates = primary_device_candidates(devices)
+          # Prefer WebAuthn over TOTP regardless of recency.
+          webauthn = [d for d in candidates if d.__class__.__name__ == "WebauthnDevice"]
+          return webauthn[0] if webauthn else (candidates[0] if candidates else None)
+
+  The dotted path is resolved on each call (not cached at import time), so
+  the setting is overridable from tests via ``override_settings``.
+
 Phone-related settings
 ----------------------
 
