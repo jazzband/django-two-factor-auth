@@ -1,9 +1,13 @@
 import string
+from datetime import timedelta
 from unittest import mock
 from urllib.parse import parse_qsl, urlparse
 
 from django.contrib.auth.hashers import make_password
 from django.test import TestCase, override_settings
+from django.utils import timezone
+from django_otp.plugins.otp_static.models import StaticDevice
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.util import random_hex
 from phonenumber_field.phonenumber import PhoneNumber
 
@@ -17,7 +21,7 @@ from two_factor.plugins.phonenumber.utils import (
 from two_factor.plugins.registry import GeneratorMethod, MethodRegistry
 from two_factor.utils import (
     USER_DEFAULT_DEVICE_ATTR_NAME, default_device, get_otpauth_url,
-    totp_digits,
+    primary_device_candidates, totp_digits,
 )
 from two_factor.views.utils import (
     get_remember_device_cookie, validate_remember_device_cookie,
@@ -42,6 +46,254 @@ class UtilsTest(UserMixin, TestCase):
         PhoneDevice.objects.all().delete()
         self.assertEqual(default_device(user).pk, default.pk)
         self.assertEqual(getattr(user, USER_DEFAULT_DEVICE_ATTR_NAME).pk, default.pk)
+
+
+class DefaultDeviceSelectionTests(UserMixin, TestCase):
+    """Coverage for the multi-device selection rules in ``default_device``.
+
+    See PR fixing #652. Each test exercises one branch of the selection
+    policy and verifies the cache behaviour.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+
+    def _delete_cache(self):
+        # The function caches per-user-instance; reset between assertions
+        # that exercise different DB states on the same Python object.
+        if hasattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME):
+            delattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME)
+
+    def test_legacy_default_named_device_is_preferred(self):
+        # Backward-compat guarantee: a device literally named "default"
+        # always wins, even when there's a more recently used one.
+        # This protects every existing deployment that depends on the
+        # upstream wizard's "default" naming convention.
+        TOTPDevice.objects.create(
+            user=self.user, name='legacy-default-device',
+            last_used_at=timezone.now(),
+        )
+        explicit = TOTPDevice.objects.create(user=self.user, name='default')
+
+        self.assertEqual(default_device(self.user), explicit)
+
+    def test_most_recently_used_device_is_returned_when_no_default_named(self):
+        # Issue #652: users naming their devices ("YubiKey", "1Password")
+        # used to get None back. Now they get the most-recently-used.
+        old = TOTPDevice.objects.create(
+            user=self.user, name='Old YubiKey',
+            last_used_at=timezone.now() - timedelta(days=30),
+        )
+        recent = TOTPDevice.objects.create(
+            user=self.user, name='New YubiKey',
+            last_used_at=timezone.now(),
+        )
+
+        self.assertEqual(default_device(self.user), recent)
+        # And cached for the rest of the request.
+        self.assertEqual(
+            getattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME), recent
+        )
+        self.assertNotEqual(default_device(self.user), old)
+
+    def test_lowest_persistent_id_is_tiebreaker_when_no_last_used_at(self):
+        # Fresh enrollment, no logins yet: pick the device with the
+        # lowest persistent_id so behaviour is deterministic across
+        # requests (instead of dictionary-iteration-order dependent).
+        first = TOTPDevice.objects.create(user=self.user, name='Phone')
+        TOTPDevice.objects.create(user=self.user, name='Laptop')
+
+        chosen = default_device(self.user)
+        all_pids = sorted(
+            d.persistent_id for d in TOTPDevice.objects.filter(user=self.user)
+        )
+        self.assertEqual(chosen.persistent_id, all_pids[0])
+        self.assertEqual(chosen, first)
+
+    def test_static_backup_device_is_excluded(self):
+        # StaticDevice carries backup tokens and must never be picked
+        # as primary, even when it's the only device or the most
+        # recently used one. Picking it would mean re-prompting users
+        # for backup codes during a normal login.
+        StaticDevice.objects.create(
+            user=self.user, name='backup',
+            last_used_at=timezone.now(),
+        )
+
+        self.assertIsNone(default_device(self.user))
+
+        self._delete_cache()
+        # Add a real device with an OLDER last_used_at - it should
+        # still win against the more-recently-used StaticDevice.
+        totp = TOTPDevice.objects.create(
+            user=self.user, name='YubiKey',
+            last_used_at=timezone.now() - timedelta(days=10),
+        )
+        self.assertEqual(default_device(self.user), totp)
+
+    def test_devices_named_backup_are_excluded(self):
+        # `name == 'backup'` is the project-wide convention for backup
+        # devices (see ``backup_phones``). Honour it here too so a
+        # PhoneDevice the user enrolled as a backup phone is never
+        # silently promoted to primary.
+        self.user.phonedevice_set.create(
+            name='backup', number='+12024561111',
+        )
+        self.assertIsNone(default_device(self.user))
+
+    def test_no_device_returns_none_and_does_not_cache(self):
+        # Negative results must NOT be cached; otherwise enrolling a
+        # device later in the same request (e.g. during the setup
+        # wizard) would still return None until a fresh request.
+        self.assertIsNone(default_device(self.user))
+        self.assertFalse(hasattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME))
+
+        TOTPDevice.objects.create(user=self.user, name='default')
+        self.assertIsNotNone(default_device(self.user))
+
+    def test_anonymous_user_returns_none(self):
+        from django.contrib.auth.models import AnonymousUser
+        self.assertIsNone(default_device(AnonymousUser()))
+        self.assertIsNone(default_device(None))
+
+    def test_unconfirmed_devices_filtered_via_confirmed_kwarg(self):
+        # Backward-compat: callers that pass ``confirmed=False`` still
+        # only see unconfirmed devices, ``confirmed=None`` sees both.
+        # Required by the upstream setup wizard (mid-enrollment lookup).
+        TOTPDevice.objects.create(
+            user=self.user, name='confirmed-device', confirmed=True,
+        )
+        unconfirmed = TOTPDevice.objects.create(
+            user=self.user, name='in-progress', confirmed=False,
+        )
+
+        self._delete_cache()
+        self.assertEqual(
+            default_device(self.user, confirmed=False), unconfirmed
+        )
+
+
+# Module-level picker callables for the override-setting tests below.
+# Defined at module scope (not inside a class / method) so
+# ``import_string`` can resolve them via dotted path - that's the
+# whole contract of the ``TWO_FACTOR_DEFAULT_DEVICE_PICKER`` setting.
+
+def _picker_returns_first(devices):
+    return devices[0] if devices else None
+
+
+def _picker_returns_none(devices):
+    return None
+
+
+def _picker_picks_alphabetical_by_name(devices):
+    if not devices:
+        return None
+    return sorted(devices, key=lambda d: d.name)[0]
+
+
+class DefaultDevicePickerHookTests(UserMixin, TestCase):
+    """Coverage for the ``TWO_FACTOR_DEFAULT_DEVICE_PICKER`` extension point."""
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+
+    @override_settings(
+        TWO_FACTOR_DEFAULT_DEVICE_PICKER='tests.test_utils._picker_returns_first',
+    )
+    def test_custom_picker_is_invoked_when_setting_is_configured(self):
+        # The custom picker overrides the built-in policy entirely.
+        # Here it returns the first device unconditionally - even
+        # though the built-in would have skipped this StaticDevice as
+        # a backup. The hook puts the policy in the project's hands.
+        static = StaticDevice.objects.create(
+            user=self.user, name='backup',
+        )
+        self.assertEqual(default_device(self.user), static)
+
+    @override_settings(
+        TWO_FACTOR_DEFAULT_DEVICE_PICKER='tests.test_utils._picker_returns_none',
+    )
+    def test_custom_picker_returning_none_is_handled(self):
+        # A picker is allowed to deliberately return None even when
+        # devices exist (e.g. a security policy that requires explicit
+        # admin enablement). default_device must not cache the None.
+        TOTPDevice.objects.create(user=self.user, name='YubiKey')
+        self.assertIsNone(default_device(self.user))
+        # Per the no-cache-None invariant, a follow-up call after a
+        # picker change must re-evaluate.
+        if hasattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME):
+            delattr(self.user, USER_DEFAULT_DEVICE_ATTR_NAME)
+
+    @override_settings(
+        TWO_FACTOR_DEFAULT_DEVICE_PICKER='tests.test_utils._picker_picks_alphabetical_by_name',
+    )
+    def test_custom_picker_receives_full_device_list_including_backups(self):
+        # The picker contract is "you receive every device returned by
+        # devices_for_user; you decide". We do NOT pre-filter so that
+        # custom pickers can implement policies that consider backup
+        # devices too (e.g. an admin tool that wants the truly first
+        # device by name regardless of role).
+        StaticDevice.objects.create(user=self.user, name='aaa-static')
+        TOTPDevice.objects.create(user=self.user, name='zzz-totp')
+        self.assertEqual(default_device(self.user).name, 'aaa-static')
+
+    def test_default_picker_is_used_when_setting_is_unset(self):
+        # No override; built-in policy applies. Regression guard against
+        # the resolver short-circuiting in a way that bypasses the
+        # built-in picker when the setting is missing.
+        explicit = TOTPDevice.objects.create(user=self.user, name='default')
+        self.assertEqual(default_device(self.user), explicit)
+
+
+class PrimaryDeviceCandidatesTests(TestCase):
+    """Coverage for the public ``primary_device_candidates`` helper.
+
+    Pure function, no DB needed - we feed it mock objects that
+    exercise the two exclusion rules. Public so custom pickers can
+    apply the same backup-exclusion logic without re-implementing it.
+    """
+
+    def test_excludes_static_devices(self):
+        static = mock.Mock(spec=StaticDevice, name='primary-named-static')
+        # Mock attribute `name` collides with mock's own constructor
+        # `name` kwarg; set after construction so the device's own
+        # `.name` attribute (the one the helper inspects) is correct.
+        static.name = 'whatever'
+        totp = mock.Mock(name='regular-totp')
+        totp.name = 'YubiKey'
+
+        result = primary_device_candidates([static, totp])
+        self.assertEqual(result, [totp])
+
+    def test_excludes_devices_named_backup(self):
+        # The 'backup' name convention is documented and used by
+        # backup_phones(); the helper must respect it for any device
+        # type, not only StaticDevice.
+        backup_phone = mock.Mock(name='backup-phone')
+        backup_phone.name = 'backup'
+        totp = mock.Mock(name='regular-totp')
+        totp.name = 'YubiKey'
+
+        result = primary_device_candidates([backup_phone, totp])
+        self.assertEqual(result, [totp])
+
+    def test_keeps_order_of_input(self):
+        # Custom pickers may build their own tie-breaking on top.
+        # Document the order-preservation contract so they can rely
+        # on it.
+        a = mock.Mock()
+        a.name = 'a'
+        b = mock.Mock()
+        b.name = 'b'
+        c = mock.Mock()
+        c.name = 'c'
+        self.assertEqual(primary_device_candidates([a, b, c]), [a, b, c])
+
+    def test_empty_list_returns_empty_list(self):
+        self.assertEqual(primary_device_candidates([]), [])
 
     def test_get_otpauth_url(self):
         for num_digits in (6, 8):

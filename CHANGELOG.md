@@ -3,6 +3,22 @@
 ## Unreleased
 ### Fixed
 - Compile translation files for Azerbaijani and Serbian, forgotten in 1.18.1.
+- `default_device()` now returns the user's most-recently-used non-backup
+  device when no device is named `"default"`, instead of returning `None`.
+  This fixes [#652](https://github.com/jazzband/django-two-factor-auth/issues/652):
+  users naming their first device anything other than `"default"` (e.g.
+  `"YubiKey"`, `"1Password"`) were never flagged as having 2FA enabled.
+  Backward-compatible: deployments that rely on a device named `"default"`
+  see no change.
+
+### Added
+- `TWO_FACTOR_DEFAULT_DEVICE_PICKER` setting: dotted path to a callable
+  that overrides the built-in primary-device selection policy. Lets
+  projects implement their own policies (e.g. "always prefer WebAuthn",
+  "alphabetical by name", "specific device class first") without
+  monkey-patching `default_device`. New public helper
+  `two_factor.utils.primary_device_candidates(devices)` is exported for
+  custom pickers that want to reuse the built-in backup-exclusion logic.
 
 ## 1.18.1
 ### Added
