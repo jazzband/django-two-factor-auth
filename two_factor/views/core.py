@@ -476,14 +476,6 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         method_key = method_data.get('method', None)
         return registry.get_method(method_key)
 
-    def get(self, request, *args, **kwargs):
-        """
-        Start the setup wizard. Redirect if already enabled.
-        """
-        if default_device(self.request.user):
-            return redirect(self.get_success_url())
-        return super().get(request, *args, **kwargs)
-
     def get_form(self, step=None, **kwargs):
         # Until https://github.com/jazzband/django-formtools/pull/62 is merged
         if (step or self.steps.current) not in self.form_list:
@@ -514,6 +506,13 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
     def get_available_methods(self):
         return registry.get_methods()
 
+    def get_new_device_name(self, method):
+        """Name for the device: 'default' for the first, else the method code."""
+        has_default = any(
+            device.name == 'default' for device in devices_for_user(self.request.user)
+        )
+        return method.code if has_default else 'default'
+
     def render_next_step(self, form, **kwargs):
         """
         In the validation step, ask the device to generate a challenge.
@@ -539,14 +538,16 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
             pass
 
         method = self.get_method()
+        name = self.get_new_device_name(method)
         # TOTPDeviceForm
         if method.code == 'generator':
             form = [form for form in form_list if isinstance(form, TOTPDeviceForm)][0]
-            device = form.save()
+            device = form.save(name=name)
 
         # PhoneNumberForm / YubiKeyDeviceForm / EmailForm / WebauthnDeviceValidationForm
         elif method.code in ('call', 'sms', 'yubikey', 'email', 'webauthn'):
             device = self.get_device()
+            device.name = name
             device.save()
 
         else:

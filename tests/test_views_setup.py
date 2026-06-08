@@ -2,11 +2,14 @@ from base64 import b32decode
 from binascii import unhexlify
 from unittest import mock
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django_otp import DEVICE_ID_SESSION_KEY
 from django_otp.oath import totp
+
+from two_factor.plugins.registry import registry
+from two_factor.views import SetupView
 
 from .utils import UserMixin, method_registry
 
@@ -214,11 +217,12 @@ class SetupTest(UserMixin, TestCase):
         self.assertEqual(phones[0].number.as_e164, '+31101234567')
         self.assertEqual(phones[0].method, 'sms')
 
-    def test_already_setup(self):
+    def test_reentry_allowed_when_already_configured(self):
+        # A configured user can re-enter the wizard to add another method.
         self.enable_otp()
         self.login_user()
         response = self.client.get(reverse('two_factor:setup'))
-        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+        self.assertEqual(response.status_code, 200)
 
     def test_no_double_login(self):
         """
@@ -253,3 +257,27 @@ class SetupTest(UserMixin, TestCase):
 
         # view should return HTTP 400 Bad Request
         self.assertEqual(response.status_code, 400)
+
+
+class SetupViewDeviceNameTest(UserMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.view = SetupView()
+        self.view.request = RequestFactory().get('/')
+        self.view.request.user = self.user
+
+    def test_first_device_is_named_default(self):
+        method = registry.get_method('generator')
+        self.assertEqual(self.view.get_new_device_name(method), 'default')
+
+    def test_additional_device_is_named_after_its_method(self):
+        self.user.totpdevice_set.create(name='default')
+        method = registry.get_method('email')
+        self.assertEqual(self.view.get_new_device_name(method), 'email')
+
+    def test_duplicate_method_is_named_after_its_method(self):
+        # A second device of an already-configured method is allowed.
+        self.user.totpdevice_set.create(name='default')
+        method = registry.get_method('generator')
+        self.assertEqual(self.view.get_new_device_name(method), 'generator')

@@ -93,12 +93,12 @@ class TOTPDeviceForm(forms.Form):
             raise forms.ValidationError(self.error_messages['invalid_token'])
         return token
 
-    def save(self):
+    def save(self, name='default'):
         return TOTPDevice.objects.create(user=self.user, key=self.key,
                                          tolerance=self.tolerance, t0=self.t0,
                                          step=self.step, drift=self.drift,
                                          digits=self.digits,
-                                         name='default')
+                                         name=name)
 
 
 class DisableForm(forms.Form):
