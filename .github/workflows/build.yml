@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: # only run tests on the min & max supported versions of Python
-        python-version: ['3.9', '3.13']
+        python-version: ['3.11', '3.14']
     env:
       COVERAGE_OPTIONS: "-a"
 
