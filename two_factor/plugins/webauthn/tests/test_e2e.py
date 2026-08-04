@@ -99,16 +99,10 @@ class E2ETests(UserMixin, StaticLiveServerTestCase):
             By.XPATH, "//p[contains(text(), 'Primary method: Authenticate using a WebAuthn-compatible device')]")
 
         # try registering the same authenticator and fail
-        # The setup wizard redirects away if the user already has a
-        # primary 2FA device. Rename to 'backup' so default_device()
-        # treats it as a backup-only device (excluded from primary
-        # selection per the upstream convention also used by
-        # backup_phones()) and lets the wizard render. The device's
-        # credential_id remains in the DB, so the browser's
-        # excludeCredentials check still refuses re-registration.
+        # (have to modify the existing authenticator first, so it's no longer the default one)
         authenticator = default_device(user)
         self.assertIsNotNone(authenticator)
-        authenticator.name = 'backup'
+        authenticator.name = 'not default anymore'
         authenticator.save()
 
         self.webdriver.get(urljoin(self.base_url, reverse("two_factor:setup")))
