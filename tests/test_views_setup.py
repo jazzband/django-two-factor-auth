@@ -67,6 +67,30 @@ class SetupTest(UserMixin, TestCase):
         self.assertRedirects(response, reverse('two_factor:setup_complete'))
         self.assertEqual(1, self.user.totpdevice_set.count())
 
+    @method_registry(['generator'])
+    def test_setup_generator_key_survives_stray_get(self):
+        # A GET to the setup URL restarts the wizard by design, but a
+        # background GET some browsers send while the user is mid-setup
+        # (see issue #767) must not silently drop the key used to
+        # validate the token, or the in-progress step.
+        self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'welcome'})
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'generator'})
+        key = response.context_data['keys'].get('generator')
+        bin_key = unhexlify(key.encode())
+
+        self.client.get(reverse('two_factor:setup'))
+
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'generator',
+                  'generator-token': totp(bin_key)})
+        self.assertRedirects(response, reverse('two_factor:setup_complete'))
+        self.assertEqual(1, self.user.totpdevice_set.count())
+
     @override_settings(TWO_FACTOR_CALL_GATEWAY='two_factor.gateways.fake.Fake',
                        TWO_FACTOR_SMS_GATEWAY='two_factor.gateways.fake.Fake')
     def test_setup_generator_with_multi_method(self):
