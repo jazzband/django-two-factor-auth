@@ -112,7 +112,7 @@ class AuthenticationTokenForm(OTPAuthenticationFormMixin, forms.Form):
                                  max_length=totp_digits())
     otp_token.widget.attrs.update({
         'autofocus': 'autofocus',
-        'pattern': '[0-9]*',  # hint to show numeric keyboard for on-screen keyboards
+        'inputmode': 'numeric',
         'autocomplete': 'one-time-code',
     })
 

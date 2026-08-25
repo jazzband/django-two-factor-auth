@@ -246,7 +246,7 @@ class LoginTest(UserMixin, TestCase):
                                'login_view-current_step': 'auth'})
         self.assertContains(response, 'Token:')
         self.assertContains(response, 'autofocus="autofocus"')
-        self.assertContains(response, 'pattern="[0-9]*"')
+        self.assertContains(response, 'inputmode="numeric"')
         self.assertContains(response, 'autocomplete="one-time-code"')
 
         response = self._post({'token-otp_token': '123456',
