@@ -75,6 +75,19 @@ class UtilsTest(UserMixin, TestCase):
                                 issuer='测试网站',
                                 secret='abcdef123', digits=num_digits))
 
+    def test_get_otpauth_url_replaces_colons(self):
+        # Key URI Format forbids colons in issuer and account name. A site
+        # name like 127.0.0.1:8000 used to produce a label FreeOTP rejects.
+        self.assertEqualUrl(
+            'otpauth://totp/127.0.0.1-8000%3A%20moggers?'
+            'secret=abcdef123&digits=6&issuer=127.0.0.1-8000',
+            get_otpauth_url(accountname='moggers', issuer='127.0.0.1:8000',
+                            secret='abcdef123', digits=6))
+        self.assertEqualUrl(
+            'otpauth://totp/user-name?secret=abcdef123&digits=6',
+            get_otpauth_url(accountname='user:name', secret='abcdef123',
+                            digits=6))
+
     def assertEqualUrl(self, lhs, rhs):
         """
         Asserts whether the URLs are canonically equal.
