@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 9.0.0b5
+    rev: 9.0.1
     hooks:
     - id: isort
       args: ['--check-only', '--diff']
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.5
     hooks:
       - id: ruff
