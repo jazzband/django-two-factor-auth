@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Changed
+- Allow webauthn 3.x (`webauthn>=2.0,<4`), which in turn allows cbor2 6.x.
+
 ### Fixed
 - Compile translation files for Azerbaijani and Serbian, forgotten in 1.18.1.
 
