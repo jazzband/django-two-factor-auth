@@ -49,7 +49,7 @@ classifiers = [
 [project.optional-dependencies]
 call = ['twilio>=6.0']
 sms = ['twilio>=6.0']
-webauthn = ['webauthn>=2.0,<2.99']
+webauthn = ['webauthn>=2.0,<4']
 yubikey = ['django-otp-yubikey']
 phonenumbers = ['phonenumbers>=7.0.9,<8.99']
 phonenumberslite = ['phonenumberslite>=7.0.9,<8.99']
