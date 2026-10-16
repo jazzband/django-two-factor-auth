@@ -22,6 +22,13 @@ class SetupTest(UserMixin, TestCase):
         self.assertContains(response, 'Follow the steps in this wizard to '
                                       'enable two-factor')
 
+    @method_registry([])
+    def test_setup_no_methods_available(self):
+        response = self.client.post(
+            reverse('two_factor:setup'),
+            data={'setup_view-current_step': 'welcome'})
+        self.assertEqual(response.status_code, 200)
+
     @method_registry(['generator'])
     def test_setup_only_generator_available(self):
         response = self.client.post(

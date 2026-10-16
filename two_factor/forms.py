@@ -23,7 +23,8 @@ class MethodForm(forms.Form):
         method.choices = [
             (m.code, m.verbose_name) for m in registry.get_methods()
         ]
-        method.initial = method.choices[0][0]
+        if method.choices:
+            method.initial = method.choices[0][0]
 
 
 class DeviceValidationForm(forms.Form):
