@@ -22,7 +22,7 @@ class CreatePhoneDevice(Operation):
     creating it.
     """
 
-    reversible = False
+    reversible = True
     create_model_operation = migrations.CreateModel(
         name='PhoneDevice',
         fields=[
@@ -57,6 +57,9 @@ class CreatePhoneDevice(Operation):
     def state_forwards(self, app_label, state):
         self.create_model_operation.state_forwards(app_label, state)
 
+    def state_backwards(self, app_label, state):
+        self.create_model_operation.state_backwards(app_label, state)
+
     def database_forwards(self, app_label, schema_editor, from_state, to_state):
         if "two_factor_phonedevice" not in schema_editor.connection.introspection.table_names():
             # The table doesn't exist. This means we aren't upgrading from a
@@ -65,6 +68,10 @@ class CreatePhoneDevice(Operation):
             to_state = from_state.clone()
             self.create_model_operation.state_forwards(app_label, to_state)
             self.create_model_operation.database_forwards(app_label, schema_editor, from_state, to_state)
+
+    def database_backwards(self, app_label, schema_editor, from_state, to_state):
+        if "two_factor_phonedevice" in schema_editor.connection.introspection.table_names():
+            self.create_model_operation.database_backwards(app_label, schema_editor, from_state, to_state)
 
     def describe(self):
         return "Create PhoneDevice"
