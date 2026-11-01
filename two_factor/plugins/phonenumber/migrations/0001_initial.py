@@ -4,6 +4,8 @@ import phonenumber_field.modelfields
 from django.conf import settings
 from django.db import migrations, models
 
+from ._operations import CreatePhoneDevice
+
 import two_factor.plugins.phonenumber.models
 
 
@@ -17,6 +19,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
+            database_operations=[CreatePhoneDevice()],
             state_operations=[
                 migrations.CreateModel(
                     name='PhoneDevice',
