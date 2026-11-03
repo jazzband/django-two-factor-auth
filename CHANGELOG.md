@@ -3,6 +3,8 @@
 ## Unreleased
 ### Fixed
 - Compile translation files for Azerbaijani and Serbian, forgotten in 1.18.1.
+- Replace colons in otpauth issuer and account name so FreeOTP accepts QR
+  codes from sites on a non-standard port (#768).
 
 ## 1.18.1
 ### Added

@@ -21,10 +21,11 @@ def get_otpauth_url(accountname, secret, issuer=None, digits=None):
     # For a complete run-through of all the parameters, have a look at the
     # specs at:
     # https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+    # Neither issuer nor account name may contain a colon.
 
     # quote and urlencode work best with bytes, not unicode strings.
-    accountname = accountname.encode('utf8')
-    issuer = issuer.encode('utf8') if issuer else None
+    accountname = accountname.replace(':', '-').encode('utf8')
+    issuer = issuer.replace(':', '-').encode('utf8') if issuer else None
 
     label = quote(b': '.join([issuer, accountname]) if issuer else accountname)
 
