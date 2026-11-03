@@ -482,6 +482,14 @@ class SetupView(DeviceContextDataMixin, RedirectURLMixin, IdempotentSessionWizar
         """
         if default_device(self.request.user):
             return redirect(self.get_success_url())
+        if self.storage.current_step is not None:
+            # A wizard is already in progress. WizardView.get() always
+            # resets the wizard, but some browsers send a background GET
+            # to the current page while the user is mid-setup (see issue
+            # #767). Resetting here would silently drop the TOTP secret
+            # already shown to the user, so every later token submission
+            # would fail against a key that no longer matches it.
+            return self.render(self.get_form())
         return super().get(request, *args, **kwargs)
 
     def get_form(self, step=None, **kwargs):
