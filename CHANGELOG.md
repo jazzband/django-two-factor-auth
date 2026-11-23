@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Changed
+- Allow django-phonenumber-field 9.
+
 ### Fixed
 - Compile translation files for Azerbaijani and Serbian, forgotten in 1.18.1.
 
