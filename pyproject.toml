@@ -20,7 +20,7 @@ dependencies = [
     "Django>=4.2",
     "django_otp>=0.8.0",
     "qrcode<9",
-    "django-phonenumber-field<9",
+    "django-phonenumber-field<10",
     "django-formtools",
 ]
 keywords = ["django", "two-factor"]
